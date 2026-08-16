@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HeartwebSEOProjectManifest",
+  "description": "JSON Schema fuer das zentrale Projekt-Manifest im modernisierten Claude Desktop SEO-Workflow.",
+  "type": "object",
+  "required": [
+    "project_id",
+    "project_name",
+    "domain",
+    "target_audience",
+    "business_goal",
+    "created_at",
+    "author",
+    "status",
+    "phases",
+    "artifacts"
+  ],
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Eindeutiger Projekt-Identifier im Kebab-Case."
+    },
+    "project_name": {
+      "type": "string",
+      "description": "Vollstaendiger Projekt- oder Kundenname."
+    },
+    "author": {
+      "type": "string",
+      "default": "Raphael Rechberger",
+      "description": "Projektverantwortlicher Stratege."
+    },
+    "domain": {
+      "type": "string",
+      "format": "uri",
+      "description": "Primaere Domain der Kunden-Website."
+    },
+    "new_domain_or_staging": {
+      "type": "string",
+      "format": "uri",
+      "nullable": true,
+      "description": "Optionale Staging- oder Relaunch-Domain fuer den Abgleich."
+    },
+    "competitors": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "description": "Top 3 bis 5 Wettbewerber-Domains fuer Content-Gap- und Benchmark-Analysen."
+    },
+    "target_audience": {
+      "type": "string",
+      "description": "Zielgruppe und demografische Charakteristika."
+    },
+    "target_regions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Zielstaedte oder Regionen bei Multi-Location-Projekten."
+    },
+    "language": {
+      "type": "string",
+      "default": "de",
+      "description": "Projektsprache (de, en, etc.)."
+    },
+    "business_goal": {
+      "type": "string",
+      "description": "Primaeres Geschaeftsziel (Terminanfragen, Leads, Recruiting, Sichtbarkeit)."
+    },
+    "content_focus": {
+      "type": "string",
+      "description": "Schwerpunkt des Content-Typs (z.B. Standort-Landingpages, redaktionelles Portal, Mix)."
+    },
+    "brand_tone": {
+      "type": "string",
+      "enum": [
+        "vertrauensbildend_ymyl",
+        "professionell_warm",
+        "diskret_selbstbewusst",
+        "verkaufsstark_direkt"
+      ],
+      "default": "professionell_warm"
+    },
+    "capacity_hours_per_week": {
+      "type": "object",
+      "required": ["min", "max"],
+      "properties": {
+        "min": {"type": "number", "default": 10.0},
+        "max": {"type": "number", "default": 15.0}
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["initialization", "architecture_in_progress", "keyword_research", "planning", "execution", "completed", "error"],
+      "default": "initialization"
+    },
+    "error_state": {
+      "type": "object",
+      "nullable": true,
+      "properties": {
+        "has_error": {"type": "boolean", "default": false},
+        "error_code": {"type": "string"},
+        "step": {"type": "string"},
+        "message": {"type": "string"},
+        "timestamp": {"type": "string", "format": "date-time"}
+      }
+    },
+    "phases": {
+      "type": "object",
+      "required": [
+        "step_0_kickoff",
+        "step_1_pillar_identification",
+        "step_1b_site_architecture",
+        "step_1c_pillar_templates",
+        "step_2_cluster_research",
+        "step_3_120_day_plan",
+        "step_3b_performance_check",
+        "step_4_execution"
+      ],
+      "properties": {
+        "step_0_kickoff": {
+          "type": "object",
+          "properties": {
+            "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
+            "completed_at": {"type": "string", "format": "date-time", "nullable": true}
+          }
+        },
+        "step_1_pillar_identification": {
+          "type": "object",
+          "properties": {
+            "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
+            "pillars_count": {"type": "integer", "default": 0},
+            "completed_at": {"type": "string", "format": "date-time", "nullable": true}
+          }
+        },
+        "step_1b_site_architecture": {
+          "type": "object",
+          "properties": {
+            "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
+            "completed_at": {"type": "string", "format": "date-time", "nullable": true}
+          }
+        },
+        "step_1c_pillar_templates": {
+          "type": "object",
+          "properties": {
+            "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
+            "templates_created": {"type": "array", "items": {"type": "string"}},
+            "completed_at": {"type": "string", "format": "date-time", "nullable": true}
+          }
+        },
+        "step_2_cluster_research": {
+          "type": "object",
+          "properties": {
+            "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
+            "keywords_total": {"type": "integer", "default": 0},
+            "keywords_verified": {"type": "integer", "default": 0},
+            "completed_at": {"type": "string", "format": "date-time", "nullable": true}
+          }
+        },
+        "step_3_120_day_plan": {
+          "type": "object",
+          "properties": {
+            "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
+            "weeks_planned": {"type": "integer", "default": 17},
+            "total_items": {"type": "integer", "default": 0},
+            "completed_at": {"type": "string", "format": "date-time", "nullable": true}
+          }
+        },
+        "step_3b_performance_check": {
+          "type": "object",
+          "properties": {
+            "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
+            "checkpoints_completed": {"type": "array", "items": {"type": "string"}},
+            "last_check_at": {"type": "string", "format": "date-time", "nullable": true}
+          }
+        },
+        "step_4_execution": {
+          "type": "object",
+          "properties": {
+            "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
+            "briefings_completed": {"type": "integer", "default": 0},
+            "landingpages_completed": {"type": "integer", "default": 0}
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "pillar_inventory": {"type": "string", "default": "outputs/1-pillar-themen.md"},
+        "site_architecture_md": {"type": "string", "default": "outputs/1b-seitenarchitektur.md"},
+        "site_architecture_html": {"type": "string", "default": "outputs/1b-menuestruktur.html"},
+        "design_system_css": {"type": "string", "default": "standards/design-system.css"},
+        "cluster_keywords_data": {"type": "string", "default": "outputs/2-cluster-themen-agentseo.csv"},
+        "roadmap_plan": {"type": "string", "default": "outputs/3-plan.md"},
+        "performance_check_log": {"type": "string", "default": "outputs/3b-performance-check.md"}
+      }
+    }
+  }
+}
