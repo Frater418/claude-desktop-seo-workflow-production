@@ -1,26 +1,29 @@
 # CLAUDE.md: Instructions for Claude Code & AI Assistants
 
-**Project:** Heartweb Modernized Claude Desktop SEO Workflow  
+**Project:** Heartweb Modernized Claude Desktop SEO Workflow Framework  
 **Author & Architect:** Raphael Rechberger  
 **Version:** 1.2.0  
 **Context:** Heartweb SEO Production Infrastructure  
 
 ---
 
-## 1. Project Overview
+## 1. Architectural Model: Framework vs. Client Project Workspace
 
-This repository contains the production framework for scaling SEO rollouts (Pillars, Clusters, 120-day roadmaps, Local Landing Pages).
-It bridges local Claude Desktop workflows with structured database architectures (Notion) and automated MCP tools (AgentSEO).
+This project enforces a strict boundary between two layers:
+
+1. **Framework Repository (The Master Blueprint & Tooling Suite):**
+   Contains the reusable prompt templates (`prompts/`), schemas (`standards/manifest.schema.json`), global design tokens (`standards/design-system.css`), and deterministic Python tools (`mcp/tools/`).
+
+2. **Client Project Directory (The Local Customer Workspace):**
+   A dedicated local Windows folder (e.g. `C:\Users\offic\Documents\Projekte\Kunden\<client-slug>\`) containing the customer's actual project state (`manifest.json`), extracted CSS (`design-system.css`), and all deliverables under `outputs/`.
 
 ---
 
-## 2. Directory Navigation
+## 2. Context Persistence Across Claude Desktop Sessions
 
-- `prompts/`: Standardized XML workflow prompts (Steps 0 to 4b).
-- `standards/`: JSON schemas (`manifest.schema.json`), CSS design tokens (`design-system.css`), and filename contracts.
-- `mcp/`: Configuration template (`claude_desktop_config.template.json`), Python tools (`capacity_matrix_solver.py`, `validate_schema_jsonld.py`), and JSON tool contracts (`mcp/tool-contracts/`).
-- `docs/`: Operations manual, review comparison, ADR decision log, quality gates, copywriter guidelines, and Jesse walkthrough memo.
-- `tests/`: Acceptance tests and fixtures (`sample_manifest.json`, `sample_cluster_keywords.json`).
+Claude Desktop maintains state across separate chat conversations via the **Filesystem MCP Server**:
+- Every step writes its structured artifact (`manifest.json`, `1-pillar-themen.md`, `2-cluster.csv`, `3-plan.md`, `briefing-*.md`) to the client directory.
+- Subsequent steps read the required context directly from the filesystem, eliminating conversational context drift.
 
 ---
 
@@ -37,8 +40,8 @@ It bridges local Claude Desktop workflows with structured database architectures
 ## 4. Helper Commands
 
 ```bash
-# Run 120-day capacity matrix solver
-python mcp/tools/capacity_matrix_solver.py --input tests/fixtures/sample_cluster_keywords.json
+# Run 120-day capacity matrix solver (v1.2.0)
+python mcp/tools/capacity_matrix_solver.py --input tests/fixtures/sample_cluster_keywords.json --output outputs/3-plan.md
 
 # Validate Schema.org JSON-LD blocks
 python mcp/tools/validate_schema_jsonld.py
