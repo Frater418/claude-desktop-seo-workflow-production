@@ -1,95 +1,71 @@
-# Technisches Briefing & Architektur-Bridge: Claude Desktop zu Notion
+# Implementierungs-Memo: Claude Desktop SEO-Workflow & Notion-Bridge
 
-**An:** Jesse Jensen (Heartweb / Hardware Design)  
+**An:** Jesse Jensen (Heartweb)  
 **Von:** Raphael Rechberger  
 **Datum:** 16. August 2026  
-**Status:** Produktionsbereit & auf GitHub veroeffentlicht  
+**Status:** Vollstaendig implementiert & auf GitHub veroeffentlicht  
 **Repository:** [https://github.com/Frater418/claude-desktop-seo-workflow-production](https://github.com/Frater418/claude-desktop-seo-workflow-production)  
 
 ---
 
-## 1. Ausgangslage & Zielsetzung
+## 1. Was heute gebaut wurde (Aufbauend auf dem Review-PDF)
 
-Wie in unserem Onboarding-Gesetz besprochen, steht Heartweb vor dem Skalierungsschritt von manueller ad-hoc Steuerung hin zu einer zentralen, automatisierten Operations-Plattform in Notion.
-
-Bisherige Herausforderung:
-Die operative Logik deiner SEO-Rollouts (Pillars, Cluster, 120-Tage-Priorisierung, lokale Pflichtseiten) existierte als Prompt-Sequenz. Wenn mehrere Projekte parallel laufen, fuehren manuelle Zwischenschritte (wie das Abtippen in Ahrefs), fehlende Zustandsspeicher und unstrukturierte Chat-Outputs zu Reibung und Kontextverlust.
-
-Was wir umgesetzt haben:
-Wir haben deinen Workflow nicht neu erfunden, sondern ein **deterministisches, datenbank-kompatibles Fundament** geschaffen. Das System laeuft lokal in Claude Desktop, erzeugt aber von Haus aus standardisierte Datenstrukturen (JSON/YAML-Frontmatter), die nahtlos in dein neues Notion-Setup einfliessen und spaeter per API/Webhook vollautomatisiert werden koennen.
+Aufbauend auf meiner Review-Analyse habe ich den gesamten Workflow heute vollstaendig umgesetzt und in ein modulares, versioniertes Produktionsprojekt ueberfuehrt. Saemtliche in der Review identifizierten Reibungspunkte wurden geloest: Alle 9 Workflow-Prompts sind refactored, die Datenvertraege stehen und das System ist 1:1 fuer die Uebernahme in euer anstehendes Notion-Setup vorbereitet.
 
 ---
 
-## 2. Die 6 technischen Bausteine im Ueberblick
+## 2. Status-Abgleich: Review-Empfehlung vs. Heutige Implementierung
 
-```text
-Lokale Claude Desktop Pipeline                Zukuenftige Notion- & Automations-Bridge
-------------------------------------------    ---------------------------------------------------------
-1. manifest.json                              -> Bildet 1:1 die Notion Mandanten-/Projekt-Datenbank ab
-2. standards/design-system.css                -> Sichert visuelle CI-Konsistenz bis zur Landingpage
-3. AgentSEO MCP-Integration                   -> Zieht Keyword-Metriken automatisiert per API-Call
-4. capacity_matrix_solver.py                  -> Berechnet 17 Wochen mathematisch exakt (10-15h Budget)
-5. 4a Content-Briefings                       -> Liefert Notion-Frontmatter fuer Regina, Katja, Alexander
-6. 4b HTML-Generator                          -> Erzeugt autarke Landingpages fuer Web-Entwickler
-```
+| Review-Empfehlung | Bisheriger Reibungspunkt | Heutiger Produktions-Stand (Im GitHub-Repo) |
+|---|---|---|
+| **manifest.json** | Kontext musste im Chat gesucht werden; Verlust bei neuen Sessions. | JSON Schema Draft 2020-12 Standard. Speichert Mandantenstatus & Pfade. |
+| **design-system.css** | Screenshot aus 1c ging verloren; CSS in Schritt 4 neu erraten. | Persistiert Farb-, Typo- und Button-Tokens zentral ab Schritt 1c. |
+| **AgentSEO MCP** | 45-60 Min. pro Pillar: Keywords einzeln in Ahrefs pruefen. | Tool-Call zieht Suchvolumen, KD und CPC vollautomatisch in 2 Min. |
+| **Kapazitaets-Solver** | LLMs verrechnen sich bei 17 Wochen mit variierenden Stundensummen. | Python Solver v1.2 berechnet exakt 10-15h/Woche & Verlinkungs-Maps. |
+| **Zweiteilung Schritt 4** | Schritt 4 ueberladen (Briefing, Schema und HTML brachen ab). | Getrennt: 4a fuer Texter (Notion-Frontmatter) & 4b fuer Web-Entwicklung. |
+| **Qualitaets-Doktrin** | Ungepruefte Schaetzungen fuehrten zu Daten-Drift. | 7 Quality Gates & striktes Fail-Fast ohne stillschweigende Fallbacks. |
 
 ---
 
-### Die Bausteine im Detail:
+## 3. Die 6 umgesetzten Kern-Bausteine im Detail
 
-### 1. Datenmodell & Projekt-Manifest (`manifest.json`)
-- **Architektur:** Jedes Kundenprojekt erhaelt eine zentrale `manifest.json`, validiert gegen `standards/manifest.schema.json`.
-- **Notion-Bridge:** Die Felder (`project_id`, `domain`, `competitors`, `target_audience`, `brand_tone`, `phases.status`) entsprechen exakt den Properties, die ihr in Notion fuer Mandanten-Dashboards benoetigt.
+### 1. Persistentes Projekt-Manifest (`manifest.json`)
+Initialisiert in Schritt 0. Enthaelt Domain, Zielgruppe, Geschaeftsziele, Phasenstatus und alle Dateipfade. Dient als Single Source of Truth und bildet 1:1 die Struktur eurer kuenftigen Notion-Mandantendatenbank ab.
 
 ### 2. Persistentes Design-System (`design-system.css`)
-- **Architektur:** In Schritt 1c werden die visuellen Design-Tokens (Farben, Typo, Abstaende, Card- und Button-Stile) aus dem Website-Screenshot extrahiert und in `design-system.css` festgeschrieben.
-- **Nutzen:** Schritt 4b erzeugt Landingpages im exakten Kundendesign, ohne Stile im Chat neu zu erraten.
+In Schritt 1c werden alle visuellen Tokens einmalig extrahiert. Alle Folgeschritte (Pillar-Templates und Landingpages) binden identische CSS-Klassen ein. Visuelle Konsistenz ist garantiert.
 
 ### 3. Automatisierte Keyword-Anreicherung via AgentSEO MCP
-- **Architektur:** Schritt 2 bindet den AgentSEO MCP-Server (`agentseo_keyword_metrics_overview`) ein.
-- **Nutzen:** Bis zu 100 Keywords pro Pillar werden in Sekunden mit verifiziertem Suchvolumen, KD und CPC angereichert. Der bisherige manuelle Ahrefs-Zwischenschritt entfaellt vollstaendig.
+Schritt 2 bindet den AgentSEO-Server an. Bis zu 100 Keywords pro Pillar werden per API verifiziert. Lokale Pflicht-Landingpages werden fuer die Gebietsabdeckung gesondert markiert.
 
 ### 4. Deterministischer Kapazitaets-Solver (`capacity_matrix_solver.py`)
-- **Architektur:** Ein Python-Script uebernimmt die kombinatorische Stundenverteilung fuer die 17 Wochen (10 bis 15 Stunden pro Woche).
-- **Nutzen:** Mathematische Garantie: Keine Woche wird ueber- oder unterbelegt. Lokale Pflicht-Landingpages werden zu 100% in Phase 1 und 2 verplant.
+Mathematisches Python-Skript fuer den 120-Tage-Plan. Jede der 17 Wochen haelt exakt das Budget von 10-15 Stunden ein. Lokale Pflichtseiten landen garantiert in Phase 1 und 2. Generiert zusaetzlich die zweidimensionale Verlinkungs-Map (vertikal + horizontal).
 
-### 5. Modulares Tagesgeschaeft: 4a Briefings & 4b HTML
-- **Architektur:** Trennung des frueher ueberladenen Schritt 4 in zwei kontrollierte Schritte:
-  - **4a (Copywriting-Briefing):** Fuehrt den Live-SERP-Check durch, generiert Schema.org JSON-LD und erzeugt ein reines Markdown-Briefing mit Notion-Frontmatter (Properties: `Pillar`, `Target_Keyword`, `Search_Volume`, `Priority`, `Status`).
-  - **4b (Landingpage-HTML):** Erzeugt autarken Frontend-Code ausschliesslich fuer Landingpages.
-- **Nutzen:** Eure Copywriter (Regina, Katja, Alexander) erhalten saubere, lesbare Briefings in Notion; Entwickler erhalten fertigen HTML-Code.
+### 5. Modulare Aufteilung in 4a (Briefing) und 4b (HTML)
+Schritt 4a fuehrt den Live-SERP-Check durch, generiert Schema.org JSON-LD und liefert saubere Briefings mit standardisiertem YAML-Frontmatter fuer Regina, Katja und Alexander. Schritt 4b erzeugt autarken HTML-Code fuer Web-Entwickler.
 
 ### 6. Strikte Fail-Fast- und Qualitaets-Doktrin
-- **Architektur:** Keine stillschweigenden Fallbacks auf Schaetzdaten. Bei fehlendem Key oder unvollstaendigen Daten stoppt der Prozess mit einer expliziten Fehlermeldung.
+Keine stillschweigenden Fallbacks oder Schaetzdaten. Bei fehlendem Key oder unvollstaendigen Daten stoppt der Prozess mit einer expliziten Fehlermeldung.
 
 ---
 
-## 3. Zukuenftige Automations-Roadmap (Notion Integration)
+## 4. Zukuenftige Automations-Roadmap (Notion- & n8n-Pipeline)
 
-Sobald eure Agentur das Notion-Setup live geschaltet hat, kann die Pipeline in zwei Schritten weiter automatisiert werden:
-
-1. **Stufe 1 (Direkter MCP-Push):**
-   - Einbindung des offiziellen Notion-MCP-Servers in Claude Desktop. Die generierten Roadmaps (Schritt 3) und Briefings (Schritt 4a) werden per Tool-Call direkt als Datenbank-Eintraege in Notion angelegt.
-2. **Stufe 2 (Event-Driven Pipeline via n8n / Make):**
-   - Ein n8n-Workflow ueberwacht den Output-Ordner oder das Git-Repo, liest die Markdown-Briefings aus, erstellt die Notion-Karten und weist diese per Auto-Tagging an Regina, Katja oder Alexander zu inklusive Slack-Notification.
+- **Stufe 1 (Direkter MCP-Push in Claude Desktop):** Sobald euer Notion-Setup live ist, binden wir den Notion-MCP-Server ein. Roadmaps (Schritt 3) und Briefings (Schritt 4a) werden per Tool-Call direkt als Datenbank-Karten angelegt.
+- **Stufe 2 (Event-Driven n8n / Make Pipeline):** Ein n8n-Workflow ueberwacht den Output-Ordner oder das Git-Repo, parst das YAML-Frontmatter der Briefings, erstellt die Notion-Karten und weist diese per Auto-Tagging an Regina, Katja oder Alexander zu inklusive formatierter Slack-Benachrichtigung.
 
 ---
 
-## 4. GitHub Repository Uebersicht
+## 5. Rollenverteilung in der operativen Praxis
 
-Das vollstaendige Produktionspaket ist oeffentlich auf GitHub verfuegbar:
-**Repository:** [https://github.com/Frater418/claude-desktop-seo-workflow-production](https://github.com/Frater418/claude-desktop-seo-workflow-production)
-
-- **`README.md`:** Interaktiver Navigations-Hub mit vollstaendiger Workflow-Landkarte.
-- **`prompts/`:** Alle 9 produktionsfertigen XML-Prompts (`0-kickoff.xml.md` bis `4b-landingpage-html.xml.md`).
-- **`standards/`:** `manifest.schema.json`, `design-system.css`, Dateinamen-Vertrag.
-- **`mcp/`:** Claude Desktop Konfigurations-Template und `capacity_matrix_solver.py`.
-- **`docs/`:** Betriebshandbuch, Quality Gates, ADR-Entscheidungslog, Copywriter-Leitfaden.
+- **Fuer Jesse & Raphael (Strategie & Rollout):** Schritte 0 bis 3 laufen in wenigen Minuten durch. Das Ergebnis ist eine fertige 120-Tage-Roadmap fuer Notion.
+- **Fuer die Copywriter (Regina, Katja, Alexander):** Erhalten aus 4a glasklare Briefings mit Suchintention, Gliederung, FAQs und Verlinkungsvorgaben ohne stoerenden HTML-Code.
+- **Fuer die Web-Entwicklung / WordPress:** Erhaelt aus 1b den Menuebaum (HTML) und aus 4b direkt einsatzbereite Landingpages mit integriertem Schema.org Markup.
 
 ---
 
-## 5. Gespraechspunkte fuer unseren Call
+## 6. Gespraechspunkte fuer unseren Call
 
-1. Kurzer Walkthrough durch die Repository-Struktur und das Menuediagramm.
-2. Abgleich der Frontmatter-Felder mit der Datenbankstruktur eurer Notion-Agentur.
-3. Konfiguration der Claude Desktop App fuer den ersten gemeinsamen Kundenlauf.
+1. **Live-Walkthrough:** Kurzer Blick auf das GitHub-Repo und die interaktive README-Landkarte.
+2. **Notion-Abgleich:** Abstimmung der Frontmatter-Properties mit der Datenbankstruktur eurer Agentur.
+3. **Pilot-Projekt:** Zuweisung des ersten Kunden-Cases (z.B. simCura) fuer den initialen Live-Durchlauf.
