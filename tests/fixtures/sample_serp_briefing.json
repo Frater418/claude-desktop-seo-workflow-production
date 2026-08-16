@@ -1,0 +1,27 @@
+{
+  "keyword": "pflegedienst frankfurt bornheim",
+  "primary_intent": "local_transactional",
+  "location": "Germany / Frankfurt am Main",
+  "serp_opportunity": {
+    "intent_confidence": 0.95,
+    "top_serp_type": "LocalBusiness with local Map Pack",
+    "avg_competitor_word_count": 850
+  },
+  "people_also_ask": [
+    "Was kostet ein Pflegedienst in Frankfurt Bornheim?",
+    "Welche Pflegedienste in Frankfurt haben freie Kapazitaeten?",
+    "Wie schnell kann eine ambulante Pflegekraft starten?"
+  ],
+  "competitor_sections": [
+    "Ueberblick ambulante Leistungen in Bornheim",
+    "Kostenuebernahme durch die Pflegekasse (Pflegegrad 1-5)",
+    "Ablauf der Erstberatung vor Ort",
+    "Einsatzgebiet Bornheim, Nordend und Ostend"
+  ],
+  "must_cover_topics": [
+    "Grundpflege und Behandlungspflege",
+    "Hauswirtschaftliche Versorgung",
+    "Verhinderungspflege und Entlastungsbetrag",
+    "24h Rufbereitschaft und lokale Erreichbarkeit"
+  ]
+}

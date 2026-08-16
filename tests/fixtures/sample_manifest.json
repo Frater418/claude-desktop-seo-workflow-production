@@ -1,0 +1,52 @@
+{
+  "project_id": "simcura-pflegedienst",
+  "project_name": "simCura Pflegedienst Frankfurt",
+  "author": "Raphael Rechberger",
+  "domain": "https://simcura-pflege.de",
+  "new_domain_or_staging": null,
+  "competitors": [
+    "https://pflege-frankfurt-main.de",
+    "https://diakonie-frankfurt.de",
+    "https://drk-frankfurt.de"
+  ],
+  "target_audience": "Angehoerige von pflegebeduerftigen Senioren in Frankfurt und Umgebung",
+  "target_regions": [
+    "Frankfurt am Main",
+    "Bornheim",
+    "Sachsenhausen",
+    "Bockenheim",
+    "Nordend",
+    "Westend",
+    "Offenbach"
+  ],
+  "language": "de",
+  "business_goal": "Terminanfragen fuer Erstberatungen und haeusliche Pflegekraefte",
+  "content_focus": "Viele Standort-Landingpages und vertrauensbildende Leistungs-Ratgeber",
+  "brand_tone": "vertrauensbildend_ymyl",
+  "capacity_hours_per_week": {
+    "min": 10.0,
+    "max": 15.0
+  },
+  "created_at": "2026-08-16T10:00:00Z",
+  "updated_at": "2026-08-16T12:00:00Z",
+  "status": "execution",
+  "phases": {
+    "step_0_kickoff": {"status": "completed", "completed_at": "2026-08-16T10:05:00Z"},
+    "step_1_pillar_identification": {"status": "completed", "pillars_count": 4, "completed_at": "2026-08-16T10:20:00Z"},
+    "step_1b_site_architecture": {"status": "completed", "completed_at": "2026-08-16T10:45:00Z"},
+    "step_1c_pillar_templates": {"status": "completed", "templates_created": ["pillar-ambulante-pflege.html", "pillar-verhinderungspflege.html"], "completed_at": "2026-08-16T11:15:00Z"},
+    "step_2_cluster_research": {"status": "completed", "keywords_total": 45, "keywords_verified": 45, "completed_at": "2026-08-16T11:30:00Z"},
+    "step_3_120_day_plan": {"status": "completed", "weeks_planned": 17, "total_items": 45, "completed_at": "2026-08-16T11:45:00Z"},
+    "step_3b_performance_check": {"status": "pending", "checkpoints_completed": [], "last_check_at": null},
+    "step_4_execution": {"status": "in_progress", "briefings_completed": 3, "landingpages_completed": 2}
+  },
+  "artifacts": {
+    "pillar_inventory": "outputs/1-pillar-themen.md",
+    "site_architecture_md": "outputs/1b-seitenarchitektur.md",
+    "site_architecture_html": "outputs/1b-menuestruktur.html",
+    "design_system_css": "standards/design-system.css",
+    "cluster_keywords_data": "outputs/2-cluster-themen-agentseo.csv",
+    "roadmap_plan": "outputs/3-plan.md",
+    "performance_check_log": "outputs/3b-performance-check.md"
+  }
+}

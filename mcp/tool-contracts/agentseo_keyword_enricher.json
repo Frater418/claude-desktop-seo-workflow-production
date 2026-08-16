@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AgentSEOKeywordEnricherContract",
+  "description": "Tool Contract fuer die automatisierte Keyword-Anreicherung via AgentSEO MCP",
+  "tool_name": "agentseo_keyword_metrics_overview",
+  "endpoint": "/keyword-metrics/overview",
+  "credit_cost": "5 credits per 25 keywords",
+  "input_schema": {
+    "type": "object",
+    "required": ["keywords"],
+    "properties": {
+      "keywords": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 100,
+        "items": {"type": "string"}
+      },
+      "location": {
+        "type": "string",
+        "default": "Germany"
+      },
+      "language": {
+        "type": "string",
+        "default": "de"
+      },
+      "min_search_volume": {
+        "type": "integer",
+        "default": 0
+      },
+      "sort_by": {
+        "type": "string",
+        "enum": ["priority", "search_volume", "cpc", "difficulty"],
+        "default": "priority"
+      }
+    }
+  },
+  "output_schema": {
+    "type": "object",
+    "required": ["keyword_metrics"],
+    "properties": {
+      "location": {"type": "object"},
+      "keyword_metrics": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {
+            "search_volume": {"type": "integer"},
+            "difficulty": {"type": "integer"},
+            "cpc": {"type": "number"},
+            "intent": {"type": "string"},
+            "priority_score": {"type": "number"}
+          }
+        }
+      },
+      "markdown_summary": {"type": "string"}
+    }
+  }
+}

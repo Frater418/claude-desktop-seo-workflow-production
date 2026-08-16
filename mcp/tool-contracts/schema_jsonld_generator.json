@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SchemaJsonLdGeneratorContract",
+  "description": "Tool Contract fuer die Schema.org JSON-LD Generierung und Validierung",
+  "tool_name": "agentseo_content_schema_plan",
+  "endpoint": "/content/schema-plan",
+  "credit_cost": "3 credits",
+  "input_schema": {
+    "type": "object",
+    "required": ["page_type"],
+    "properties": {
+      "page_type": {
+        "type": "string",
+        "enum": ["local_business", "article", "blog_post", "faq", "how_to", "service"]
+      },
+      "page_title": {"type": "string"},
+      "business_name": {"type": "string"},
+      "address": {"type": "object"},
+      "faqs": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["question", "answer"],
+          "properties": {
+            "question": {"type": "string"},
+            "answer": {"type": "string"}
+          }
+        }
+      }
+    }
+  },
+  "output_schema": {
+    "type": "object",
+    "required": ["schema_jsonld"],
+    "properties": {
+      "schema_type": {"type": "string"},
+      "schema_jsonld": {"type": "string", "description": "Valider Script-Tag mit JSON-LD"},
+      "google_rich_result_eligible": {"type": "boolean"}
+    }
+  }
+}

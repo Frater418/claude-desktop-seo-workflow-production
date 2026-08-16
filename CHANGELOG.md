@@ -5,6 +5,43 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) 
 
 ---
 
+## [1.1.0] - 2026-08-16
+
+### Vollstaendiger Rollout aller Sprints: Prompts, Tooling, Solver & Betriebsdokumentation
+
+**Autor:** Raphael Rechberger
+
+#### Hinzugefuegt
+- **XML-Produktions-Prompts (`prompts/`):**
+  - `prompts/0-kickoff.xml.md`: Projekt-Initialisierung & Manifest-Setup.
+  - `prompts/1-pillar-identifikation.xml.md`: Pillar-Themen-Identifikation & Gap-Analyse.
+  - `prompts/1b-seitenarchitektur.xml.md`: Finale Informationsarchitektur & interaktives Menuediagramm.
+  - `prompts/1c-pillar-template.xml.md`: Screenshot-Analyse, CSS-Token-Persistierung & Pillar-HTML-Templates.
+  - `prompts/2-cluster-recherche.xml.md`: Cluster-Recherche & automatisierte AgentSEO-Keyword-Anreicherung.
+  - `prompts/3-120-tage-plan.xml.md`: 120-Tage-Roadmap & interne Verlinkungs-Map.
+  - `prompts/3b-performance-check.xml.md`: Tag 30/60/90 Ranking-Sync & adaptive Phasenanpassung.
+  - `prompts/4a-content-briefing-und-schema.xml.md`: SERP-Intent Check, Notion-Frontmatter & Schema.org JSON-LD.
+  - `prompts/4b-landingpage-html.xml.md`: Produktionsfertiger Landingpage-HTML-Generator.
+
+- **Deterministische Tools & Validierung (`mcp/tools/`):**
+  - `mcp/tools/capacity_matrix_solver.py`: Mathematisch exakter 120-Tage-Solver (17 Wochen a 10-15h, 100% Pflichtabdeckung fuer lokale Landingpages).
+  - `mcp/tools/validate_schema_jsonld.py`: Autarker JSON-LD Schema.org Validator gegen Google Rich Results Standards.
+  - Formale Tool-Vertraege unter `mcp/tool-contracts/` (`agentseo_keyword_enricher.json`, `serp_gap_analyzer.json`, `schema_jsonld_generator.json`).
+
+- **Test-Fixtures & Nachweise (`tests/`):**
+  - `tests/fixtures/sample_manifest.json`: Referenz-Manifest fuer simCura Pflegedienst.
+  - `tests/fixtures/sample_cluster_keywords.json`: 40 verifizierte Keywords fuer Solver-Tests.
+  - `tests/fixtures/sample_serp_briefing.json`: Beispielhafter SERP-Briefing-Datensatz.
+  - `tests/acceptance-tests.md`: Vollstaendig dokumentiertes Testprotokoll (alle 5 Akzeptanztests bestanden).
+
+- **Betriebs- & Uebergabedokumentation (`docs/`):**
+  - `docs/06-pilot-abnahme-checkliste.md`: Schritt-fuer-Schritt Checkliste fuer Kunden-Rollouts.
+  - `docs/betriebshandbuch-claude-desktop.md`: Nicht-technische Anleitung fuer den Alltag.
+  - `docs/copywriter-handoff-guidelines.md`: Leitfaden fuer die Notion-Uebergabe an Regina, Katja, Alexander.
+  - `docs/jesse-walkthrough-memo.md`: Praegnantes Walkthrough-Memo fuer Jesse Jensen mit Vergleichstabelle und Kern-Hebeln.
+
+---
+
 ## [1.0.0] - 2026-08-16
 
 ### Initiales Release: Produktionsfundament, Standards und Tool-Architektur
@@ -12,24 +49,13 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) 
 **Autor:** Raphael Rechberger
 
 #### Hinzugefuegt
-- **Strategische Dokumentation & Baseline-Abgleich (`docs/`):**
-  - `docs/01-review-abgleich.md`: Systematischer Abgleich aller 6 Review-Kernpunkte mit dem Original-Workflow und den Onboarding-Vereinbarungen mit Jesse Jensen.
-  - `docs/02-research-und-technische-spezifikation.md`: Technische Spezifikation von AgentSEO OpenAPI 3.1.0, Claude Desktop MCP Transport (`stdio` via `mcp-remote`) und XML-Prompt-Hierarchie.
-  - `docs/03-sprint-plan.md`: 4-Sprint Umsetzungsplan mit klaren Phasen, Artefakten und Akzeptanzkriterien.
-  - `docs/04-entscheidungslog.md`: 7 verbindliche Architecture Decision Records (ADR-001 bis ADR-007).
-  - `docs/05-human-in-the-loop.md`: Leitfaden fuer die 7 verbindlichen Quality Gates und Freigabepunkte.
-
-- **Verbindliche Standards & Datenvertraege (`standards/`):**
-  - `standards/manifest.schema.json`: JSON Schema (Draft 2020-12) fuer das zentrale `manifest.json` zur persistenten Verwaltung von Projektmetadaten und Phasenfortschritt.
-  - `standards/design-system.css`: Autarkes CSS-Design-System mit Token-Definitionen fuer Farben, Typografie, Buttons, Cards, Badges und Utility-Klassen.
-  - `standards/dateinamen-und-output-vertrag.md`: Verbindlicher Ein- und Ausgabevertrag fuer saemtliche 9 Workflow-Schritte.
-
-- **MCP-Konfiguration (`mcp/`):**
-  - `mcp/claude_desktop_config.template.json`: Stdio-konforme Konfigurationsvorlage fuer Claude Desktop unter Windows und macOS zur Anbindung von AgentSEO und Filesystem.
-
-- **Master-Dokumentation (`README.md`):**
-  - Lueckenloser Navigations-Hub mit interaktiver Workflow-Map, Deep-Links zu allen Artefakten und Schnellstartanleitung fuer Meetings mit Jesse.
-
-#### Geaendert
-- **Qualitaets-Doktrin:** Vollstaendige Abkehr von stillschweigenden Fallbacks oder Schaetzdaten. Etablierung eines strikten Fail-Fast-Prinzips bei API-, Quota- oder Schema-Fehlern.
-- **Workflow-Entlastung:** Vorbereitung der Zweiteilung von Schritt 4 in strategisches Redaktions-Briefing (4a) und HTML-Code-Generierung (4b).
+- `standards/manifest.schema.json`
+- `standards/design-system.css`
+- `standards/dateinamen-und-output-vertrag.md`
+- `mcp/claude_desktop_config.template.json`
+- `docs/01-review-abgleich.md`
+- `docs/02-research-und-technische-spezifikation.md`
+- `docs/03-sprint-plan.md`
+- `docs/04-entscheidungslog.md`
+- `docs/05-human-in-the-loop.md`
+- `README.md`

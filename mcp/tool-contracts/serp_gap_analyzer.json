@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SERPGapAnalyzerContract",
+  "description": "Tool Contract fuer den Live-SERP-Intent Check und Wettbewerbstiefen-Analyse",
+  "tool_name": "agentseo_content_serp_outline",
+  "endpoint": "/content/serp-outline",
+  "credit_cost": "4 credits per call",
+  "input_schema": {
+    "type": "object",
+    "required": ["keyword"],
+    "properties": {
+      "keyword": {"type": "string"},
+      "location": {"type": "string", "default": "Germany"},
+      "language": {"type": "string", "default": "de"},
+      "outline_depth": {"type": "string", "enum": ["brief", "standard", "detailed"], "default": "detailed"},
+      "include_title_options": {"type": "boolean", "default": true}
+    }
+  },
+  "output_schema": {
+    "type": "object",
+    "required": ["outline"],
+    "properties": {
+      "keyword": {"type": "string"},
+      "primary_intent": {"type": "string"},
+      "serp_opportunity": {"type": "object"},
+      "outline": {
+        "type": "object",
+        "properties": {
+          "suggested_h1": {"type": "string"},
+          "sections": {"type": "array"},
+          "people_also_ask": {"type": "array", "items": {"type": "string"}},
+          "competitor_headers": {"type": "array"}
+        }
+      },
+      "markdown_summary": {"type": "string"}
+    }
+  }
+}
