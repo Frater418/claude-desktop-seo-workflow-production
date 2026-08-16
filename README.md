@@ -1,10 +1,10 @@
 # Claude Desktop SEO Workflow: Produktionsarchitektur
 
 **Autor & Architektur:** Raphael Rechberger  
-**Organisation / Kontext:** Heartweb / Hardware Design (Zusammenarbeit Raphael Rechberger & Jesse Jensen)  
-**Version:** 1.0.0  
+**Organisation / Kontext:** Heartweb (Zusammenarbeit Raphael Rechberger & Jesse Jensen)  
+**Version:** 1.2.0  
 **Stand:** 16. August 2026  
-**Status:** Produktionsstandard aktiv  
+**Status:** Produktionsstandard aktiv & validiert  
 
 ---
 
@@ -12,14 +12,14 @@
 
 Dieses Repository enthaelt den modernisierten, produktionsreifen **SEO-Content- & Rollout-Workflow fuer die Claude Desktop App**.
 
-Basiert auf den bewaehrten SEO-Grundlagen von Jesse Jensen wurden saemtliche Reibungspunkte, Kontextbrueche und manuellen Flaschenhaelse systematisch eliminiert. Das System transformiert den urspruenglichen Prompt-Ablauf in eine hochgradig deterministische, fehlertolerante Produktionspipeline mit:
+Basiert auf den bewaehrten SEO-Grundlagen von Jesse Jensen wurden saemtliche Reibungspunkte, Kontextbrueche und manuellen Flaschenhaelse systematisch eliminiert. Das System transformiert den urspruenglichen Prompt-Ablauf in eine hochgradig deterministische, datenbank-kompatible Produktionspipeline fuer Heartweb mit:
 
-1. **Persistentem Projekt-Manifest (`manifest.json`):** Maschinenlesbarer Single-Source-of-Truth-Status fuer jedes Kundenprojekt ohne Kontextverlust im Chat.
+1. **Persistentem Projekt-Manifest (`manifest.json`):** Maschinenlesbarer Single-Source-of-Truth-Status fuer jedes Kundenprojekt ohne Kontextverlust im Chat (1:1 Notion-kompatibel).
 2. **Persistentem Design-System (`design-system.css`):** Screenshot-basierte CSS-Token-Extraktion in Schritt 1c fuer konsistentes Styling bis hin zur Landingpage-Generierung in Schritt 4b.
 3. **Automatisierter Keyword-Anreicherung via AgentSEO MCP:** Vollstaendige Beseitigung des manuellen Ahrefs-Abtippens durch direkte API-Abfragen verifizierter Suchmetriken.
-4. **Deterministischem 120-Tage-Kapazitaets-Solver:** Mathematisch exakte Wochenplanung (17 Wochen a 10 bis 15 Stunden) mit prioritativer Gebietsabdeckung fuer lokale Landingpages.
+4. **Deterministischem 120-Tage-Kapazitaets-Solver v1.2:** Mathematisch exakte Wochenplanung (17 Wochen a 10 bis 15 Stunden) mit prioritativer Gebietsabdeckung fuer lokale Landingpages und automatischer Verlinkungs-Map.
 5. **Strikter Fail-Fast- und Qualitaets-Doktrin:** Keine stillschweigenden Fallbacks oder Schaetzdaten. Bei Fehlern stoppt das System sofort mit klaren Handlungsanweisungen.
-6. **Zweiteilung von Schritt 4:** Trennung in redaktionelle Briefings inkl. Schema.org JSON-LD (4a) fuer Copywriter (Regina, Katja, Alexander) und Frontend-HTML-Code (4b).
+6. **Zweiteilung von Schritt 4:** Trennung in redaktionelle Briefings inkl. Schema.org JSON-LD (4a) mit YAML-Frontmatter fuer Copywriter (Regina, Katja, Alexander) und Frontend-HTML-Code (4b).
 
 ---
 
@@ -91,7 +91,11 @@ Klicke auf die einzelnen Schritte, Standards oder Dokumente, um direkt zur jewei
 - [Globales Design-System (`design-system.css`)](standards/design-system.css)
 - [Dateinamen- und Output-Vertrag](standards/dateinamen-und-output-vertrag.md)
 
-### 3.3 Dokumentation & Governance (`docs/`)
+### 3.3 Dokumentation, Memos & Handbuecher (`docs/`)
+- [Jesse Walkthrough Memo (Markdown)](docs/jesse-walkthrough-memo.md)
+- [Jesse Walkthrough Memo (2-Seiten PDF)](docs/jesse-walkthrough-memo.pdf)
+- [Betriebshandbuch fuer Claude Desktop](docs/betriebshandbuch-claude-desktop.md)
+- [Copywriter-Handoff- & Notion-Guidelines](docs/copywriter-handoff-guidelines.md)
 - [01. Review-Abgleich (Baseline vs. Optimierung)](docs/01-review-abgleich.md)
 - [02. Research & Technische Spezifikation](docs/02-research-und-technische-spezifikation.md)
 - [03. 4-Sprint-Umsetzungsplan](docs/03-sprint-plan.md)
@@ -99,10 +103,19 @@ Klicke auf die einzelnen Schritte, Standards oder Dokumente, um direkt zur jewei
 - [05. Human-in-the-Loop & Quality Gates](docs/05-human-in-the-loop.md)
 - [06. Pilot-Abnahme-Checkliste](docs/06-pilot-abnahme-checkliste.md)
 
-### 3.4 MCP-Tools & Konfiguration (`mcp/`)
+### 3.4 MCP-Tools, Solver & Validierung (`mcp/`)
 - [Claude Desktop Config Template](mcp/claude_desktop_config.template.json)
-- [Deterministischer Kapazitaets-Solver](mcp/tools/capacity_matrix_solver.py)
-- [Tool-Contracts & Schemas](mcp/tool-contracts/)
+- [Deterministischer Kapazitaets-Solver v1.2](mcp/tools/capacity_matrix_solver.py)
+- [Schema.org JSON-LD Validator](mcp/tools/validate_schema_jsonld.py)
+- [Tool-Contract: AgentSEO Keyword Enricher](mcp/tool-contracts/agentseo_keyword_enricher.json)
+- [Tool-Contract: SERP Gap Analyzer](mcp/tool-contracts/serp_gap_analyzer.json)
+- [Tool-Contract: Schema JSON-LD Generator](mcp/tool-contracts/schema_jsonld_generator.json)
+
+### 3.5 Test-Fixtures & Nachweise (`tests/`)
+- [Akzeptanztest-Protokoll (Alle 5 Tests bestanden)](tests/acceptance-tests.md)
+- [Test-Fixture: Referenz-Manifest simCura](tests/fixtures/sample_manifest.json)
+- [Test-Fixture: 61 verifizierte Cluster-Keywords](tests/fixtures/sample_cluster_keywords.json)
+- [Test-Fixture: SERP-Briefing Response](tests/fixtures/sample_serp_briefing.json)
 
 ---
 
@@ -150,11 +163,11 @@ Setze deinen AgentSEO API-Key:
 
 - **Strikter Fail-Fast-Standard:** Keine Generierung von Texten oder Plaenen auf Basis fehlerhafter oder fehlender Daten.
 - **Human-in-the-Loop Pflicht:** Jeder Meilenstein besitzt eine explizite Abnahme-Checkliste gemaess [docs/05-human-in-the-loop.md](docs/05-human-in-the-loop.md).
-- **Kein ungepruefter KI-Content:** Redaktionelle Inhalte werden von Copywritern finalisiert; Claude Desktop liefert das praezise Fundament.
+- **Kein ungepruefter KI-Content:** Redaktionelle Inhalte werden von Copywritern finalisiert; Claude Desktop liefert das datengestuetzte, verifizierte Fundament.
 
 ---
 
 ## 6. Lizenz & Autorenschaft
 
 **Konzeption & Architektur:** Raphael Rechberger  
-**Lizenz:** Proprietaer / Fuer den produktiven Einsatz bei Heartweb / Hardware Design  
+**Lizenz:** Proprietaer / Fuer den produktiven Einsatz bei Heartweb  
