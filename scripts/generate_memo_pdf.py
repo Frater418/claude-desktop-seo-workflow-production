@@ -67,7 +67,7 @@ meta_box_style = ParagraphStyle(
     "MetaBox",
     fontName="Helvetica",
     fontSize=8.5,
-    leading=13,
+    leading=12.5,
     textColor=colors.HexColor("#334155")
 )
 
@@ -77,17 +77,17 @@ h1_section = ParagraphStyle(
     fontSize=10.5,
     leading=14.5,
     textColor=colors.HexColor("#0f172a"),
-    spaceBefore=10,
-    spaceAfter=5
+    spaceBefore=9,
+    spaceAfter=4
 )
 
 body_text = ParagraphStyle(
     "BodyTextCustom",
     fontName="Helvetica",
-    fontSize=9,
-    leading=13.5,
+    fontSize=8.5,
+    leading=12.2,
     textColor=colors.HexColor("#334155"),
-    spaceAfter=5.5
+    spaceAfter=4.5
 )
 
 bullet_text = ParagraphStyle(
@@ -108,28 +108,28 @@ callout_text = ParagraphStyle(
 tbl_header = ParagraphStyle(
     "TblHeader",
     fontName="Helvetica-Bold",
-    fontSize=8.5,
-    leading=11,
+    fontSize=8,
+    leading=10,
     textColor=colors.white
 )
 
 tbl_cell = ParagraphStyle(
     "TblCell",
     fontName="Helvetica",
-    fontSize=8,
-    leading=11.5,
+    fontSize=7.5,
+    leading=10,
     textColor=colors.HexColor("#334155")
 )
 
 tbl_cell_bold = ParagraphStyle(
     "TblCellBold",
     fontName="Helvetica-Bold",
-    fontSize=8,
-    leading=11.5,
+    fontSize=7.5,
+    leading=10,
     textColor=colors.HexColor("#0f172a")
 )
 
-def build_pdf_natural_flow(filename):
+def build_pdf_clean_break(filename):
     doc = SimpleDocTemplate(
         str(filename),
         pagesize=A4,
@@ -141,7 +141,7 @@ def build_pdf_natural_flow(filename):
 
     story = []
 
-    # Title & Meta
+    # ==================== SEITE 1 ====================
     story.append(Paragraph("Implementierungs-Memo: Claude Desktop SEO-Workflow & Notion-Bridge", doc_title))
     
     meta_html = (
@@ -155,21 +155,21 @@ def build_pdf_natural_flow(filename):
     meta_table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#f8fafc")),
         ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#cbd5e1")),
-        ("PADDING", (0, 0), (-1, -1), 6),
+        ("PADDING", (0, 0), (-1, -1), 5),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE")
     ]))
     story.append(meta_table)
-    story.append(Spacer(1, 4))
+    story.append(Spacer(1, 3))
 
     # 1. Was heute gebaut wurde
     story.append(Paragraph("1. Was heute gebaut wurde (Aufbauend auf dem Review-PDF)", h1_section))
-    story.append(Paragraph(
+    p1_text = (
         "Aufbauend auf meiner Review-Analyse habe ich den gesamten Workflow heute vollstaendig umgesetzt und in ein "
         "modulares, versioniertes Produktionsprojekt ueberfuehrt. Saemtliche in der Review identifizierten Reibungspunkte "
         "wurden geloest: Alle 9 Workflow-Prompts sind refactored, die Datenvertraege stehen und das System ist 1:1 fuer die "
-        "Uebernahme in euer anstehendes Notion-Setup vorbereitet.",
-        body_text
-    ))
+        "Uebernahme in euer anstehendes Notion-Setup vorbereitet."
+    )
+    story.append(Paragraph(p1_text, body_text))
 
     # 2. Vergleichstabelle
     story.append(Paragraph("2. Status-Abgleich: Review-Empfehlung vs. Heutige Implementierung", h1_section))
@@ -219,24 +219,27 @@ def build_pdf_natural_flow(filename):
         ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#cbd5e1")),
         ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f8fafc")]),
-        ("TOPPADDING", (0, 0), (-1, -1), 3.5),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 3.5),
+        ("TOPPADDING", (0, 0), (-1, -1), 2.5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
         ("LEFTPADDING", (0, 0), (-1, -1), 4),
         ("RIGHTPADDING", (0, 0), (-1, -1), 4),
     ]))
     story.append(t)
-    story.append(Spacer(1, 4))
+    story.append(Spacer(1, 3))
 
-    # 3. Alle 6 Hebel
+    # 3. Alle 6 Hebel vollstaendig auf Seite 1
     story.append(Paragraph("3. Die 6 umgesetzten Kern-Bausteine im Detail", h1_section))
-    story.append(Paragraph("<b>1. Persistentes Projekt-Manifest (manifest.json):</b> Initialisiert in Schritt 0. Enthaelt Domain, Zielgruppe, Geschaeftsziele, Phasenstatus und alle Dateipfade. Dient als Single Source of Truth und bildet 1:1 die Struktur eurer kuenftigen Notion-Mandantendatenbank ab.", body_text))
-    story.append(Paragraph("<b>2. Persistentes Design-System (design-system.css):</b> In Schritt 1c werden alle visuellen Tokens einmalig extrahiert. Alle Folgeschritte (Pillar-Templates und Landingpages) binden identische CSS-Klassen ein. Visuelle Konsistenz ist garantiert.", body_text))
-    story.append(Paragraph("<b>3. Automatisierte Keyword-Anreicherung via AgentSEO MCP:</b> Schritt 2 bindet den AgentSEO-Server an. Bis zu 100 Keywords pro Pillar werden per API verifiziert. Lokale Pflicht-Landingpages werden fuer die Gebietsabdeckung gesondert markiert.", body_text))
-    story.append(Paragraph("<b>4. Deterministischer Kapazitaets-Solver (capacity_matrix_solver.py):</b> Mathematisches Python-Skript fuer den 120-Tage-Plan. Jede der 17 Wochen haelt exakt das Budget von 10-15 Stunden ein. Lokale Pflichtseiten landen garantiert in Phase 1 und 2. Generiert zusaetzlich die zweidimensionale Verlinkungs-Map (vertikal + horizontal).", body_text))
-    story.append(Paragraph("<b>5. Modulare Aufteilung in 4a (Briefing) und 4b (HTML):</b> Schritt 4a fuehrt den Live-SERP-Check durch, generiert Schema.org JSON-LD und liefert saubere Briefings mit standardisiertem YAML-Frontmatter fuer Regina, Katja und Alexander. Schritt 4b erzeugt autarken HTML-Code fuer Web-Entwickler.", body_text))
-    story.append(Paragraph("<b>6. Strikte Fail-Fast- und Qualitaets-Doktrin:</b> Keine stillschweigenden Fallbacks oder Schaetzdaten. Bei fehlendem Key oder unvollstaendigen Daten stoppt der Prozess mit einer expliziten Fehlermeldung.", body_text))
+    story.append(Paragraph("<b>1. Persistentes Projekt-Manifest (manifest.json):</b> Initialisiert in Schritt 0. Enthaelt Domain, Zielgruppe, Geschaeftsziele, Phasenstatus und alle Dateipfade. Bildet 1:1 die Struktur eurer kuenftigen Notion-Mandantendatenbank ab.", body_text))
+    story.append(Paragraph("<b>2. Persistentes Design-System (design-system.css):</b> Farbpalette, Typografie-Skala und Button-Stile werden in Schritt 1c einmalig extrahiert und als globale Tokens fuer alle Folgeschritte (1c & 4b) gesichert.", body_text))
+    story.append(Paragraph("<b>3. Automatisierte Keyword-Anreicherung via AgentSEO MCP:</b> Schritt 2 bindet den AgentSEO-Server an. Bis zu 100 Keywords pro Pillar werden per API verifiziert. Lokale Pflicht-Landingpages werden fuer die Gebietsabdeckung markiert.", body_text))
+    story.append(Paragraph("<b>4. Deterministischer Kapazitaets-Solver (capacity_matrix_solver.py):</b> Python-Skript fuer den 120-Tage-Plan. Jede der 17 Wochen haelt exakt 10-15 Stunden ein. Lokale Pflichtseiten landen zu 100% in Phase 1-2 inkl. zweidimensionaler Verlinkungs-Map.", body_text))
+    story.append(Paragraph("<b>5. Modulare Aufteilung in 4a (Briefing) und 4b (HTML):</b> Schritt 4a liefert saubere Briefings mit YAML-Frontmatter fuer Regina, Katja und Alexander. Schritt 4b erzeugt autarken HTML-Code fuer Web-Entwickler.", body_text))
+    story.append(Paragraph("<b>6. Strikte Fail-Fast- und Qualitaets-Doktrin:</b> Keine stillschweigenden Fallbacks. Bei fehlendem Key oder unvollstaendigen Daten stoppt der Prozess mit einer expliziten Fehlermeldung.", body_text))
 
-    # 4. Notion Pipeline
+    # ==================== SEITENUMBRUCH GENAU HIER ====================
+    story.append(PageBreak())
+
+    # ==================== SEITE 2 STARTET MIT PUNKT 4 ====================
     story.append(Paragraph("4. Zukuenftige Automations-Roadmap (Notion- & n8n-Pipeline)", h1_section))
     n_box = (
         "<b>Stufe 1 (Direkter MCP-Push in Claude Desktop):</b> Sobald euer Notion-Setup live ist, binden wir den Notion-MCP-Server "
@@ -249,25 +252,25 @@ def build_pdf_natural_flow(filename):
     n_table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#f0fdf4")),
         ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#86efac")),
-        ("PADDING", (0, 0), (-1, -1), 5),
+        ("PADDING", (0, 0), (-1, -1), 6),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE")
     ]))
     story.append(n_table)
-    story.append(Spacer(1, 4))
+    story.append(Spacer(1, 6))
 
     # 5. Rollenverteilung
     story.append(Paragraph("5. Rollenverteilung in der operativen Praxis", h1_section))
-    story.append(Paragraph("&bull; <b>Fuer Jesse & Raphael (Strategie & Rollout):</b> Schritte 0 bis 3 laufen in wenigen Minuten durch. Das Ergebnis ist eine fertige 120-Tage-Roadmap fuer Notion.", bullet_text))
+    story.append(Paragraph("&bull; <b>Fuer Jesse & Raphael (Strategie & Rollout):</b> Schritte 0 bis 3 laufen in wenigen Minuten durch. Das Ergebnis ist eine fertige, mathematisch gepruefte 120-Tage-Roadmap fuer Notion.", bullet_text))
     story.append(Paragraph("&bull; <b>Fuer die Copywriter (Regina, Katja, Alexander):</b> Erhalten aus 4a glasklare Briefings mit Suchintention, Gliederung, FAQs und Verlinkungsvorgaben ohne stoerenden HTML-Code.", bullet_text))
     story.append(Paragraph("&bull; <b>Fuer die Web-Entwicklung / WordPress:</b> Erhaelt aus 1b den Menuebaum (HTML) und aus 4b direkt einsatzbereite Landingpages mit integriertem Schema.org Markup.", bullet_text))
-    story.append(Spacer(1, 4))
+    story.append(Spacer(1, 6))
 
     # 6. Gespraechspunkte
     story.append(Paragraph("6. Gespraechspunkte fuer unseren Call", h1_section))
     story.append(Paragraph("&bull; <b>Live-Walkthrough:</b> Kurzer Blick auf das GitHub-Repo und die interaktive README-Landkarte.<br/>"
                            "&bull; <b>Notion-Abgleich:</b> Abstimmung der Frontmatter-Properties mit der Datenbankstruktur eurer Agentur.<br/>"
                            "&bull; <b>Pilot-Projekt:</b> Zuweisung des ersten Kunden-Cases (z.B. simCura) fuer den initialen Live-Durchlauf.", body_text))
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 10))
 
     # Signatur
     sig_text = "<b>Raphael Rechberger</b><br/><font color='#64748b'>Technical Operations & AI Integration Architect</font>"
@@ -276,9 +279,9 @@ def build_pdf_natural_flow(filename):
     doc.build(story, canvasmaker=HeartwebCanvas)
     print(f"PDF built successfully: {filename}")
 
-build_pdf_natural_flow(pdf_canonical)
-build_pdf_natural_flow(pdf_desktop_hw)
-build_pdf_natural_flow(pdf_desktop_main)
+build_pdf_clean_break(pdf_canonical)
+build_pdf_clean_break(pdf_desktop_hw)
+build_pdf_clean_break(pdf_desktop_main)
 
 reader = pypdf.PdfReader(str(pdf_desktop_hw))
 print(f"VERIFIED EXACT PAGE COUNT: {len(reader.pages)}")
