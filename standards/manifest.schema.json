@@ -36,9 +36,7 @@
       "description": "Primaere Domain der Kunden-Website."
     },
     "new_domain_or_staging": {
-      "type": "string",
-      "format": "uri",
-      "nullable": true,
+      "type": ["string", "null"],
       "description": "Optionale Staging- oder Relaunch-Domain fuer den Abgleich."
     },
     "competitors": {
@@ -107,8 +105,7 @@
       "default": "initialization"
     },
     "error_state": {
-      "type": "object",
-      "nullable": true,
+      "type": ["object", "null"],
       "properties": {
         "has_error": {"type": "boolean", "default": false},
         "error_code": {"type": "string"},
@@ -134,7 +131,7 @@
           "type": "object",
           "properties": {
             "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
-            "completed_at": {"type": "string", "format": "date-time", "nullable": true}
+            "completed_at": {"type": ["string", "null"]}
           }
         },
         "step_1_pillar_identification": {
@@ -142,14 +139,14 @@
           "properties": {
             "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
             "pillars_count": {"type": "integer", "default": 0},
-            "completed_at": {"type": "string", "format": "date-time", "nullable": true}
+            "completed_at": {"type": ["string", "null"]}
           }
         },
         "step_1b_site_architecture": {
           "type": "object",
           "properties": {
             "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
-            "completed_at": {"type": "string", "format": "date-time", "nullable": true}
+            "completed_at": {"type": ["string", "null"]}
           }
         },
         "step_1c_pillar_templates": {
@@ -157,7 +154,7 @@
           "properties": {
             "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
             "templates_created": {"type": "array", "items": {"type": "string"}},
-            "completed_at": {"type": "string", "format": "date-time", "nullable": true}
+            "completed_at": {"type": ["string", "null"]}
           }
         },
         "step_2_cluster_research": {
@@ -166,7 +163,7 @@
             "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
             "keywords_total": {"type": "integer", "default": 0},
             "keywords_verified": {"type": "integer", "default": 0},
-            "completed_at": {"type": "string", "format": "date-time", "nullable": true}
+            "completed_at": {"type": ["string", "null"]}
           }
         },
         "step_3_120_day_plan": {
@@ -175,7 +172,7 @@
             "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
             "weeks_planned": {"type": "integer", "default": 17},
             "total_items": {"type": "integer", "default": 0},
-            "completed_at": {"type": "string", "format": "date-time", "nullable": true}
+            "completed_at": {"type": ["string", "null"]}
           }
         },
         "step_3b_performance_check": {
@@ -183,7 +180,7 @@
           "properties": {
             "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
             "checkpoints_completed": {"type": "array", "items": {"type": "string"}},
-            "last_check_at": {"type": "string", "format": "date-time", "nullable": true}
+            "last_check_at": {"type": ["string", "null"]}
           }
         },
         "step_4_execution": {
