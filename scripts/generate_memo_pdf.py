@@ -3,7 +3,7 @@ from pathlib import Path
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, HRFlowable
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
 from reportlab.pdfgen import canvas
 
 pdf_canonical = Path("C:/Users/offic/Documents/Projekte/Hermes/04_projects/active/Heartweb-Claude-Desktop-SEO-Workflow/docs/jesse-walkthrough-memo.pdf")
@@ -31,8 +31,8 @@ class NumberedCanvas(canvas.Canvas):
         self.setFont("Helvetica", 8)
         self.setFillColor(colors.HexColor("#64748b"))
         # Header
-        self.drawString(54, 800, "Heartweb / Hardware Design | SEO-Workflow Modernisierung")
-        self.drawRightString(541, 800, "Executive Walkthrough Memo")
+        self.drawString(54, 800, "Heartweb / Hardware Design | SEO-Workflow & Notion-Bridge")
+        self.drawRightString(541, 800, "Technisches Briefing")
         self.setStrokeColor(colors.HexColor("#cbd5e1"))
         self.setLineWidth(0.5)
         self.line(54, 792, 541, 792)
@@ -48,49 +48,49 @@ title_style = ParagraphStyle(
     "DocTitle",
     parent=styles["Heading1"],
     fontName="Helvetica-Bold",
-    fontSize=18,
-    leading=22,
+    fontSize=17,
+    leading=21,
     textColor=colors.HexColor("#0f172a"),
-    spaceAfter=6
+    spaceAfter=4
 )
 
 subtitle_style = ParagraphStyle(
     "DocSubtitle",
     parent=styles["Normal"],
     fontName="Helvetica",
-    fontSize=10,
-    leading=14,
+    fontSize=9.5,
+    leading=13,
     textColor=colors.HexColor("#475569"),
-    spaceAfter=12
+    spaceAfter=10
 )
 
 h2_style = ParagraphStyle(
     "SectionH2",
     parent=styles["Heading2"],
     fontName="Helvetica-Bold",
-    fontSize=12,
-    leading=16,
+    fontSize=11,
+    leading=15,
     textColor=colors.HexColor("#1e293b"),
-    spaceBefore=10,
-    spaceAfter=6
+    spaceBefore=8,
+    spaceAfter=4
 )
 
 body_style = ParagraphStyle(
     "BodyDark",
     parent=styles["Normal"],
     fontName="Helvetica",
-    fontSize=9,
-    leading=13,
+    fontSize=8.5,
+    leading=12,
     textColor=colors.HexColor("#334155"),
-    spaceAfter=6
+    spaceAfter=5
 )
 
 table_header_style = ParagraphStyle(
     "TableHeader",
     parent=styles["Normal"],
     fontName="Helvetica-Bold",
-    fontSize=8.5,
-    leading=11,
+    fontSize=8,
+    leading=10.5,
     textColor=colors.white
 )
 
@@ -98,8 +98,8 @@ table_cell_style = ParagraphStyle(
     "TableCell",
     parent=styles["Normal"],
     fontName="Helvetica",
-    fontSize=8,
-    leading=11,
+    fontSize=7.5,
+    leading=10.5,
     textColor=colors.HexColor("#1e293b")
 )
 
@@ -107,8 +107,8 @@ table_cell_bold = ParagraphStyle(
     "TableCellBold",
     parent=styles["Normal"],
     fontName="Helvetica-Bold",
-    fontSize=8,
-    leading=11,
+    fontSize=7.5,
+    leading=10.5,
     textColor=colors.HexColor("#0f172a")
 )
 
@@ -125,60 +125,59 @@ def build_pdf(filename):
     story = []
 
     # Title & Metadata
-    story.append(Paragraph("Modernisierung des SEO-Workflows fuer Claude Desktop", title_style))
+    story.append(Paragraph("Technisches Briefing: Claude Desktop zu Notion Bridge", title_style))
     story.append(Paragraph("<b>An:</b> Jesse Jensen &nbsp;|&nbsp; <b>Von:</b> Raphael Rechberger &nbsp;|&nbsp; <b>Datum:</b> 16. August 2026<br/><b>GitHub:</b> https://github.com/Frater418/claude-desktop-seo-workflow-production", subtitle_style))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#e2e8f0"), spaceAfter=10))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#e2e8f0"), spaceAfter=8))
 
     # Executive Summary
-    story.append(Paragraph("1. Executive Summary", h2_style))
+    story.append(Paragraph("1. Ausgangslage & Zielsetzung", h2_style))
     summary_text = (
-        "Hi Jesse, basierend auf unserem Onboarding-Call habe ich deinen bestehenden Prompt-Workflow (Schritte 0 bis 4) "
-        "analysiert und in eine hochgradig skalierbare, fehlertolerante Produktionsarchitektur fuer die Claude Desktop App "
-        "ueberfuehrt. Die inhaltliche Substanz deines Workflows (Pillars, Cluster, 120-Tage-Logik, lokale Pflichtseiten) "
-        "wurde vollstaendig beibehalten. Wir haben das Rad nicht neu erfunden, sondern ein stabiles technisches Fundament darum "
-        "gebaut, damit du bei mehreren parallelen Kunden-Rollouts maximale Entlastung hast und Claude niemals den Kontext verliert."
+        "Wie im Onboarding besprochen, steht Heartweb vor dem Skalierungsschritt von ad-hoc Steuerung hin zu einer zentralen "
+        "Notion-Plattform. Wir haben deinen SEO-Workflow nicht neu erfunden, sondern ein deterministisches, datenbank-kompatibles "
+        "Fundament geschaffen. Das System laeuft lokal in Claude Desktop, erzeugt aber standardisierte Datenstrukturen "
+        "(JSON/YAML-Frontmatter), die nahtlos in dein neues Notion-Setup einfliessen und spaeter per API/Webhook vollautomatisiert werden koennen."
     )
     story.append(Paragraph(summary_text, body_style))
     story.append(Spacer(1, 4))
 
     # Comparison Table
-    story.append(Paragraph("2. Was wir ZUSAETZLICH gebaut und optimiert haben", h2_style))
+    story.append(Paragraph("2. Die 6 technischen Bausteine im Ueberblick", h2_style))
     
     table_data = [
         [
-            Paragraph("Workflow-Bereich", table_header_style),
-            Paragraph("Bisheriger Stand (Manuelle Reibung)", table_header_style),
-            Paragraph("Modernisierter Standard (Produktionsgewinn)", table_header_style)
+            Paragraph("Baustein / Prompt", table_header_style),
+            Paragraph("Lokale Claude Desktop Pipeline", table_header_style),
+            Paragraph("Zukuenftige Notion- & Automations-Bridge", table_header_style)
         ],
         [
-            Paragraph("<b>Projekt-Status</b>", table_cell_bold),
-            Paragraph("Kontext musste aus Chatverlauf gesucht werden; Kontextverlust bei Neustarts.", table_cell_style),
-            Paragraph("<b>manifest.json</b> als maschinenlesbarer Single Source of Truth Status pro Projekt.", table_cell_style)
+            Paragraph("<b>0. manifest.json</b>", table_cell_bold),
+            Paragraph("Maschinenlesbarer Single Source of Truth Zustand.", table_cell_style),
+            Paragraph("Bildet 1:1 die Notion Mandanten-/Projekt-Datenbank ab.", table_cell_style)
         ],
         [
-            Paragraph("<b>Design & CI</b>", table_cell_bold),
-            Paragraph("Design aus Schritt 1c ging verloren; CSS in Schritt 4 neu erraten.", table_cell_style),
-            Paragraph("<b>design-system.css</b> persistiert Farb- und Typo-Tokens fuer konsistente HTML-Seiten.", table_cell_style)
+            Paragraph("<b>1c. design-system.css</b>", table_cell_bold),
+            Paragraph("Screenshot-Extraktion von Farben, Typo und Buttons.", table_cell_style),
+            Paragraph("Sichert visuelle CI-Konsistenz bis zur Landingpage.", table_cell_style)
         ],
         [
-            Paragraph("<b>Keyword-Check</b>", table_cell_bold),
-            Paragraph("45-60 Min. pro Pillar: Keywords einzeln in Ahrefs pruefen und abtippen.", table_cell_style),
-            Paragraph("<b>AgentSEO MCP</b> liefert verifizierte SV/KD-Daten vollautomatisch in 2 Min.", table_cell_style)
+            Paragraph("<b>2. AgentSEO MCP</b>", table_cell_bold),
+            Paragraph("Zieht Suchvolumen und KD vollautomatisch per API.", table_cell_style),
+            Paragraph("Eliminiert 45-60 Min. manuelles Ahrefs-Abtippen pro Pillar.", table_cell_style)
         ],
         [
-            Paragraph("<b>120-Tage-Plan</b>", table_cell_bold),
-            Paragraph("LLM verrechnet sich bei 17 Wochen mit variierenden Stundensummen.", table_cell_style),
-            Paragraph("<b>Deterministischer Solver</b> garantiert exakt 10-15h/Woche und lokale Pflichtseiten.", table_cell_style)
+            Paragraph("<b>3. Python Solver</b>", table_cell_bold),
+            Paragraph("Deterministische Bin-Packing Berechnung der 17 Wochen.", table_cell_style),
+            Paragraph("Garantiert exakt 10-15h/Woche und 100% lokale Pflichtseiten.", table_cell_style)
         ],
         [
-            Paragraph("<b>Tagesgeschaeft (4)</b>", table_cell_bold),
-            Paragraph("Schritt 4 ueberladen (Briefing, Schema und HTML gleichzeitig brachen oft ab).", table_cell_style),
-            Paragraph("<b>Trennung in 4a (Texter-Briefing) & 4b (HTML)</b> inkl. Notion-Frontmatter.", table_cell_style)
+            Paragraph("<b>4a. Content-Briefing</b>", table_cell_bold),
+            Paragraph("SERP-Intent Check, EEAT und Schema JSON-LD.", table_cell_style),
+            Paragraph("Liefert Notion-Frontmatter fuer Regina, Katja, Alexander.", table_cell_style)
         ],
         [
-            Paragraph("<b>Qualitaetssicherung</b>", table_cell_bold),
-            Paragraph("Keine formalen Zwischenstopps oder Qualitaets-Gates.", table_cell_style),
-            Paragraph("<b>7 verbindliche Quality Gates</b> & striktes Fail-Fast ohne Schaetzdaten.", table_cell_style)
+            Paragraph("<b>4b. HTML-Generator</b>", table_cell_bold),
+            Paragraph("Erzeugt autarke Landingpages im Design-System.", table_cell_style),
+            Paragraph("Direkte Uebergabe an Web-Entwickler / WordPress.", table_cell_style)
         ]
     ]
 
@@ -190,27 +189,25 @@ def build_pdf(filename):
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
         ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#cbd5e1")),
         ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f8fafc")]),
-        ("TOPPADDING", (0, 0), (-1, -1), 4),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+        ("TOPPADDING", (0, 0), (-1, -1), 3.5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 3.5),
         ("LEFTPADDING", (0, 0), (-1, -1), 5),
         ("RIGHTPADDING", (0, 0), (-1, -1), 5),
     ]))
     story.append(t)
-    story.append(Spacer(1, 8))
-
-    # Role Workflow
-    story.append(Paragraph("3. Zusammenarbeit im Team (Jesse, Copywriter, Entwicklung)", h2_style))
-    story.append(Paragraph("<b>1. Fuer Jesse & Raphael (Strategie & Rollout):</b> Schritte 0 bis 3 laufen in wenigen Minuten durch. Das Ergebnis ist eine fertige, mathematisch gepruefte 120-Tage-Roadmap, die direkt in Notion uebernommen werden kann.", body_style))
-    story.append(Paragraph("<b>2. Fuer die Copywriter (Regina, Katja, Alexander):</b> Schritt 4a erzeugt glasklare Briefings mit Suchintention, Gliederung, FAQ-Antworten, internen Links und Notion-Frontmatter, ohne verwirrenden HTML-Code.", body_style))
-    story.append(Paragraph("<b>3. Fuer die Web-Entwicklung:</b> Erhaelt aus 1b den Menuebaum (HTML) und aus 4b direkt einsatzbereite Landingpages mit integriertem Schema.org Markup.", body_style))
     story.append(Spacer(1, 6))
 
+    # Notion Roadmap
+    story.append(Paragraph("3. Zukuenftige Automations-Roadmap (Notion Integration)", h2_style))
+    story.append(Paragraph("<b>Stufe 1 (Direkter MCP-Push):</b> Sobald die Agentur das Notion-Setup live schaltet, binden wir den Notion-MCP-Server in Claude Desktop ein. Die Roadmaps und Briefings werden per Tool-Call direkt als Datenbank-Eintraege angelegt.", body_style))
+    story.append(Paragraph("<b>Stufe 2 (Event-Driven Pipeline via n8n):</b> Ein n8n-Workflow ueberwacht den Output-Ordner, parst das YAML-Frontmatter der Briefings, erstellt die Notion-Karten und weist diese per Auto-Tagging an Regina, Katja oder Alexander zu inklusive Slack-Notification.", body_style))
+    story.append(Spacer(1, 4))
+
     # Next Steps for Call
-    story.append(Paragraph("4. Vorbereitung auf unseren anstehenden Call", h2_style))
-    story.append(Paragraph("Im Call koennen wir direkt das GitHub-Repo aufrufen und besprechen:<br/>"
-                           "&bull; Live-Walkthrough durch die README.md und das interaktive Menuediagramm.<br/>"
-                           "&bull; Einrichten deiner claude_desktop_config.json fuer den AgentSEO MCP-Server.<br/>"
-                           "&bull; Start des ersten Test-Rollouts an einem echten Kundenprojekt.", body_style))
+    story.append(Paragraph("4. Gespraechspunkte fuer unseren Call", h2_style))
+    story.append(Paragraph("&bull; Kurzer Walkthrough durch das GitHub-Repo und das interaktive Menuediagramm.<br/>"
+                           "&bull; Abgleich der Frontmatter-Felder mit der Datenbankstruktur eurer Notion-Agentur.<br/>"
+                           "&bull; Konfiguration der Claude Desktop App fuer den ersten gemeinsamen Kundenlauf.", body_style))
 
     doc.build(story, canvasmaker=NumberedCanvas)
     print(f"PDF built successfully: {filename}")
