@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Heartweb Zielmarkt-Codes fuer AgentSEO und DataForSEO",
+  "author": "Raphael Rechberger",
+  "version": "1.0.0",
+  "description": "Verbindliche Zuordnung von Land zu Google Geo Target Criteria ID. DataForSEO erwartet diese ID im Feld location_code. Regel fuer Laender: 2000 plus ISO-3166-numerisch. Fuer Staedte und Regionen gilt die Regel nicht, deren IDs sind frei vergeben und muessen einzeln hinterlegt werden.",
+  "usage": "Prompt 0 schreibt country und location_code in die manifest.json. Prompt 1, 2 und 4a uebergeben location, location_code und language gemeinsam an AgentSEO. Fehlt ein Land in dieser Tabelle, stoppt der Schritt mit ERROR_LOCATION_UNKNOWN. Kein Default, keine Ableitung zur Laufzeit.",
+  "countries": {
+    "DE": {"location_name": "Germany", "location_code": 2276, "default_language": "de"},
+    "AT": {"location_name": "Austria", "location_code": 2040, "default_language": "de"},
+    "CH": {"location_name": "Switzerland", "location_code": 2756, "default_language": "de"}
+  },
+  "verified": {
+    "DE": "Live bestaetigt am 17.08.2026 gegen agentseo_keyword_metrics_overview, Antwort location_name Germany, location_code 2276.",
+    "AT": "Nicht live bestaetigt, aus der Laenderregel abgeleitet.",
+    "CH": "Nicht live bestaetigt, aus der Laenderregel abgeleitet."
+  },
+  "known_tool_limitations": {
+    "agentseo_content_serp_outline": "Akzeptiert keinen location_code. Mit location Germany loeste das Tool am 17.08.2026 auf location_code 1018023, location_name Many,Louisiana,United States auf. Nur die SERP-Signale sind verwertbar, nicht die Geo-Angabe und nicht die Gliederung.",
+    "sync_parameter": "Alle datenliefernden AgentSEO-Tools haben sync mit Default true. Synchron laufende Aufrufe brechen nach 60 Sekunden ab. Verbindlich ist sync false plus Abholen des Ergebnisses ueber agentseo_job_status."
+  }
+}

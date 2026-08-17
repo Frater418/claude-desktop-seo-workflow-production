@@ -7,11 +7,8 @@
         "mcp-remote",
         "https://www.agentseo.dev/mcp",
         "--header",
-        "x-api-key:${AGENTSEO_API_KEY}"
-      ],
-      "env": {
-        "AGENTSEO_API_KEY": "HIER_AGENTSEO_API_KEY_EINTRAGEN"
-      }
+        "x-api-key:HIER_AGENTSEO_API_KEY_EINTRAGEN"
+      ]
     },
     "filesystem": {
       "command": "npx",
