@@ -13,7 +13,9 @@
     "author",
     "status",
     "phases",
-    "artifacts"
+    "artifacts",
+    "country",
+    "location_code"
   ],
   "properties": {
     "project_id": {
@@ -36,7 +38,10 @@
       "description": "Primaere Domain der Kunden-Website."
     },
     "new_domain_or_staging": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "description": "Optionale Staging- oder Relaunch-Domain fuer den Abgleich."
     },
     "competitors": {
@@ -85,10 +90,19 @@
     },
     "capacity_hours_per_week": {
       "type": "object",
-      "required": ["min", "max"],
+      "required": [
+        "min",
+        "max"
+      ],
       "properties": {
-        "min": {"type": "number", "default": 10.0},
-        "max": {"type": "number", "default": 15.0}
+        "min": {
+          "type": "number",
+          "default": 10.0
+        },
+        "max": {
+          "type": "number",
+          "default": 15.0
+        }
       }
     },
     "created_at": {
@@ -101,17 +115,40 @@
     },
     "status": {
       "type": "string",
-      "enum": ["initialization", "architecture_in_progress", "keyword_research", "planning", "execution", "completed", "error"],
+      "enum": [
+        "initialization",
+        "architecture_in_progress",
+        "keyword_research",
+        "planning",
+        "execution",
+        "completed",
+        "error"
+      ],
       "default": "initialization"
     },
     "error_state": {
-      "type": ["object", "null"],
+      "type": [
+        "object",
+        "null"
+      ],
       "properties": {
-        "has_error": {"type": "boolean", "default": false},
-        "error_code": {"type": "string"},
-        "step": {"type": "string"},
-        "message": {"type": "string"},
-        "timestamp": {"type": "string", "format": "date-time"}
+        "has_error": {
+          "type": "boolean",
+          "default": false
+        },
+        "error_code": {
+          "type": "string"
+        },
+        "step": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
       }
     },
     "phases": {
@@ -130,80 +167,294 @@
         "step_0_kickoff": {
           "type": "object",
           "properties": {
-            "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
-            "completed_at": {"type": ["string", "null"]}
-          }
+            "status": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "in_progress",
+                "completed",
+                "error"
+              ]
+            },
+            "completed_at": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "status"
+          ]
         },
         "step_1_pillar_identification": {
           "type": "object",
           "properties": {
-            "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
-            "pillars_count": {"type": "integer", "default": 0},
-            "completed_at": {"type": ["string", "null"]}
-          }
+            "status": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "in_progress",
+                "completed",
+                "error"
+              ]
+            },
+            "pillars_count": {
+              "type": "integer",
+              "default": 0
+            },
+            "completed_at": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "clusters_per_pillar": {
+              "type": "object",
+              "description": "Pro Pillar-Thema die Anzahl definierter Cluster. Zulaessig sind 8 bis 15 gemaess Prompt 1 Regel 2.",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 8,
+                "maximum": 15
+              }
+            }
+          },
+          "required": [
+            "status"
+          ]
         },
         "step_1b_site_architecture": {
           "type": "object",
           "properties": {
-            "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
-            "completed_at": {"type": ["string", "null"]}
-          }
+            "status": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "in_progress",
+                "completed",
+                "error"
+              ]
+            },
+            "completed_at": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "status"
+          ]
         },
         "step_1c_pillar_templates": {
           "type": "object",
           "properties": {
-            "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
-            "templates_created": {"type": "array", "items": {"type": "string"}},
-            "completed_at": {"type": ["string", "null"]}
-          }
+            "status": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "in_progress",
+                "completed",
+                "error"
+              ]
+            },
+            "templates_created": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "completed_at": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "status"
+          ]
         },
         "step_2_cluster_research": {
           "type": "object",
           "properties": {
-            "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
-            "keywords_total": {"type": "integer", "default": 0},
-            "keywords_verified": {"type": "integer", "default": 0},
-            "completed_at": {"type": ["string", "null"]}
-          }
+            "status": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "in_progress",
+                "completed",
+                "error"
+              ]
+            },
+            "keywords_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "keywords_verified": {
+              "type": "integer",
+              "default": 0
+            },
+            "completed_at": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "keywords_not_returned": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "location_verified": {
+              "type": "string"
+            },
+            "validated_rows_per_pillar": {
+              "type": "object",
+              "description": "Pro Pillar-Thema die Anzahl validierter CSV-Zeilen. Jeder Wert muss mindestens 25 sein, sonst darf der Schritt nicht completed sein.",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 25
+              }
+            }
+          },
+          "required": [
+            "status"
+          ]
         },
         "step_3_120_day_plan": {
           "type": "object",
           "properties": {
-            "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
-            "weeks_planned": {"type": "integer", "default": 17},
-            "total_items": {"type": "integer", "default": 0},
-            "completed_at": {"type": ["string", "null"]}
-          }
+            "status": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "in_progress",
+                "completed",
+                "error"
+              ]
+            },
+            "weeks_planned": {
+              "type": "integer",
+              "default": 17
+            },
+            "total_items": {
+              "type": "integer",
+              "default": 0
+            },
+            "completed_at": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "status"
+          ]
         },
         "step_3b_performance_check": {
           "type": "object",
           "properties": {
-            "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
-            "checkpoints_completed": {"type": "array", "items": {"type": "string"}},
-            "last_check_at": {"type": ["string", "null"]}
-          }
+            "status": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "in_progress",
+                "completed",
+                "error"
+              ]
+            },
+            "checkpoints_completed": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "last_check_at": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "status"
+          ]
         },
         "step_4_execution": {
           "type": "object",
           "properties": {
-            "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "error"]},
-            "briefings_completed": {"type": "integer", "default": 0},
-            "landingpages_completed": {"type": "integer", "default": 0}
-          }
+            "status": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "in_progress",
+                "completed",
+                "error"
+              ]
+            },
+            "briefings_completed": {
+              "type": "integer",
+              "default": 0
+            },
+            "landingpages_completed": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          "required": [
+            "status"
+          ]
         }
       }
     },
     "artifacts": {
       "type": "object",
       "properties": {
-        "pillar_inventory": {"type": "string", "default": "outputs/1-pillar-themen.md"},
-        "site_architecture_md": {"type": "string", "default": "outputs/1b-seitenarchitektur.md"},
-        "site_architecture_html": {"type": "string", "default": "outputs/1b-menuestruktur.html"},
-        "design_system_css": {"type": "string", "default": "standards/design-system.css"},
-        "cluster_keywords_data": {"type": "string", "default": "outputs/2-cluster-themen-agentseo.csv"},
-        "roadmap_plan": {"type": "string", "default": "outputs/3-plan.md"},
-        "performance_check_log": {"type": "string", "default": "outputs/3b-performance-check.md"}
+        "pillar_inventory": {
+          "type": "string",
+          "default": "outputs/1-pillar-themen.md"
+        },
+        "site_architecture_md": {
+          "type": "string",
+          "default": "outputs/1b-seitenarchitektur.md"
+        },
+        "site_architecture_html": {
+          "type": "string",
+          "default": "outputs/1b-menuestruktur.html"
+        },
+        "design_system_css": {
+          "type": "string",
+          "default": "standards/design-system.css"
+        },
+        "cluster_keywords_data": {
+          "type": "string",
+          "default": "outputs/2-cluster-themen-agentseo.csv"
+        },
+        "roadmap_plan": {
+          "type": "string",
+          "default": "outputs/3-plan.md"
+        },
+        "performance_check_log": {
+          "type": "string",
+          "default": "outputs/3b-performance-check.md"
+        }
       }
+    },
+    "country": {
+      "type": "string",
+      "enum": [
+        "DE",
+        "AT",
+        "CH"
+      ],
+      "description": "ISO-3166-Alpha-2 des Zielmarkts. Quelle: standards/location-codes.json"
+    },
+    "location_code": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Google Geo Target Criteria ID fuer AgentSEO und DataForSEO. Muss zu country passen."
     }
   }
 }

@@ -5,7 +5,7 @@
   <step>0</step>
   <name>Projekt-Kickoff & Manifest-Initialisierung</name>
   <author>Raphael Rechberger</author>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <next_step>prompts/1-pillar-identifikation.xml.md</next_step>
 </prompt_metadata>
 
@@ -16,6 +16,7 @@ Deine Aufgabe ist es, fuer das uebergebene Kundenprojekt die zentrale Steuerungs
 
 <context_files>
   <required_file path="standards/manifest.schema.json" purpose="JSON Schema zur Validierung des Projekt-Manifests" />
+  <required_file path="standards/location-codes.json" purpose="Verbindliche Zuordnung von Land zu location_code fuer AgentSEO" />
 </context_files>
 
 <input_briefing>
@@ -26,6 +27,7 @@ Projekt-ID: [kebab-case-slug, z.B. simcura-pflegedienst]
 Website-URL: [https://kunden-domain.de]
 Staging-/Neue Domain (falls Relaunch): [optional]
 Top 3-5 Wettbewerber (URLs): [URL 1, URL 2, URL 3]
+Land (ISO-Kuerzel): [DE | AT | CH]
 Zielregion(en): [Staedte/Regionen, z.B. Frankfurt, Offenbach oder bundesweit]
 Zielgruppe & Sprache: [z.B. Angehoerige von Pflegebeduerftigen, de]
 Geschaeftsziel: [z.B. Terminanfragen, Erstberatungen, Recruiting]
@@ -36,11 +38,16 @@ Wochenkapazitaet (Std): [Default: min 10.0, max 15.0]
 
 <instructions>
   <step number="1" name="Briefing-Validierung">
-    Pruefe, ob alle Pflichtangaben (Kundenname, Projekt-ID, Domain, mindestens 1 Wettbewerber, Zielgruppe, Geschaeftsziel, Content-Schwerpunkt) vorliegen.
-    Fehlt eine Pflichtangabe, stoppe sofort gemaess den Validation Rules.
+    Pruefe, ob alle Pflichtangaben (Kundenname, Projekt-ID, Domain, mindestens 1 Wettbewerber, Zielgruppe, Geschaeftsziel, Content-Schwerpunkt, Land) vorliegen.
+    Fehlt eine Pflichtangabe, stoppe sofort mit `ERROR_BRIEFING_INCOMPLETE` und benenne das fehlende Feld.
+    Loese das Land ueber `standards/location-codes.json` auf. Fehlt es dort, stoppe mit `ERROR_LOCATION_UNKNOWN`.
   </step>
   <step number="2" name="Manifest-Generierung">
     Erstelle eine vollstaendige, syntaktisch valide `manifest.json` im Wurzelverzeichnis des Projekts.
+    Pflichtfelder, die nicht aus dem Briefing kommen, aber vom Schema verlangt werden:
+    `author` (immer "Raphael Rechberger"), `created_at` (ISO 8601, UTC), `artifacts` (Standardpfade
+    aus `standards/dateinamen-und-output-vertrag.md`) und alle acht Phasen-Objekte mit Status `pending`.
+    Setze `country` auf das ISO-Kuerzel und `location_code` auf den Wert aus `standards/location-codes.json`.
     Setze den initialen Status auf `initialization` und markiere Phase `step_0_kickoff` als `completed`.
   </step>
   <step number="3" name="Verzeichnisstruktur vorbereiten">
@@ -49,9 +56,10 @@ Wochenkapazitaet (Std): [Default: min 10.0, max 15.0]
 </instructions>
 
 <validation_rules>
-  - Regel 1: Keine unvollstaendigen Daten. Fehlen Pflichtangaben, gib eine strukturierte Fehlermeldung aus und stoppe.
+  - Regel 1: Keine unvollstaendigen Daten. Fehlen Pflichtangaben, stoppe mit `ERROR_BRIEFING_INCOMPLETE`.
   - Regel 2: Die generierte `manifest.json` muss zu 100% gegen `standards/manifest.schema.json` validieren.
   - Regel 3: Keine Hardcoded Secrets oder API-Keys in das Manifest schreiben.
+  - Regel 4: `country` und `location_code` sind Pflicht. Ohne sie bricht Schritt 2 ab, deshalb kein Default und keine Annahme.
 </validation_rules>
 
 <output_format>
