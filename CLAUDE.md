@@ -2,7 +2,7 @@
 
 **Project:** Heartweb Modernized Claude Desktop SEO Workflow Framework  
 **Author & Architect:** Raphael Rechberger  
-**Version:** 1.2.0  
+**Version:** 1.3.0  
 **Context:** Heartweb SEO Production Infrastructure  
 
 ---
@@ -12,10 +12,10 @@
 This project enforces a strict boundary between two layers:
 
 1. **Framework Repository (The Master Blueprint & Tooling Suite):**
-   Contains the reusable prompt templates (`prompts/`), schemas (`standards/manifest.schema.json`), global design tokens (`standards/design-system.css`), and deterministic Python tools (`mcp/tools/`).
+   Contains the reusable prompt templates (`prompts/`), schemas (`standards/manifest.schema.json`), the binding target-market table (`standards/location-codes.json`), global design tokens (`standards/design-system.css`), and deterministic Python tools (`mcp/tools/`).
 
 2. **Client Project Directory (The Local Customer Workspace):**
-   A dedicated local Windows folder (e.g. `C:\Users\offic\Documents\Projekte\Kunden\<client-slug>\`) containing the customer's actual project state (`manifest.json`), extracted CSS (`design-system.css`), and all deliverables under `outputs/`.
+   A dedicated local Windows folder (`C:\Users\offic\Documents\Projekte\Heartweb\Kunden\<client-slug>\`) containing the customer's actual project state (`manifest.json`), extracted CSS (`design-system.css`), and all deliverables under `outputs/`.
 
 ---
 
@@ -32,8 +32,11 @@ Claude Desktop maintains state across separate chat conversations via the **File
 1. **Authorship:** All project deliverables and commits are authored exclusively by **Raphael Rechberger**.
 2. **Typography Rule:** Never use em-dashes or en-dashes. Always use standard hyphens (-), colons (:), or clean sentences.
 3. **Fail-Fast Quality Gate:** Never guess or hallucinate keyword search volumes or metrics. If an API call fails or inputs are missing, fail immediately with an explicit error code.
-4. **Execution Order:** Always execute in strict sequence: `0-kickoff -> 1-pillar -> 1b-architecture -> 1c-templates -> 2-cluster -> 3-plan -> 4a-briefing -> 4b-html`.
+4. **Execution Order:** Always execute in strict sequence: `0-kickoff -> 1-pillar -> 1b-architecture -> 1c-templates -> 2-cluster -> 3-plan -> 4a-briefing -> 4b-html`, danach zyklisch `3b-performance-check` an Tag 30, 60 und 90.
 5. **Notion Compatibility:** All step 4a briefings must include structured YAML frontmatter for seamless Notion database synchronization.
+6. **Target Market:** Every AgentSEO call passes `location`, `location_code` and `language` together, sourced from `country` and `location_code` in `manifest.json` via `standards/location-codes.json`. Never pass a location name alone, and never let the provider default to another market.
+7. **Async Tool Calls:** Every AgentSEO call uses `sync: false` and collects the result via `agentseo_job_status`. Synchronous calls abort after 60 seconds.
+8. **Machine-Checked Counts:** Quantity rules are written into `manifest.json` at the end of each step and enforced by the schema (`clusters_per_pillar` 8 to 15, `validated_rows_per_pillar` minimum 25). A step must not be marked `completed` when a count is short.
 
 ---
 
@@ -44,5 +47,7 @@ Claude Desktop maintains state across separate chat conversations via the **File
 python mcp/tools/capacity_matrix_solver.py --input tests/fixtures/sample_cluster_keywords.json --output outputs/3-plan.md
 
 # Validate Schema.org JSON-LD blocks
+# Open issue: this script has no CLI yet. Running it only prints a readiness message
+# and exits 0 without validating anything. Use the Google Rich Results Test until fixed.
 python mcp/tools/validate_schema_jsonld.py
 ```
