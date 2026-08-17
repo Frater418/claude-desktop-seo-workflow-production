@@ -4,6 +4,8 @@
   "author": "Raphael Rechberger",
   "domain": "https://simcura-pflege.de",
   "new_domain_or_staging": null,
+  "country": "DE",
+  "location_code": 2276,
   "competitors": [
     "https://pflege-frankfurt-main.de",
     "https://diakonie-frankfurt.de",
@@ -27,18 +29,88 @@
     "min": 10.0,
     "max": 15.0
   },
+  "geo_targets": {
+    "primary_engines": [
+      "google_ai_overviews",
+      "google_classic",
+      "perplexity",
+      "chatgpt_search",
+      "local_maps"
+    ],
+    "geo_focus": "citation_visibility"
+  },
+  "entities": {
+    "brand_entity": "simCura Pflegedienst GmbH",
+    "brand_wikidata_id": null,
+    "brand_sameas_urls": [
+      "https://www.pflege-deutschland.de/pflegedienste/frankfurt/simcura"
+    ],
+    "core_services": [
+      {
+        "name": "Ambulante Pflege",
+        "wikidata_id": "Q380012"
+      },
+      {
+        "name": "Verhinderungspflege",
+        "wikidata_id": "Q2516104"
+      },
+      {
+        "name": "Grundpflege",
+        "wikidata_id": "Q1550130"
+      },
+      {
+        "name": "Behandlungspflege",
+        "wikidata_id": "Q814144"
+      }
+    ]
+  },
   "created_at": "2026-08-16T10:00:00Z",
-  "updated_at": "2026-08-16T12:00:00Z",
+  "updated_at": "2026-08-17T14:00:00Z",
   "status": "execution",
   "phases": {
-    "step_0_kickoff": {"status": "completed", "completed_at": "2026-08-16T10:05:00Z"},
-    "step_1_pillar_identification": {"status": "completed", "pillars_count": 4, "completed_at": "2026-08-16T10:20:00Z"},
-    "step_1b_site_architecture": {"status": "completed", "completed_at": "2026-08-16T10:45:00Z"},
-    "step_1c_pillar_templates": {"status": "completed", "templates_created": ["pillar-ambulante-pflege.html", "pillar-verhinderungspflege.html"], "completed_at": "2026-08-16T11:15:00Z"},
-    "step_2_cluster_research": {"status": "completed", "keywords_total": 45, "keywords_verified": 45, "completed_at": "2026-08-16T11:30:00Z"},
-    "step_3_120_day_plan": {"status": "completed", "weeks_planned": 17, "total_items": 45, "completed_at": "2026-08-16T11:45:00Z"},
-    "step_3b_performance_check": {"status": "pending", "checkpoints_completed": [], "last_check_at": null},
-    "step_4_execution": {"status": "in_progress", "briefings_completed": 3, "landingpages_completed": 2}
+    "step_0_kickoff": {
+      "status": "completed",
+      "completed_at": "2026-08-16T10:05:00Z"
+    },
+    "step_1_pillar_identification": {
+      "status": "completed",
+      "pillars_count": 4,
+      "completed_at": "2026-08-16T10:20:00Z"
+    },
+    "step_1b_site_architecture": {
+      "status": "completed",
+      "completed_at": "2026-08-16T10:45:00Z"
+    },
+    "step_1c_pillar_templates": {
+      "status": "completed",
+      "templates_created": [
+        "pillar-ambulante-pflege.html",
+        "pillar-verhinderungspflege.html"
+      ],
+      "completed_at": "2026-08-16T11:15:00Z"
+    },
+    "step_2_cluster_research": {
+      "status": "completed",
+      "keywords_total": 45,
+      "keywords_verified": 45,
+      "completed_at": "2026-08-16T11:30:00Z"
+    },
+    "step_3_120_day_plan": {
+      "status": "completed",
+      "weeks_planned": 17,
+      "total_items": 45,
+      "completed_at": "2026-08-16T11:45:00Z"
+    },
+    "step_3b_performance_check": {
+      "status": "pending",
+      "checkpoints_completed": [],
+      "last_check_at": null
+    },
+    "step_4_execution": {
+      "status": "in_progress",
+      "briefings_completed": 3,
+      "landingpages_completed": 2
+    }
   },
   "artifacts": {
     "pillar_inventory": "outputs/1-pillar-themen.md",

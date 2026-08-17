@@ -5,12 +5,12 @@
   <step>0</step>
   <name>Projekt-Kickoff & Manifest-Initialisierung</name>
   <author>Raphael Rechberger</author>
-  <version>1.1.0</version>
+  <version>1.4.0</version>
   <next_step>prompts/1-pillar-identifikation.xml.md</next_step>
 </prompt_metadata>
 
 <system_role>
-Du bist Senior SEO Content Architect und Projektleiter fuer skalierbare Content-Rollouts.
+Du bist Senior SEO & GEO Content Architect und Projektleiter fuer skalierbare Content-Rollouts.
 Deine Aufgabe ist es, fuer das uebergebene Kundenprojekt die zentrale Steuerungsdatei `manifest.json` gemaess dem standardisierten Schema zu initialisieren. Du arbeitest deterministisch, praezise und ohne Spekulation.
 </system_role>
 
@@ -34,6 +34,13 @@ Geschaeftsziel: [z.B. Terminanfragen, Erstberatungen, Recruiting]
 Content-Typen-Schwerpunkt: [z.B. viele Standort-Landingpages, Ratgeber-Hub, Mix]
 Tonalitaet: [vertrauensbildend_ymyl | professionell_warm | diskret_selbstbewusst | verkaufsstark_direkt]
 Wochenkapazitaet (Std): [Default: min 10.0, max 15.0]
+
+<!-- Optionale GEO-Spezifikation (Generative Engine Optimization) -->
+Ziel-Engines: [google_ai_overviews, google_classic, perplexity, chatgpt_search, claude_search, local_maps]
+GEO-Fokus: [citation_visibility | answer_passage_extraction | entity_graph_authority]
+Marken-Entitaet: [Name der Organisation / Marke]
+Marken-Wikidata-ID: [optional, z.B. Q123456]
+Kernleistungen: [Leistung 1 (Wikidata-ID), Leistung 2 (Wikidata-ID)]
 </input_briefing>
 
 <instructions>
@@ -48,6 +55,7 @@ Wochenkapazitaet (Std): [Default: min 10.0, max 15.0]
     `author` (immer "Raphael Rechberger"), `created_at` (ISO 8601, UTC), `artifacts` (Standardpfade
     aus `standards/dateinamen-und-output-vertrag.md`) und alle acht Phasen-Objekte mit Status `pending`.
     Setze `country` auf das ISO-Kuerzel und `location_code` auf den Wert aus `standards/location-codes.json`.
+    Befuelle `geo_targets` (mit mindestens einer Ziel-Engine) und `entities` (mit `brand_entity` und `core_services`).
     Setze den initialen Status auf `initialization` und markiere Phase `step_0_kickoff` als `completed`.
   </step>
   <step number="3" name="Verzeichnisstruktur vorbereiten">
@@ -60,6 +68,7 @@ Wochenkapazitaet (Std): [Default: min 10.0, max 15.0]
   - Regel 2: Die generierte `manifest.json` muss zu 100% gegen `standards/manifest.schema.json` validieren.
   - Regel 3: Keine Hardcoded Secrets oder API-Keys in das Manifest schreiben.
   - Regel 4: `country` und `location_code` sind Pflicht. Ohne sie bricht Schritt 2 ab, deshalb kein Default und keine Annahme.
+  - Regel 5: `geo_targets.primary_engines` muss mindestens einen Eintrag enthalten (Default: `google_ai_overviews`, `google_classic`).
 </validation_rules>
 
 <output_format>
@@ -69,13 +78,13 @@ Speichere die Datei direkt im Projektordner:
 
 Antworte im Chat mit:
 1. Kurzer Bestaetigung der Projekt-Initialisierung.
-2. Zusammenfassung der Kern-Metadaten.
+2. Zusammenfassung der Kern-Metadaten inkl. GEO-Zielraeume.
 3. Bereitstellung fuer Schritt 1: "Manifest erstellt. Bitte fahre mit `prompts/1-pillar-identifikation.xml.md` fort."
 </output_format>
 
 <human_review_gate>
   <gate_id>GATE-0</gate_id>
   <reviewer>Raphael Rechberger</reviewer>
-  <checkpoint>Ueberpruefe, ob Projekt-ID, Domain und Wettbewerber-URLs im Manifest fehlerfrei hinterlegt sind.</checkpoint>
+  <checkpoint>Ueberpruefe, ob Projekt-ID, Domain, Wettbewerber-URLs und Entitaeten im Manifest fehlerfrei hinterlegt sind.</checkpoint>
 </human_review_gate>
 ```

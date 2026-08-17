@@ -338,3 +338,65 @@ a:hover {
   color: var(--text-muted);
   border-top: 1px solid var(--border-subtle);
 }
+
+/* ==========================================================================
+   GEO & RAG Extraction Components (v1.4.0)
+   ========================================================================== */
+
+.definition-block {
+  font-size: var(--font-size-lg);
+  line-height: 1.6;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  background-color: var(--bg-card);
+  border-left: 4px solid var(--accent-primary);
+  padding: var(--spacing-4) var(--spacing-6);
+  margin-bottom: var(--spacing-6);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.evidence-container {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  margin: var(--spacing-6) 0;
+  background: var(--bg-card);
+}
+
+.comparison-table-wrapper {
+  overflow-x: auto;
+  margin: var(--spacing-6) 0;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--spacing-2) 0;
+}
+
+.comparison-table th,
+.comparison-table td {
+  border: 1px solid var(--border-subtle);
+  padding: var(--spacing-3) var(--spacing-4);
+  text-align: left;
+}
+
+.comparison-table th {
+  background-color: var(--bg-surface);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.comparison-table td {
+  color: var(--text-secondary);
+}
+
+.speakable-section {
+  font-size: var(--font-size-base);
+}
+
+.badge-datahub {
+  background-color: rgba(6, 182, 212, 0.15);
+  color: #22d3ee;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+}

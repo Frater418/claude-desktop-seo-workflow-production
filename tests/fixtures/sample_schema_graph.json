@@ -1,0 +1,86 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": "https://simcura-pflege.de/leistungen/ambulante-pflege#article",
+      "headline": "Ambulante Pflege Frankfurt: Leistungen, Kosten & Ablauf",
+      "datePublished": "2026-08-16T10:00:00+02:00",
+      "dateModified": "2026-08-17T12:00:00+02:00",
+      "author": {
+        "@type": "Person",
+        "name": "Raphael Rechberger"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "simCura Pflegedienst GmbH",
+        "url": "https://simcura-pflege.de"
+      },
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "Ambulante Pflege",
+          "sameAs": "https://www.wikidata.org/wiki/Q380012"
+        }
+      ],
+      "mentions": [
+        {
+          "@type": "Place",
+          "name": "Frankfurt am Main",
+          "sameAs": "https://www.wikidata.org/wiki/Q1794"
+        },
+        {
+          "@type": "Thing",
+          "name": "Pflegegrad",
+          "sameAs": "https://www.wikidata.org/wiki/Q20829871"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://simcura-pflege.de/leistungen/ambulante-pflege#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Was kostet ambulante Pflege in Frankfurt?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Die Kosten fuer ambulante Pflege werden ab Pflegegrad 2 bis zum gesetzlichen Hoechstbetrag von der Pflegekasse uebernommen."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Wie schnell kann der Pflegedienst starten?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "In dringenden Faellen kann eine Erstberatung und Pflegeaufnahme innerhalb von 24 bis 48 Stunden erfolgen."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://simcura-pflege.de/leistungen/ambulante-pflege#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Startseite",
+          "item": "https://simcura-pflege.de"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Leistungen",
+          "item": "https://simcura-pflege.de/leistungen"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Ambulante Pflege",
+          "item": "https://simcura-pflege.de/leistungen/ambulante-pflege"
+        }
+      ]
+    }
+  ]
+}
