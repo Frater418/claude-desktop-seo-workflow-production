@@ -33,7 +33,7 @@
    - Jesse bereitet 2 Kunden-Briefings fuer Raphael vor, um den produktiven Testlauf durchzufuehren.
 
 7. **Abrechnung:**
-   - Consulting-Rechnung fuer August wird an Hardware Design LLC (Florida Limited Liability Company, Ansprechpartner: Andreas) ausgestellt.
+   - Consulting-Rechnung fuer August wird gemaess den Kontaktdaten per WhatsApp an die Buchhaltung eingereicht (Ansprechpartner: Andreas).
 
 ---
 
@@ -63,7 +63,7 @@
 - [ ] **Jesse:** Einladung von Raphael in das Meeting mit Max (Automatisierungsagentur) nach terminlicher Verschiebung.
 - [ ] **Raphael Rechberger:** Tiefen-Research zu 2026 GEO-Standards (Perplexity Deep Research) und Konzeption der Workflow-Erweiterung (GEO-Branch / Spezifikation).
 - [ ] **Raphael Rechberger:** Durchfuehrung des ersten Pilot-Rollouts anhand des Kundenbriefings nach Freischaltung.
-- [ ] **Raphael Rechberger:** Einreichung der Consulting-Rechnung an Hardware Design LLC (Andreas).
+- [ ] **Raphael Rechberger:** Einreichung der Consulting-Rechnung gemaess WhatsApp-Kontaktdaten (Andreas).
 
 ---
 

@@ -65,7 +65,7 @@
 - **Call mit Jesse erfolgreich abgeschlossen:**
   - Architektur v1.2.0 / v1.3.0 vollstaendig besprochen und bestaetigt.
   - Dokumentiert in `00_admin/meetings/2026-08-17-meeting-raphael-jesse.md`.
-  - Rechnungsanschrift fuer August bestaetigt (Hardware Design LLC / Andreas).
+  - Rechnungsabwicklung fuer August besprochen (Details per WhatsApp / Andreas).
 - **Neuer strategischer Schwerpunkt: GEO (Generative Engine Optimization):**
   - Forschungsauftrag durch Jesse erteilt.
   - Perplexity Deep Research und Exa.ai Multi-Angle API-Verifikation erfolgreich durchgefuehrt.
