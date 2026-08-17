@@ -18,8 +18,19 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "C:\\Users\\offic\\Documents\\Projekte\\Kunden"
+        "C:\\Users\\offic\\Documents\\Projekte",
+        "C:\\Users\\offic\\Desktop\\Heartweb"
       ]
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "HIER_GITHUB_PERSONAL_ACCESS_TOKEN_EINTRAGEN"
+      }
     }
   }
 }
