@@ -1,8 +1,8 @@
 # 03. Sprint-Plan: Modernisierung des Claude Desktop SEO-Workflows
 
 **Projekt:** Modernisierung des Claude Desktop SEO-Workflows  
-**Datum:** 16. August 2026  
-**Status:** Zur Freigabe vorgelegt (Inklusive GitHub-Repo-Architektur & Fail-Fast-Doktrin)  
+**Datum:** 16. August 2026, Stand aktualisiert 17. August 2026  
+**Status:** Freigegeben am 16.08.2026 und in vier Sprints umgesetzt  
 **Autor:** Raphael Rechberger  
 
 ---
@@ -26,17 +26,25 @@ Das Repository wird so aufgebaut, dass Raphael und Jesse in Meetings jede Kompon
 claude-desktop-seo-workflow-production/
 ├── README.md                                  # Zentraler Navigations-Hub mit interaktiver Map & Deep-Links
 ├── CHANGELOG.md                               # Versionierung und Aenderungshistorie
+├── AGENTS.md                                  # System-Instruktionen fuer Claude Desktop und Agenten
+├── CLAUDE.md                                  # Kurzfassung der Regeln fuer CLI-Agenten
+├── 00_admin/
+│   ├── PROJECT_STATE.md                       # Aktueller Projektzustand und Handoff
+│   └── AUDIT-2026-08-17-konsistenz.md         # Konsistenz-Audit des Frameworks
 ├── docs/                                      # Strategische und technische Dokumentation
 │   ├── 01-review-abgleich.md                  # Baseline-Abgleich mit Jesse's Original-Workflow
 │   ├── 02-research-und-technische-spezifikation.md # AgentSEO OpenAPI & Claude Desktop MCP Specs
 │   ├── 03-sprint-plan.md                      # Dieser 4-Sprint-Umsetzungsplan
-│   ├── 04-entscheidungslog.md                 # Unveraenderliches ADR-Entscheidungsprotokoll
+│   ├── 04-entscheidungslog.md                 # ADR-Entscheidungsprotokoll, ADR-001 bis ADR-010
 │   ├── 05-human-in-the-loop.md                # Quality Gates und manuelle Freigabepunkte
 │   ├── 06-pilot-abnahme-checkliste.md         # Checkliste fuer den ersten Kundenlauf
 │   ├── betriebshandbuch-claude-desktop.md     # Nicht-technische Schritt-fuer-Schritt-Anleitung
-│   └── copywriter-handoff-guidelines.md       # Uebergabe-Standard fuer Regina, Katja, Alexander
+│   ├── copywriter-handoff-guidelines.md       # Uebergabe-Standard fuer Regina, Katja, Alexander
+│   ├── jesse-walkthrough-memo.md              # Executive Memo fuer Jesse Jensen
+│   └── jesse-walkthrough-memo.pdf             # Gesetzte 2-Seiten-Fassung des Memos
 ├── standards/                                 # Verbindliche Daten- und Designvertraege
 │   ├── manifest.schema.json                   # JSON Schema fuer manifest.json
+│   ├── location-codes.json                    # Zielmarkt-Codes fuer AgentSEO und DataForSEO
 │   ├── design-system.css                      # Persistente CSS-Tokens aus Schritt 1c
 │   └── dateinamen-und-output-vertrag.md       # Nomenklatur- und Pfad-Standard
 ├── prompts/                                   # Produktionsfertige XML-Prompts
@@ -56,7 +64,11 @@ claude-desktop-seo-workflow-production/
 │   │   ├── serp_gap_analyzer.json
 │   │   └── schema_jsonld_generator.json
 │   └── tools/
-│       └── capacity_matrix_solver.py          # Deterministischer Python 120-Tage Solver
+│       ├── capacity_matrix_solver.py          # Deterministischer Python 120-Tage Solver
+│       └── validate_schema_jsonld.py          # JSON-LD Pruefroutinen, CLI noch offen
+├── scripts/                                   # Hilfsskripte, nicht Teil der Laufzeit
+│   ├── generate_sample_keywords.py            # Generator der synthetischen Keyword-Fixture
+│   └── generate_memo_pdf.py                   # Erzeugt das PDF-Memo aus dem Markdown
 └── tests/                                     # Validierung & Fixtures
     ├── fixtures/                              # Saubere Beispieldaten
     │   ├── sample_manifest.json
@@ -81,9 +93,9 @@ claude-desktop-seo-workflow-production/
   - `docs/04-entscheidungslog.md`: Zentrales Protokoll aller getroffenen Entscheidungen.
   - `docs/05-human-in-the-loop.md`: Leitfaden fuer Qualitaets-Gates.
 - **Akzeptanzkriterien:**
-  1. `manifest.schema.json` validiert vollstaendig gemaess JSON Schema Draft 7 / 2020-12.
+  1. `manifest.schema.json` validiert vollstaendig gemaess JSON Schema Draft 2020-12.
   2. `README.md` enthaelt eine lueckenlose Crosslink-Tabelle fuer alle 9 Prompts, Standards und Schemas.
-  3. Konfigurationsvorlage enthaelt Platzhalter fuer `${AGENTSEO_API_KEY}` ohne Hardcoding von Secrets.
+  3. Konfigurationsvorlage enthaelt sprechende Platzhalter fuer Secrets. Der AgentSEO-Key steht direkt im Header-Argument, weil `${AGENTSEO_API_KEY}` in `args` nicht aufgeloest wird. Echte Keys bleiben ausschliesslich in der lokalen `claude_desktop_config.json` und werden nie committet.
   4. Git Repository ist initialisiert und enthaelt eine saubere Commit-Historie.
 - **Human-Review-Punkt:** Raphael prueft das Manifest-Schema, die Master-README und das Design-System vor Sprint 2.
 
@@ -97,20 +109,22 @@ claude-desktop-seo-workflow-production/
   2. Schritt 4 ist sauber in 4a (Briefing/Schema) und 4b (HTML) getrennt.
   3. Bei unvollstaendigen Daten, fehlenden Dateien oder API-Fehlern greift ein striktes Fail-Fast Error-Handling (kein automatisches Weitermachen mit Schaetzungen).
 - **Human-Review-Punkt:** Jesse und Raphael pruefen die XML-Prompts gegenueber den Original-Markdowns auf Vollstaendigkeit.
+- **Nachtrag 17.08.2026:** Kriterium 3 ist fuer 8 von 9 Prompts erfuellt. `4a-content-briefing-und-schema.xml.md` hat weiterhin keinen Fehlercode, siehe CHANGELOG 1.3.0.
 
 ---
 
 ### Sprint 3: Tooling, Solver & Validierung
 - **Ziel:** Bereitstellung deterministischer Hilfstools (Kapazitaets-Solver), formaler Tool-Vertraege und Test-Fixtures.
 - **Scope & konkrete Dateien:**
-  - `mcp/tools/capacity_matrix_solver.py`: Deterministisches Python-Script zur fehlerfreien Stunden- und Phasenberechnung (10-15h pro Woche, 17 Wochen, Pflichtabdeckung fuer lokale Landingpages).
+  - `mcp/tools/capacity_matrix_solver.py`: Deterministisches Python-Script zur fehlerfreien Stunden- und Phasenberechnung (Zielband 10 bis 15h pro Woche, Horizont 17 Wochen, Pflichtabdeckung fuer lokale Landingpages).
   - Formale Tool-Vertraege unter `mcp/tool-contracts/`.
   - Test-Fixtures unter `tests/fixtures/`.
 - **Akzeptanzkriterien:**
-  1. `capacity_matrix_solver.py` erzeugt aus Test-Keywords exakt 17 Wochen a 10.0 bis 15.0 Stunden ohne mathematische Rundungsfehler.
+  1. `capacity_matrix_solver.py` erzeugt aus Test-Keywords einen Plan innerhalb des 17-Wochen-Horizonts, haelt die Obergrenze von 15.0 Stunden pro aktiver Woche ein und rechnet ohne Rundungsfehler. Die Untergrenze von 10.0 Stunden wird derzeit nicht erzwungen.
   2. Lokale Landingpages werden zu 100% in Phase 1 und 2 verplant.
   3. Script laeuft vollstaendig mit Python-Standardbibliotheken (kein pip-Zwang).
 - **Human-Review-Punkt:** Mathematische Pruefung der generierten 120-Tage-Matrix.
+- **Nachtrag 17.08.2026:** Kriterien 1 bis 3 sind erfuellt und mit 48 Live-Datensaetzen nachgemessen. Offen bleibt, dass nicht platzierbare Items still verworfen werden und `validate_schema_jsonld.py` keine CLI hat.
 
 ---
 
@@ -125,10 +139,11 @@ claude-desktop-seo-workflow-production/
   1. Erfolgreicher Durchlauf aller 9 Schritte an einem Referenz-Case (z.B. Multi-Location Pflegedienst).
   2. Saubere Uebergabe der Briefings an Copywriter ohne ueberfluessigen Code-Ballast.
 - **Human-Review-Punkt:** Finale Freigabe des Gesamtsystems durch Jesse und Raphael.
+- **Nachtrag 17.08.2026:** Ein Framework-Testlauf ueber die Schritte 0, 1, 1b, 2, 3, 4a und 4b ist erfolgt und protokolliert. Schritt 1c wurde ohne Screenshot nicht korrekt abgebrochen, das war ein Verfahrensfehler im Testlauf und kein Framework-Fehler. Kriterium 1 gilt deshalb erst mit dem ersten echten Kunden-Rollout als erfuellt. Die Abnahme in `docs/06` steht bis dahin auf Offen.
 
 ---
 
-## 4. Governance und Freigabevorbehalt
+## 4. Governance und Freigabestatus
 
 Dieses Produktionsprojekt erzeugt ausschliesslich modulare, wiederverwendbare Standards und Konfigurationen.
-**Es werden keine Live-Aenderungen an Kundenprojekten, keine externen API-Aufrufe ohne Freigabe und keine Veraenderungen an bestehenden Claude Desktop Installationen vorgenommen, bevor dieser Sprint-Plan von Raphael freigegeben wurde.**
+**Historischer Hinweis:** Dieser Sprint-Plan wurde am 16.08.2026 freigegeben und in vier Sprints umgesetzt. Der urspruengliche Freigabevorbehalt gilt damit als erfuellt. Fuer alle weiteren Aenderungen gilt: keine Live-Aenderungen an Kundenprojekten und keine externen API-Aufrufe ohne Freigabe durch Raphael Rechberger.
