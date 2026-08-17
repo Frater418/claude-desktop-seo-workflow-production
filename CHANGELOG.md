@@ -5,6 +5,37 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) 
 
 ---
 
+## [1.4.0] - 2026-08-17
+
+### Generative Engine Optimization (GEO), RAG Evidence Containers, Schema.org Graph & Validator CLI
+
+**Autor:** Raphael Rechberger  
+**Anlass:** Strategischer Ausbau des Heartweb-Workflows fuer Zitations-Sichtbarkeit in Google AI Overviews (Gemini 3), Perplexity, Claude Web Search und ChatGPT Search basierend auf 2026er Studien (Princeton GEO, Zhang et al. 2026, Ahrefs Maerz 2026).
+
+#### Hinzugefuegt
+- `docs/07-geo-architecture-specification.md`: Vollstaendige empirische und technische Spezifikation der GEO-Erweiterung (Selection vs. Absorption, Query Fan-Out, Schema.org `about`/`mentions`, Definitive Language, Evidence Containers).
+- `docs/08-geo-sprint-plan-and-multi-agent-orchestration.md`: Detaillierter 4-Sprint-Umsetzungsplan und Rollen-Definition des 6-Agenten OpenCode OMO Ensembles (Sisyphus, Oracle, Prometheus, Hephaestus, Daedalus, Metis).
+- `03_research/`: Persistierte Rohdaten der Exa.ai Multi-Angle Deep Research (`03_research/exa_geo_research_raw.json`) und automatisierter Recherche-Runner `run_exa_geo_verification.py`.
+- `tests/run_acceptance_tests.py`: Automatisierter Testrunner fuer CI/CD und lokale Validierung aller 5 Akzeptanztests.
+- `tests/fixtures/sample_schema_graph.json`: Validierte Schema.org JSON-LD `@graph` Referenz-Fixture mit Wikidata-Verknuepfungen.
+- `standards/manifest.schema.json`: Erweiterung um `geo_targets` (mit Pflichtfeld `primary_engines`) und `entities` (mit `brand_entity`, `brand_wikidata_id`, `core_services` und Wikidata-URIs).
+- `mcp/tools/validate_schema_jsonld.py` (v1.1.0): Vollstaendige CLI (`--input`, `--strict`, `--json-out`), Unterstuetzung fuer `@graph`, Markdown/HTML-Extraktion und strikte Wikidata-URI-Pruefung.
+- `standards/design-system.css`: Neue RAG- und GEO-Komponenten (`.definition-block`, `.evidence-container`, `.comparison-table`, `.speakable-section`, `.badge-datahub`).
+
+#### Geaendert
+- `mcp/tools/capacity_matrix_solver.py` (v1.3.0): Native Unterstuetzung fuer 4 neue GEO-Content-Typen (`Data-Hub` mit 5.0h / Faktor 3.5, `Entity-Anchor` mit 4.0h / Faktor 3.0, `Comparison-Table` mit 2.0h / Faktor 2.5, `FAQ-Hub` mit 3.0h / Faktor 2.5) sowie zweidimensionale Verlinkungs-Maps mit GEO-Zweck-Ausweisung.
+- `prompts/0-kickoff.xml.md` (v1.4.0): Erhebung von GEO-Targets und Entitaeten im Kickoff.
+- `prompts/1-pillar-identifikation.xml.md` (v1.4.0): Ergaenzung von `Information_Gain_Potential` und `Conversational_Query_Patterns`.
+- `prompts/1b-seitenarchitektur.xml.md` (v1.4.0): Semantische Section-IDs und Kebab-Case Anchor-Konvention.
+- `prompts/1c-pillar-template.xml.md` (v1.4.0): Hero-Definitionsblock (`.definition-block`) und Schema-Graph im Template.
+- `prompts/2-cluster-recherche.xml.md` (v1.4.0): GEO-Typisierung, Information-Gain-Scoring und AI-Overview-Pruefung.
+- `prompts/4a-content-briefing-und-schema.xml.md` (v1.4.0): 50-70 Woerter Hero-Direct-Answer, 15-20 Semantic Triples, Evidence Containers (130-160 Woerter) und `@graph` Schema.org JSON-LD fuer Notion.
+- `prompts/4b-landingpage-html.xml.md` (v1.4.0): Semantische Section-IDs, Microdata und GEO-Attribute.
+- `tests/fixtures/sample_manifest.json`: Aktualisiert mit `country: "DE"`, `location_code: 2276`, `geo_targets` und `entities`.
+- `tests/acceptance-tests.md`: Alle 5/5 Akzeptanztests verifiziert und als 100% bestanden protokolliert.
+
+---
+
 ## [1.3.0] - 2026-08-17
 
 ### Zielmarkt-Parameter, asynchrone Tool-Calls, maschinenpruefbare Mengenregeln und Doku-Bereinigung

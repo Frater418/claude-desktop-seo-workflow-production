@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-Capacity Matrix Solver for 120-Day SEO Content Plans
+Capacity Matrix Solver for 120-Day SEO & GEO Content Plans
 Autor: Raphael Rechberger
-Version: 1.2.0
+Version: 1.3.0
 
 Deterministischer Kapazitaets- und Prioritaets-Solver fuer die Erstellung
-von 120-Tage-Roadmaps. Horizont 17 Wochen, Obergrenze 15 Stunden pro Woche.
-Die Untergrenze von 10 Stunden wird nicht erzwungen, die gemessene Spanne steht im Plankopf.
+von 120-Tage-Roadmaps mit nativer Generative Engine Optimization (GEO) Unterstuetzung.
+Horizont 17 Wochen, Obergrenze 15 Stunden pro Woche.
+Die gemessene Spanne steht im Plankopf.
 Verhindert LLM-Arithmetik- und Rundungsfehler und generiert automatische Verlinkungs-Maps.
 """
 
@@ -20,9 +21,14 @@ from pathlib import Path
 EFFORT_WEIGHTS = {
     "Pillar-Page": 8.0,
     "Pillar": 8.0,
+    "Data-Hub": 5.0,
+    "Entity-Anchor": 4.0,
+    "FAQ-Hub": 3.0,
     "Blogartikel": 3.0,
     "Blog": 3.0,
     "Ratgeber": 3.0,
+    "Comparison-Table": 2.0,
+    "Vergleichstabelle": 2.0,
     "Landingpage": 1.25,
     "Standort-Landingpage": 1.25,
     "FAQ": 1.0,
@@ -31,9 +37,13 @@ EFFORT_WEIGHTS = {
 
 RELEVANCE_FACTORS = {
     "Lokal_Landingpage": 4.0,
+    "Data-Hub": 3.5,
     "Kosten": 3.0,
     "Transaktional": 3.0,
-    "Vergleich": 2.0,
+    "Entity-Anchor": 3.0,
+    "Vergleich": 2.5,
+    "Comparison-Table": 2.5,
+    "FAQ-Hub": 2.5,
     "Entscheidung": 2.0,
     "Lokal_Blog": 2.0,
     "Informational": 1.0,
@@ -42,22 +52,34 @@ RELEVANCE_FACTORS = {
     "Vertrauen": 1.0
 }
 
-def calculate_score(search_volume: float, difficulty: float, category: str, content_type: str, is_mandatory: bool) -> float:
+def calculate_score(search_volume: float, difficulty: float, category: str, content_type: str, is_mandatory: bool, info_gain: float = 0.0, entity_density: float = 0.0) -> float:
     cat_clean = str(category or "").strip()
-    c_type_clean = str(content_type or "").strip().lower()
+    c_type_clean = str(content_type or "").strip()
     
-    if "landingpage" in c_type_clean and ("lokal" in cat_clean.lower() or is_mandatory):
+    if "landingpage" in c_type_clean.lower() and ("lokal" in cat_clean.lower() or is_mandatory):
         factor = RELEVANCE_FACTORS["Lokal_Landingpage"]
+    elif "data-hub" in c_type_clean.lower():
+        factor = RELEVANCE_FACTORS["Data-Hub"]
+    elif "entity-anchor" in c_type_clean.lower():
+        factor = RELEVANCE_FACTORS["Entity-Anchor"]
+    elif "comparison" in c_type_clean.lower() or "vergleich" in c_type_clean.lower() or "vergleich" in cat_clean.lower():
+        factor = RELEVANCE_FACTORS["Comparison-Table"]
+    elif "faq-hub" in c_type_clean.lower() or "faq_hub" in cat_clean.lower():
+        factor = RELEVANCE_FACTORS["FAQ-Hub"]
     elif "kosten" in cat_clean.lower() or "transaktion" in cat_clean.lower():
         factor = RELEVANCE_FACTORS["Kosten"]
-    elif "vergleich" in cat_clean.lower() or "entscheidung" in cat_clean.lower():
-        factor = RELEVANCE_FACTORS["Vergleich"]
     elif "lokal" in cat_clean.lower():
         factor = RELEVANCE_FACTORS["Lokal_Blog"]
     else:
         factor = 1.0
         
-    score = (float(search_volume or 0) / (float(difficulty or 0) + 1.0)) * factor
+    base_score = (float(search_volume or 0) / (float(difficulty or 0) + 1.0)) * factor
+    
+    # GEO-Multiplikatoren fuer Information Gain und Entitaetsdichte
+    gain_bonus = 1.0 + (max(0.0, float(info_gain or 0) - 1.0) * 0.08)
+    entity_bonus = 1.0 + (min(20.0, float(entity_density or 0)) * 0.02)
+    
+    score = base_score * gain_bonus * entity_bonus
     return round(score, 2)
 
 def load_items_from_file(file_path: Path) -> list:
@@ -94,10 +116,15 @@ def solve_capacity_plan(items: list, hours_min=10.0, hours_max=15.0, total_weeks
         cat = str(item.get("Kategorie", item.get("category", "Informational")))
         c_type = str(item.get("Content_Type", item.get("content_type", "Blogartikel")))
         
+        info_gain = float(item.get("Information_Gain_Score", item.get("information_gain", item.get("info_gain", 0))) or 0)
+        entity_density = float(item.get("Entity_Density_Score", item.get("entity_density", 0)) or 0)
+        geo_type = str(item.get("GEO_Typ", item.get("geo_type", "Standard-SEO")))
+        engine_target = str(item.get("Engine_Ziel", item.get("engine_target", "Google AI Overviews / Search")))
+        
         is_mand_raw = item.get("Is_Mandatory_Location", item.get("is_mandatory", False))
         is_mand = str(is_mand_raw).lower() in ["true", "1", "yes", "ja"]
         
-        score = calculate_score(sv, kd, cat, c_type, is_mand)
+        score = calculate_score(sv, kd, cat, c_type, is_mand, info_gain, entity_density)
         effort = EFFORT_WEIGHTS.get(c_type, 2.5)
         
         processed.append({
@@ -107,6 +134,8 @@ def solve_capacity_plan(items: list, hours_min=10.0, hours_max=15.0, total_weeks
             "search_volume": int(sv),
             "difficulty": int(kd),
             "content_type": c_type,
+            "geo_type": geo_type,
+            "engine_target": engine_target,
             "category": cat,
             "is_mandatory": is_mand,
             "score": score,
@@ -167,21 +196,22 @@ def generate_internal_linking_map(weeks: list) -> str:
     md.append("| Content-Stueck (Woche) | Verlinkt zu (Pillar/Money Page) | Empfohlener Ankertext | Phase |")
     md.append("|---|---|---|---|")
     for it in all_allocated:
-        anchor = f"Uebersicht {it['pillar']}" if it['content_type'] == 'Ratgeber' else f"Alle Leistungen {it['pillar']}"
+        anchor = f"Uebersicht {it['pillar']}" if it['content_type'] in ['Ratgeber', 'Blogartikel'] else f"Alle Leistungen {it['pillar']}"
         md.append(f"| {it['title']} (W{it['week']}) | {it['pillar']} | {anchor} | Phase {it['phase']} |")
         
-    md.append("\n### b) Horizontale Sibling-Verlinkungs-Map (Cluster -> Verwandtes Cluster)\n")
-    md.append("| Content-Stueck (Woche) | Verlinkt zusaetzlich zu (Sibling) | Empfohlener Ankertext |")
-    md.append("|---|---|---|")
+    md.append("\n### b) Horizontale Sibling- & GEO-Verlinkungs-Map (Cluster -> Verwandtes Cluster / Data-Hub)\n")
+    md.append("| Content-Stueck (Woche) | Verlinkt zusaetzlich zu (Sibling / Hub) | Empfohlener Ankertext | GEO-Zweck |")
+    md.append("|---|---|---|---|")
     
     for idx, it in enumerate(all_allocated):
         # Finde ein Geschwister-Element aus demselben Pillar oder benachbarter Region
         siblings = [s for s in all_allocated if s != it and (s['pillar'] == it['pillar'] or s['category'] == it['category'])]
         if siblings:
             target = siblings[idx % len(siblings)]
-            md.append(f"| {it['title']} (W{it['week']}) | {target['title']} (W{target['week']}) | Ratgeber: {target['keyword']} |")
+            geo_purpose = "Entity-Kanonisierung" if target['content_type'] == "Entity-Anchor" else "Passagen-Zitation"
+            md.append(f"| {it['title']} (W{it['week']}) | {target['title']} (W{target['week']}) | Ratgeber: {target['keyword']} | {geo_purpose} |")
         else:
-            md.append(f"| {it['title']} (W{it['week']}) | Startseite / Themen-Hub | Hauptseite {it['pillar']} |")
+            md.append(f"| {it['title']} (W{it['week']}) | Startseite / Themen-Hub | Hauptseite {it['pillar']} | Pillar-Autoritaet |")
             
     return "\n".join(md)
 
@@ -191,7 +221,7 @@ def generate_markdown_plan(weeks: list, hours_min: float = 10.0, hours_max: floa
     active_weeks = len([w for w in weeks if w["hours"] > 0])
     total_items = sum(len(w["items"]) for w in weeks)
     
-    md.append("# 120-Tage-Content-Plan (Deterministisch geloest)\n")
+    md.append("# 120-Tage-Content-Plan (Deterministisch geloest inkl. GEO)\n")
     md.append(f"**Gesamtumfang:** {total_items} Content-Stuecke | **Gesamtaufwand:** {round(total_hours, 2)} Stunden ueber {active_weeks} aktive Wochen.\n")
     active = [w for w in weeks if w["hours"] > 0]
     if active:
@@ -206,10 +236,10 @@ def generate_markdown_plan(weeks: list, hours_min: float = 10.0, hours_max: floa
     else:
         md.append("**Kapazitaets-Messung:** keine aktive Woche, es wurden keine Items verplant.\n")
     
-    phases = {1: "Phase 1 (Tag 1-30) - Fundament & Skalierung",
-              2: "Phase 2 (Tag 31-60) - Expansion & Local Authority",
-              3: "Phase 3 (Tag 61-90) - Vertiefung & Commercial Pages",
-              4: "Phase 4 (Tag 91-120) - Vollstaendige Themenabdeckung"}
+    phases = {1: "Phase 1 (Tag 1-30) - Fundament, Core Entities & Local Authority",
+              2: "Phase 2 (Tag 31-60) - Expansion, Data-Hubs & Standorte",
+              3: "Phase 3 (Tag 61-90) - Vertiefung, Vergleiche & Commercial Pages",
+              4: "Phase 4 (Tag 91-120) - Vollstaendige Themen- & GEO-Abdeckung"}
               
     for p_num in range(1, 5):
         p_weeks = [w for w in weeks if w["phase"] == p_num]
@@ -223,23 +253,24 @@ def generate_markdown_plan(weeks: list, hours_min: float = 10.0, hours_max: floa
             md.append(f"*Puffer-Phase: alle eingereichten Themen wurden in {belegt_txt} verplant. Reserve fuer die Performance-Anpassung aus Schritt 3b.*\n")
             continue
             
-        md.append("| Woche | Content-Typ | Titel/Thema | Ziel-Keyword | Suchvolumen | KD | Aufwand (Std) | Prioritaet |")
-        md.append("|---|---|---|---|---|---|---|---|")
+        md.append("| Woche | Content-Typ | GEO-Typ | Titel/Thema | Ziel-Keyword | Suchvolumen | KD | Aufwand (Std) | Prioritaet |")
+        md.append("|---|---|---|---|---|---|---|---|---|")
         
         for w in p_weeks:
             if w["hours"] == 0:
                 continue
             for item in w["items"]:
                 prio = "Hoch" if item["score"] > 20 else ("Mittel" if item["score"] > 5 else "Niedrig")
-                md.append(f"| W{w['week']} | {item['content_type']} | {item['title']} | {item['keyword']} | {item['search_volume']} | {item['difficulty']} | {item['effort_hours']}h | {prio} |")
-            md.append(f"| **W{w['week']} Summe** | | | | | | **{w['hours']}h** | |")
+                geo_label = item.get("geo_type", "Standard-SEO")
+                md.append(f"| W{w['week']} | {item['content_type']} | {geo_label} | {item['title']} | {item['keyword']} | {item['search_volume']} | {item['difficulty']} | {item['effort_hours']}h | {prio} |")
+            md.append(f"| **W{w['week']} Summe** | | | | | | | **{w['hours']}h** | |")
         md.append(f"\n**Phase {p_num} Zwischensumme:** {round(p_hours, 2)}h\n")
         
     md.append("\n" + generate_internal_linking_map(weeks))
     return "\n".join(md)
 
 def main():
-    parser = argparse.ArgumentParser(description="Deterministischer 120-Tage Capacity Matrix Solver")
+    parser = argparse.ArgumentParser(description="Deterministischer 120-Tage Capacity Matrix Solver v1.3.0 (GEO-Ready)")
     parser.add_argument("--input", "-i", type=str, help="Pfad zur CSV- oder JSON-Keyword-Tabelle")
     parser.add_argument("--output", "-o", type=str, help="Ausgabepfad fuer den generierten Markdown-Plan")
     parser.add_argument("--hours-min", type=float, default=10.0, help="Mindest-Wochenstunden (Default: 10.0)")
@@ -250,7 +281,7 @@ def main():
     args = parser.parse_args()
     
     if not args.input:
-        print("Capacity Matrix Solver v1.2.0 (Raphael Rechberger)")
+        print("Capacity Matrix Solver v1.3.0 (Raphael Rechberger)")
         print("Nutzung: python capacity_matrix_solver.py --input <datei.csv|datei.json> [--output <plan.md>]")
         return
         

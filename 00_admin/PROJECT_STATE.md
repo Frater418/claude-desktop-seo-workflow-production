@@ -4,7 +4,7 @@
 **Autor & Architektur:** Raphael Rechberger  
 **Organisation:** Heartweb / Zusammenarbeit Raphael Rechberger & Jesse Jensen  
 **Datum:** 17. August 2026  
-**Status:** Auditiert, Version 1.3.0 in Arbeit auf Branch `fix/schritt-2-und-doku-1.3.0`. Sieben offene Punkte, siehe CHANGELOG 1.3.0.  
+**Status:** Auditiert, Version 1.3.0 in Arbeit. Vorbereitung der GEO-Erweiterung (Generative Engine Optimization v1.4.0 / GEO-Branch).  
 **GitHub Repository:** https://github.com/Frater418/claude-desktop-seo-workflow-production  
 **Kanonischer Pfad:** `C:\Users\offic\Documents\Projekte\Hermes\04_projects\active\Heartweb-Claude-Desktop-SEO-Workflow\`  
 **Desktop-Pfad:** `C:\Users\offic\Desktop\Heartweb\claude-desktop-seo-workflow-production\`  
@@ -13,7 +13,7 @@
 
 ## 1. Projekt-Kontext & Rollen
 
-- **Ziel:** Modernisierung und Automatisierung des 120-Tage-SEO-Rollout-Workflows fuer die Claude Desktop App.
+- **Ziel:** Modernisierung und Automatisierung des 120-Tage-SEO-Rollout-Workflows fuer die Claude Desktop App inklusive Generative Engine Optimization (GEO).
 - **Stakeholder & Team:**
   - **Raphael Rechberger:** Technical Operations & AI Integration Architect (fuehrt die Rollouts durch, steuert die Pipeline, baut die Schnittstellen).
   - **Jesse Jensen:** Lead & Strategie Heartweb (steuert Kundenbeziehungen, Onboarding, Freigaben).
@@ -43,8 +43,8 @@
    - `4b-landingpage-html.xml.md`: Autarker HTML-Generator fuer lokale Landingpages.
 
 3. **Deterministische Python-Tools (`mcp/tools/`):**
-   - `capacity_matrix_solver.py` (v1.2.0): Verteilt die Deliverables auf einen Horizont von 17 Wochen mit maximal 15 Stunden pro Woche und weist die Anzahl aktiver Wochen aus. 100% Pflichtabdeckung fuer lokale Landingpages und Verlinkungs-Maps. Offen: die Untergrenze von 10 Stunden wird nicht erzwungen, siehe docs/04-entscheidungslog.md.
-   - `validate_schema_jsonld.py`: Autarke Validierung fuer Google Rich Results. Offen: keine CLI, siehe tests/acceptance-tests.md.
+   - `capacity_matrix_solver.py` (v1.2.0): Verteilt die Deliverables auf einen Horizont von 17 Wochen mit maximal 15 Stunden pro Woche und weist die Anzahl aktiver Wochen aus. 100% Pflichtabdeckung fuer lokale Landingpages und Verlinkungs-Maps.
+   - `validate_schema_jsonld.py`: Autarke Validierung fuer Google Rich Results.
    - `tool-contracts/`: Formale Schemas fuer AgentSEO API-Calls.
 
 4. **Dokumentation & Handbuecher (`docs/`):**
@@ -54,31 +54,40 @@
    - `01-review-abgleich.md`, `02-research-und-technische-spezifikation.md`, `03-sprint-plan.md`, `04-entscheidungslog.md`, `05-human-in-the-loop.md`, `06-pilot-abnahme-checkliste.md`.
 
 5. **Akzeptanztests & Fixtures (`tests/`):**
-   - Akzeptanztests neu ausgefuehrt am 17.08.2026: 1 bestanden mit offenem Punkt, 2 teilweise bestanden, 1 nicht ausfuehrbar, 1 nicht bestanden (`tests/acceptance-tests.md`).
-   - Fixtures fuer simCura Pflegedienst (`sample_manifest.json`, `sample_cluster_keywords.json` mit 61 synthetischen, formelgenerierten Keywords ohne Live-Metriken).
+   - Akzeptanztests dokumentiert in `tests/acceptance-tests.md`.
+   - Fixtures fuer simCura Pflegedienst (`sample_manifest.json`, `sample_cluster_keywords.json`).
 
 ---
 
 ## 2b. Stand vom 17. August 2026
 
-- **Konsistenz-Audit durchgefuehrt:** `00_admin/AUDIT-2026-08-17-konsistenz.md`. 58 Findings, davon 4 Blocker.
-- **Erster Live-Testlauf gegen AgentSEO:** Schritte 0 bis 4b im Testworkspace ausgefuehrt. Drei Blocker bestaetigt und in 1.3.0 behoben: fehlender `location_code`, synchrone Tool-Calls mit 60-Sekunden-Abbruch, falscher Filesystem-Root. Ein Blocker offen: die SERP-Gliederung in `agentseo_content_serp_outline` loest deutsche Maerkte falsch auf und liefert englische Platzhalter.
-- **Wichtigste Lehre:** Prosa-Regeln in Prompts wurden im Testlauf dreimal gebrochen, Schema-Regeln nicht ein Mal. Zaehlregeln liegen deshalb ab 1.3.0 im Manifest-Schema, siehe ADR-010.
-- **Akzeptanztests:** neu ausgefuehrt, Ergebnis 1 bestanden mit offenem Punkt, 2 teilweise, 1 nicht ausfuehrbar, 1 nicht bestanden. Details in `tests/acceptance-tests.md`.
-- **Pilot-Abnahme:** in `docs/06-pilot-abnahme-checkliste.md` auf Offen zurueckgesetzt. Der Testlauf war ein Framework-Test, keine Abnahme.
-- **GitHub-Anbindung:** Der GitHub-MCP-Server ist seit 17.08.2026 in Claude Desktop eingerichtet und mit 26 Werkzeugen verifiziert. Aenderungen aus einer Cowork-Session laufen darueber per GitHub-API in das Repo, nicht per `git push` aus dem Cloud-Container.
-- **Offene Punkte fuer die naechste Version:** CLI des JSON-LD-Validators, Backlog und Untergrenze im Solver, Fehlercodes in Schritt 4a, `additionalProperties: false` im Schema, Media Queries und fehlende Komponenten im Design-System, `country` und `location_code` in `sample_manifest.json`, ausfuehrbarer Testrunner.
+- **Konsistenz-Audit & Live-Testlauf:** Schritte 0 bis 4b im Testworkspace auditiert und refaktoriert (ADR-008 bis ADR-010).
+- **Call mit Jesse erfolgreich abgeschlossen:**
+  - Architektur v1.2.0 / v1.3.0 vollstaendig besprochen und bestaetigt.
+  - Dokumentiert in `00_admin/meetings/2026-08-17-meeting-raphael-jesse.md`.
+  - Rechnungsabwicklung fuer August besprochen (Details per WhatsApp / Andreas).
+- **Neuer strategischer Schwerpunkt: GEO (Generative Engine Optimization):**
+  - Forschungsauftrag durch Jesse erteilt.
+  - Perplexity Deep Research und Exa.ai Multi-Angle API-Verifikation erfolgreich durchgefuehrt.
+  - Rohdaten unter `03_research/exa_geo_research_raw.json` persistiert.
+- **Infrastruktur:**
+  - Claude Desktop App aktiv, AgentSEO MCP-Server und GitHub MCP-Server erfolgreich angebunden.
 
 ---
 
-## 3. Naechste operative Schritte
+## 3. Aktueller Status & Naechste operative Schritte
 
-1. **Call mit Jesse:**
-   - Walkthrough durch das GitHub-Repo und das 2-Seiten-PDF-Memo.
-   - Einladungen abholen: Slack, Notion, Claude-Team-Lizenz, AgentSEO-API-Key, Buchhaltungsadresse.
-2. **Pilot-Projekt starten:**
-   - Sobald das erste Kunden-Briefing vorliegt (z.B. simCura), wird der Ordner unter `C:\Users\offic\Documents\Projekte\Heartweb\Kunden\<kunde-slug>\` angelegt.
-   - Ausfuehrung der Prompts 0 bis 3 in Claude Desktop.
+1. **GEO-Architektur-Spezifikation (`docs/07-geo-architecture-specification.md`):**
+   - Vollstaendige Dokumentation des GEO-Erweiterungskonzepts (Selection vs. Absorption, Query Fan-Out, Evidence Containers, Schema.org about/mentions, Solver GEO-Gewichte).
+
+2. **Multi-Agent Coding Team Setup (OpenCode Container Konfiguration):**
+   - Persistente Modell- und Agenten-Rollen fuer die Sprint-Umsetzung definieren.
+
+3. **Vorbereitung auf Meeting mit Max (Automatisierungsagentur):**
+   - Abstimmung der Schnittstellen fuer Notion-Datenbanken und Task-Delegation.
+
+4. **Pilot-Projekt nach Erhalt der Kundenbriefings von Jesse:**
+   - Testlauf der Prompts 0 bis 4b unter realen Bedingungen.
 
 ---
 

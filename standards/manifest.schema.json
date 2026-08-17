@@ -455,6 +455,95 @@
       "type": "integer",
       "minimum": 1,
       "description": "Google Geo Target Criteria ID fuer AgentSEO und DataForSEO. Muss zu country passen."
+    },
+    "geo_targets": {
+      "type": "object",
+      "description": "Ziel-Suchraeume fuer Generative Engine Optimization (GEO)",
+      "properties": {
+        "primary_engines": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "google_ai_overviews",
+              "google_classic",
+              "perplexity",
+              "claude_search",
+              "chatgpt_search",
+              "local_maps",
+              "b2b_niche"
+            ]
+          },
+          "minItems": 1,
+          "description": "Primaer zu optimierende KI- und Such-Engines."
+        },
+        "geo_focus": {
+          "type": "string",
+          "enum": [
+            "citation_visibility",
+            "answer_passage_extraction",
+            "entity_graph_authority"
+          ],
+          "default": "citation_visibility",
+          "description": "Strategischer Fokus fuer die Zitations- und Textarchitektur."
+        }
+      },
+      "required": [
+        "primary_engines"
+      ]
+    },
+    "entities": {
+      "type": "object",
+      "description": "Zentrale Entitaeten mit Wikidata- und SameAs-Verknuepfungen",
+      "properties": {
+        "brand_entity": {
+          "type": "string",
+          "description": "Name der Hauptmarke oder Organisation."
+        },
+        "brand_wikidata_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^(Q[0-9]+)?$",
+          "description": "Wikidata Entity-ID der Marke (z.B. Q123456)."
+        },
+        "brand_sameas_urls": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "description": "Autoritative Profile (Wikipedia, LinkedIn, Google Maps, Branchenverzeichnisse)."
+        },
+        "core_services": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name der Dienstleistung oder Kernentitaet."
+              },
+              "wikidata_id": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^(Q[0-9]+)?$",
+                "description": "Wikidata-ID des Konzepts (z.B. Q380012 fuer Ambulante Pflege)."
+              }
+            },
+            "required": [
+              "name"
+            ]
+          },
+          "description": "Liste der Kernleistungen mit optionalen Wikidata-URIs fuer Schema.org about/mentions."
+        }
+      },
+      "required": [
+        "brand_entity"
+      ]
     }
   }
 }

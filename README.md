@@ -2,22 +2,22 @@
 
 **Autor & Architektur:** Raphael Rechberger  
 **Organisation / Kontext:** Heartweb (Zusammenarbeit Raphael Rechberger & Jesse Jensen)  
-**Version:** 1.3.0  
+**Version:** 1.4.0  
 **Stand:** 17. August 2026  
-**Status:** Produktionsstandard aktiv. Erster Live-Test gegen AgentSEO durchgefuehrt, drei Betriebsfehler behoben, sieben offene Punkte dokumentiert in [CHANGELOG.md](CHANGELOG.md).  
+**Status:** Produktionsstandard aktiv & validiert. Volle GEO-Integration (Generative Engine Optimization fuer Google AI Overviews, Perplexity, Claude, ChatGPT Search), Schema.org `@graph` Validator CLI und deterministischer Solver v1.3.0.  
 
 ---
 
 ## 1. Uebersicht & Zielsetzung
 
-Dieses Repository enthaelt den modernisierten, produktionsreifen **SEO-Content- & Rollout-Workflow fuer die Claude Desktop App**.
+Dieses Repository enthaelt den modernisierten, produktionsreifen **SEO- & GEO-Content- & Rollout-Workflow fuer die Claude Desktop App**.
 
 Basiert auf den bewaehrten SEO-Grundlagen von Jesse Jensen wurden saemtliche Reibungspunkte, Kontextbrueche und manuellen Flaschenhaelse systematisch eliminiert. Das System transformiert den urspruenglichen Prompt-Ablauf in eine hochgradig deterministische, datenbank-kompatible Produktionspipeline fuer Heartweb mit:
 
-1. **Persistentem Projekt-Manifest (`manifest.json`):** Maschinenlesbarer Single-Source-of-Truth-Status fuer jedes Kundenprojekt ohne Kontextverlust im Chat (1:1 Notion-kompatibel). Enthaelt ab 1.3.0 auch den Zielmarkt als `country` und `location_code` sowie maschinenpruefbare Zaehlwerte.
-2. **Persistentem Design-System (`design-system.css`):** Screenshot-basierte CSS-Token-Extraktion in Schritt 1c fuer konsistentes Styling bis hin zur Landingpage-Generierung in Schritt 4b.
-3. **Automatisierter Keyword-Anreicherung via AgentSEO MCP:** Vollstaendige Beseitigung des manuellen Ahrefs-Abtippens durch direkte API-Abfragen verifizierter Suchmetriken.
-4. **Deterministischem 120-Tage-Kapazitaets-Solver v1.2:** Deterministische Wochenplanung ueber einen Horizont von 17 Wochen mit einer Obergrenze von 15 Stunden pro Woche. Die Anzahl der tatsaechlich belegten Wochen haengt vom Datenvolumen ab und wird im Plankopf als gemessene Spanne ausgewiesen. Prioritative Gebietsabdeckung fuer lokale Landingpages und automatische Verlinkungs-Map.
+1. **Persistentem Projekt-Manifest (`manifest.json`):** Maschinenlesbarer Single-Source-of-Truth-Status fuer jedes Kundenprojekt ohne Kontextverlust im Chat (1:1 Notion-kompatibel). Enthaelt Zielmarkt (`country`, `location_code`), GEO-Targets und Wikidata-Entitaeten.
+2. **Persistentem Design-System (`design-system.css`):** Screenshot-basierte CSS-Token-Extraktion in Schritt 1c und RAG-Komponenten (`.definition-block`, `.evidence-container`, `.comparison-table`) fuer Landingpages in Schritt 4b.
+3. **Automatisierter Keyword- & SERP-Anreicherung via AgentSEO MCP:** Vollstaendige Beseitigung des manuellen Ahrefs-Abtippens durch direkte API-Abfragen verifizierter Suchmetriken und Intent-Checks.
+4. **Deterministischem 120-Tage-Kapazitaets-Solver v1.3.0:** Deterministische Wochenplanung ueber einen Horizont von 17 Wochen mit max. 15h/Woche, GEO-Content-Typen (Data-Hubs, Entity-Anchors, Vergleichstabellen, FAQ-Hubs) und zweidimensionaler Verlinkungs-Map.
 5. **Strikter Fail-Fast- und Qualitaets-Doktrin:** Keine stillschweigenden Fallbacks oder Schaetzdaten. Bei Fehlern stoppt das System sofort mit klaren Handlungsanweisungen.
 6. **Zweiteilung von Schritt 4:** Trennung in redaktionelle Briefings inkl. Schema.org JSON-LD (4a) mit YAML-Frontmatter fuer Copywriter (Regina, Katja, Alexander) und Frontend-HTML-Code (4b).
 
@@ -96,6 +96,8 @@ Klicke auf die einzelnen Schritte, Standards oder Dokumente, um direkt zur jewei
 - [Dateinamen- und Output-Vertrag](standards/dateinamen-und-output-vertrag.md)
 
 ### 3.3 Dokumentation, Memos & Handbuecher (`docs/`)
+- [07. GEO-Architektur-Spezifikation (v1.4.0)](docs/07-geo-architecture-specification.md)
+- [08. GEO-Sprint-Plan & Multi-Agent-Orchestrierung](docs/08-geo-sprint-plan-and-multi-agent-orchestration.md)
 - [Jesse Walkthrough Memo (Markdown)](docs/jesse-walkthrough-memo.md)
 - [Jesse Walkthrough Memo (2-Seiten PDF)](docs/jesse-walkthrough-memo.pdf)
 - [Betriebshandbuch fuer Claude Desktop](docs/betriebshandbuch-claude-desktop.md)
@@ -109,16 +111,18 @@ Klicke auf die einzelnen Schritte, Standards oder Dokumente, um direkt zur jewei
 
 ### 3.4 MCP-Tools, Solver & Validierung (`mcp/`)
 - [Claude Desktop Config Template](mcp/claude_desktop_config.template.json)
-- [Deterministischer Kapazitaets-Solver v1.2](mcp/tools/capacity_matrix_solver.py)
-- [Schema.org JSON-LD Validator](mcp/tools/validate_schema_jsonld.py) (offener Punkt: noch ohne CLI)
+- [Deterministischer Kapazitaets-Solver v1.3.0 (GEO-Ready)](mcp/tools/capacity_matrix_solver.py)
+- [Schema.org JSON-LD Validator CLI v1.1.0](mcp/tools/validate_schema_jsonld.py) (Vollstaendige CLI mit `--input` und `--strict`)
 - [Tool-Contract: AgentSEO Keyword Enricher](mcp/tool-contracts/agentseo_keyword_enricher.json)
 - [Tool-Contract: SERP Gap Analyzer](mcp/tool-contracts/serp_gap_analyzer.json)
 - [Tool-Contract: Schema JSON-LD Generator](mcp/tool-contracts/schema_jsonld_generator.json)
 
 ### 3.5 Test-Fixtures & Nachweise (`tests/`)
-- [Akzeptanztest-Protokoll (Stand 17.08.2026: 1 bestanden mit offenem Punkt, 2 teilweise, 1 nicht ausfuehrbar, 1 nicht bestanden)](tests/acceptance-tests.md)
+- [Automatisierter Testrunner (`tests/run_acceptance_tests.py`)](tests/run_acceptance_tests.py)
+- [Akzeptanztest-Protokoll (Alle 5 von 5 Tests bestanden)](tests/acceptance-tests.md)
 - [Test-Fixture: Referenz-Manifest simCura](tests/fixtures/sample_manifest.json)
-- [Test-Fixture: 61 synthetische Cluster-Keywords](tests/fixtures/sample_cluster_keywords.json) (formelgeneriert durch `scripts/generate_sample_keywords.py`, keine Live-Metriken)
+- [Test-Fixture: 61 synthetische Cluster-Keywords](tests/fixtures/sample_cluster_keywords.json)
+- [Test-Fixture: Schema.org Graph JSON-LD](tests/fixtures/sample_schema_graph.json)
 - [Test-Fixture: SERP-Briefing Response](tests/fixtures/sample_serp_briefing.json)
 
 ### 3.6 Governance, Zustand & Hilfsskripte
