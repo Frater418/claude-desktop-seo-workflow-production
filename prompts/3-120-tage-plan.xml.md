@@ -5,7 +5,7 @@
   <step>3</step>
   <name>Der 120-Tage-Content-Plan & Verlinkungs-Map</name>
   <author>Raphael Rechberger</author>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <previous_step>prompts/2-cluster-recherche.xml.md</previous_step>
   <next_step>prompts/3b-performance-check.xml.md</next_step>
 </prompt_metadata>
@@ -53,8 +53,9 @@ Zur Vermeidung von Rechenfehlern nutzt du die mathematische Logik des determinis
   </step>
   <step number="2" name="Scoring & Kapazitaets-Matrix berechnen">
     Berechne fuer jedes Item den Prioritaets-Score.
-    Verteile die Deliverables auf exakt 17 Wochen (4 Phasen: Tag 1-30, 31-60, 61-90, 91-120).
-    Summiere den Aufwand pro Woche: Jede Woche muss zwingend zwischen 10.0 und 15.0 Stunden liegen.
+    Verteile die Deliverables innerhalb des Horizonts von 17 Wochen (4 Phasen: Tag 1-30, 31-60, 61-90, 91-120).
+    Weise im Plankopf die Anzahl der tatsaechlich belegten Wochen aus. Nicht belegte Wochen sind als Puffer zu kennzeichnen.
+    Summiere den Aufwand pro Woche: Jede aktive Woche soll zwischen 10.0 und 15.0 Stunden liegen, die Obergrenze ist verbindlich.
   </step>
   <step number="3" name="Wochentabellen fuer alle 4 Phasen erstellen">
     Erzeuge die tabellarische Wochenuebersicht mit Woche, Content-Typ, Titel/Thema, Ziel-Keyword, Suchvolumen, Wortzahl-Ziel, Aufwand (Std), Prioritaet.
@@ -71,7 +72,7 @@ Zur Vermeidung von Rechenfehlern nutzt du die mathematische Logik des determinis
 </instructions>
 
 <validation_rules>
-  - Regel 1: Mathematische Exaktheit. Keine Woche unter 10.0 Std, keine Woche ueber 15.0 Std.
+  - Regel 1: Mathematische Exaktheit. Keine aktive Woche ueber 15.0 Std. Diese Obergrenze erzwingt der Solver. Die Untergrenze von 10.0 Std ist ein Planungsziel und wird an Gate 3 manuell geprueft, der Solver setzt sie nicht durch.
   - Regel 2: Keine Auslassung von Pflicht-Standorten.
   - Regel 3: Sibling-Links sind Pflicht (kein reines Hub-and-Spoke).
 </validation_rules>
@@ -80,7 +81,7 @@ Zur Vermeidung von Rechenfehlern nutzt du die mathematische Logik des determinis
 Speichere die Datei:
 - Dateipfad: `outputs/3-plan.md`
 - Struktur:
-  1. Kapazitaets-Zusammenfassung (Wochenbudget, Gesamtstunden, Meilensteine).
+  1. Kapazitaets-Zusammenfassung (Wochenbudget, Gesamtstunden, gemessene Spanne, Meilensteine).
   2. Phase 1 (Tag 1-30) Wochentabelle (Woche 1-4).
   3. Phase 2 (Tag 31-60) Wochentabelle (Woche 5-8).
   4. Phase 3 (Tag 61-90) Wochentabelle (Woche 9-13).
@@ -97,6 +98,6 @@ Antworte im Chat mit:
 <human_review_gate>
   <gate_id>GATE-3</gate_id>
   <reviewer>Jesse Jensen / Raphael Rechberger</reviewer>
-  <checkpoint>Ueberpruefe die Stunden-Summen pro Woche und die Verteilung der lokalen Money Pages vor dem Rollout in Notion.</checkpoint>
+  <checkpoint>Ueberpruefe die Stunden-Summen pro Woche und die Verteilung der lokalen Money Pages vor dem Rollout in Notion. Pruefe insbesondere die Untergrenze von 10.0 Stunden, der Solver erzwingt nur die Obergrenze.</checkpoint>
 </human_review_gate>
 ```

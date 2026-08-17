@@ -1,8 +1,8 @@
 # 02. Research und Technische Spezifikation
 
 **Projekt:** Modernisierung des Claude Desktop SEO-Workflows  
-**Datum:** 16. August 2026  
-**Status:** Spezifikation fertiggestellt (Strikte Error-Handling & Quality-Gate-Architektur)  
+**Datum:** 16. August 2026, Stand aktualisiert 17. August 2026  
+**Status:** Spezifikation fertiggestellt und im Live-Test verifiziert (Strikte Error-Handling & Quality-Gate-Architektur)  
 **Autor:** Raphael Rechberger  
 
 ---
@@ -19,6 +19,7 @@ Alle nachfolgenden Quellen wurden fuer diese Spezifikation direkt abgerufen und 
 | 4 | **Anthropic Claude Desktop MCP Guide** | `https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-local-servers` | 16.08.2026 | Offizielle Anleitung zur Anbindung lokaler MCP-Server (z.B. Filesystem Server) an Claude Desktop. |
 | 5 | **MCP Transport Architecture Analysis** | `https://startdebugging.net/2026/05/fix-http-mcp-server-url-wont-connect-in-claude-desktop/` | 16.08.2026 | Technischer Nachweis: `claude_desktop_config.json` unterstuetzt ausschliesslich `stdio`. Remote HTTP-Server erfordern `mcp-remote` als Stdio-Bridge oder die Registrierung als Custom Connector. |
 | 6 | **Anthropic Prompt Engineering Guidelines** | `https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview` | 16.08.2026 | Best Practices fuer XML-Kapselung (`<system_role>`, `<context_files>`, `<instructions>`, `<output_format>`), Intent Grounding und strukturierte Ein-/Ausgabe-Vertraege. |
+| 7 | **Eigener Live-Test gegen den AgentSEO MCP-Server** | Session-Protokoll, `00_admin/AUDIT-2026-08-17-konsistenz.md` | 17.08.2026 | Empirischer Nachweis der Pflichtparameter (`location`, `location_code`, `language`), des 60-Sekunden-Timeouts bei `sync: true` und der Geo-Fehlaufloesung in `agentseo_content_serp_outline`. Im MCP-Server sind 48 Tools sichtbar. |
 
 ---
 
@@ -39,7 +40,7 @@ Alle nachfolgenden Quellen wurden fuer diese Spezifikation direkt abgerufen und 
            "mcp-remote",
            "https://www.agentseo.dev/mcp",
            "--header",
-           "x-api-key:${AGENTSEO_API_KEY}"
+           "x-api-key:HIER_AGENTSEO_API_KEY_EINTRAGEN"
          ]
        },
        "filesystem": {
@@ -47,12 +48,24 @@ Alle nachfolgenden Quellen wurden fuer diese Spezifikation direkt abgerufen und 
          "args": [
            "-y",
            "@modelcontextprotocol/server-filesystem",
-           "C:\\Users\\offic\\Documents\\Projekte\\Kunden"
+           "C:\\Users\\offic\\Documents\\Projekte",
+           "C:\\Users\\offic\\Desktop\\Heartweb"
          ]
+       },
+       "github": {
+         "command": "npx",
+         "args": [
+           "-y",
+           "@modelcontextprotocol/server-github"
+         ],
+         "env": {
+           "GITHUB_PERSONAL_ACCESS_TOKEN": "HIER_GITHUB_PERSONAL_ACCESS_TOKEN_EINTRAGEN"
+         }
        }
      }
    }
    ```
+   Zwei Details, beide am 17.08.2026 verifiziert: der AgentSEO-Key muss direkt im Header-Argument stehen, weil `${VARIABLE}` in `args` nicht aufgeloest wird und wortwoertlich im HTTP-Header landet. Werte unter `env` erreichen den Serverprozess dagegen als echte Umgebungsvariablen, deshalb funktioniert die `env`-Form beim GitHub-Server. Die Filesystem-Roots muessen sowohl die Kunden-Workspaces als auch das Framework-Repo abdecken, weil die Prompts die Standards aus `standards/` lesen.
 2. **Option B (GUI Connector):** Direkte Registrierung des Remote-Endpoints `https://www.agentseo.dev/mcp` unter *Claude Desktop > Settings > Connectors > Add custom connector* mit API-Key Header.
 3. **Option C (Lokale Deterministische Tools):** Der Kapazitaets-Solver laeuft als lokales Python-Script (`capacity_matrix_solver.py`), um Token-Kosten und Rundungsfehler gaenzlich zu vermeiden.
 
@@ -73,13 +86,27 @@ In dieser Produktionsarchitektur gibt es **keine stillschweigende Degradation** 
 ```json
 {
   "status": "ERROR",
-  "error_code": "API_QUOTA_EXCEEDED | MISSING_API_KEY | INVALID_SCHEMA | TIMEOUT",
+  "error_code": "API_QUOTA_EXCEEDED | MISSING_API_KEY | INVALID_SCHEMA | TIMEOUT | ERROR_LOCATION_MISMATCH",
   "step": "step_2_cluster_research",
   "message": "Prazise Fehlerbeschreibung",
   "blocking_reason": "Verifizierte Metriken fuer 32 Keywords fehlen.",
   "remediation_action": "Kontingent aufladen oder API-Key in der Konfiguration hinterlegen."
 }
 ```
+
+Jeder Fehlercode und jede WARN-Meldung wird zusaetzlich mit Zeitstempel nach `logs/validation_errors.log` im Kunden-Workspace geschrieben.
+
+### 2.4 Verbindliches asynchrones Aufrufmuster (Stand 17.08.2026)
+Alle datenliefernden AgentSEO-Tools haben den Parameter `sync` mit Default `true`. Synchrone Aufrufe
+brachen im Live-Test nach 60 Sekunden ab. Verbindlich ist deshalb:
+
+1. Aufruf mit `sync: false`. Die Antwort enthaelt `jobId` und `status` (`queued` oder `pending`).
+2. `agentseo_job_status` mit dieser `jobId` pollen, Wartezeit aus `retry_after_seconds`, mindestens
+   2 Sekunden.
+3. `status: completed` liefert das Ergebnis unter `result`. `status: failed` liefert `error.code` und
+   `error.message` und fuehrt zu `ERROR_AGENTSEO_FETCH_FAILED`.
+
+Gemessene Laufzeiten im Test: 3 bis 60 Sekunden je Aufruf, abhaengig vom Endpunkt.
 
 ---
 
@@ -94,34 +121,45 @@ In dieser Produktionsarchitektur gibt es **keine stillschweigende Degradation** 
   {
     "keywords": ["ambulante pflege kosten", "pflegedienst frankfurt preise"],
     "location": "Germany",
+    "location_code": 2276,
     "language": "de",
     "min_search_volume": 0,
-    "sort_by": "priority"
+    "sort_by": "priority",
+    "sync": false
   }
   ```
+  `location` und `location_code` sind beide Pflicht. Nur `location` fuehrt zu
+  `DataForSEO ... status 40501 "Invalid Field: 'location_code'"`, nur `location_code` liefert Daten,
+  die als `United States` beschriftet sind. Die Codes stehen in `standards/location-codes.json`.
 - **Output-Schema:**
   ```json
   {
-    "location": {"name": "Germany", "code": 2276},
+    "location": {"input": "Germany", "location_code": 2276, "location_name": "Germany"},
     "keyword_metrics": {
-      "ambulante pflege kosten": {
-        "search_volume": 1800,
-        "difficulty": 24,
-        "cpc": 2.45,
-        "intent": "commercial",
-        "priority_score": 85
-      }
+      "items": [
+        {
+          "keyword": "ambulante pflege kosten",
+          "search_volume": 1800,
+          "keyword_difficulty": 24,
+          "cpc": 2.45,
+          "intent": "commercial",
+          "opportunity_score": 85
+        }
+      ],
+      "requested_count": 2,
+      "returned_count": 1,
+      "missing_keywords": ["pflegedienst frankfurt preise"]
     },
     "markdown_summary": "Tabelle mit Kennzahlen..."
   }
   ```
-- **Validierung:** Pruefung auf 100%ige Vollstaendigkeit aller uebergebenen Keywords.
-- **Error-Handling:** Bei fehlendem Key, ungueltigem Token, Timeout oder erschoepftem Credit-Kontingent: Sofortiger STOPP mit strukturierter Fehlermeldung. Kein unsauberes Uebergehen oder Erraten von Suchvolumina.
+- **Validierung:** `location_name` in der Antwort muss dem Zielmarkt aus dem Manifest entsprechen, sonst `ERROR_LOCATION_MISMATCH`. Keywords aus `missing_keywords` werden verworfen und protokolliert, nicht mit 0 ersetzt und nicht in die CSV geschrieben.
+- **Error-Handling:** Bei fehlendem Key, ungueltigem Token, Timeout, `status: failed` oder erschoepftem Credit-Kontingent: Sofortiger STOPP mit strukturierter Fehlermeldung. Kein unsauberes Uebergehen oder Erraten von Suchvolumina.
 
 ---
 
 ### Tool 2: `capacity_matrix_solver`
-- **Zweck:** Exakte, mathematisch fehlerfreie Erstellung des 120-Tage-Plans (17 Wochen a 10-15 Std) unter Beruecksichtigung der Score-Priorisierungsformel und der Pflichtabdeckungs-Regel fuer lokale Landingpages.
+- **Zweck:** Exakte, mathematisch fehlerfreie Erstellung des 120-Tage-Plans (Horizont 17 Wochen, Obergrenze 15 Std pro Woche) unter Beruecksichtigung der Score-Priorisierungsformel und der Pflichtabdeckungs-Regel fuer lokale Landingpages.
 - **Workflow-Schritt:** Schritt 3 (`3-120-tage-plan.xml.md`)
 - **Ausfuehrungsumgebung:** Lokales Python-Script (`mcp/tools/capacity_matrix_solver.py`).
 - **Input-Schema:**
@@ -154,6 +192,8 @@ In dieser Produktionsarchitektur gibt es **keine stillschweigende Degradation** 
   ```json
   {
     "total_weeks": 17,
+    "active_weeks": 10,
+    "measured_hours_range": [9.0, 14.75],
     "allocated_items_count": 48,
     "backlog_items_count": 12,
     "weekly_schedule": [
@@ -175,8 +215,9 @@ In dieser Produktionsarchitektur gibt es **keine stillschweigende Degradation** 
     ]
   }
   ```
-- **Validierung:** Jede Woche muss strikt zwischen 10.0 und 15.0 Stunden liegen. Lokale Pflicht-Landingpages muessen prioritativ in Phase 1 und 2 platziert sein.
-- **Error-Handling:** Kann die Matrix nicht mathematisch geloest werden (z.B. zu wenige Items fuer Wochenkapazitaet oder ungueltige Stundenformate), wirft das Script einen Validierungsfehler mit exaktem Delta aus.
+- **Validierung:** Keine aktive Woche ueber 15.0 Stunden, das erzwingt das Script. Die Untergrenze von 10.0 Stunden ist ein Planungsziel und wird an Gate 3 manuell geprueft, der Plankopf weist die gemessene Spanne aus. Lokale Pflicht-Landingpages muessen prioritativ in Phase 1 und 2 platziert sein.
+- **Error-Handling:** Kann die Matrix nicht mathematisch geloest werden (z.B. ungueltige Stundenformate), wirft das Script einen Validierungsfehler mit exaktem Delta aus.
+- **Offener Punkt (17.08.2026):** Nicht platzierbare Items werden derzeit still verworfen, `backlog_items_count` ist noch nicht implementiert. Fehlende Metriken werden zu 0 statt zu `ERROR_DATA_INCOMPLETE`. Siehe CHANGELOG 1.3.0.
 
 ---
 
@@ -190,7 +231,8 @@ In dieser Produktionsarchitektur gibt es **keine stillschweigende Degradation** 
     "keyword": "ambulanter pflegedienst leistungen",
     "location": "Germany",
     "language": "de",
-    "outline_depth": "detailed"
+    "outline_depth": "detailed",
+    "sync": false
   }
   ```
 - **Output-Schema:**
@@ -212,6 +254,7 @@ In dieser Produktionsarchitektur gibt es **keine stillschweigende Degradation** 
   ```
 - **Validierung:** Gleicht die urspruenglich angenommene Intention mit den Live-Ergebnissen ab.
 - **Error-Handling:** Bei Fehlschlag der SERP-Analyse stoppt der Schritt mit `ERROR_SERP_FETCH_FAILED`. Keine Generierung von Briefings auf Basis unbestaetigter Annahmen.
+- **Bekannte Einschraenkung (17.08.2026):** `agentseo_content_serp_outline` akzeptiert keinen `location_code`. Mit `location: "Germany"` loeste das Tool auf `location_code: 1018023`, `location_name: "Many,Louisiana,United States"` auf und lieferte eine englische Platzhalter-Gliederung. Verwertbar sind ausschliesslich die SERP-Signale: rankende Domains, SERP-Features und Wettbewerbsniveau. Die Gliederung ist im Prompt selbst zu definieren.
 
 ---
 
@@ -238,11 +281,12 @@ In dieser Produktionsarchitektur gibt es **keine stillschweigende Degradation** 
   ```
 - **Output-Schema:** Valides `<script type="application/ld+json">` Array mit verknuepften `@graph`-Knoten.
 - **Error-Handling:** Bei unvollstaendigen Unternehmensdaten (z.B. fehlende Adresse bei LocalBusiness) wird der Block nicht unvollstaendig erzeugt, sondern als fehlendes Pflichtfeld gemeldet.
+- **Offener Punkt (17.08.2026):** Die lokale Gegenpruefung `mcp/tools/validate_schema_jsonld.py` hat noch keine Kommandozeilen-Schnittstelle. Bis dahin erfolgt die Pruefung ueber den Google Rich Results Test.
 
 ---
 
 ### Tool 5: `gsc_rank_tracker_sync`
-- **Zweck:** Abgleich veröffentlichter Inhalte mit echten Ranking-Daten aus Google Search Console oder AgentSEO Rank Tracker nach 30, 60 und 90 Tagen.
+- **Zweck:** Abgleich veroeffentlichter Inhalte mit echten Ranking-Daten aus Google Search Console oder AgentSEO Rank Tracker nach 30, 60 und 90 Tagen.
 - **Workflow-Schritt:** Schritt 3b (`3b-performance-check.xml.md`)
 - **Ausfuehrungsumgebung:** AgentSEO Remote MCP (`agentseo_rank_track` / `agentseo_local_visibility_track`) oder GSC-Export-Parsing.
 - **Input-Schema:**
@@ -270,6 +314,7 @@ In dieser Produktionsarchitektur gibt es **keine stillschweigende Degradation** 
 - **Zweck:** Identifikation von Hauptentitaeten, Nischen-Pillars und Content-Gaps gegenueber Wettbewerbern beim Projekt-Kickoff.
 - **Workflow-Schritt:** Schritt 1 (`1-pillar-identifikation.xml.md`)
 - **Ausfuehrungsumgebung:** AgentSEO Remote MCP (`agentseo_domain_competitors`, `agentseo_domain_intersection`, `agentseo_content_competitor_gap_matrix`).
+- **Hinweis (17.08.2026):** Fuer nicht indexierte Domains liefert `agentseo_domain_competitors` 0 Treffer und `decision: blocker`. In diesem Fall ist die Gap-Analyse ueber Live-SERP-Domains und Keyword-Ideen aufzubauen und der Umstand zu protokollieren, statt Wettbewerber zu erfinden.
 
 ---
 
@@ -278,7 +323,7 @@ In dieser Produktionsarchitektur gibt es **keine stillschweigende Degradation** 
   - `design_token_extractor`: Analysiert den hochgeladenen Full-Page-Screenshot in Schritt 1c und persistiert Farb-, Font- und Card-Tokens in `design-system.css`.
   - `visual_tree_builder`: Generiert die interaktive, eigenstaendige Menue-Hierarchie `1b-menuestruktur.html`.
 - **Workflow-Schritt:** Schritt 1b und Schritt 1c.
-- **Error-Handling:** Fehlt der Screenshot in 1c, stoppt Claude und fordert diesen zwingend ein (kein Erraten des Designs).
+- **Error-Handling:** Fehlt der Screenshot in 1c, stoppt Claude mit `ERROR_SCREENSHOT_MISSING` und fordert diesen zwingend ein (kein Erraten des Designs, kein Ueberspringen des Schritts).
 
 ---
 
@@ -304,9 +349,10 @@ Alle Produktions-Prompts (0 bis 4b) folgen einheitlich dieser XML-Hierarchie:
 
 <validation_rules>
   - Regel 1: Keine Halluzination von Suchvolumen (Strikter Stopp bei fehlenden Daten)
-  - Regel 2: Strikte Einhaltung der Wochenstunden (10-15h)
+  - Regel 2: Obergrenze von 15h pro aktiver Woche ist verbindlich, die Untergrenze von 10h wird an Gate 3 geprueft
   - Regel 3: Lokale Pflichtabdeckung vorrangig in Phase 1-2
   - Regel 4: Fail-Fast bei allen API- und Validierungsfehlern
+  - Regel 5: Zielmarkt immer als location plus location_code, AgentSEO-Aufrufe immer mit sync false
 </validation_rules>
 
 <output_format>

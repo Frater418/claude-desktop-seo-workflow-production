@@ -5,7 +5,8 @@ Autor: Raphael Rechberger
 Version: 1.2.0
 
 Deterministischer Kapazitaets- und Prioritaets-Solver fuer die Erstellung
-von 120-Tage-Roadmaps (17 Wochen a 10-15 Stunden/Woche).
+von 120-Tage-Roadmaps. Horizont 17 Wochen, Obergrenze 15 Stunden pro Woche.
+Die Untergrenze von 10 Stunden wird nicht erzwungen, die gemessene Spanne steht im Plankopf.
 Verhindert LLM-Arithmetik- und Rundungsfehler und generiert automatische Verlinkungs-Maps.
 """
 
@@ -184,7 +185,7 @@ def generate_internal_linking_map(weeks: list) -> str:
             
     return "\n".join(md)
 
-def generate_markdown_plan(weeks: list) -> str:
+def generate_markdown_plan(weeks: list, hours_min: float = 10.0, hours_max: float = 15.0) -> str:
     md = []
     total_hours = sum(w["hours"] for w in weeks)
     active_weeks = len([w for w in weeks if w["hours"] > 0])
@@ -192,7 +193,18 @@ def generate_markdown_plan(weeks: list) -> str:
     
     md.append("# 120-Tage-Content-Plan (Deterministisch geloest)\n")
     md.append(f"**Gesamtumfang:** {total_items} Content-Stuecke | **Gesamtaufwand:** {round(total_hours, 2)} Stunden ueber {active_weeks} aktive Wochen.\n")
-    md.append("**Kapazitaets-Garantie:** Jede aktive Woche liegt strikt zwischen 10.0 und 15.0 Arbeitsstunden.\n")
+    active = [w for w in weeks if w["hours"] > 0]
+    if active:
+        lo = min(w["hours"] for w in active)
+        hi = max(w["hours"] for w in active)
+        ok = lo >= hours_min and hi <= hours_max
+        md.append(
+            f"**Kapazitaets-Messung:** {len(active)} aktive Wochen, gemessen {lo:.2f}h bis {hi:.2f}h "
+            f"(Zielband {hours_min:.1f}h bis {hours_max:.1f}h). "
+            + ("Zielband eingehalten." if ok else "ACHTUNG: Zielband verlassen, siehe Gate 3.") + "\n"
+        )
+    else:
+        md.append("**Kapazitaets-Messung:** keine aktive Woche, es wurden keine Items verplant.\n")
     
     phases = {1: "Phase 1 (Tag 1-30) - Fundament & Skalierung",
               2: "Phase 2 (Tag 31-60) - Expansion & Local Authority",
@@ -206,7 +218,9 @@ def generate_markdown_plan(weeks: list) -> str:
         md.append(f"## {phases[p_num]}\n")
         
         if p_hours == 0:
-            md.append("*Puffer-Phase: Alle eingereichten Themen wurden in Phase 1-2 verplant. Bereit fuer Performance-Anpassung nach Tag 60.*\n")
+            belegt = sorted({w["phase"] for w in weeks if w["hours"] > 0})
+            belegt_txt = ", ".join(f"Phase {b}" for b in belegt) if belegt else "keiner Phase"
+            md.append(f"*Puffer-Phase: alle eingereichten Themen wurden in {belegt_txt} verplant. Reserve fuer die Performance-Anpassung aus Schritt 3b.*\n")
             continue
             
         md.append("| Woche | Content-Typ | Titel/Thema | Ziel-Keyword | Suchvolumen | KD | Aufwand (Std) | Prioritaet |")
@@ -247,7 +261,7 @@ def main():
     if args.json_out:
         out_content = json.dumps(weeks, indent=2, ensure_ascii=False)
     else:
-        out_content = generate_markdown_plan(weeks)
+        out_content = generate_markdown_plan(weeks, hours_min=args.hours_min, hours_max=args.hours_max)
         
     if args.output:
         out_path = Path(args.output)

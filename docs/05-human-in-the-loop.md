@@ -2,7 +2,7 @@
 
 **Projekt:** Modernisierung des Claude Desktop SEO-Workflows  
 **Autor:** Raphael Rechberger  
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 **Zweck:** Verbindlicher Leitfaden fuer manuelle Review- und Freigabepunkte im Workflow.  
 
 ---
@@ -35,6 +35,7 @@ Claude Desktop und die angebundenen Tools dienen als Hochleistungs-Beschleuniger
 [Schritt 4b] ------> GATE 6: HTML-Landingpage-QA (Frontend/Design)
                           |
 [Schritt 3b] ------> GATE 7: 30/60/90-Tage Performance-Review (Jesse/Raphael)
+                     zeitversetzter Zyklus, laeuft ab Tag 30 parallel zum Tagesgeschaeft
 ```
 
 ---
@@ -46,6 +47,7 @@ Claude Desktop und die angebundenen Tools dienen als Hochleistungs-Beschleuniger
   - Deckt die Pillar-Liste die tatsaechlichen Geschaeftsbereiche des Kunden ab?
   - Wurden die wichtigsten Wettbewerber-Content-Gaps identifiziert?
   - Sind die Cluster-Subthemen inhaltlich trennscharf (keine Kannibalisierungsrisiken)?
+  - Liegen pro Pillar 8 bis 15 Cluster vor? Gegenprobe: `clusters_per_pillar` im Manifest.
 - **Freigabe-Aktion:** Bestaetigung des Markdown-Outputs `outputs/1-pillar-themen.md` und Freigabe fuer Schritt 1b.
 
 ---
@@ -66,8 +68,10 @@ Claude Desktop und die angebundenen Tools dienen als Hochleistungs-Beschleuniger
 - **Reviewer:** Raphael Rechberger.
 - **Pruefkriterien:**
   - Wurden alle Seed-Keywords via AgentSEO mit echten Metriken angereichert?
+  - Stimmt `location_verified` im Manifest mit dem Zielmarkt des Kunden ueberein?
+  - Sind nicht zurueckgegebene Keywords in `logs/validation_errors.log` protokolliert statt geschaetzt?
   - Sind lokale Pflicht-Landingpages (auch bei Suchvolumen 0) fuer die Gebietsabdeckung korrekt markiert?
-  - Liegt die CSV-Datei `outputs/2-cluster-themen-agentseo.csv` vollstaendig vor?
+  - Liegt die CSV-Datei `outputs/2-cluster-themen-agentseo.csv` mit mindestens 25 Zeilen pro Pillar vor?
 - **Freigabe-Aktion:** Freigabe der CSV-Daten fuer den Kapazitaets-Solver in Schritt 3.
 
 ---
@@ -76,7 +80,7 @@ Claude Desktop und die angebundenen Tools dienen als Hochleistungs-Beschleuniger
 - **Position:** Nach Ausfuehrung von `3-120-tage-plan.xml.md` und `capacity_matrix_solver.py`.
 - **Reviewer:** Jesse Jensen & Raphael Rechberger.
 - **Pruefkriterien:**
-  - Entspricht jede der 17 Wochen exakt dem Budget von 10 bis 15 Stunden?
+  - Liegt jede aktive Woche im Budget von 10 bis 15 Stunden? Achtung: der Solver prueft nur die Obergrenze, die Untergrenze ist an diesem Gate manuell zu pruefen. Die Zeile `Kapazitaets-Messung` im Plankopf nennt die gemessene Spanne.
   - Sind lokale Money-Pages prioritativ in Phase 1 und 2 platziert?
   - Ist die interne Verlinkungs-Map (vertikal zu Pillar und horizontal zu Siblings) logisch und abwechslungsreich?
 - **Freigabe-Aktion:** Finale Abnahme der Roadmap `outputs/3-plan.md` und Uebernahme in Notion.
@@ -90,6 +94,7 @@ Claude Desktop und die angebundenen Tools dienen als Hochleistungs-Beschleuniger
   - Passt die Gliederung zur realen SERP-Wettbewerbstiefe?
   - Ist die Tonalitaet der Nische (YMYL, B2B, direkt) in den Formulierungsbeispielen getroffen?
   - Ist das Schema.org JSON-LD Markup fehlerfrei und vollstaendig?
+  - Sind Suchvolumen und Difficulty im Frontmatter belegt und nicht geschaetzt?
 - **Freigabe-Aktion:** Handoff an den Texter in Notion zur Ausformulierung.
 
 ---
@@ -106,7 +111,7 @@ Claude Desktop und die angebundenen Tools dienen als Hochleistungs-Beschleuniger
 ---
 
 ### Gate 7: 30/60/90-Tage Performance-Review
-- **Position:** Nach 30, 60 und 90 Tagen Laufzeit (`3b-performance-check.xml.md`).
+- **Position:** Nach 30, 60 und 90 Tagen Laufzeit (`3b-performance-check.xml.md`). Der Schritt laeuft zeitversetzt und nicht innerhalb der Erstsequenz 0 bis 4b.
 - **Reviewer:** Jesse Jensen & Raphael Rechberger.
 - **Pruefkriterien:**
   - Welche Seiten performen in den Top 20?
