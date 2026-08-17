@@ -19,6 +19,7 @@
 - [ADR-008: Zielmarkt ueber country und location_code statt ueber einen Ortsnamen](#adr-008-zielmarkt-ueber-country-und-location_code-statt-ueber-einen-ortsnamen)
 - [ADR-009: Asynchrone AgentSEO-Aufrufe als verbindliches Muster](#adr-009-asynchrone-agentseo-aufrufe-als-verbindliches-muster)
 - [ADR-010: Mengenregeln maschinenpruefbar im Manifest-Schema statt als Prosa im Prompt](#adr-010-mengenregeln-maschinenpruefbar-im-manifest-schema-statt-als-prosa-im-prompt)
+- [ADR-011: Generative Engine Optimization (GEO) & RAG Evidence Containers](#adr-011-generative-engine-optimization-geo--rag-evidence-containers)
 
 ---
 
@@ -108,3 +109,15 @@
 - **Beobachtung:** Prosa-Regeln in Prompts werden von einem Modell unter Ergebnisdruck gebogen, Schema-Regeln nicht.
 - **Entscheidung:** Jede Mengenregel wird am Ende ihres Schritts als Zahl in die `manifest.json` geschrieben und dort vom Schema geprueft. `phases.step_1_pillar_identification.clusters_per_pillar` erlaubt 8 bis 15 pro Pillar, `phases.step_2_cluster_research.validated_rows_per_pillar` verlangt mindestens 25 pro Pillar. `status` ist in jeder Phase Pflichtfeld.
 - **Konsequenzen:** Ein Schritt kann sich nicht mehr als `completed` eintragen, wenn die Zahlen nicht stimmen. Die Pruefung ist ohne Vertrauen in den ausfuehrenden Agenten nachvollziehbar. Weitere Zaehlregeln sind nach demselben Muster nachzuruesten, insbesondere fuer 1c und 4a.
+ 
+---
+ 
+### ADR-011: Generative Engine Optimization (GEO) & RAG Evidence Containers
+ 
+- **Kontext:** Empirische Studien aus 2026 (Ahrefs Maerz 2026 mit 863k Keywords, Zhang et al. arXiv:2604.25707) zeigen, dass nur noch 38% der Zitationen in Google AI Overviews aus den organischen Top-10 stammen. LLM-Reranker (Gemini 3, Perplexity, ClaudeBot) bewerten Text nach Information Gain (Google Patent US20200349181A1) und absorbieren bevorzugt geschlossene Passagen (130-160 Woerter) mit harten Datenpunkten und Tabellen.
+- **Entscheidung:**
+  1. Das Manifest-Schema fuehrt `geo_targets` (mit Pflichtfeld `primary_engines`) und `entities` (mit Wikidata-URIs via `sameAs`).
+  2. Der Kapazitaets-Solver (v1.3.0) unterstuetzt 4 neue GEO-Content-Typen (`Data-Hub`, `Entity-Anchor`, `Comparison-Table`, `FAQ-Hub`) und berechnet zweidimensionale Verlinkungs-Maps mit Zitations-Zweck.
+  3. Schritt 4a erzeugt ein Notion-kompatibles Frontmatter mit 50 bis 70 Woertern Hero-Direct-Answer, Evidence Containers (130-160 Woerter) und 15 bis 20 Semantic Triples.
+  4. Schema.org JSON-LD wird zwingend als `@graph` mit sauberer Trennung von `about` (Hauptkonzept mit Wikidata-URI) und `mentions` (sekundaere Entitaeten) modelliert und ueber `mcp/tools/validate_schema_jsonld.py --strict` CLI geprueft.
+- **Konsequenzen:** Der Workflow ist zu 100% zukunftssicher fuer AI Overviews, Perplexity und Claude Web Search aufgestellt, ohne die bestehende Dateipersistenz oder den Notion-Handoff zu brechen.
