@@ -1,0 +1,3 @@
+feature/e2e-operator-workflow-system
+9a5e45ac032e415b00b07ef45a6ad290b4a343d9
+https://github.com/Frater418/claude-desktop-seo-workflow-production.git

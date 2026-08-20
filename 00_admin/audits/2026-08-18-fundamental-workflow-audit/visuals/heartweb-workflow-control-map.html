@@ -2,378 +2,731 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Heartweb Workflow Control Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Heartweb Workflow Control Map - Integration Briefing</title>
   <style>
     :root {
-      color-scheme: light dark;
-      --fg: var(--foreground, #e8edf5);
-      --muted: var(--muted-foreground, #94a3b8);
-      --accent: var(--accent, #6ea8fe);
-      --border: var(--border, rgba(148,163,184,.28));
-      --card: var(--card, rgba(30,41,59,.55));
-      --ok: #22c55e;
-      --warn: #f59e0b;
-      --bad: #ef4444;
-      --info: #38bdf8;
-      --violet: #a78bfa;
-      --shadow: 0 10px 30px rgba(0,0,0,.12);
+      color-scheme: dark;
+      --bg: #07111f;
+      --bg-2: #0b1728;
+      --fg: #f4f7fb;
+      --muted: #9fb0c7;
+      --accent: #67a7ff;
+      --accent-2: #45d2c1;
+      --border: rgba(159, 176, 199, .22);
+      --card: rgba(17, 31, 51, .82);
+      --card-strong: #12223a;
+      --ok: #42d392;
+      --warn: #f7b955;
+      --bad: #ff6b7d;
+      --info: #62c8ff;
+      --violet: #b195ff;
+      --shadow: 0 18px 50px rgba(0, 0, 0, .26);
     }
     * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; color: var(--fg); font-family: inherit, system-ui, sans-serif; background: transparent; }
-    body { width: 100%; overflow-x: hidden; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--fg);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(61, 123, 220, .18), transparent 34rem),
+        radial-gradient(circle at 95% 8%, rgba(49, 201, 180, .11), transparent 31rem),
+        linear-gradient(180deg, var(--bg), var(--bg-2));
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+    }
     button { font: inherit; }
-    .shell { width: 100%; display: grid; gap: 14px; }
-    .hero { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 16px; align-items: start; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-    .hero h1 { margin: 0 0 5px; font-size: clamp(20px, 3vw, 30px); letter-spacing: -.025em; }
-    .hero p { margin: 0; color: var(--muted); max-width: 900px; line-height: 1.45; }
-    .chips { display: flex; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
-    .chip { border: 1px solid var(--border); border-radius: 999px; padding: 5px 9px; font-size: 12px; white-space: nowrap; background: color-mix(in srgb, var(--card) 85%, transparent); }
-    .chip.ok { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, var(--border)); }
-    .chip.warn { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 45%, var(--border)); }
-    .chip.bad { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 45%, var(--border)); }
-    .tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
-    .tab { border: 1px solid var(--border); color: var(--muted); background: transparent; border-radius: 8px; padding: 7px 10px; cursor: pointer; white-space: nowrap; }
-    .tab[aria-selected="true"] { color: var(--fg); border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); background: color-mix(in srgb, var(--accent) 13%, transparent); }
+    .shell { width: min(1520px, calc(100% - 30px)); margin: 0 auto; padding: 22px 0 48px; }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
+      align-items: start;
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(23, 44, 75, .92), rgba(11, 28, 48, .88));
+      box-shadow: var(--shadow);
+    }
+    .eyebrow { color: var(--accent-2); font-size: 11px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
+    .hero h1 { margin: 7px 0 8px; font-size: clamp(26px, 4vw, 44px); line-height: 1.03; letter-spacing: -.035em; }
+    .hero p { margin: 0; max-width: 980px; color: var(--muted); line-height: 1.55; font-size: 14px; }
+    .hero-side { display: grid; justify-items: end; gap: 12px; }
+    .chips { display: flex; justify-content: flex-end; gap: 7px; flex-wrap: wrap; max-width: 520px; }
+    .chip, .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      width: fit-content;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 9px;
+      background: rgba(7, 17, 31, .48);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .chip.ok, .badge.ok { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 42%, var(--border)); }
+    .chip.warn, .badge.warn { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 42%, var(--border)); }
+    .chip.info, .badge.info { color: var(--info); border-color: color-mix(in srgb, var(--info) 42%, var(--border)); }
+    .chip.violet, .badge.violet { color: var(--violet); border-color: color-mix(in srgb, var(--violet) 42%, var(--border)); }
+    .chip.bad, .badge.bad { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 42%, var(--border)); }
+    .hero-actions, .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .button, .tab {
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: rgba(9, 23, 40, .72);
+      color: var(--fg);
+      padding: 8px 11px;
+      cursor: pointer;
+    }
+    .button:hover, .tab:hover { border-color: color-mix(in srgb, var(--accent) 58%, var(--border)); }
+    .button.primary { background: color-mix(in srgb, var(--accent) 20%, rgba(9, 23, 40, .9)); border-color: color-mix(in srgb, var(--accent) 60%, var(--border)); }
+    .tabs {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      margin: 14px 0;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: rgba(7, 17, 31, .92);
+      backdrop-filter: blur(14px);
+      scrollbar-width: thin;
+    }
+    .tab { color: var(--muted); white-space: nowrap; font-size: 12px; }
+    .tab[aria-selected="true"] { color: var(--fg); background: color-mix(in srgb, var(--accent) 18%, transparent); border-color: color-mix(in srgb, var(--accent) 58%, var(--border)); }
     .panel { display: none; }
     .panel.active { display: grid; gap: 14px; }
-    .section-title { margin: 0; font-size: 16px; }
-    .subtle { color: var(--muted); font-size: 13px; line-height: 1.45; }
-    .card { border: 1px solid var(--border); background: color-mix(in srgb, var(--card) 82%, transparent); border-radius: 12px; padding: 12px; box-shadow: var(--shadow); }
-    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
-    .layer-map { display: grid; gap: 7px; }
-    .layer { display: grid; grid-template-columns: 145px minmax(0,1fr); gap: 10px; align-items: center; border: 1px solid var(--border); border-radius: 9px; padding: 9px; }
-    .layer strong { color: var(--accent); font-size: 13px; }
-    .layer span { color: var(--muted); font-size: 12px; line-height: 1.4; }
-    .flow-wrap { overflow-x: auto; padding: 3px 0 8px; scrollbar-width: thin; }
-    .flow { min-width: 1750px; display: flex; align-items: stretch; gap: 24px; padding: 4px; }
-    .step { position: relative; width: 170px; flex: 0 0 170px; border: 1px solid var(--border); border-top: 4px solid var(--muted); border-radius: 11px; padding: 10px; background: color-mix(in srgb, var(--card) 88%, transparent); }
-    .step:not(:last-child)::after { content: "->"; position: absolute; right: -22px; top: 48%; color: var(--muted); font-weight: 800; }
+    .grid-2, .grid-3, .grid-4 { display: grid; gap: 12px; }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      background: var(--card);
+      box-shadow: 0 8px 26px rgba(0, 0, 0, .13);
+    }
+    .card.emphasis { background: linear-gradient(145deg, rgba(27, 51, 85, .95), rgba(15, 34, 58, .94)); }
+    .card.ok { border-color: color-mix(in srgb, var(--ok) 38%, var(--border)); }
+    .card.warn { border-color: color-mix(in srgb, var(--warn) 40%, var(--border)); }
+    .card.info { border-color: color-mix(in srgb, var(--info) 38%, var(--border)); }
+    .card.violet { border-color: color-mix(in srgb, var(--violet) 38%, var(--border)); }
+    h2, h3 { letter-spacing: -.015em; }
+    .section-title { margin: 0 0 6px; font-size: 17px; }
+    .section-kicker { color: var(--accent-2); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .13em; }
+    .subtle, .card p { color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .card p { margin: 6px 0 0; }
+    .metric { font-size: 28px; line-height: 1; font-weight: 820; letter-spacing: -.04em; margin: 8px 0 4px; }
+    .metric.ok { color: var(--ok); }
+    .metric.warn { color: var(--warn); }
+    .metric.info { color: var(--info); }
+    .metric.violet { color: var(--violet); }
+    .callout {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      padding: 13px 14px;
+      border: 1px solid color-mix(in srgb, var(--accent) 42%, var(--border));
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--accent) 9%, var(--card));
+    }
+    .callout .mark { color: var(--accent); font-size: 18px; font-weight: 900; }
+    .callout strong { display: block; margin-bottom: 3px; }
+    .callout p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .ownership { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+    .owner {
+      min-height: 165px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(8, 20, 35, .52);
+    }
+    .owner .num { color: var(--accent); font-weight: 900; font-size: 11px; }
+    .owner h3 { margin: 7px 0 5px; font-size: 15px; }
+    .owner ul, .compact-list, .decision-list { margin: 7px 0 0; padding-left: 18px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .owner li + li, .compact-list li + li, .decision-list li + li { margin-top: 4px; }
+    .flow-wrap { overflow-x: auto; padding: 4px 1px 9px; scrollbar-width: thin; }
+    .flow { min-width: 1450px; display: flex; align-items: stretch; gap: 24px; padding: 4px; }
+    .step {
+      position: relative;
+      flex: 0 0 158px;
+      min-height: 160px;
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--muted);
+      border-radius: 12px;
+      padding: 10px;
+      background: rgba(8, 20, 35, .7);
+    }
+    .step:not(:last-child)::after { content: "->"; position: absolute; right: -21px; top: 46%; color: var(--muted); font-weight: 900; }
     .step.done { border-top-color: var(--ok); }
-    .step.current { border-top-color: var(--warn); box-shadow: 0 0 0 2px color-mix(in srgb, var(--warn) 18%, transparent); }
-    .step.pending { border-top-color: var(--muted); }
+    .step.current { border-top-color: var(--warn); box-shadow: 0 0 0 2px color-mix(in srgb, var(--warn) 16%, transparent); }
+    .step.pending { border-top-color: #64748b; }
     .step.post { border-top-color: var(--violet); }
-    .step .num { font-weight: 800; font-size: 12px; color: var(--accent); }
-    .step h3 { margin: 5px 0; font-size: 14px; }
-    .step p { margin: 4px 0; font-size: 11px; color: var(--muted); line-height: 1.35; }
-    .mini-status { display: inline-block; margin-top: 7px; border-radius: 999px; padding: 3px 6px; font-size: 10px; border: 1px solid var(--border); }
-    .done .mini-status { color: var(--ok); }
-    .current .mini-status { color: var(--warn); }
-    .post .mini-status { color: var(--violet); }
-    .sideflow { border-left: 4px solid var(--violet); }
-    .legend { display: flex; gap: 14px; flex-wrap: wrap; color: var(--muted); font-size: 12px; }
-    .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 4px; }
-    details { border: 1px solid var(--border); border-radius: 10px; background: color-mix(in srgb, var(--card) 72%, transparent); }
-    summary { cursor: pointer; padding: 10px 12px; font-weight: 700; font-size: 13px; }
-    details .detail-body { padding: 0 12px 12px; display: grid; gap: 8px; }
-    .kv { display: grid; grid-template-columns: 110px minmax(0,1fr); gap: 8px; font-size: 12px; line-height: 1.4; }
-    .kv b { color: var(--muted); }
-    .kv code { overflow-wrap: anywhere; }
-    code { color: color-mix(in srgb, var(--accent) 80%, var(--fg)); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .94em; }
+    .step .num { color: var(--accent); font-size: 10px; font-weight: 900; letter-spacing: .08em; }
+    .step h3 { margin: 7px 0 5px; font-size: 13px; }
+    .step p { margin: 4px 0; color: var(--muted); font-size: 10.5px; line-height: 1.4; }
+    .step .badge { margin-top: 8px; padding: 3px 6px; font-size: 9px; }
+    .timeline { display: grid; gap: 8px; }
+    .phase {
+      display: grid;
+      grid-template-columns: 110px 135px minmax(0, 1fr) 170px;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 10px;
+      background: rgba(8, 20, 35, .48);
+      font-size: 11px;
+    }
+    .phase strong { font-size: 12px; }
+    .phase .description { color: var(--muted); line-height: 1.4; }
+    .phase .next { color: var(--muted); text-align: right; }
+    .sync-loop {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(130px, 1fr));
+      gap: 20px;
+      overflow-x: auto;
+      padding: 5px 2px 10px;
+    }
+    .sync-node { position: relative; min-width: 130px; border: 1px solid var(--border); border-radius: 11px; padding: 11px; background: rgba(8, 20, 35, .68); font-size: 11px; line-height: 1.4; }
+    .sync-node:not(:last-child)::after { content: "->"; position: absolute; right: -17px; top: 44%; color: var(--muted); font-weight: 900; }
+    .sync-node strong { display: block; margin-bottom: 4px; color: var(--accent); }
     table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    th, td { border-bottom: 1px solid var(--border); padding: 8px 7px; text-align: left; vertical-align: top; line-height: 1.4; }
-    th { color: var(--muted); font-weight: 700; position: sticky; top: 0; background: color-mix(in srgb, var(--card) 96%, transparent); }
-    .table-wrap { overflow-x: auto; max-height: 640px; border: 1px solid var(--border); border-radius: 10px; }
-    .badge { display: inline-block; border-radius: 999px; border: 1px solid var(--border); padding: 2px 6px; font-size: 10px; }
-    .badge.block { color: var(--bad); }
-    .badge.human { color: var(--warn); }
-    .badge.machine { color: var(--info); }
-    .badge.partial { color: var(--warn); }
-    .badge.ready { color: var(--ok); }
-    .error-flow { display: grid; grid-template-columns: repeat(7, minmax(120px,1fr)); gap: 20px; align-items: stretch; overflow-x: auto; padding: 5px; }
-    .error-node { min-width: 140px; position: relative; padding: 10px; border: 1px solid var(--border); border-radius: 10px; background: color-mix(in srgb, var(--card) 82%, transparent); font-size: 12px; }
-    .error-node:not(:last-child)::after { content: "->"; position: absolute; right: -18px; top: 45%; color: var(--muted); }
-    .error-node.bad { border-color: color-mix(in srgb, var(--bad) 55%, var(--border)); }
-    .error-node.warn { border-color: color-mix(in srgb, var(--warn) 55%, var(--border)); }
-    .error-node.ok { border-color: color-mix(in srgb, var(--ok) 55%, var(--border)); }
-    .check-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; }
-    .check { border: 1px solid var(--border); border-radius: 9px; padding: 9px; display: grid; grid-template-columns: 22px 1fr; gap: 6px; }
-    .check .icon { color: var(--info); font-weight: 900; }
-    .check strong { font-size: 12px; display: block; }
-    .check small { color: var(--muted); line-height: 1.35; }
-    .issues { display: grid; gap: 7px; }
-    .issue { border-left: 4px solid var(--warn); padding: 8px 10px; background: color-mix(in srgb, var(--warn) 7%, transparent); border-radius: 7px; font-size: 12px; line-height: 1.4; }
-    .issue.p0 { border-left-color: var(--bad); background: color-mix(in srgb, var(--bad) 7%, transparent); }
-    .actions { display: flex; gap: 7px; flex-wrap: wrap; }
-    .action { border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border)); background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--fg); border-radius: 8px; padding: 7px 9px; cursor: pointer; }
-    @media (max-width: 850px) {
-      .hero { grid-template-columns: 1fr; }
+    th, td { padding: 8px 7px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; line-height: 1.4; }
+    th { position: sticky; top: 0; z-index: 1; color: var(--muted); background: var(--card-strong); font-weight: 760; }
+    tr:last-child td { border-bottom: 0; }
+    .table-wrap { overflow: auto; max-height: 690px; border: 1px solid var(--border); border-radius: 11px; }
+    code { color: color-mix(in srgb, var(--accent) 82%, var(--fg)); font: .94em ui-monospace, SFMono-Regular, Consolas, monospace; overflow-wrap: anywhere; }
+    .rule { height: 1px; background: var(--border); margin: 11px 0; }
+    .guardrail { border-left: 4px solid var(--bad); border-radius: 8px; padding: 9px 10px; background: color-mix(in srgb, var(--bad) 7%, transparent); font-size: 11px; line-height: 1.45; }
+    .guardrail.warn { border-left-color: var(--warn); background: color-mix(in srgb, var(--warn) 7%, transparent); }
+    .guardrail.ok { border-left-color: var(--ok); background: color-mix(in srgb, var(--ok) 7%, transparent); }
+    .guardrail + .guardrail { margin-top: 7px; }
+    details { border: 1px solid var(--border); border-radius: 10px; background: rgba(8, 20, 35, .48); }
+    summary { cursor: pointer; padding: 10px 12px; font-weight: 760; font-size: 12px; }
+    .detail-body { padding: 0 12px 12px; }
+    .kv { display: grid; grid-template-columns: 145px minmax(0, 1fr); gap: 10px; padding: 6px 0; font-size: 11px; line-height: 1.45; border-bottom: 1px solid rgba(159, 176, 199, .1); }
+    .kv:last-child { border-bottom: 0; }
+    .kv b { color: var(--muted); }
+    .legend { display: flex; flex-wrap: wrap; gap: 12px; color: var(--muted); font-size: 10px; }
+    .dot { display: inline-block; width: 8px; height: 8px; margin-right: 4px; border-radius: 50%; }
+    .meeting-output { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 11px; line-height: 1.45; }
+    .meeting-output:last-child { border-bottom: 0; }
+    .meeting-output .check { width: 22px; height: 22px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 6px; color: var(--accent); font-weight: 900; }
+    .footnote { color: var(--muted); font-size: 10px; line-height: 1.45; }
+    @media (max-width: 1080px) {
+      .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .ownership { grid-template-columns: 1fr; }
+      .phase { grid-template-columns: 90px 120px minmax(0, 1fr); }
+      .phase .next { grid-column: 2 / -1; text-align: left; }
+    }
+    @media (max-width: 760px) {
+      .shell { width: min(100% - 18px, 1520px); padding-top: 9px; }
+      .hero { grid-template-columns: 1fr; padding: 16px; }
+      .hero-side { justify-items: start; }
       .chips { justify-content: flex-start; }
-      .grid-2, .grid-3, .check-list { grid-template-columns: 1fr; }
-      .layer { grid-template-columns: 1fr; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .phase { grid-template-columns: 1fr; }
+      .phase .next { grid-column: auto; }
+      .kv { grid-template-columns: 1fr; }
+    }
+    @media print {
+      :root { color-scheme: light; --fg: #0f172a; --muted: #475569; --border: #cbd5e1; --card: #ffffff; --card-strong: #f1f5f9; }
+      body { background: white; }
+      .shell { width: 100%; padding: 0; }
+      .hero { background: #f8fafc; box-shadow: none; }
+      .tabs, .hero-actions { display: none; }
+      .panel { display: grid !important; gap: 12px; page-break-before: always; }
+      #briefing { page-break-before: auto; }
+      .card, details, .step, .sync-node, .phase { background: white; box-shadow: none; break-inside: avoid; }
+      .table-wrap { max-height: none; overflow: visible; }
+      th { position: static; }
     }
   </style>
 </head>
 <body>
-<div class="shell">
+<main class="shell">
   <header class="hero">
     <div>
-      <h1>Heartweb SEO/GEO Workflow Control Map</h1>
-      <p>Detailansicht der Domain-Vertraege, Artefakte, Quality Gates, Tool-Calls, Cross-Checks sowie Error- und Recovery-Pfade. Aktueller Pilot: AHD.</p>
+      <div class="eyebrow">Heartweb Operator Workflow System</div>
+      <h1>Workflow Control Map + Notion Integration Briefing</h1>
+      <p>Präsentationsansicht für Jesse und das Notion Automations-/Integrationsteam. Sie trennt klar zwischen bereits real implementiertem Local Core, lokal getesteten Simulatoren, laufender Schnittstellenarbeit und späteren Live-Anbindungen.</p>
     </div>
-    <div class="chips">
-      <span class="chip warn">Technik-Checkpoint A: Review-Fixes offen</span>
-      <span class="chip ok">AHD Step 0 + GATE-0: released</span>
-      <span class="chip ok">Host + OMO: 52/52</span>
-      <span class="chip warn">AHD Step 1: awaiting_gate</span>
-      <span class="chip bad">Reviews: REQUEST_CHANGES</span>
+    <div class="hero-side">
+      <div class="chips">
+        <span class="chip ok">Sprint 0-3 freigegeben</span>
+        <span class="chip ok">Sprint 4 A-D freigegeben</span>
+        <span class="chip ok">Stage D abgeschlossen</span>
+        <span class="chip ok">313 Tests Host + OMO</span>
+        <span class="chip info">Stand: 20.08.2026</span>
+      </div>
+      <div class="hero-actions">
+        <button class="button primary" data-open-tab="agenda">Meeting-Agenda öffnen</button>
+        <button class="button" onclick="window.print()">Drucken / PDF</button>
+      </div>
     </div>
   </header>
 
   <nav class="tabs" aria-label="Visualisierungsbereiche">
-    <button class="tab" aria-selected="true" data-tab="flow">1. Gesamtfluss</button>
-    <button class="tab" aria-selected="false" data-tab="outputs">2. Outputs</button>
-    <button class="tab" aria-selected="false" data-tab="gates">3. Quality Gates</button>
-    <button class="tab" aria-selected="false" data-tab="errors">4. Error + Recovery</button>
-    <button class="tab" aria-selected="false" data-tab="tools">5. Tool-Calls</button>
-    <button class="tab" aria-selected="false" data-tab="checks">6. Cross-Checks + Status</button>
+    <button class="tab" aria-selected="true" data-tab="briefing">1. Call Briefing</button>
+    <button class="tab" aria-selected="false" data-tab="flow">2. End-to-End-System</button>
+    <button class="tab" aria-selected="false" data-tab="notion">3. Notion-Datenmodell</button>
+    <button class="tab" aria-selected="false" data-tab="agenda">4. Integrationsagenda</button>
+    <button class="tab" aria-selected="false" data-tab="contracts">5. Verträge + Gates</button>
+    <button class="tab" aria-selected="false" data-tab="tools">6. Tools + Schnittstellen</button>
+    <button class="tab" aria-selected="false" data-tab="status">7. Status + Roadmap</button>
   </nav>
 
-  <section class="panel active" id="flow">
-    <div class="grid-2">
-      <div class="card">
-        <h2 class="section-title">Interne Technik-Ebene</h2>
-        <p class="subtle"><code>Repository-Audit -> Technik-Checkpoint A -> technische Step-1-Readiness</code></p>
-        <p class="subtle">Dieser Checkpoint ist kein Kundenschritt. Die finalen Reviews haben noch P0- und P1-Fixes geöffnet.</p>
-      </div>
-      <div class="card">
-        <h2 class="section-title">Eigentlicher Kundenworkflow</h2>
-        <p class="subtle"><code>Step 0 -> GATE-0 -> Step 1 -> GATE-1 -> Step 1b -> GATE-1B</code></p>
-        <p class="subtle">Aktuell steht AHD nach dem Step-1-Staging-Entwurf, aber noch vor der formellen GATE-1-Freigabe.</p>
-      </div>
-    </div>
-    <div class="card">
-      <h2 class="section-title">Zielsystem in vier Ebenen</h2>
-      <p class="subtle">Notion bleibt das zentrale operative Steuerelement. n8n orchestriert. Die Domain- und Transition-Services erzwingen Regeln. Grosse Dateien liegen im Artefaktspeicher.</p>
-      <div class="layer-map">
-        <div class="layer"><strong>Operator-Ebene</strong><span>Eigene UI + Notion: Kunden, Projekte, Gates, Tasks, Blocker, Verantwortliche, Artefaktlinks</span></div>
-        <div class="layer"><strong>Orchestrierung</strong><span>n8n: typisierte Subworkflows, Wait Gates, Concurrency, Retry, DLQ, Resume, Scheduling fuer 3b</span></div>
-        <div class="layer"><strong>Domain-Kontrolle</strong><span>Project v2, Workflowgraph, Transition Service, Approval Records, Quality-Gate-Registry, Evidence- und Claim-Policies</span></div>
-        <div class="layer"><strong>Tools + Daten</strong><span>DataForSEO, AgentSEO selektiv, Screaming Frog, GSC, GA4, GBP, Ahrefs, Solver, JSON-LD, Lighthouse, axe, Browser-QA</span></div>
-        <div class="layer"><strong>Persistenz</strong><span>Immutable Artefakte mit Run-ID, Revision, Parent-ID, SHA-256, Contract-Version und Evidence-Lineage</span></div>
-      </div>
+  <section class="panel active" id="briefing">
+    <div class="callout">
+      <div class="mark">01</div>
+      <div><strong>Das System in einem Satz</strong><p>Der lokale Heartweb Core schützt Workflowstatus, Freigaben, Revisionen und Artefakthashes. n8n orchestriert typisierte Arbeit. Notion wird die zentrale operative Oberfläche für Menschen, aber niemals die technische Statusautorität.</p></div>
     </div>
 
-    <div class="card">
-      <h2 class="section-title">Kanonischer Initialfluss</h2>
-      <p class="subtle">Jeder Pfeil erfordert freigegebenen Vorgaenger, Artefakt, Quality-Gate-Record und Status-Transition. Scrollen fuer den gesamten Ablauf.</p>
-      <div class="flow-wrap">
-        <div class="flow">
-          <article class="step done"><span class="num">STEP 0</span><h3>Kickoff + Project Contract</h3><p>Briefing -> Manifest + Project v2 + Gate-0 Records</p><p>Tools: Schema, Web-Preflight</p><span class="mini-status">AHD abgeschlossen</span></article>
-          <article class="step current"><span class="num">STEP 1</span><h3>Pillars + Topic Inventory</h3><p>Project v2 + Crawl + Evidence -> kanonisches JSON</p><p>Tools: Screaming Frog, Web-Evidence</p><span class="mini-status">AHD awaiting GATE-1</span></article>
-          <article class="step pending"><span class="num">STEP 1B</span><h3>Seitenarchitektur</h3><p>Topic Inventory -> URL-, Navigation-, Redirect- und Canonical-Modell</p><p>Gate: Architektur</p><span class="mini-status">gesperrt</span></article>
-          <article class="step pending"><span class="num">STEP 1C</span><h3>Design + Templates</h3><p>Architektur + Brand-Evidence -> Design Tokens + Page Specs</p><p>Tools: Browser, Visual QA</p><span class="mini-status">gesperrt</span></article>
-          <article class="step pending"><span class="num">STEP 2</span><h3>Keyword + SERP Research</h3><p>Hypothesen -> verifizierte Providerdaten</p><p>DataForSEO primär, AgentSEO selektiv</p><span class="mini-status">gesperrt</span></article>
-          <article class="step pending"><span class="num">STEP 3</span><h3>120-Tage-Plan</h3><p>Verifizierte Daten -> deterministischer Plan + Linkgraph</p><p>Tool: Capacity Solver</p><span class="mini-status">gesperrt</span></article>
-          <article class="step pending"><span class="num">STEP 4A</span><h3>Content Briefing</h3><p>Plan-Item + SERP Evidence + Claims -> Briefing + Schema</p><p>Gate: Redaktion + Compliance</p><span class="mini-status">gesperrt</span></article>
-          <article class="step pending"><span class="num">STEP 4B</span><h3>Page Spec + Staging</h3><p>Freigegebenes Briefing -> CMS-Paket + Preview</p><p>Tools: Lighthouse, axe, Crawl, Visual Diff</p><span class="mini-status">gesperrt</span></article>
-          <article class="step post"><span class="num">STEP 3B</span><h3>Performance Sideflow</h3><p>Nach Publikation an Tag 30, 60, 90</p><p>GSC + Conversion Evidence -> Adjustment Proposal</p><span class="mini-status">separater Zyklus</span></article>
+    <div class="grid-4">
+      <div class="card ok"><div class="section-kicker">Verifiziert</div><div class="metric ok">313</div><p>vollständige Tests auf Windows Python 3.11 und OMO Python 3.12</p></div>
+      <div class="card ok"><div class="section-kicker">Runtime</div><div class="metric ok">A-D</div><p>Sprint-4-Stages A, A2, B, C und D implementiert und freigegeben</p></div>
+      <div class="card info"><div class="section-kicker">Als Nächstes</div><div class="metric info">S5</div><p>Operator Console gegen die eingefrorene OpenAPI-Schnittstelle bauen</p></div>
+      <div class="card info"><div class="section-kicker">Live-Integrationen</div><div class="metric info">0</div><p>Notion und n8n sind derzeit bewusst nur transportgetreu lokal simuliert</p></div>
+    </div>
+
+    <div class="card emphasis">
+      <div class="section-kicker">Verantwortungsmodell</div>
+      <h2 class="section-title">Drei Systeme, drei klare Rollen</h2>
+      <div class="ownership">
+        <div class="owner">
+          <span class="num">01 - CORE</span>
+          <h3>Fachliche und technische Autorität</h3>
+          <ul><li>Workflowgraph und erlaubte Übergänge</li><li>Artefaktrevisionen, SHA-256 und Lineage</li><li>Quality Gates und Human Gates</li><li>Append-only Events und strukturierte Fehler</li><li>Reproduzierbare LLM Context Packages</li></ul>
+        </div>
+        <div class="owner">
+          <span class="num">02 - n8n</span>
+          <h3>Orchestrierung und Transport</h3>
+          <ul><li>Typisierte Commands dispatchen</li><li>Auf Gate- oder Task-Events warten</li><li>Retry, DLQ und Resume koordinieren</li><li>Tag 30, 60 und 90 terminieren</li><li>Nie selbst freigeben oder abschließen</li></ul>
+        </div>
+        <div class="owner">
+          <span class="num">03 - NOTION</span>
+          <h3>Operative Arbeitsoberfläche</h3>
+          <ul><li>Projekte, Tasks und Verantwortliche</li><li>Reviews, Blocker und Entscheidungen</li><li>Artefaktlinks und Fortschritt</li><li>Performance-Tracking</li><li>Änderungswünsche als Proposal, nicht als Statuswrite</li></ul>
         </div>
       </div>
-      <div class="legend">
-        <span><i class="dot" style="background:var(--ok)"></i>abgeschlossen</span>
-        <span><i class="dot" style="background:var(--warn)"></i>aktueller Gate-Status</span>
-        <span><i class="dot" style="background:var(--muted)"></i>gesperrt</span>
-        <span><i class="dot" style="background:var(--violet)"></i>Post-Publication-Sideflow</span>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-kicker">Schon real gebaut</div>
+        <h2 class="section-title">Was heute demonstrierbar ist</h2>
+        <ul class="compact-list">
+          <li>Kundenneutrale Daten-, Workflow-, Operator- und Integrationsverträge</li>
+          <li>Transition Service als einzige verbindliche Statusinstanz</li>
+          <li>Quality-Gate-Registry, Human-Gate-Bindung und Error Routing</li>
+          <li>Context Builder für reproduzierbare und revisionssichere LLM-Läufe</li>
+          <li>Lokale FastAPI, Workspace Registry und append-only Event Store</li>
+          <li>Notion-Projektionssimulator und n8n-Orchestrierungssimulator</li>
+          <li>Tenant-Isolation, Replay, Konflikte, Recovery, Retry und DLQ</li>
+        </ul>
+      </div>
+      <div class="card warn">
+        <div class="section-kicker">Noch nicht live</div>
+        <h2 class="section-title">Was offen und sauber markiert ist</h2>
+        <ul class="compact-list">
+          <li>Sprint 5: Operator Console als spezialisierte Workflowansicht</li>
+          <li>Live-Notion-Adapter, Authentifizierung und Sandbox-Workspace</li>
+          <li>Live-n8n-Workflows, Webhooks, Schedules und Betriebsmonitoring</li>
+          <li>AHD Golden Path ab Human Gate 1 durch Step 4b</li>
+          <li>Produktionsprovider und Performance-Daten für Tag 30, 60 und 90</li>
+        </ul>
       </div>
     </div>
 
     <div class="grid-2">
-      <details open><summary>Step 0: Kickoff</summary><div class="detail-body">
-        <div class="kv"><b>Inputs</b><span>Kundenbriefing, Domains, Wettbewerber-Seeds, Regionen, Services, Workstreams</span></div>
-        <div class="kv"><b>Output</b><span><code>manifest.json</code>, <code>project.v2.json</code>, Step-0 Run, Artifact, Approval, qgr</span></div>
-        <div class="kv"><b>Checks</b><span>Pflichtfelder, Service vs. Region vs. Workstream, Market Registry, Preflight-Reachability</span></div>
-        <div class="kv"><b>Gate</b><span><code>GATE-0</code>: externe Freigabe, warnings erlaubt, blocker nicht erlaubt</span></div>
-      </div></details>
-      <details open><summary>Step 1: Pillars und Themenarchitektur</summary><div class="detail-body">
-        <div class="kv"><b>Inputs</b><span>Project v2, freigegebenes Step-0-Artefakt, Crawl 004, Evidence Records, Wettbewerber-Snapshot</span></div>
-        <div class="kv"><b>Output</b><span>Kanonisches <code>topic-inventory.v1.json</code> plus abgeleitete Markdown-Ansicht</span></div>
-        <div class="kv"><b>AHD</b><span>5 Pillars, 40 Cluster-Hypothesen, SHA-256 gebunden, Status <code>awaiting_gate</code></span></div>
-        <div class="kv"><b>Gate</b><span><code>GATE-1</code>: noch nicht freigegeben. Step 1b bleibt blockiert.</span></div>
-      </div></details>
-      <details><summary>Step 2: Verifizierte Research-Daten</summary><div class="detail-body">
-        <div class="kv"><b>Provider</b><span>DataForSEO für skalierbare Rohdaten. AgentSEO nur bei passender Capability.</span></div>
-        <div class="kv"><b>Request</b><span>deployment_id, location, location_code, language, locale, device, budget, idempotency_key</span></div>
-        <div class="kv"><b>Response</b><span>Raw Payload, Provider Job-ID, Response-Hash, Geo-Assertion, Kosten</span></div>
-        <div class="kv"><b>Fail-fast</b><span>Kein Code, falsches Geo, Quota, Timeout oder fehlende Zeile -> strukturierter Blocker</span></div>
-      </div></details>
-      <details><summary>Step 4: Content bis Staging</summary><div class="detail-body">
-        <div class="kv"><b>4A</b><span>Claim Evidence, Reviewer Policy, SERP Evidence, JSON-LD-Level, Briefing Contract</span></div>
-        <div class="kv"><b>4B</b><span>CMS-neutrale Page Spec, Elementor/WordPress Adapter, Forms, Consent, Tracking</span></div>
-        <div class="kv"><b>Staging</b><span>Crawl, Lighthouse, axe, Visual Diff, Schema-Deduplizierung, Contenthash</span></div>
-        <div class="kv"><b>Deployment</b><span>Nur nach GATE-4B, Release Record und Rollback-Revision</span></div>
-      </div></details>
+      <div class="card">
+        <div class="section-kicker">Für den Call</div>
+        <h2 class="section-title">90-Sekunden-Erklärung</h2>
+        <ol class="decision-list">
+          <li>Wir haben zuerst einen kundenneutralen lokalen Core gebaut, damit keine Notion-Automation fachliche Regeln umgehen kann.</li>
+          <li>Jede fachliche Änderung erzeugt einen typisierten Command, wird im Core validiert und als Event protokolliert.</li>
+          <li>Notion zeigt akzeptierte Events als Projekte, Tasks, Gates, Reviews, Blocker und Performance-Daten.</li>
+          <li>Ein menschlicher Edit in Notion wird als Vorschlag zurück an den Core geschickt. Erst die akzeptierte Antwort wird wieder projiziert.</li>
+          <li>Heute müssen wir Notion-Struktur, Personenmapping, Feldverantwortung und Live-Transport festlegen.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <div class="section-kicker">Nicht verhandelbare Leitplanken</div>
+        <h2 class="section-title">Damit die Integration sicher bleibt</h2>
+        <div class="guardrail">Notion darf Status, Freigabe, Artefakthash oder Revision nicht direkt verbindlich ändern.</div>
+        <div class="guardrail">n8n darf keinen Gate-Entscheid erfinden und keinen Run selbst abschließen.</div>
+        <div class="guardrail warn">Doppelte und verspätete Events müssen idempotent und revisionsbewusst verarbeitet werden.</div>
+        <div class="guardrail ok">Operatoren arbeiten trotzdem primär in Notion. Technische Details bleiben hinter Links oder Spezialansichten.</div>
+      </div>
     </div>
   </section>
 
-  <section class="panel" id="outputs">
+  <section class="panel" id="flow">
     <div class="card">
-      <h2 class="section-title">Output-Verträge pro Workflow-Schritt</h2>
-      <p class="subtle">Strukturierte Artefakte sind die Source of Truth. Markdown, CSV und HTML sind Views oder Exporte.</p>
+      <div class="section-kicker">Produktaufbau</div>
+      <h2 class="section-title">Technischer Fortschritt bis zur Operator Console</h2>
+      <div class="timeline">
+        <div class="phase"><strong>Sprint 0-3</strong><span class="badge ok">abgeschlossen</span><span class="description">Foundation, Transition Service, Operator Records, Events und vollständige Step-0-bis-4b-Verträge</span><span class="next">freigegeben + gecheckpointet</span></div>
+        <div class="phase"><strong>Sprint 4 A</strong><span class="badge ok">abgeschlossen</span><span class="description">Notion-/n8n-Integrationsverträge, Projektionen, Retry und DLQ</span><span class="next">Feature-Branch gepusht</span></div>
+        <div class="phase"><strong>Sprint 4 A2</strong><span class="badge ok">abgeschlossen</span><span class="description">Logische Projektsessions, Context Packages, Worker Profiles und reproduzierbare LLM-Läufe</span><span class="next">Spec + Quality approved</span></div>
+        <div class="phase"><strong>Sprint 4 B</strong><span class="badge ok">abgeschlossen</span><span class="description">Local Workflow API, Workspace Registry, Repository und append-only Event Store</span><span class="next">terminal approved</span></div>
+        <div class="phase"><strong>Sprint 4 C</strong><span class="badge ok">abgeschlossen</span><span class="description">Notion- und n8n-Simulator mit Multi-Tenant-, Replay-, Recovery- und Performancepfaden</span><span class="next">terminal approved</span></div>
+        <div class="phase"><strong>Sprint 4 D</strong><span class="badge ok">abgeschlossen</span><span class="description">OpenAPI-Snapshot, generierte TypeScript-Typen und lokale API-/Simulator-Integration</span><span class="next">313 Tests grün</span></div>
+        <div class="phase"><strong>Sprint 5</strong><span class="badge info">als Nächstes</span><span class="description">Operator Console mit Timeline, Tasks, Reviews, Matrix und sicheren Aktionen</span><span class="next">baut gegen Stage D</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-kicker">Kundenworkflow</div>
+      <h2 class="section-title">Kanonischer Golden Path</h2>
+      <p class="subtle">Die Produktfoundation ist weiter als der AHD-Pilot. AHD bleibt bewusst an GATE-1, bis ein Mensch Step 1 freigibt.</p>
+      <div class="flow-wrap"><div class="flow">
+        <article class="step done"><span class="num">STEP 0</span><h3>Kickoff + Project Contract</h3><p>Briefing, Markt, Services, Regionen, Risiken</p><p>Output: Project V2 + Runtime Records</p><span class="badge ok">AHD released</span></article>
+        <article class="step current"><span class="num">STEP 1</span><h3>Pillars + Topic Inventory</h3><p>Crawl, Evidence, Wettbewerb, Themenhypothesen</p><p>Output: 5 Pillars + 40 Cluster</p><span class="badge warn">awaiting GATE-1</span></article>
+        <article class="step pending"><span class="num">STEP 1B</span><h3>Seitenarchitektur</h3><p>URLs, Navigation, Canonicals, Redirects und interne Links</p><span class="badge">durch GATE-1 gesperrt</span></article>
+        <article class="step pending"><span class="num">STEP 1C</span><h3>Design + Templates</h3><p>Brand Evidence, Design Tokens, Komponenten und Page Specs</p><span class="badge">ausstehend</span></article>
+        <article class="step pending"><span class="num">STEP 2</span><h3>Keyword + SERP Research</h3><p>Geo-korrekte, providergebundene Rohdaten und Evidence</p><span class="badge">ausstehend</span></article>
+        <article class="step pending"><span class="num">STEP 3</span><h3>120-Tage-Plan</h3><p>Deterministische Kapazitätsmatrix, Linkgraph und Backlog</p><span class="badge">ausstehend</span></article>
+        <article class="step pending"><span class="num">STEP 4A</span><h3>Content Briefing</h3><p>Claim Ledger, Evidence, JSON-LD und Copywriter-Briefing</p><span class="badge">ausstehend</span></article>
+        <article class="step pending"><span class="num">STEP 4B</span><h3>Page + Staging</h3><p>CMS-Paket, Preview, Crawl, Accessibility und Release</p><span class="badge">ausstehend</span></article>
+        <article class="step post"><span class="num">STEP 3B</span><h3>Performance Sideflow</h3><p>Messung und Adjustment Proposal nur nach Veröffentlichung</p><span class="badge violet">Tag 30 / 60 / 90</span></article>
+      </div></div>
+    </div>
+
+    <div class="card">
+      <div class="section-kicker">Reproduzierbarer LLM-Lauf</div>
+      <h2 class="section-title">Stateful Project, stateless Worker</h2>
+      <div class="sync-loop">
+        <div class="sync-node"><strong>1. Projektstatus</strong>Project V2, aktuelle Revision, freigegebene Vorgänger</div>
+        <div class="sync-node"><strong>2. Context Builder</strong>Wählt nur erlaubte Quellen und prüft exakte Bytes</div>
+        <div class="sync-node"><strong>3. Versiegeltes Paket</strong>Promptversion, Evidence, Outputschema und SHA-256</div>
+        <div class="sync-node"><strong>4. LLM Worker</strong>Neue technische Session ist jederzeit zulässig</div>
+        <div class="sync-node"><strong>5. Ergebnisprüfung</strong>Output, Hash, Claims, Schema und Gate-Ergebnis</div>
+        <div class="sync-node"><strong>6. Neue Revision</strong>Append-only Event, Artefaktversion und nachvollziehbare Lineage</div>
+      </div>
+      <p class="footnote">Providerthreads sind optionaler Cache. Der kanonische Projektkontext liegt in versionierten Records und Artefakten, nicht in einem alten Chat.</p>
+    </div>
+  </section>
+
+  <section class="panel" id="notion">
+    <div class="callout">
+      <div class="mark">N</div>
+      <div><strong>Notion-Zielbild</strong><p>Notion wird Jesses zentrale operative Firmenoberfläche. Die folgende Liste beschreibt logische Datendomänen. Ob daraus 6, 8 oder 12 physische Notion-Datenbanken werden, ist eine gemeinsame Integrationsentscheidung.</p></div>
+    </div>
+
+    <div class="card">
+      <div class="section-kicker">Vorgeschlagenes logisches Datenmodell</div>
+      <h2 class="section-title">Was nach Notion projiziert oder dort operativ ergänzt wird</h2>
       <div class="table-wrap"><table>
-        <thead><tr><th>Schritt</th><th>Kanonischer Input</th><th>Kanonischer Output</th><th>Abgeleitete Ansicht</th><th>Status nach Ausführung</th></tr></thead>
+        <thead><tr><th>Domäne</th><th>Aus dem Core nach Notion</th><th>In Notion editierbar</th><th>Wichtige Relationen</th></tr></thead>
         <tbody>
-          <tr><td>0</td><td>Briefing + Preflight</td><td><code>project.v2.json</code> + Runtime Records</td><td>Operator Summary</td><td><code>awaiting GATE-0</code> -> released</td></tr>
-          <tr><td>1</td><td>Project v2 + Step-0 Release + Crawl + Evidence</td><td><code>step-1-topic-inventory.schema.json</code> Instanz</td><td><code>1-pillar-themen.md</code></td><td><code>awaiting_gate</code></td></tr>
-          <tr><td>1b</td><td>Freigegebenes Topic Inventory</td><td>URL Architecture JSON + Decisions</td><td>Menübaum Markdown/HTML</td><td><code>awaiting_gate</code></td></tr>
-          <tr><td>1c</td><td>Architecture + Brand Evidence</td><td>Design Token JSON + Component/Page Specs</td><td>CSS + Preview HTML</td><td><code>awaiting_gate</code></td></tr>
-          <tr><td>2</td><td>Cluster-Hypothesen + Provider Request</td><td>Providerneutrales Keyword Evidence Dataset</td><td>CSV Export</td><td><code>awaiting_gate</code></td></tr>
-          <tr><td>3</td><td>Verifizierte Keyword Evidence + Capacity Policy</td><td>Plan JSON + Linkgraph + Backlog</td><td><code>3-plan.md</code></td><td><code>awaiting_gate</code></td></tr>
-          <tr><td>4a</td><td>Plan Item + Claims + SERP Evidence</td><td>Briefing JSON + Claim Ledger + JSON-LD</td><td>Notion-/Copywriter-Markdown</td><td><code>awaiting_gate</code></td></tr>
-          <tr><td>4b</td><td>Freigegebenes Briefing + Design/CMS Contract</td><td>Page Spec + CMS Package + Deployment Record</td><td>Preview HTML</td><td><code>staging_verified</code></td></tr>
-          <tr><td>3b</td><td>Measurement Plan + GSC/GA4/GBP Evidence</td><td>Immutable Adjustment Proposal</td><td>Performance Report</td><td>neue Planrevision erst nach Gate</td></tr>
+          <tr><td><strong>Kunden</strong></td><td>tenant_id, Name, aktive Projekte, Marktübersicht</td><td>Account-Notizen, Ansprechpartner, interne Labels</td><td>Projekte, Verantwortliche</td></tr>
+          <tr><td><strong>Projekte</strong></td><td>project_id, aktueller Run, Phase, Health, nächste zulässige Aktion</td><td>Owner, Priorität, Zieltermine, operative Notizen</td><td>Kunde, Runs, Tasks, Artefakte</td></tr>
+          <tr><td><strong>Workflow Runs</strong></td><td>run_id, Step, Revision, Status, Blocker, nächste Transition</td><td>keine verbindliche Statusänderung</td><td>Projekt, Steps, Gates, Events</td></tr>
+          <tr><td><strong>Steps + Gates</strong></td><td>Stepstatus, GATE-ID, qg/qgr, Artefakthash, Reviewstatus</td><td>Reviewkommentar und Entscheidungsabsicht</td><td>Run, Artefakt, Approval, Reviewer</td></tr>
+          <tr><td><strong>Tasks + Assignments</strong></td><td>task_id, Typ, Status, Blockerbezug, Quelle</td><td>Assignee, Rolle, Due Date, Priorität, Kommentar</td><td>Projekt, Step, Person, Blocker</td></tr>
+          <tr><td><strong>Blocker + Defects</strong></td><td>Errorcode, Severity, Remediation, Ownerklasse, Status</td><td>Bearbeitungsnotiz, vorgeschlagene Resolution</td><td>Run, Step, Task, Escalation</td></tr>
+          <tr><td><strong>Reviews + Approvals</strong></td><td>review_id, aktuelle Revision, Hash, Policy, benötigter Reviewer</td><td>approve/reject/revision als Proposal</td><td>Gate, Artefakt, Person, Findings</td></tr>
+          <tr><td><strong>Artefakte + Revisionen</strong></td><td>artifact_id, Typ, Revision, Hash, Parent, freigegebener Zustand</td><td>Titel, Beschreibung, fachliche Tags</td><td>Run, Step, Evidence, Review</td></tr>
+          <tr><td><strong>Performance</strong></td><td>Checkpoint Tag 30/60/90, Metriken, Confidence, Evidence</td><td>Analysekommentar, vorgeschlagene Aktion</td><td>Projekt, Plan, Adjustment Proposal</td></tr>
+          <tr><td><strong>Integration Status</strong></td><td>source_event_id, source_revision, delivery, retry, conflict, DLQ</td><td>Triage-Owner und Resolution-Notiz</td><td>Event, Projekt, Task, n8n Run</td></tr>
         </tbody>
       </table></div>
     </div>
+
     <div class="grid-3">
-      <div class="card"><strong>Artifact Record</strong><p class="subtle">artifact_id, tenant_id, project_id, run_id, step_id, revision, parent IDs, input_hash, content_sha256, contract_version, producer_version, storage_key</p></div>
-      <div class="card"><strong>Evidence Record</strong><p class="subtle">evidence_id, source_type, publisher, source_ref, retrieved_at, jurisdiction, content_sha256, recorded_by</p></div>
-      <div class="card"><strong>Approval Record</strong><p class="subtle">approval_id, GATE-ID, artifact ID, hash, revision, policy, reviewer, decision, timestamps</p></div>
+      <div class="card ok"><h2 class="section-title">Core-owned</h2><p>Status, Revision, Artefakthash, Gate-Gültigkeit, Workflowgraph, Releases, Evidence-Lineage, Errorcodes und append-only Events.</p></div>
+      <div class="card info"><h2 class="section-title">Notion-owned</h2><p>Operative Personenzuweisung, Due Date, Priorität, Kommentare, Ansichten, Meetingkontext und interne Managementfelder.</p></div>
+      <div class="card violet"><h2 class="section-title">Synchronisiert</h2><p>Projektfortschritt, Tasks, Reviews, Blocker, Artefaktlinks, Performance und akzeptierte Vorschläge mit source_event_id.</p></div>
+    </div>
+
+    <div class="card">
+      <div class="section-kicker">Bidirektionaler Kontrollkreis</div>
+      <h2 class="section-title">So wird ein Notion-Edit sicher verarbeitet</h2>
+      <div class="sync-loop">
+        <div class="sync-node"><strong>1. Core Event</strong>Akzeptierter fachlicher Zustand</div>
+        <div class="sync-node"><strong>2. Projector</strong>Idempotente Notion-Projektion</div>
+        <div class="sync-node"><strong>3. Mensch</strong>Kommentar, Assignment oder Entscheidung</div>
+        <div class="sync-node"><strong>4. Proposal</strong>Notion-Edit wird typisierter Vorschlag</div>
+        <div class="sync-node"><strong>5. Core Validation</strong>Revision, Hash, Gate und Rechte werden geprüft</div>
+        <div class="sync-node"><strong>6. Reprojection</strong>Akzeptiert, abgelehnt oder Konflikt sichtbar</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <details open><summary>Minimalfelder für jede projizierte Notion-Entität</summary><div class="detail-body">
+        <div class="kv"><b>Identität</b><span><code>tenant_id</code>, <code>project_id</code>, fachliche Objekt-ID</span></div>
+        <div class="kv"><b>Provenienz</b><span><code>source_event_id</code>, <code>source_revision</code>, <code>correlation_id</code></span></div>
+        <div class="kv"><b>Autorität</b><span><code>state_authority: transition_service</code>, <code>atomic_state_writer: false</code></span></div>
+        <div class="kv"><b>Synchronisation</b><span>letzter Sync, Delivery State, Konfliktstatus, Idempotency-Key</span></div>
+      </div></details>
+      <details open><summary>Artefakte in Notion</summary><div class="detail-body">
+        <div class="kv"><b>Notion speichert</b><span>Metadaten, Vorschau, Reviewstatus und kontrollierten Link</span></div>
+        <div class="kv"><b>Artefaktspeicher</b><span>Kanonische JSON-, CSV-, HTML-, Evidence- und Reportdateien</span></div>
+        <div class="kv"><b>Nicht zulässig</b><span>In Notion bearbeitete Kopie als stiller Ersatz für das kanonische Artefakt</span></div>
+      </div></details>
     </div>
   </section>
 
-  <section class="panel" id="gates">
+  <section class="panel" id="agenda">
     <div class="grid-2">
-      <div class="card"><h2 class="section-title">Drei verschiedene Gate-Identitäten</h2><p class="subtle"><code>GATE-*</code> = Human Gate. <code>qg-*</code> = Quality-Gate-Definition. <code>qgr-*</code> = konkrete Ausführung mit Artifact-Hash.</p></div>
-      <div class="card"><h2 class="section-title">Gate-Regel</h2><p class="subtle">Ein grüner Tool-Call reicht nicht. Der qgr muss zum richtigen Tenant, Run, Step, Artefakt, Hash und Policy-Stand passen.</p></div>
+      <div class="card emphasis">
+        <div class="section-kicker">Heute entscheiden</div>
+        <h2 class="section-title">Empfohlene Meeting-Agenda</h2>
+        <ol class="decision-list">
+          <li>Bestehende Notion-Struktur und aktuelle Datenbanken zeigen lassen.</li>
+          <li>Logische Heartweb-Domänen auf bestehende oder neue Datenbanken mappen.</li>
+          <li>Personen-, Rollen- und Verantwortlichenmodell definieren.</li>
+          <li>Core-owned, Notion-owned und synchronisierte Felder festlegen.</li>
+          <li>Human-Gate- und Review-Bedienung in Notion festlegen.</li>
+          <li>Sandbox, Auth, Webhooks, n8n-Verantwortung und Betriebsweg klären.</li>
+          <li>Ersten Sandbox-Vertical-Slice auswählen.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <div class="section-kicker">Empfohlener Pilot</div>
+        <h2 class="section-title">Erster Notion-Vertical-Slice</h2>
+        <p>Nicht sofort alles anbinden. Zuerst einen vollständigen, sichtbaren Kontrollkreis:</p>
+        <div class="rule"></div>
+        <p><code>Project -> Run -> Step -> Task -> GATE-1 Review -> Revision Request -> Core Validation -> Event -> aktualisierte Notion-Projektion</code></p>
+        <div class="rule"></div>
+        <p class="footnote">Damit testen wir Identität, Relationen, Human Review, Konflikte, Reprojection und Operatorverständlichkeit in einem einzigen Flow.</p>
+      </div>
     </div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Quality Gate</th><th>Schritt</th><th>Tool</th><th>Pflichtnachweis</th><th>Failure</th></tr></thead>
-      <tbody>
-        <tr><td><code>qg-domain-contract</code></td><td>alle</td><td>jsonschema</td><td>Geschlossene Schemas, IDs, References, SHA-256</td><td><code>ERROR_DOMAIN_CONTRACT_INVALID</code></td></tr>
-        <tr><td><code>qg-step1-crawl-snapshot</code></td><td>1</td><td>Screaming Frog</td><td>Crawl, Exporte, Hashes, kein URL-Limit</td><td><code>ERROR_STEP1_CRAWL_EVIDENCE_INVALID</code></td></tr>
-        <tr><td><code>qg-step1-independent-search-verification</code></td><td>1</td><td>Ahrefs/GSC</td><td>Nur wenn konfiguriert, sonst explizit N/A oder blocker</td><td><code>ERROR_STEP1_INDEPENDENT_EVIDENCE_UNAVAILABLE</code></td></tr>
-        <tr><td><code>qg-gate1-artifact-approval</code></td><td>1</td><td>Transition Service</td><td>Externe Approval-Bindung an aktuelle Revision</td><td><code>ERROR_GATE1_APPROVAL_INVALID</code></td></tr>
-        <tr><td><code>qg-step2-provider-evidence</code></td><td>2</td><td>DataForSEO/AgentSEO</td><td>Geo, Raw Hash, Job-ID, Kosten, Idempotenz</td><td><code>ERROR_PROVIDER_EVIDENCE_INVALID</code></td></tr>
-        <tr><td><code>qg-step3-deterministic-plan</code></td><td>3</td><td>Capacity Solver</td><td>Pflichtmetriken, Content Types, Backlog, Capacity</td><td><code>ERROR_PLAN_SOLVER_INVALID</code></td></tr>
-        <tr><td><code>qg-step4a-claims-and-schema</code></td><td>4a</td><td>JSON-LD + Evidence + Rich Results</td><td>Claim Ledger, Validator-Level, Reviewer</td><td><code>ERROR_BRIEFING_EVIDENCE_OR_SCHEMA_INVALID</code></td></tr>
-        <tr><td><code>qg-step4b-staging-technical</code></td><td>4b</td><td>Crawl, Lighthouse, axe, Visual Diff</td><td>Keine kritischen Stagingfehler</td><td><code>ERROR_STAGING_TECHNICAL_QA_FAILED</code></td></tr>
-        <tr><td><code>qg-performance-measurement</code></td><td>3b</td><td>GSC, GA4, GBP, Ahrefs</td><td>Baseline, Fenster, Vollständigkeit, Confidence</td><td><code>ERROR_PERFORMANCE_EVIDENCE_INVALID</code></td></tr>
-      </tbody>
-    </table></div>
+
     <div class="card">
-      <h2 class="section-title">Wichtig: aktuell offene Gate-Lücke</h2>
-      <p class="subtle">Die Reviews verlangen noch eine versionierte Crawl-Disposition-Policy. Ein interner 4xx darf nicht automatisch unter einem grünen Crawlstatus verschwinden. Er muss blockieren oder eine explizite Waiver-Entscheidung erhalten.</p>
+      <div class="section-kicker">Entscheidungsmatrix</div>
+      <h2 class="section-title">Fragen an Jesse und das Integrationsteam</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Thema</th><th>Empfehlung Heartweb</th><th>Was das Team liefern/entscheiden muss</th><th>Ergebnis des Calls</th></tr></thead>
+        <tbody>
+          <tr><td><strong>System of Record</strong></td><td>Core für Status, Gates, Revisionen und Hashes. Notion für operative Arbeit.</td><td>Bestätigung, dass keine Notion-Automation Canonical State direkt schreibt.</td><td>Owner + Entscheidung</td></tr>
+          <tr><td><strong>Notion-Topologie</strong></td><td>Logische Domänen zuerst, physische DB-Anzahl nach vorhandener Struktur.</td><td>Aktuelle Datenbanken, Relationsmodell und Templates zeigen.</td><td>Mapping-Entwurf</td></tr>
+          <tr><td><strong>Personenmapping</strong></td><td>Stabile interne person_id plus Notion User/Page ID.</td><td>Jesse, Raphael, Copywriter, Designer, Developer, Reviewer und Teams zuordnen.</td><td>User-Mapping-Liste</td></tr>
+          <tr><td><strong>Statusfelder</strong></td><td>Corestatus read-only projizieren. Operative Substatus separat.</td><td>Bestehende Statusoptionen und gewünschte Managementansichten definieren.</td><td>Status-Mapping</td></tr>
+          <tr><td><strong>Human Gates</strong></td><td>Reviewformular erzeugt Proposal. Core akzeptiert oder lehnt revisionsgebunden ab.</td><td>Reviewerrollen, Entscheidungs-UX, Kommentar- und Deadlinefelder wählen.</td><td>Gate-UX</td></tr>
+          <tr><td><strong>Tasks</strong></td><td>Core erzeugt fachliche Tasks, Notion verwaltet operative Zuweisung und Termin.</td><td>Bestehendes Tasksystem, Pflichtfelder, Views und Eskalationsregeln zeigen.</td><td>Task Contract</td></tr>
+          <tr><td><strong>Artefakte</strong></td><td>Notion zeigt Metadaten und Links, nicht kanonische Dateikopien.</td><td>Gewünschte Vorschauen, Dateispeicher und Zugriffsmodell definieren.</td><td>Storage Mapping</td></tr>
+          <tr><td><strong>Automationsgrenze</strong></td><td>Notion-Automations für UI-nahe Hinweise, n8n für Transport, Retry und Scheduling.</td><td>Bestehende Automations, n8n-Konventionen und Monitoring erklären.</td><td>Ownership Matrix</td></tr>
+          <tr><td><strong>Webhooks</strong></td><td>Signiert, idempotent, correlation_id, mindestens einmalige Zustellung.</td><td>Webhookfähigkeit, Limits, Retryverhalten und Authweg bestätigen.</td><td>Transport Contract</td></tr>
+          <tr><td><strong>Konflikte</strong></td><td>Neuere Core-Revision gewinnt. Staler Notion-Edit bleibt als sichtbarer Konflikt.</td><td>Konfliktansicht, Triage-Owner und Benachrichtigung definieren.</td><td>Conflict UX</td></tr>
+          <tr><td><strong>Umgebungen</strong></td><td>Sandbox und Produktion strikt trennen.</td><td>Sandbox-Workspace, Integration Owner und späteren Credential-Prozess festlegen.</td><td>Environment Plan</td></tr>
+          <tr><td><strong>30/60/90</strong></td><td>n8n terminiert, Core validiert, Notion zeigt Checkpoint und Adjustment Proposal.</td><td>Managementansicht, KPI-Owner und Reviewrhythmus festlegen.</td><td>Performance View</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-kicker">Benötigte Inputs vom Team</div>
+        <h2 class="section-title">Technische und operative Übergabe</h2>
+        <div class="meeting-output"><span class="check">1</span><span>Export oder Bildschirmtour der bestehenden Notion-Datenbanken, Properties, Relations und Views</span></div>
+        <div class="meeting-output"><span class="check">2</span><span>Liste der Notion User, Teams, Rollen und bisherigen Verantwortlichenlogik</span></div>
+        <div class="meeting-output"><span class="check">3</span><span>Bestehende n8n-Workflows, Namenskonventionen, Environments und Fehlerkanäle</span></div>
+        <div class="meeting-output"><span class="check">4</span><span>Entscheidung zu Sandbox, Integration Owner und Testprojekt</span></div>
+        <div class="meeting-output"><span class="check">5</span><span>API-/Webhook-Limits, Authmethode und Security-Prozess, ohne Credentials im Meetingdokument</span></div>
+      </div>
+      <div class="card">
+        <div class="section-kicker">Definition of Done für den Call</div>
+        <h2 class="section-title">Mit diesen Ergebnissen ist der Termin erfolgreich</h2>
+        <div class="meeting-output"><span class="check">A</span><span>Bestätigtes Authority-Modell: Core, n8n und Notion</span></div>
+        <div class="meeting-output"><span class="check">B</span><span>Erstes Datenbank- und Relationsmapping</span></div>
+        <div class="meeting-output"><span class="check">C</span><span>Personen-/Rollenmapping und Gate-Reviewer</span></div>
+        <div class="meeting-output"><span class="check">D</span><span>Ausgewählter Sandbox-Vertical-Slice mit Ownern</span></div>
+        <div class="meeting-output"><span class="check">E</span><span>Nächster technischer Termin oder Handoff mit benötigten Zugängen</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-kicker">Einführungsfolge</div>
+      <h2 class="section-title">Empfohlene Live-Integration in fünf kontrollierten Schritten</h2>
+      <div class="timeline">
+        <div class="phase"><strong>Phase 1</strong><span class="badge ok">lokal fertig</span><span class="description">Transportgetreue Notion-/n8n-Verträge und Simulatoren</span><span class="next">keine externen Credentials</span></div>
+        <div class="phase"><strong>Phase 2</strong><span class="badge info">Sandbox</span><span class="description">Core Events read-only in Notion spiegeln</span><span class="next">Projection only</span></div>
+        <div class="phase"><strong>Phase 3</strong><span class="badge info">Human Loop</span><span class="description">Assignments, Reviews und Revision Requests als Proposals zurückführen</span><span class="next">kein direkter Statuswrite</span></div>
+        <div class="phase"><strong>Phase 4</strong><span class="badge violet">n8n Live</span><span class="description">Dispatch, Wait, Retry, DLQ, Resume und Alerts aktivieren</span><span class="next">Monitoring + Runbook</span></div>
+        <div class="phase"><strong>Phase 5</strong><span class="badge violet">Performance</span><span class="description">30/60/90 Checkpoints, Metriken und Adjustment Proposals</span><span class="next">Managementzyklus</span></div>
+      </div>
     </div>
   </section>
 
-  <section class="panel" id="errors">
-    <div class="card">
-      <h2 class="section-title">Fail-fast Error- und Recovery-Pfad</h2>
-      <div class="error-flow">
-        <div class="error-node">1. Command<br><small>tenant, project, step, revision, idempotency</small></div>
-        <div class="error-node">2. Preflight<br><small>Schemas, References, Inputs, Budget</small></div>
-        <div class="error-node bad">3. Fehler erkannt<br><small>Kein Output und kein stiller Ersatz</small></div>
-        <div class="error-node warn">4. Error Envelope<br><small>Code, Message, Retry Class, Remediation, Owner</small></div>
-        <div class="error-node">5. Eine Operator-Nachricht<br><small>Alle Blocker konsolidiert</small></div>
-        <div class="error-node ok">6. Korrektur + Retry<br><small>gleicher Idempotency-Key, neuer Attempt</small></div>
-        <div class="error-node">7. Resume oder DLQ<br><small>durable State, kein Duplicate Side Effect</small></div>
-      </div>
+  <section class="panel" id="contracts">
+    <div class="grid-4">
+      <div class="card"><h2 class="section-title">Project V2</h2><p>Kundenneutraler Vertrag für Markt, Services, Regionen, Deployments, Risiko und Zugänge.</p></div>
+      <div class="card"><h2 class="section-title">Context Package</h2><p>Versiegelte Run-Eingabe mit exakten Quellen, Promptversion, Evidence, Outputschema und Hash.</p></div>
+      <div class="card"><h2 class="section-title">Workflow Event</h2><p>Append-only fachlicher Nachweis mit Tenant, Projekt, Revision, Korrelation und Payload.</p></div>
+      <div class="card"><h2 class="section-title">Operator Records</h2><p>Tasks, Blocker, Revision Requests, Defects, Escalations und Resolutions.</p></div>
     </div>
+
+    <div class="card">
+      <div class="section-kicker">Quality Control</div>
+      <h2 class="section-title">Gate-System und Verantwortlichkeit</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Identität</th><th>Bedeutung</th><th>Erzeuger</th><th>Notion-Darstellung</th></tr></thead>
+        <tbody>
+          <tr><td><code>GATE-*</code></td><td>Expliziter menschlicher Freigabepunkt</td><td>Transition Service nach menschlicher Entscheidung</td><td>Review Queue mit Artefakt, Revision, Hash und Reviewer</td></tr>
+          <tr><td><code>qg-*</code></td><td>Versionierte Quality-Gate-Definition</td><td>Quality-Gate-Registry</td><td>Regelbeschreibung und Applicability</td></tr>
+          <tr><td><code>qgr-*</code></td><td>Konkreter Prüflauf gegen ein Artefakt</td><td>Validator oder Tool Adapter</td><td>Pass/Fail, Evidence, Zeitpunkt und Remediation</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
     <div class="grid-2">
       <div class="card">
-        <h2 class="section-title">Fehlerklassen</h2>
-        <table><tbody>
-          <tr><td><span class="badge block">blocked_by_input</span></td><td>Pflichtinput, Zugriff oder Evidence fehlt. Operator muss handeln.</td></tr>
-          <tr><td><span class="badge block">policy_denied</span></td><td>YMYL, Local Presence, Budget oder Gate-Policy verbietet Fortsetzung.</td></tr>
-          <tr><td><span class="badge machine">retryable</span></td><td>Timeout, 429, temporärer 5xx. Begrenzter Retry mit Backoff und Jitter.</td></tr>
-          <tr><td><span class="badge block">terminal</span></td><td>Schemafehler, Geo-Mismatch, ungültige Transition. Kein automatischer Retry.</td></tr>
-        </tbody></table>
-      </div>
-      <div class="card">
-        <h2 class="section-title">Was ausdrücklich verboten ist</h2>
-        <div class="issues">
-          <div class="issue p0">Fehlende API-Daten durch Schätzwerte ersetzen</div>
-          <div class="issue p0">Falsches Geo akzeptieren, weil der Tool-Call HTTP 200 liefert</div>
-          <div class="issue p0">Ein Gate nur aufgrund von Schema-Validität freigeben</div>
-          <div class="issue">Neue Providerjobs bei jedem Retry erzeugen</div>
-          <div class="issue">Notion-Webhook als vollständigen und geordneten State behandeln</div>
-          <div class="issue">Plan oder Artefakte in-place überschreiben</div>
+        <h2 class="section-title">12 zentrale Cross-Checks</h2>
+        <div class="grid-2">
+          <ul class="compact-list"><li>Tenant Isolation</li><li>Project Identity</li><li>Deployment Scope</li><li>Artifact Lineage</li><li>Exact Bytes + SHA-256</li><li>Revision Match</li></ul>
+          <ul class="compact-list"><li>Approval Binding</li><li>Quality-Gate Binding</li><li>Evidence Resolution</li><li>Provider Geo</li><li>Idempotency</li><li>Status Transition</li></ul>
         </div>
       </div>
+      <div class="card">
+        <h2 class="section-title">Fail-fast und Recovery</h2>
+        <div class="sync-loop" style="grid-template-columns:repeat(4,minmax(130px,1fr))">
+          <div class="sync-node"><strong>Fehler</strong>Code, Ursache, Owner und Remediation</div>
+          <div class="sync-node"><strong>Task</strong>Input, Defect, Blocker oder Escalation</div>
+          <div class="sync-node"><strong>Retry</strong>Gleiche Idempotenz, begrenzte Attempts</div>
+          <div class="sync-node"><strong>Resume / DLQ</strong>Kontrollierte Fortsetzung oder Triage</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <details open><summary>Revision Request und gezielter LLM-Rerun</summary><div class="detail-body">
+        <div class="kv"><b>Enthält</b><span>abgelehntes Artefakt, Findings, Operatoranweisung, Evidence, Prompt, Outputschema</span></div>
+        <div class="kv"><b>Erzeugt</b><span>neues Context Package, neue Run-ID, neue Artefaktrevision und Parent-Link</span></div>
+        <div class="kv"><b>Schützt</b><span>alte Revision bleibt unverändert und vollständig auditierbar</span></div>
+      </div></details>
+      <details open><summary>Human Gate</summary><div class="detail-body">
+        <div class="kv"><b>Pflicht</b><span>aktuelles Artefakt, SHA-256, Revision, Policy und identifizierter Reviewer</span></div>
+        <div class="kv"><b>Entscheid</b><span>approve, reject oder revision required über einen typisierten Command</span></div>
+        <div class="kv"><b>Verboten</b><span>automatische Freigabe durch Notion, n8n, LLM oder einen grünen HTTP-Call</span></div>
+      </div></details>
     </div>
   </section>
 
   <section class="panel" id="tools">
     <div class="card">
-      <h2 class="section-title">Tool-Calling-Matrix und Gegenreferenz</h2>
+      <div class="section-kicker">Tool- und Schnittstellenmatrix</div>
+      <h2 class="section-title">Welche Komponente was tut</h2>
       <div class="table-wrap"><table>
-        <thead><tr><th>Tool</th><th>Einsatz</th><th>Request-Pflicht</th><th>Response-Prüfung</th><th>Persistierte Evidence</th></tr></thead>
+        <thead><tr><th>Komponente</th><th>Zweck</th><th>Aktueller Modus</th><th>Validierung / Evidence</th><th>Spätere Live-Arbeit</th></tr></thead>
         <tbody>
-          <tr><td>jsonschema 4.26.0</td><td>alle Contracts</td><td>Schema-ID, Version, Artefakt</td><td>closed objects, Formate, References</td><td>Validator Result + Artifact Hash</td></tr>
-          <tr><td>Screaming Frog CLI</td><td>Step 1 und Staging</td><td>Start-URL, Project, Deployment, Run, Output Scope</td><td>Exit, URL-Limit, Exporte, Findings, Hashes</td><td>Crawl JSON + 15 Export-Hashes + qgr</td></tr>
-          <tr><td>DataForSEO</td><td>Step 2 Rohdaten</td><td>Deployment, Geo-Code, Sprache, Locale, Device, Budget</td><td>Response-Geo, Row Coverage, Raw Hash, Kosten</td><td>Raw Response + normalized Evidence</td></tr>
-          <tr><td>AgentSEO</td><td>selektive Semantik</td><td>Capability, location, location_code, language, sync false</td><td>Job-ID, Poll-Status, Geo-Match, Provider-Rohdaten</td><td>Provider Job Record + Raw Hash</td></tr>
-          <tr><td>Ahrefs</td><td>unabhängige Verifikation</td><td>konfigurierter Scope</td><td>Quelle und Timestamp getrennt halten</td><td>Independent Evidence Record</td></tr>
-          <tr><td>GSC</td><td>Step 1 optional, 3b Pflicht</td><td>Property, Zeitraum, Query/Page Scope</td><td>Datenvollständigkeit und Vergleichsfenster</td><td>Measurement Evidence</td></tr>
-          <tr><td>Capacity Solver</td><td>Step 3</td><td>vollständige Metriken, bekannte Content Types</td><td>Capacity, Mandatory Coverage, Backlog</td><td>Input-/Output-Hash + Solver-Version</td></tr>
-          <tr><td>JSON-LD Validator</td><td>Step 4a</td><td>Schema Graph</td><td>Parse, Contract, Format, GEO getrennt</td><td>Level Results, externe Eligibility separat</td></tr>
-          <tr><td>Lighthouse + axe</td><td>Step 4b Staging</td><td>Staging-URL, Viewports, Thresholds</td><td>Performance, Accessibility, Best Practices</td><td>Reports + qgr</td></tr>
-          <tr><td>Browser Visual QA</td><td>1c und 4b</td><td>Approved Reference + Staging</td><td>Screenshot Diff, Contenthash, Responsive</td><td>Visual Diff Record</td></tr>
+          <tr><td>Heartweb Core</td><td>Workflow-, Gate-, Revision- und Artefaktautorität</td><td><span class="badge ok">real lokal</span></td><td>313 Tests, Schemas, Hashes, Events</td><td>Betriebsverpackung und Deployment</td></tr>
+          <tr><td>FastAPI + Event Store</td><td>Lokale Operator API und append-only Persistenz</td><td><span class="badge ok">real lokal</span></td><td>Tenant, Replay, Recovery, Conflict</td><td>Auth, Hosting und Observability</td></tr>
+          <tr><td>Notion Adapter</td><td>Operative Projektion und Human Proposals</td><td><span class="badge info">simuliert</span></td><td>Graph, Relationen, Revisionen, Konflikte</td><td>Sandbox API, DB Mapping, User Mapping</td></tr>
+          <tr><td>n8n Adapter</td><td>Dispatch, Wait, Retry, DLQ, Resume, Scheduling</td><td><span class="badge info">simuliert</span></td><td>Commands, Idempotenz, Tenant Scope</td><td>Workflows, Credentials, Alerts, Runbook</td></tr>
+          <tr><td>Screaming Frog</td><td>Crawl-Evidence für Step 1 und Staging</td><td><span class="badge ok">lokal verifiziert</span></td><td>Exports, Findings, Hashes, disposition</td><td>Golden-Path-Runs</td></tr>
+          <tr><td>DataForSEO</td><td>Skalierbare Keyword-/SERP-Rohdaten</td><td><span class="badge warn">spätere Live-Ausführung</span></td><td>Geo, Raw Hash, Job, Kosten</td><td>AHD Step 2</td></tr>
+          <tr><td>AgentSEO</td><td>Selektive zusätzliche Semantik</td><td><span class="badge warn">capability-gebunden</span></td><td>location + code + language, async</td><td>nur bei passender Capability</td></tr>
+          <tr><td>Capacity Solver</td><td>Deterministischer 120-Tage-Plan</td><td><span class="badge ok">real lokal</span></td><td>Input-/Output-Hash und Version</td><td>AHD Step 3</td></tr>
+          <tr><td>JSON-LD Validator</td><td>Parse, Contract, Format, GEO und Claimprüfung</td><td><span class="badge ok">real lokal</span></td><td>Level Results und Evidence</td><td>Rich Results zusätzlich extern</td></tr>
+          <tr><td>GSC / GA4 / GBP</td><td>Performance-Evidence für Step 3b</td><td><span class="badge warn">noch nicht live</span></td><td>Property, Fenster, Vollständigkeit</td><td>Tag 30/60/90</td></tr>
         </tbody>
       </table></div>
     </div>
+
+    <div class="grid-3">
+      <div class="card"><h2 class="section-title">Command Pflichtfelder</h2><p><code>command_id</code>, tenant, project, run, step, correlation, idempotency, expected_revision und integration_mode.</p></div>
+      <div class="card"><h2 class="section-title">Event Pflichtfelder</h2><p><code>event_id</code>, source revision, tenant/project identity, occurred_at, correlation und geschlossene Payload.</p></div>
+      <div class="card"><h2 class="section-title">Projection Pflichtfelder</h2><p><code>source_event_id</code>, source_revision, state_authority und <code>atomic_state_writer: false</code>.</p></div>
+    </div>
   </section>
 
-  <section class="panel" id="checks">
+  <section class="panel" id="status">
     <div class="grid-2">
-      <div class="card">
-        <h2 class="section-title">Cross-Reference-Checks</h2>
-        <div class="check-list">
-          <div class="check"><span class="icon">01</span><span><strong>Tenant Isolation</strong><small>Jedes Objekt gehört zum gleichen tenant_id.</small></span></div>
-          <div class="check"><span class="icon">02</span><span><strong>Project Identity</strong><small>Project, Run, Artifact, Evidence und Tool-Run stimmen überein.</small></span></div>
-          <div class="check"><span class="icon">03</span><span><strong>Deployment Scope</strong><small>Markt, Sprache, Region, Domain und Tool-Geo passen zusammen.</small></span></div>
-          <div class="check"><span class="icon">04</span><span><strong>Artifact Lineage</strong><small>Parent Artifact existiert und ist die freigegebene Revision.</small></span></div>
-          <div class="check"><span class="icon">05</span><span><strong>Exact Bytes</strong><small>Gespeicherte kanonische Bytes ergeben den gebundenen SHA-256.</small></span></div>
-          <div class="check"><span class="icon">06</span><span><strong>Revision Match</strong><small>expected_revision verhindert parallele veraltete Writes.</small></span></div>
-          <div class="check"><span class="icon">07</span><span><strong>Approval Binding</strong><small>Gate, Artifact-ID, Hash, Revision, Policy und Reviewer stimmen.</small></span></div>
-          <div class="check"><span class="icon">08</span><span><strong>Quality-Gate Binding</strong><small>qgr verweist auf richtige qg-Definition und richtiges Artefakt.</small></span></div>
-          <div class="check"><span class="icon">09</span><span><strong>Evidence Resolution</strong><small>Jede Source-ID löst zu einem unveränderlichen Evidence Record auf.</small></span></div>
-          <div class="check"><span class="icon">10</span><span><strong>Provider Geo</strong><small>Request und Response-Markt müssen exakt zum Deployment passen.</small></span></div>
-          <div class="check"><span class="icon">11</span><span><strong>Idempotency</strong><small>Retry erzeugt keinen zweiten fachlichen Seiteneffekt.</small></span></div>
-          <div class="check"><span class="icon">12</span><span><strong>Status Transition</strong><small>Nur der Transition Service darf Status ändern.</small></span></div>
-        </div>
-      </div>
-      <div class="card">
-        <h2 class="section-title">Aktueller AHD-Stand</h2>
+      <div class="card ok">
+        <div class="section-kicker">Framework</div>
+        <h2 class="section-title">Aktueller Produktstatus</h2>
         <table><tbody>
-          <tr><td>Step 0</td><td><span class="badge ready">released</span></td></tr>
-          <tr><td>Crawl</td><td><span class="badge ready">run 004, 167 URLs, 18 HTML</span></td></tr>
-          <tr><td>Step 1</td><td><span class="badge partial">5 Pillars, 40 Hypothesen</span></td></tr>
-          <tr><td>Preflight</td><td><span class="badge ready">valid true</span></td></tr>
-          <tr><td>Run Status</td><td><span class="badge human">awaiting_gate</span></td></tr>
-          <tr><td>Step 1b</td><td><span class="badge block">gesperrt</span></td></tr>
+          <tr><td>Sprint 0-3</td><td><span class="badge ok">abgeschlossen</span></td></tr>
+          <tr><td>Sprint 4 Stage A</td><td><span class="badge ok">freigegeben + gepusht</span></td></tr>
+          <tr><td>Stage A2 Runtime</td><td><span class="badge ok">freigegeben</span></td></tr>
+          <tr><td>Stage B API/Event Store</td><td><span class="badge ok">freigegeben</span></td></tr>
+          <tr><td>Stage C Simulatoren</td><td><span class="badge ok">freigegeben</span></td></tr>
+          <tr><td>Stage D Integration</td><td><span class="badge ok">freigegeben</span></td></tr>
+          <tr><td>Feature Branch Remote</td><td><code>feature/e2e-operator-workflow-system</code></td></tr>
         </tbody></table>
-        <h3 style="font-size:13px;margin:13px 0 7px">Offene Review-Fixes</h3>
-        <div class="issues">
-          <div class="issue p0"><b>P0:</b> zentralen Transition Service implementieren</div>
-          <div class="issue"><b>P1:</b> Step-1-Preflight-CLI ergänzen</div>
-          <div class="issue"><b>P1:</b> Crawl-Disposition mit 4xx-Blocker oder Waiver</div>
-          <div class="issue"><b>P1:</b> Registry-Appplicability maschinell auswerten</div>
-          <div class="issue"><b>P1:</b> direkten AgentSEO-Pfad aus Prompt 1 entfernen</div>
-          <div class="issue"><b>P1:</b> Canonical Storage Path und gespeicherte Bytes prüfen</div>
-          <div class="issue"><b>P2:</b> Security-Findings maschinenlesbar aufnehmen</div>
-        </div>
+      </div>
+      <div class="card warn">
+        <div class="section-kicker">AHD Pilot</div>
+        <h2 class="section-title">Golden-Path-Ausführung</h2>
+        <table><tbody>
+          <tr><td>Step 0</td><td><span class="badge ok">released</span></td></tr>
+          <tr><td>Crawl</td><td><span class="badge ok">Run 004 kanonisch</span></td></tr>
+          <tr><td>Step 1</td><td><span class="badge warn">awaiting GATE-1</span></td></tr>
+          <tr><td>Inventar</td><td>5 Pillars, 40 Cluster-Hypothesen</td></tr>
+          <tr><td>Step 1b-4b</td><td><span class="badge">durch Human Gate gesperrt</span></td></tr>
+          <tr><td>Live Providerdaten</td><td><span class="badge warn">spätere Ausführung</span></td></tr>
+        </tbody></table>
       </div>
     </div>
+
     <div class="card">
-      <h2 class="section-title">Was kann als Nächstes passieren?</h2>
+      <div class="section-kicker">Was noch fehlt</div>
+      <h2 class="section-title">Roadmap bis zum vollständig demonstrierbaren Produktionssystem</h2>
+      <div class="timeline">
+        <div class="phase"><strong>Sprint 4</strong><span class="badge ok">abgeschlossen</span><span class="description">Runtime, API, Event Store, Simulatoren, OpenAPI und Full QA</span><span class="next">Feature-Branch-Checkpoint</span></div>
+        <div class="phase"><strong>Sprint 5</strong><span class="badge info">als Nächstes</span><span class="description">Operator Console mit Timeline, Reviews, Tasks, Matrix und technischen Detailviews</span><span class="next">lokale UI</span></div>
+        <div class="phase"><strong>Sprint 6</strong><span class="badge">pending</span><span class="description">AHD Step 0 und Step 1 kanonisch versöhnen, Human GATE-1 durchführen</span><span class="next">Pilot freigeben</span></div>
+        <div class="phase"><strong>Sprint 7</strong><span class="badge">pending</span><span class="description">AHD Seitenarchitektur und Design/Templates ausführen</span><span class="next">Step 1b + 1c</span></div>
+        <div class="phase"><strong>Sprint 8</strong><span class="badge">pending</span><span class="description">Reale Providerdaten und deterministischen 120-Tage-Plan erzeugen</span><span class="next">Step 2 + 3</span></div>
+        <div class="phase"><strong>Sprint 9</strong><span class="badge">pending</span><span class="description">Ein Priority Item durch Content Briefing und Landingpage-Staging führen</span><span class="next">Step 4a + 4b</span></div>
+        <div class="phase"><strong>Sprint 10</strong><span class="badge">pending</span><span class="description">Präsentationsmatrix und vollständige Jesse-Demo</span><span class="next">Walkthrough</span></div>
+        <div class="phase"><strong>Sprint 11</strong><span class="badge">pending</span><span class="description">Host-, OMO-, UI- und vollständige End-to-End-Final-Gates</span><span class="next">Releaseentscheidung</span></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h2 class="section-title">Ehrliche aktuelle Blocker</h2>
+        <div class="guardrail warn">AHD Step 1 benötigt eine echte menschliche GATE-1-Entscheidung.</div>
+        <div class="guardrail warn">Live-Notion und Live-n8n benötigen nach dem Mapping Sandbox, Auth und Betriebsowner.</div>
+        <div class="guardrail">Kein Merge auf <code>master</code> vor vollständiger QA und ausdrücklicher Freigabe.</div>
+      </div>
+      <div class="card">
+        <h2 class="section-title">GitHub und Sicherung</h2>
+        <div class="kv"><b>Repository</b><span><code>Frater418/claude-desktop-seo-workflow-production</code></span></div>
+        <div class="kv"><b>Arbeitsbranch</b><span><code>feature/e2e-operator-workflow-system</code></span></div>
+        <div class="kv"><b>Remote-Stand</b><span>Sprint-4-Checkpoint auf dem Feature-Branch</span></div>
+        <div class="kv"><b>Lokaler Stand</b><span>Sprint 5 Operator Console als nächster Buildblock</span></div>
+        <div class="kv"><b>Master</b><span>bewusst unverändert</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Nächste zulässige Aktionen</h2>
       <div class="actions">
-        <button class="action" data-hermes-send="Erkläre mir bitte nur GATE-1 und welche Entscheidung ich treffen muss.">GATE-1 erklären</button>
-        <button class="action" data-hermes-send="Zeige mir den konkreten Fixplan für die offenen P0- und P1-Punkte vor GATE-1.">Offenen Fixplan zeigen</button>
-        <button class="action" data-hermes-send="Zeige mir die 5 AHD Pillars und 40 Cluster-Hypothesen kompakt zur Prüfung.">AHD Pillars prüfen</button>
+        <button class="button primary" data-open-tab="agenda">Notion-Meeting durchführen</button>
+        <button class="button" data-hermes-send="Erkläre mir bitte den aktuellen Sprint-4-Status in maximal fünf Punkten.">Sprint 4 kurz erklären</button>
+        <button class="button" data-hermes-send="Erstelle aus der aktuellen Control Map eine kompakte Follow-up-Liste für Jesse und das Integrationsteam.">Follow-up-Liste erzeugen</button>
       </div>
     </div>
   </section>
-</div>
+</main>
+
 <script>
   const tabs = [...document.querySelectorAll('.tab')];
   const panels = [...document.querySelectorAll('.panel')];
-  tabs.forEach(tab => tab.addEventListener('click', () => {
-    tabs.forEach(item => item.setAttribute('aria-selected', String(item === tab)));
-    panels.forEach(panel => panel.classList.toggle('active', panel.id === tab.dataset.tab));
-  }));
+
+  function openTab(id, behavior = 'smooth') {
+    tabs.forEach(tab => tab.setAttribute('aria-selected', String(tab.dataset.tab === id)));
+    panels.forEach(panel => panel.classList.toggle('active', panel.id === id));
+    history.replaceState(null, '', '#' + id);
+    window.scrollTo({ top: 0, behavior });
+  }
+
+  tabs.forEach(tab => tab.addEventListener('click', () => openTab(tab.dataset.tab)));
+  document.querySelectorAll('[data-open-tab]').forEach(button => button.addEventListener('click', () => openTab(button.dataset.openTab)));
+
+  const initial = location.hash.slice(1);
+  if (panels.some(panel => panel.id === initial)) openTab(initial, 'auto');
 </script>
 </body>
 </html>

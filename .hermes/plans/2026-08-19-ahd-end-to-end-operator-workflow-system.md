@@ -600,6 +600,8 @@ Jeder Schritt erhaelt zuerst einen strukturierten JSON-Vertrag. Markdown, CSV, C
 **Files:**
 
 - Create: `standards/runtime/logical-project-session.schema.json`
+- Create: `standards/runtime/official-prompt-registry.schema.json`
+- Create: `standards/runtime/official-prompt-registry.json`
 - Create: `standards/runtime/worker-profile.schema.json`
 - Create: `standards/runtime/context-package.schema.json`
 - Create: `standards/runtime/llm-run-request.schema.json`
@@ -610,7 +612,7 @@ Jeder Schritt erhaelt zuerst einen strukturierten JSON-Vertrag. Markdown, CSV, C
 - Test: `tests/test_context_builder.py`
 - Test: `tests/contracts/test_llm_runtime_contracts.py`
 
-**Rule:** Das Projekt ist stateful, der technische Worker ist ersetzbar. Jeder Step- und Revisionslauf bindet einen offiziellen Prompt, Project V2, freigegebene Vorgaenger, Evidence, Decisions, Findings und Operator-Anweisungen ueber exakte Revisionen und SHA-256-Hashes. Eine technische Provider-Session ist nur ein optionaler Cache. Ein verlorener Session-Handle darf keinen Kontextverlust erzeugen.
+**Rule:** Das Projekt ist stateful, der technische Worker ist ersetzbar. Schritt 0 bindet das unveraenderliche Project Intake. Ab Schritt 1 bindet jeder Step- und Revisionslauf das freigegebene Project V2. Jeder Lauf bindet einen offiziellen Prompt, alle zugehoerigen Outputvertraege, freigegebene Vorgaenger, Evidence, Decisions, Findings und Operator-Anweisungen ueber exakte Revisionen und SHA-256-Hashes. Eine technische Provider-Session ist nur ein optionaler Cache. Ein verlorener Session-Handle darf keinen Kontextverlust erzeugen.
 
 **Revision:** Ein Rerun erhaelt das abgelehnte Artefakt, maschinelle und menschliche Findings, Operator-Anweisung, unveraenderliche Felder, verbotene Aenderungen und den erwarteten Outputvertrag. Er erzeugt immer eine neue Artefaktrevision.
 

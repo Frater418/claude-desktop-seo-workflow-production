@@ -50,6 +50,7 @@ def emitted_runtime_error_codes() -> set[str]:
 def _returns_code_payload(function: ast.FunctionDef) -> bool:
     return any(
         isinstance(node, ast.Return)
+        and node.value is not None
         and any(_is_code_payload(item) for item in ast.walk(node.value) if isinstance(item, ast.Dict))
         for node in ast.walk(function)
     )
@@ -117,6 +118,19 @@ class OperatorErrorRoutingTests(unittest.TestCase):
             route = route_error(code, self.policy)
             self.assertTrue(route.route)
             self.assertTrue(route.owner_type)
+
+    def test_context_builder_codes_have_exactly_one_canonical_route(self) -> None:
+        codes = (
+            "ERROR_CONTEXT_SCHEMA_INVALID", "ERROR_CONTEXT_IDENTITY_MISMATCH", "ERROR_CONTEXT_SOURCE_INVALID",
+            "ERROR_CONTEXT_PROMPT_BINDING_INVALID", "ERROR_CONTEXT_OUTPUT_CONTRACT_INVALID", "ERROR_CONTEXT_PREDECESSOR_INVALID",
+            "ERROR_CONTEXT_REVISION_BINDING_INVALID", "ERROR_CONTEXT_TRUST_POLICY_INVALID", "ERROR_CONTEXT_PACKAGE_HASH_MISMATCH",
+            "ERROR_LLM_REQUEST_INVALID", "ERROR_LLM_REQUEST_IDEMPOTENCY_CONFLICT", "ERROR_LLM_RESULT_INVALID",
+            "ERROR_TECHNICAL_SESSION_POLICY_DENIED",
+        )
+
+        for code in codes:
+            self.assertEqual(1, sum(mapping["code"] == code for mapping in self.policy["mappings"]))
+            self.assertEqual(code, route_error(code, self.policy).code)
 
     def test_duplicate_mapping_fails_deterministically(self) -> None:
         policy = copy.deepcopy(self.policy)

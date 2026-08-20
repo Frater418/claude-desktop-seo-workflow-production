@@ -1,8 +1,8 @@
 # Sprint 4 Current Point of Work
 
-Date: 2026-08-19
+Date: 2026-08-20
 Author: Raphael Rechberger
-Status: active controller handoff
+Status: Sprint 4 complete, Sprint 5 next
 
 ## Read First After Any Compaction Or Session Change
 
@@ -11,14 +11,15 @@ Status: active controller handoff
 3. `.hermes/plans/2026-08-19-ahd-end-to-end-operator-workflow-system.md`
 4. `00_admin/audits/2026-08-19-e2e-demo/sprint-4/03_SPRINT4_BUILD_PLAN.md`
 5. this file
-6. `00_admin/audits/2026-08-19-e2e-demo/sprint-4/09_INTEGRATION_V2_FINAL_QUALITY_APPROVAL.md`
-7. report 10 when it exists
+6. `00_admin/audits/2026-08-19-e2e-demo/sprint-4/52_STAGE_C_INTEGRATION_SIMULATORS_TERMINAL_APPROVAL.md`
+7. `00_admin/audits/2026-08-19-e2e-demo/sprint-4/53_STAGE_D_OPENAPI_INTEGRATION_IMPLEMENTATION.md`
+8. `00_admin/checkpoints/2026-08-20-sprint-4/`
 
 ## Safety And Branch State
 
 - Active Heartweb branch: `feature/e2e-operator-workflow-system`.
 - Do not commit or push to `master`.
-- Push the feature branch only after the current Stage A fix, independent reviews, clean documentation and green verification.
+- Push only the feature branch. Keep `master` unchanged.
 - OMO stack local branch: `feature/heartweb-sprint4-runtime`.
 - OMO stack has no configured remote. Do not commit credential or environment backup files.
 - No current Heartweb change is only inside Docker. The repository is a Windows host folder mounted into OMO.
@@ -32,144 +33,51 @@ Status: active controller handoff
 - The feature branch is pushed and tracks `origin/feature/e2e-operator-workflow-system`.
 - Local and remote `master` remain unchanged at `5e78679`.
 
-## Completed Foundation
+## Completed Foundation And Sprint 4
 
-- E2E Masterplan: completed.
+- E2E Masterplan: active and approved.
 - Sprint 0: completed.
 - Sprint 1: completed and independently approved.
 - Sprint 2: completed and independently approved.
 - Sprint 3: completed and independently approved.
-- Sprint 3 checkpoint contains 226 file hashes and a byte-identical AHD Step-0 baseline.
-- Current Stage A terminal full-suite evidence:
-  - Windows: 236 tests passed.
-  - OMO: 236 tests passed.
-  - `hermes verify --json`: `ok: true`, acceptance 7 of 7.
+- Sprint 4 Stage A: Integration Contract V2 completed and terminally approved.
+- Sprint 4 Stage A2: logical sessions, Context Packages, runtime records, Context Builder and session policy completed and approved.
+- Sprint 4 Stage B: Local Operator API, Workspace Registry, Repository and append-only Event Store completed and terminally approved.
+- Sprint 4 Stage C: Notion and n8n simulators completed and terminally approved.
+- Sprint 4 Stage D: deterministic OpenAPI snapshot, generated TypeScript API types and local integration suite completed.
+- Open findings for the Sprint-4 release boundary: P0 0, P1 0.
 
-## Sprint 4 Stage Map
+## Sprint 4 Final Evidence
 
-### Task 4.1: Reproducible App Runtime
+- Stage-D focused suite:
+  - Windows Python 3.11.15: 6 tests passed.
+  - OMO Python 3.12.3: 6 tests passed.
+- Full Suite:
+  - Windows: Acceptance 7, Root 247, Contracts 59, total 313 passed.
+  - OMO: Acceptance 7, Root 247, Contracts 59, total 313 passed.
+- OpenAPI and TypeScript generator `--check`: passed on Host and OMO.
+- TypeScript strict check: passed in OMO.
+- `hermes verify --json`: `ok: true`, Acceptance 7 of 7.
+- `git diff --check`: passed.
+- Sprint-4 checkpoint: `00_admin/checkpoints/2026-08-20-sprint-4/` with 983 hashed files.
 
-Status: completed.
+## Sprint 4 Delivered Interfaces
 
-- FastAPI, Starlette, Pydantic, Uvicorn, HTTPX and dependencies are pinned in `requirements-app.txt`.
-- Linux Python 3.12 wheels are vendored in the OMO build context.
-- OMO container is healthy with Restart Count 0.
-- OpenCode 1.18.18 and OMO 4.19.4 are pinned.
-- A real Codex smoke request returned `OK` after auth restoration.
+- `standards/api/operator-api.openapi.json`
+- `apps/operator-console/src/generated/api-types.ts`
+- `scripts/generate_operator_api_contracts.py`
+- `services/context_builder/`
+- `services/runtime_contracts/`
+- `services/operator_api/`
+- `services/integrations/notion_simulator.py`
+- `services/integrations/n8n_simulator.py`
+- `tests/test_sprint4_integration.py`
 
-### Stage A: Integration Contract V2
-
-Status: completed and terminally approved.
-
-Completed:
-
-- workflow event V2 and catalog
-- 17 Notion record types
-- Notion proposal and snapshot
-- n8n simulation, wait, retry and DLQ contracts
-- 30/60/90 checkpoint contract
-- V1 compatibility
-- ten client-neutral archetypes
-- focused and full-suite tests
-- terminal specification review: `APPROVED`
-- terminal quality review: `APPROVED`
-- open findings: P0 0, P1 0, P2 0, P3 0
-
-Closed findings:
-
-1. relations to nonexistent records are rejected
-2. relation type is bound to target record-key family
-3. canonical `subject_id` equals the records-map key
-4. duplicate edges are rejected independent of JSON field order
-5. missing or invalid injected schema IDs return structured errors
-
-Approval evidence:
-
-- `10_NOTION_GRAPH_INTEGRITY_FIX.md`
-- `11_STAGE_A_TERMINAL_SPEC_APPROVAL.md`
-- `12_STAGE_A_TERMINAL_QUALITY_APPROVAL.md`
-- `13_STAGE_A_SCHEMA_ID_FIX.md`
-- `14_STAGE_A_FINAL_QUALITY_APPROVAL.md`
-
-Current action:
-
-- Stage A checkpoint, commit and feature-branch push are complete
-- begin Stage A2 contract and deterministic Context Builder implementation
-- do not begin Stage B before Stage A2 spec and quality approval
-
-### Stage A2: Context Packages And Reproducible LLM Runs
-
-Status: planned and canonically approved, not yet implemented.
-
-Authority:
-
-- `DEC-0019`
-- Sprint 4 build plan Stage A2
-- E2E Masterplan Task 4.2
-
-Required implementation:
-
-- logical project session contract
-- worker profile contract
-- context package contract
-- LLM run request contract
-- LLM run result contract
-- deterministic Context Builder
-- context freshness and supersession validator
-- technical session reuse policy
-- revision and rerun package
-- complete prompt, model, worker, tool, hash and token provenance
-- fresh LLM execution per step or substantial revision by default
-- optional technical session reuse only as a cache
-- recovery from a lost technical session using files and Context Package
-- fail-fast on missing, stale, superseded, hash-invalid, untrusted-unmarked or cross-tenant context
-
-### Stage B: Local Operator API And Event Store
-
-Status: pending Stage A2 approval.
-
-Required:
-
-- read-only project and workflow API
-- logical project session, Context Package and LLM run endpoints
-- typed command API
-- append-only JSONL event store
-- idempotency and conflict protection
-- tenant isolation and safe paths
-- transition and routing delegation
-
-### Stage C: Notion And n8n Simulators
-
-Status: pending Stage B approval.
-
-Required:
-
-- Notion project, task, assignment, review, approval, blocker and tracking projection
-- role routing to copywriters, designers, developers and reviewers
-- complete n8n orchestration from 0 to 4b
-- waits, retries, DLQ and resume
-- Context Package and LLM Run dispatch
-- Step 3b at day 30, 60 and 90
-
-### Stage D: OpenAPI, Generated Types And Integration Suite
-
-Status: pending Stage C approval.
-
-Required:
-
-- OpenAPI snapshot
-- generated TypeScript API types
-- Golden Path and negative integration scenarios
-- lost technical session recovery
-- revision rerun
-- stale and cross-tenant context rejection
-- role assignment and Notion tracking
-- 30/60/90 metrics and Step 3b
-- Host, OMO and `hermes verify --json`
+Notion and n8n remain simulated only. The Local Core is real and independent. The Transition Service remains the only atomic workflow status authority.
 
 ## Sprint 5 Boundary
 
-Sprint 5 does not invent runtime behavior. It starts only after Sprint 4 is fully approved.
+Sprint 5 does not invent runtime behavior. It consumes the generated Stage-D API types and uses the Sprint-4 Core as authority.
 
 Sprint 5 must display and operate:
 
@@ -188,11 +96,10 @@ Sprint 5 must display and operate:
 
 ## Immediate Next Gates
 
-1. Implement Stage A2 runtime contracts with negative tests first.
-2. Implement deterministic Context Builder and session policy.
-3. Verify Stage A2 on Windows and OMO.
-4. Run independent Stage A2 specification and quality reviews.
-5. Keep `master` unchanged until the complete workflow and final audit are approved.
+1. Commit and push the complete Sprint-4 checkpoint to `feature/e2e-operator-workflow-system`.
+2. Start Sprint 5 with the visible project dashboard and workflow timeline.
+3. Add tasks, reviews, integration status and presentation matrix without duplicating Core contracts.
+4. Keep `master` unchanged until the complete workflow and final audit are approved.
 
 ## Explicit Non-Actions
 
@@ -204,4 +111,4 @@ Sprint 5 must display and operate:
 - no provider or crawl substitution
 - no AHD hardcoding in production contracts
 - no silent fallback
-- no Sprint 5 start before Sprint 4 approval
+- no hand-written duplicate API contracts in Sprint 5

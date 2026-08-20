@@ -3,8 +3,8 @@
 **Projekt:** Heartweb Claude Desktop SEO Workflow Framework  
 **Autor & Architektur:** Raphael Rechberger  
 **Organisation:** Heartweb / Zusammenarbeit Raphael Rechberger & Jesse Jensen  
-**Datum:** 19. August 2026
-**Status:** End-to-End Operator Workflow System in Ausfuehrung. Sprint 4 Stage A final freigegeben. Stage A2 ist der naechste aktive Block.
+**Datum:** 20. August 2026
+**Status:** End-to-End Operator Workflow System in Ausfuehrung. Sprint 4 ist vollstaendig implementiert und verifiziert. Sprint 5 Operator Console ist der naechste aktive Block.
 **GitHub Repository:** https://github.com/Frater418/claude-desktop-seo-workflow-production  
 **Kanonischer Pfad:** `C:\Users\offic\Documents\Projekte\Hermes\04_projects\active\Heartweb-Claude-Desktop-SEO-Workflow\`  
 **Desktop-Pfad:** `C:\Users\offic\Desktop\Heartweb\claude-desktop-seo-workflow-production\`  
@@ -98,8 +98,8 @@
 - Sprint 1: abgeschlossen und unabhaengig freigegeben.
 - Sprint 2: abgeschlossen und unabhaengig freigegeben. Operator-, Ticket-, Eskalations-, Workflow-Event-, Notion-Projektions- und n8n-Command-Vertraege sind vorhanden.
 - Sprint 3: abgeschlossen und unabhaengig freigegeben. Alle Outputs 1b bis 4b besitzen geschlossene V2-Vertraege, mandatory lineage, kontrollierte Rendererpfade, Provider-Evidence-Bindung und negative Sicherheitsregressionen.
-- Windows Host, Sprint-4-Stage-A-Abschluss: Acceptance 7, Root Tests 178, Contract Tests 51, gesamt 236 bestanden.
-- OMO, Sprint-4-Stage-A-Abschluss: Acceptance 7, Root Tests 178, Contract Tests 51, gesamt 236 bestanden.
+- Windows Host, Sprint-4-Abschluss: Acceptance 7, Root Tests 247, Contract Tests 59, gesamt 313 bestanden.
+- OMO, Sprint-4-Abschluss: Acceptance 7, Root Tests 247, Contract Tests 59, gesamt 313 bestanden.
 - `hermes verify --json`: `ok: true`, Acceptance 7 von 7.
 - Finaler Sprint-3-Spec-Review: `APPROVED`.
 - Finaler Sprint-3-Quality-Review: `APPROVED`.
@@ -111,16 +111,21 @@
 - Sprint 4 Stage A: Integrationsvertraege und deterministische Notion-Graph-Validierung implementiert. Terminaler Spec Review `APPROVED`. Terminaler Quality Review `APPROVED`. Offene Findings: P0 0, P1 0, P2 0, P3 0.
 - Sprint-4-Stage-A-Checkpoint: `00_admin/checkpoints/2026-08-19-sprint-4-stage-a/` mit 597 Datei-Hashes, 236 Tests je Runtime und 4 von 4 byte-identischen AHD-Step-0-Dateien.
 - Feature-Branch-Checkpoint auf GitHub: `feature/e2e-operator-workflow-system`, Commit `a3b8ea1`. Lokaler und remote `master` bleiben unveraendert auf `5e78679`.
-- Sprint 4 Stage A2 ist unter DEC-0019, im Sprint-4-Buildplan und im E2E-Masterplan verbindlich. Sie baut logische Projektsessions, Context Packages, Workerprofile, LLM Run Request/Result, Session-Cache-Policy, Revision-Reruns und Fail-Fast Context Validation vor API und UI.
+- Sprint 4 Stage A2 ist abgeschlossen. Logische Projektsessions, Context Packages, Workerprofile, LLM Run Request/Result, Session-Cache-Policy, Revision-Reruns und Fail-Fast Context Validation sind implementiert und freigegeben.
+- Sprint 4 Stage B ist abgeschlossen. Local Workflow API, serverseitige Workspace Registry, Repository und append-only Event Store sind implementiert und freigegeben.
+- Sprint 4 Stage C ist abgeschlossen. Notion- und n8n-Simulator, Multi-Tenant-Isolation, Replay, Konflikte, Recovery, Retry, DLQ und Tag-30/60/90-Pfade sind implementiert und freigegeben.
+- Sprint 4 Stage D ist abgeschlossen. Der deterministische FastAPI-OpenAPI-Snapshot, generierte TypeScript-Typen und die lokale API-/Simulator-Integration sind implementiert und verifiziert.
+- Stage-D-Fokus: 6 von 6 Tests auf Host und OMO. Full Suite: 313 von 313 Tests auf Host und OMO. TypeScript strict in OMO: Exit 0. `hermes verify --json`: `ok: true`.
+- Sprint-4-Checkpoint: `00_admin/checkpoints/2026-08-20-sprint-4/` mit 983 Datei-Hashes, Testevidence, Reviewstatus und Branchzustand.
 - Kompressionssicherer Fortsetzungspunkt: `00_admin/audits/2026-08-19-e2e-demo/sprint-4/CURRENT_POINT_OF_WORK.md`.
-- Naechster Gate: Stage A2 implementieren und unabhaengig reviewen. Erst danach folgen Local Workflow API, Event Store, Notion-/n8n-Simulator und Sprint 5.
+- Naechster Gate: Sprint-4-Checkpoint auf dem Feature-Branch sichern und Sprint 5 Operator Console gegen die generierten API-Typen implementieren.
 
 ### Aktive Risiken und externe Voraussetzungen
 
 1. Step 2 des spaeteren AHD-Livelaufs benoetigt realen, geo-korrekten Providerzugang. Keine Ersatzwerte.
 2. Der reale AHD Crawl 005 besitzt eine Resource-404, die sichtbar geroutet und vor Production aufgeloest werden muss.
 3. Reale Notion- und n8n-Verbindungen sind noch nicht konfiguriert. Sprint 4 baut versionierte lokale Simulatoren mit denselben Commands, Events und Projektionen.
-4. Der UI-Stack existiert noch nicht und beginnt nach der Sprint-4-API in Sprint 5.
+4. Der UI-Stack beginnt jetzt in Sprint 5 und nutzt ausschliesslich die in Stage D generierten API-Typen.
 5. Der bestaetigte Performance-Zyklus fuer Notion, n8n und Step 3b ist Tag 30, 60 und 90.
 
 1. **GEO-Architektur-Spezifikation (`docs/07-geo-architecture-specification.md`):**

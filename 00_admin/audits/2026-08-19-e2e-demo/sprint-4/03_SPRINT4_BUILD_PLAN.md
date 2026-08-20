@@ -76,6 +76,8 @@ Gate:
 Create closed runtime contracts and deterministic builders before the Operator API:
 
 - `standards/runtime/logical-project-session.schema.json`
+- `standards/runtime/official-prompt-registry.schema.json`
+- `standards/runtime/official-prompt-registry.json`
 - `standards/runtime/worker-profile.schema.json`
 - `standards/runtime/context-package.schema.json`
 - `standards/runtime/llm-run-request.schema.json`
@@ -89,7 +91,8 @@ Context Package requirements:
 
 - tenant, project, run, step, trigger and target revision
 - official prompt ID, version, path and SHA-256
-- exact Project V2 reference and hash
+- exact Project Intake reference and hash for Step 0
+- exact released Project V2 reference and hash for Steps 1 through 4b
 - exact released predecessor artifact IDs, revisions and hashes
 - current rejected artifact and findings for revision runs
 - Evidence, Decisions, Gate and Operator Instruction references
@@ -118,11 +121,13 @@ Revision package requirements:
 - machine findings and human findings
 - operator revision instruction
 - immutable fields and forbidden changes
-- expected output contract and new revision
+- expected output contracts and new revision
 
 Gate:
 
 - a complete run can be reconstructed without an old provider session
+- all nine official prompts are registry-bound by path, version and SHA-256
+- multi-output Steps bind every output contract instead of selecting one
 - missing, stale, superseded, hash-invalid or cross-tenant context fails before dispatch
 - technical session reuse cannot change package inputs or bypass validation
 - Context Package contents are deterministic and client-neutral

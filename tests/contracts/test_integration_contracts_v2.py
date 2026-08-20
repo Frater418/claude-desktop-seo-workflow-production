@@ -204,6 +204,10 @@ class IntegrationContractV2Tests(unittest.TestCase):
 
     def test_n8n_retry_and_dlq_entries_require_bounded_provenance(self):
         simulation = load_json(FIXTURE_DIR / "positive-n8n-simulation-state.json")
+        for field in ("tenant_id", "project_id"):
+            missing_scope = copy.deepcopy(simulation)
+            del missing_scope[field]
+            self.assert_invalid("simulation", missing_scope)
         simulation["retry_policy"]["max_attempts"] = 5
         self.assert_invalid("simulation", simulation)
         retry = load_json(FIXTURE_DIR / "positive-n8n-retry-entry.json")
@@ -221,6 +225,14 @@ class IntegrationContractV2Tests(unittest.TestCase):
         dlq = load_json(FIXTURE_DIR / "positive-n8n-dlq-entry.json")
         del dlq["expected_revision"]
         self.assert_invalid("dlq", dlq)
+        for schema_name, filename, field in (
+            ("retry", "positive-n8n-retry-entry.json", "first_failed_at"),
+            ("retry", "positive-n8n-retry-entry.json", "original_command_sha256"),
+            ("dlq", "positive-n8n-dlq-entry.json", "original_command_sha256"),
+        ):
+            missing_provenance = load_json(FIXTURE_DIR / filename)
+            del missing_provenance[field]
+            self.assert_invalid(schema_name, missing_provenance)
 
     def test_n8n_contracts_bound_retry_and_prohibit_state_authority(self):
         fixtures = {

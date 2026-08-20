@@ -1,0 +1,104 @@
+M .hermes/plans/2026-08-19-ahd-end-to-end-operator-workflow-system.md
+ M 00_admin/DECISIONS.md
+ M 00_admin/PROJECT_STATE.md
+ M 00_admin/audits/2026-08-18-fundamental-workflow-audit/visuals/heartweb-workflow-control-map.html
+ M 00_admin/audits/2026-08-19-e2e-demo/sprint-4/03_SPRINT4_BUILD_PLAN.md
+ M 00_admin/audits/2026-08-19-e2e-demo/sprint-4/CURRENT_POINT_OF_WORK.md
+ M services/operator_routing/router.py
+ M standards/integrations/n8n-dlq-entry.schema.json
+ M standards/integrations/n8n-retry-entry.schema.json
+ M standards/integrations/n8n-simulation-state.schema.json
+ M standards/operator/error-routing-policy.json
+ M tests/contracts/test_integration_contracts_v2.py
+ M tests/fixtures/integrations/v2/positive-n8n-dlq-entry.json
+ M tests/fixtures/integrations/v2/positive-n8n-retry-entry.json
+ M tests/fixtures/integrations/v2/positive-n8n-simulation-state.json
+ M tests/test_operator_error_routing.py
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/15_STAGE_A2_RUNTIME_CONTRACT_RESEARCH.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/16_STAGE_A2_CONTEXT_BUILDER_RESEARCH.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/17_STAGE_A2_IMPLEMENTATION_PLAN.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/18_STAGE_A2_RUNTIME_CONTRACT_IMPLEMENTATION.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/19_STAGE_A2_RUNTIME_CONTRACT_SPEC_REVIEW.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/20_STAGE_A2_RUNTIME_CONTRACT_QUALITY_REVIEW.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/21_STAGE_A2_RUNTIME_CONTRACT_REVIEW_FIX.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/22_STAGE_A2_RUNTIME_CONTRACT_FINAL_SPEC_REVIEW.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/23_STAGE_A2_RUNTIME_CONTRACT_FINAL_QUALITY_REVIEW.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/24_STAGE_A2_PROJECT_CONTEXT_KIND_FIX.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/25_STAGE_A2_RUNTIME_CONTRACT_TERMINAL_SPEC_APPROVAL.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/26_STAGE_A2_RUNTIME_CONTRACT_TERMINAL_QUALITY_APPROVAL.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/27_STAGE_A2_PROJECT_SOURCE_POLICY_FIX.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/28_STAGE_A2_RUNTIME_CONTRACT_ULTIMATE_SPEC_APPROVAL.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/29_STAGE_A2_RUNTIME_CONTRACT_ULTIMATE_QUALITY_APPROVAL.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/30_STAGE_A2_CONTEXT_META_SCHEMA_FIX.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/31_STAGE_A2_RUNTIME_CONTRACT_FINAL_SPEC_APPROVAL.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/32_STAGE_A2_RUNTIME_CONTRACT_FINAL_QUALITY_APPROVAL.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/33_STAGE_A2_META_VALIDATION_PRECONDITION_FIX.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/34_STAGE_A2_RUNTIME_CONTRACT_FINAL_SPEC_APPROVAL.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/35_STAGE_A2_RUNTIME_CONTRACT_FINAL_QUALITY_APPROVAL.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/36_STAGE_A2_CONTEXT_BUILDER_IMPLEMENTATION.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/37_STAGE_A2_CONTEXT_BUILDER_SPEC_REVIEW.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/38_STAGE_A2_CONTEXT_BUILDER_QUALITY_REVIEW.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/39_STAGE_A2_CONTEXT_BUILDER_REVIEW_FIX.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/40_STAGE_A2_CONTEXT_BUILDER_FINAL_SPEC_APPROVAL.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/41_STAGE_A2_CONTEXT_BUILDER_FINAL_QUALITY_APPROVAL.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/42_STAGE_B_OPERATOR_API_IMPLEMENTATION.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/43_STAGE_B_OPERATOR_API_SPEC_REVIEW.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/44_STAGE_B_OPERATOR_API_QUALITY_REVIEW.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/45_STAGE_B_OPERATOR_API_REVIEW_FIX.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/46_STAGE_B_WINDOWS_RECOVERY_TEST_PORTABILITY_FIX.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/47_STAGE_B_OPERATOR_API_FINAL_APPROVAL.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/48_STAGE_B_OPERATOR_API_TERMINAL_APPROVAL.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/49_STAGE_C_INTEGRATION_SIMULATORS_IMPLEMENTATION.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/50_STAGE_C_INTEGRATION_SIMULATORS_FINAL_AUDIT.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/51_STAGE_C_INTEGRATION_SIMULATORS_REVIEW_FIX.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/52_STAGE_C_INTEGRATION_SIMULATORS_TERMINAL_APPROVAL.md
+?? 00_admin/audits/2026-08-19-e2e-demo/sprint-4/53_STAGE_D_OPENAPI_INTEGRATION_IMPLEMENTATION.md
+?? 00_admin/checkpoints/2026-08-20-sprint-4/BRANCH_STATE.txt
+?? 00_admin/checkpoints/2026-08-20-sprint-4/FILE_MANIFEST.json
+?? 00_admin/checkpoints/2026-08-20-sprint-4/GIT_STATUS.txt
+?? 00_admin/checkpoints/2026-08-20-sprint-4/REVIEW_GATE.json
+?? 00_admin/checkpoints/2026-08-20-sprint-4/TEST_RESULTS.json
+?? apps/operator-console/src/generated/api-types.ts
+?? scripts/generate_operator_api_contracts.py
+?? services/context_builder/__init__.py
+?? services/context_builder/builder.py
+?? services/context_builder/session_policy.py
+?? services/context_builder/validator.py
+?? services/integrations/__init__.py
+?? services/integrations/n8n_simulator.py
+?? services/integrations/notion_simulator.py
+?? services/operator_api/__init__.py
+?? services/operator_api/app.py
+?? services/operator_api/event_store.py
+?? services/operator_api/models.py
+?? services/operator_api/repository.py
+?? services/runtime_contracts/__init__.py
+?? services/runtime_contracts/llm_records.py
+?? standards/api/operator-api.openapi.json
+?? standards/runtime/context-package.schema.json
+?? standards/runtime/llm-run-request.schema.json
+?? standards/runtime/llm-run-result.schema.json
+?? standards/runtime/logical-project-session.schema.json
+?? standards/runtime/official-prompt-registry.json
+?? standards/runtime/official-prompt-registry.schema.json
+?? standards/runtime/worker-profile.schema.json
+?? tests/contracts/test_llm_runtime_contracts.py
+?? tests/fixtures/context_builder/positive-context-revision.json
+?? tests/fixtures/context_builder/positive-context-step0-initial.json
+?? tests/fixtures/context_builder/positive-context-step1-next.json
+?? tests/fixtures/context_builder/positive-context-step1c-multi-output.json
+?? tests/fixtures/context_builder/positive-logical-session-intake.json
+?? tests/fixtures/context_builder/positive-logical-session-project-v2.json
+?? tests/fixtures/context_builder/positive-request-cache-hint-retry.json
+?? tests/fixtures/context_builder/positive-request-fresh.json
+?? tests/fixtures/context_builder/positive-result-failed.json
+?? tests/fixtures/context_builder/positive-result-success.json
+?? tests/fixtures/context_builder/positive-worker-profile.json
+?? tests/test_context_builder.py
+?? tests/test_llm_runtime_invariants.py
+?? tests/test_n8n_simulator.py
+?? tests/test_notion_simulator.py
+?? tests/test_operator_api.py
+?? tests/test_operator_api_codegen.py
+?? tests/test_operator_event_store.py
+?? tests/test_sprint4_integration.py

@@ -155,6 +155,19 @@
     {"code": "ERROR_DOMAIN_MARKET_UNKNOWN", "route": "abort", "owner_type": "incident_responder"},
     {"code": "ERROR_DOMAIN_PROVIDER_VERIFICATION_MISMATCH", "route": "abort", "owner_type": "incident_responder"},
     {"code": "ERROR_DOMAIN_REFERENCE_UNKNOWN", "route": "revision_required", "owner_type": "operator"},
-    {"code": "ERROR_DOMAIN_SCHEMA_INVALID", "route": "revision_required", "owner_type": "operator"}
+    {"code": "ERROR_DOMAIN_SCHEMA_INVALID", "route": "revision_required", "owner_type": "operator"},
+    {"code": "ERROR_CONTEXT_SCHEMA_INVALID", "route": "revision_required", "owner_type": "operator"},
+    {"code": "ERROR_CONTEXT_IDENTITY_MISMATCH", "route": "abort", "owner_type": "incident_responder"},
+    {"code": "ERROR_CONTEXT_SOURCE_INVALID", "route": "revision_required", "owner_type": "operator"},
+    {"code": "ERROR_CONTEXT_PROMPT_BINDING_INVALID", "route": "workflow_defect", "owner_type": "workflow_maintainer"},
+    {"code": "ERROR_CONTEXT_OUTPUT_CONTRACT_INVALID", "route": "workflow_defect", "owner_type": "workflow_maintainer"},
+    {"code": "ERROR_CONTEXT_PREDECESSOR_INVALID", "route": "revision_required", "owner_type": "operator"},
+    {"code": "ERROR_CONTEXT_REVISION_BINDING_INVALID", "route": "revision_required", "owner_type": "operator"},
+    {"code": "ERROR_CONTEXT_TRUST_POLICY_INVALID", "route": "revision_required", "owner_type": "operator"},
+    {"code": "ERROR_CONTEXT_PACKAGE_HASH_MISMATCH", "route": "abort", "owner_type": "incident_responder"},
+    {"code": "ERROR_LLM_REQUEST_INVALID", "route": "revision_required", "owner_type": "operator"},
+    {"code": "ERROR_LLM_REQUEST_IDEMPOTENCY_CONFLICT", "route": "abort", "owner_type": "incident_responder"},
+    {"code": "ERROR_LLM_RESULT_INVALID", "route": "revision_required", "owner_type": "operator"},
+    {"code": "ERROR_TECHNICAL_SESSION_POLICY_DENIED", "route": "abort", "owner_type": "incident_responder"}
   ]
 }

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/runtime/logical-project-session.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["logical_session_id", "schema_version", "session_revision", "tenant_id", "project_id", "binding_mode", "project_source", "created_at", "created_by", "state_authority", "technical_session_policy"],
+  "properties": {
+    "logical_session_id": {"type": "string", "pattern": "^logical-session-[a-z0-9][a-z0-9-]{7,63}$"},
+    "schema_version": {"const": "1.0.0"},
+    "session_revision": {"type": "integer", "minimum": 1},
+    "tenant_id": {"type": "string", "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$"},
+    "project_id": {"type": "string", "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$"},
+    "binding_mode": {"enum": ["project_intake", "project_v2"]},
+    "project_source": {"$ref": "#/$defs/projectSource"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "created_by": {"type": "string", "minLength": 1},
+    "state_authority": {"const": "local_core"},
+    "technical_session_policy": {"$ref": "#/$defs/technicalSessionPolicy"},
+    "supersedes_logical_session_id": {"type": "string", "pattern": "^logical-session-[a-z0-9][a-z0-9-]{7,63}$"},
+    "superseded_by_logical_session_id": {"type": "string", "pattern": "^logical-session-[a-z0-9][a-z0-9-]{7,63}$"}
+  },
+  "allOf": [
+    {"if": {"properties": {"binding_mode": {"const": "project_intake"}}}, "then": {"properties": {"project_source": {"properties": {"logical_ref": {"pattern": "^runtime:intake/[a-z0-9][a-z0-9_-]*$"}}}}}},
+    {"if": {"properties": {"binding_mode": {"const": "project_v2"}}}, "then": {"properties": {"project_source": {"properties": {"logical_ref": {"pattern": "^runtime:project/[a-z0-9][a-z0-9_-]*$"}}}}}},
+    {"if": {"properties": {"session_revision": {"const": 1}}}, "then": {"not": {"required": ["supersedes_logical_session_id"]}}},
+    {"if": {"properties": {"session_revision": {"minimum": 2}}}, "then": {"required": ["supersedes_logical_session_id"]}}
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "logicalRef": {"type": "string", "pattern": "^(?:runtime|operator|prompt|output-contract):[a-z0-9][a-z0-9_-]*(?:/[a-z0-9][a-z0-9_-]*)*$"},
+    "projectSource": {"type": "object", "additionalProperties": false, "required": ["source_kind", "source_id", "revision", "logical_ref", "content_sha256"], "properties": {"source_kind": {"enum": ["project_intake", "project_v2"]}, "source_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{2,63}$"}, "revision": {"type": "integer", "minimum": 1}, "logical_ref": {"$ref": "#/$defs/logicalRef"}, "content_sha256": {"$ref": "#/$defs/sha256"}}},
+    "technicalSessionPolicy": {"type": "object", "additionalProperties": false, "required": ["default_execution", "reuse_allowed", "reuse_authority", "lost_handle_recovery"], "properties": {"default_execution": {"const": "fresh_per_step_or_substantial_revision"}, "reuse_allowed": {"const": true}, "reuse_authority": {"const": "cache_only"}, "lost_handle_recovery": {"const": "rebuild_from_context_package"}}}
+  }
+}
