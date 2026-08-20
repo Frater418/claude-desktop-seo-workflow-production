@@ -87,3 +87,57 @@ describe("Workflow route and detail", () => {
     expect(screen.getByRole("button", { name: "Approve gate preview" })).toBeDisabled()
   })
 })
+
+describe("Artifact and run workspace", () => {
+  it("switches the demo workspace without changing the workflow route", () => {
+    render(<App search="?mode=demo" />)
+
+    fireEvent.click(screen.getByRole("tab", { name: "Artifacts & runs" }))
+
+    expect(screen.getByRole("tabpanel", { name: "Artifacts & runs" })).toBeInTheDocument()
+    expect(screen.getByText("Current artifact")).toBeInTheDocument()
+    expect(screen.queryByLabelText("Initial workflow route")).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole("tab", { name: "Workflow" }))
+
+    expect(screen.getByLabelText("Initial workflow route")).toHaveTextContent("0 1 1b 1c 2 3 4a 4b")
+  })
+
+  it("updates the revision diff when an artifact is selected", () => {
+    render(<App search="?mode=demo" />)
+
+    fireEvent.click(screen.getByRole("tab", { name: "Artifacts & runs" }))
+    fireEvent.click(screen.getByRole("button", { name: "Artifact: Navigation resolution package, revision 3" }))
+
+    expect(screen.getByText("Revision 3 compared with revision 2")).toBeInTheDocument()
+    expect(screen.getByText(/Rejected candidate retained for review/)).toBeInTheDocument()
+  })
+
+  it("keeps artifact raw details closed until an operator opens them", () => {
+    render(<App search="?mode=demo" />)
+
+    fireEvent.click(screen.getByRole("tab", { name: "Artifacts & runs" }))
+
+    const details = screen.getByText("Technical details", { selector: ".artifact-preview summary" }).closest("details")
+    expect(details).not.toHaveAttribute("open")
+  })
+
+  it("shows recover fresh for a lost technical session while the immutable package remains valid", () => {
+    render(<App search="?mode=demo" />)
+
+    fireEvent.click(screen.getByRole("tab", { name: "Artifacts & runs" }))
+
+    expect(screen.getByText("recover fresh")).toBeInTheDocument()
+    expect(screen.getByText("Immutable context package remains valid.")).toBeInTheDocument()
+  })
+
+  it("shows revision boundaries and leaves dispatch disabled for Review Center", () => {
+    render(<App search="?mode=demo" />)
+
+    fireEvent.click(screen.getByRole("tab", { name: "Artifacts & runs" }))
+
+    expect(screen.getByText("Immutable fields")).toBeInTheDocument()
+    expect(screen.getByText("Forbidden changes")).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Review Center is required" })).toBeDisabled()
+  })
+})

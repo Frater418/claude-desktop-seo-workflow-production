@@ -57,5 +57,45 @@ summary { cursor: pointer; font-weight: 650; }
 .api-status { min-height: 100vh; padding-top: 18vh; }
 .api-status h1 { max-width: 640px; }
 .api-status p { max-width: 640px; color: #c9d4dc; line-height: 1.5; }
+.workspace-switch { margin-top: 20px; border-bottom: 1px solid #31404c; }
+.workspace-tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+.workspace-tabs button { padding: 9px 12px; color: #b6c4ce; background: transparent; border: 1px solid transparent; border-bottom: 0; border-radius: 4px 4px 0 0; cursor: pointer; }
+.workspace-tabs button[aria-selected="true"] { color: #e8edf2; background: #17212a; border-color: #31404c; box-shadow: inset 0 2px 0 #65d5ba; }
+.workflow-workspace, .artifact-run-workspace { min-width: 0; }
+.workspace-heading { margin-top: 20px; padding: 16px 20px; border: 1px solid #31404c; border-radius: 6px; background: #17212a; }
+.workspace-heading p:last-child { margin: 7px 0 0; color: #c9d4dc; }
+.artifact-run-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 20px; margin-top: 20px; align-items: start; }
+.artifact-column, .run-column { display: grid; min-width: 0; gap: 20px; }
+.workspace-panel { min-width: 0; padding: 18px; border: 1px solid #31404c; border-radius: 6px; background: #17212a; overflow-wrap: anywhere; }
+.workspace-panel h2 { line-height: 1.3; }
+.artifact-selector { display: grid; gap: 7px; margin: 16px 0; }
+.artifact-option { display: flex; min-width: 0; justify-content: space-between; gap: 12px; padding: 10px; color: #c9d4dc; text-align: left; background: #10161d; border: 1px solid #31404c; border-left: 3px solid #53616c; border-radius: 4px; cursor: pointer; }
+.artifact-option span { min-width: 0; overflow-wrap: anywhere; }
+.artifact-option span:last-child { color: #9baab7; font-size: 0.8rem; text-align: right; }
+.artifact-option[aria-pressed="true"] { color: #e8edf2; border-color: #65d5ba; border-left-color: #65d5ba; background: #1f3840; }
+.artifact-facts, .context-facts, .run-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; margin: 0; }
+.artifact-facts div, .context-facts div, .run-facts div { min-width: 0; }
+.artifact-facts dd, .context-facts dd, .run-facts dd { overflow-wrap: anywhere; }
+.artifact-output, .operator-impact, .recovery-note, .identity-preview, .dispatch-preview { margin-top: 14px; padding: 12px; border: 1px solid #31404c; background: #10161d; }
+.artifact-output p, .operator-impact p, .recovery-note p, .identity-preview p, .dispatch-preview p { margin-bottom: 0; line-height: 1.45; }
+.artifact-location { margin: 14px 0 0; color: #c9d4dc; }
+.artifact-location a { color: #82d8c4; overflow-wrap: anywhere; }
+.diff-grid, .preview-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+.diff-grid section, .preview-grid section { min-width: 0; padding: 12px; border-left: 3px solid #53616c; background: #10161d; }
+.diff-grid p, .preview-grid p { margin-bottom: 0; line-height: 1.45; overflow-wrap: anywhere; }
+.run-list { display: grid; gap: 10px; margin-top: 16px; }
+.run-card { min-width: 0; padding: 12px; border: 1px solid #31404c; background: #10161d; }
+.run-heading { display: flex; min-width: 0; justify-content: space-between; gap: 10px; align-items: start; }
+.run-heading h3 { min-width: 0; overflow-wrap: anywhere; }
+.run-heading .status-badge { flex: 0 0 auto; }
+.run-facts { margin-top: 10px; }
+.run-facts dd { font-size: 0.84rem; font-weight: 500; }
+.context-facts { margin-top: 16px; }
+.context-facts dd { font-weight: 500; line-height: 1.4; }
+.recovery-note { border-left: 3px solid #f2ce7f; }
+.dispatch-preview { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: center; }
+.dispatch-preview button { flex: 0 0 auto; }
 @media (max-width: 850px) { .console-grid { grid-template-columns: 1fr; } .project-bar, .section-heading, .detail-heading { flex-direction: column; } .mode-stack { justify-content: start; } .next-action { max-width: none; } }
 @media (max-width: 520px) { .app-shell, .api-status { padding: 14px; } .dashboard, .workflow-panel, .step-detail { width: 100%; padding: 14px; } .metrics-grid, .detail-grid { grid-template-columns: 1fr; } .next-action { width: 100%; overflow-wrap: anywhere; } .timeline-step { grid-template-columns: 28px minmax(0, 1fr); } .state-label { grid-column: 2; text-align: left; } }
+@media (max-width: 850px) { .artifact-run-grid { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .workspace-heading, .workspace-panel { padding: 14px; } .artifact-facts, .context-facts, .run-facts, .diff-grid, .preview-grid { grid-template-columns: 1fr; } .artifact-option, .run-heading { flex-direction: column; } .artifact-option span:last-child { text-align: left; } .dispatch-preview { align-items: stretch; } .dispatch-preview button { width: 100%; } }

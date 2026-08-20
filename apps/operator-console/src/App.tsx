@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react"
 import { createOperatorApiClient, OperatorApiError } from "./api/client"
 import { neutralDemoProject, type WorkflowStep } from "./dev/neutralDemo"
+import { ArtifactPreview, defaultDemoArtifact, demoArtifacts } from "./features/artifacts/ArtifactPreview"
+import { RevisionDiff } from "./features/artifacts/RevisionDiff"
 import { ProjectDashboard } from "./features/projects/ProjectDashboard"
+import { ContextPackageSummary } from "./features/runs/ContextPackageSummary"
+import { RevisionRunPreview } from "./features/runs/RevisionRunPreview"
+import { RunHistory } from "./features/runs/RunHistory"
 import { StepDetail } from "./features/workflow/StepDetail"
 import { WorkflowTimeline } from "./features/workflow/WorkflowTimeline"
 
@@ -18,6 +23,8 @@ type RealApiState =
 type AppProps = {
   readonly search?: string
 }
+
+type DemoWorkspace = "workflow" | "artifacts"
 
 function isDemoSearch(search: string): boolean {
   return search === "?mode=demo"
@@ -37,6 +44,8 @@ function selectedDemoStep(stepId: string): WorkflowStep {
 export function App({ search = window.location.search }: AppProps): JSX.Element {
   const demoMode = isDemoSearch(search)
   const [selectedStepId, setSelectedStepId] = useState("1b")
+  const [demoWorkspace, setDemoWorkspace] = useState<DemoWorkspace>("workflow")
+  const [selectedArtifactId, setSelectedArtifactId] = useState(defaultDemoArtifact.id)
   const [realApiState, setRealApiState] = useState<RealApiState>({ kind: "loading" })
 
   useEffect(() => {
@@ -86,6 +95,7 @@ export function App({ search = window.location.search }: AppProps): JSX.Element 
   }
 
   const selectedStep = selectedDemoStep(selectedStepId)
+  const selectedArtifact = demoArtifacts.find((artifact) => artifact.id === selectedArtifactId) ?? defaultDemoArtifact
 
   return (
     <main className="app-shell">
@@ -93,12 +103,48 @@ export function App({ search = window.location.search }: AppProps): JSX.Element 
         <div><p className="eyebrow">Heartweb Operator Console</p><h1>{neutralDemoProject.title}</h1></div>
         <div className="mode-stack"><span className="simulation-label">Local simulation</span><span>Notion simulated</span><span>n8n simulated</span></div>
       </header>
-      <ProjectDashboard project={neutralDemoProject} />
-      <div className="console-grid">
-        <WorkflowTimeline onSelect={setSelectedStepId} selectedStepId={selectedStepId} sideflow={neutralDemoProject.sideflow} steps={neutralDemoProject.steps} />
-        <StepDetail projectId={neutralDemoProject.id} step={selectedStep} />
-      </div>
+      <DemoWorkspaceSwitch onSelect={setDemoWorkspace} selectedWorkspace={demoWorkspace} />
+      {demoWorkspace === "workflow" ? (
+        <section aria-labelledby="workflow-workspace-tab" className="workflow-workspace" id="workflow-workspace" role="tabpanel" tabIndex={0}>
+          <ProjectDashboard project={neutralDemoProject} />
+          <div className="console-grid">
+            <WorkflowTimeline onSelect={setSelectedStepId} selectedStepId={selectedStepId} sideflow={neutralDemoProject.sideflow} steps={neutralDemoProject.steps} />
+            <StepDetail projectId={neutralDemoProject.id} step={selectedStep} />
+          </div>
+        </section>
+      ) : (
+        <section aria-labelledby="artifacts-workspace-tab" className="artifact-run-workspace" id="artifacts-workspace" role="tabpanel" tabIndex={0}>
+          <div className="workspace-heading"><p className="eyebrow">Artifact and run workspace</p><h2>Artifacts &amp; runs</h2><p>Immutable outputs, revision evidence, and replaceable technical-session cache state.</p></div>
+          <div className="artifact-run-grid">
+            <div className="artifact-column">
+              <ArtifactPreview onSelectArtifact={setSelectedArtifactId} selectedArtifact={selectedArtifact} />
+              <RevisionDiff artifact={selectedArtifact} />
+            </div>
+            <div className="run-column">
+              <RunHistory />
+              <ContextPackageSummary />
+              <RevisionRunPreview />
+            </div>
+          </div>
+        </section>
+      )}
     </main>
+  )
+}
+
+type DemoWorkspaceSwitchProps = {
+  readonly selectedWorkspace: DemoWorkspace
+  readonly onSelect: (workspace: DemoWorkspace) => void
+}
+
+function DemoWorkspaceSwitch({ selectedWorkspace, onSelect }: DemoWorkspaceSwitchProps): JSX.Element {
+  return (
+    <nav aria-label="Demo workspace" className="workspace-switch">
+      <div aria-label="Demo workspace" className="workspace-tabs" role="tablist">
+        <button aria-controls="workflow-workspace" aria-selected={selectedWorkspace === "workflow"} id="workflow-workspace-tab" onClick={() => onSelect("workflow")} role="tab" type="button">Workflow</button>
+        <button aria-controls="artifacts-workspace" aria-selected={selectedWorkspace === "artifacts"} id="artifacts-workspace-tab" onClick={() => onSelect("artifacts")} role="tab" type="button">Artifacts &amp; runs</button>
+      </div>
+    </nav>
   )
 }
 
