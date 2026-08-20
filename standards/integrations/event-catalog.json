@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/integrations/event-catalog.json",
+  "additionalProperties": false,
+  "catalog_version": "1.0.0",
+  "events": ["project.created", "run.started", "step.blocked", "artifact.created", "gate.ready", "gate.approved", "gate.rejected", "task.created", "task.resolved", "defect.created", "escalation.created", "run.resumed", "release.created"]
+}

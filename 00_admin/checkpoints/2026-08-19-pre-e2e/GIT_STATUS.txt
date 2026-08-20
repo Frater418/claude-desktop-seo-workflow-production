@@ -1,0 +1,40 @@
+## master...origin/master
+ M .gitignore
+ M 00_admin/PROJECT_STATE.md
+ M mcp/tools/capacity_matrix_solver.py
+ M mcp/tools/validate_schema_jsonld.py
+ M prompts/0-kickoff.xml.md
+ M prompts/1-pillar-identifikation.xml.md
+ M standards/dateinamen-und-output-vertrag.md
+ M standards/manifest.schema.json
+ M tests/fixtures/sample_manifest.json
+ M tests/run_acceptance_tests.py
+?? .hermes/
+?? 00_admin/DECISIONS.md
+?? 00_admin/audits/
+?? 03_research/provider-strategy-2026-08-18/
+?? requirements-dev.txt
+?? services/
+?? standards/domain/
+?? standards/outputs/
+?? standards/quality/
+?? standards/runtime/
+?? standards/workflow/
+?? tests/contracts/
+?? tests/fixtures/domain/
+?? tests/fixtures/sample_briefing.md
+?? tests/fixtures/sample_landingpage.html
+?? tests/fixtures/step1/
+?? tests/fixtures/workflow/
+?? tests/run_full_suite.py
+?? tests/test_agentseo_location_guard.py
+?? tests/test_capacity_matrix_solver_strict.py
+?? tests/test_crawl_disposition.py
+?? tests/test_domain_contract_validator.py
+?? tests/test_jsonld_validator_levels.py
+?? tests/test_prompt0_contract.py
+?? tests/test_quality_gate_registry_evaluator.py
+?? tests/test_screaming_frog_quality_gate.py
+?? tests/test_step1_contract_v2.py
+?? tests/test_step1_renderer.py
+?? tests/test_transition_service.py

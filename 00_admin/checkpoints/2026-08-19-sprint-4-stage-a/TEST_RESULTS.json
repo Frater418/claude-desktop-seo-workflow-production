@@ -1,0 +1,95 @@
+{
+  "date": "2026-08-19",
+  "sprint": "4-stage-a",
+  "heartweb_branch": "feature/e2e-operator-workflow-system",
+  "host": {
+    "runtime": "Windows Python 3.11",
+    "acceptance": 7,
+    "root_unittest": 178,
+    "contract_unittest": 51,
+    "total": 236,
+    "status": "passed"
+  },
+  "omo": {
+    "runtime": "Linux Python 3.12.3",
+    "acceptance": 7,
+    "root_unittest": 178,
+    "contract_unittest": 51,
+    "total": 236,
+    "status": "passed"
+  },
+  "focused_notion_graph_and_v2": {
+    "tests": 21,
+    "status": "passed"
+  },
+  "hermes_verify": {
+    "recipe": "Heartweb SEO/GEO Framework Acceptance",
+    "ok": true,
+    "acceptance": "7/7"
+  },
+  "git_diff_check": {
+    "windows": "passed"
+  },
+  "ahd_step0": {
+    "status": "byte_identical",
+    "checks": [
+      {
+        "path": "manifest.json",
+        "expected_sha256": "d9255f839a140ead367ef15656a22424d91daf9a9b63bf648901be8fd5ba98ab",
+        "actual_sha256": "d9255f839a140ead367ef15656a22424d91daf9a9b63bf648901be8fd5ba98ab",
+        "matches": true
+      },
+      {
+        "path": "logs/step-0-report.json",
+        "expected_sha256": "bb02701faa3f8d55e307d7f81a06ae18f92c7511b84dd978e65f594736c646c1",
+        "actual_sha256": "bb02701faa3f8d55e307d7f81a06ae18f92c7511b84dd978e65f594736c646c1",
+        "matches": true
+      },
+      {
+        "path": "run.json",
+        "expected_sha256": "bdbd63b4c9c55bbbdfa6c1ad4aa15829403f8d864d95027a29b410d1a848894a",
+        "actual_sha256": "bdbd63b4c9c55bbbdfa6c1ad4aa15829403f8d864d95027a29b410d1a848894a",
+        "matches": true
+      },
+      {
+        "path": "inputs/competitor-preflight.json",
+        "expected_sha256": "14c9709b2a0f0ca680dd5e2bf75ba16e858491ce6b2cce45a44b789ae40d09f8",
+        "actual_sha256": "14c9709b2a0f0ca680dd5e2bf75ba16e858491ce6b2cce45a44b789ae40d09f8",
+        "matches": true
+      }
+    ]
+  },
+  "omo_runtime": {
+    "container": "healthy",
+    "restart_count": 0,
+    "opencode": "1.18.18",
+    "oh_my_openagent": "4.19.4",
+    "python": "3.12.3",
+    "codex_smoke": "OK",
+    "compose": "valid",
+    "branch": "feature/heartweb-sprint4-runtime",
+    "remote": "none",
+    "files": [
+      {
+        "path": "\\\\wsl.localhost\\Ubuntu\\home\\frater418\\projekte\\opencode-omo-integration\\Dockerfile",
+        "bytes": 5493,
+        "sha256": "30fe79747961d4b02c67f6f9737decaec4c8a2fb7d52d965b966897e7b332434"
+      },
+      {
+        "path": "\\\\wsl.localhost\\Ubuntu\\home\\frater418\\projekte\\opencode-omo-integration\\docker-compose.yml",
+        "bytes": 1995,
+        "sha256": "0af79fca9cafa126493e346490a100f68ab656e522f375cdf699e87a97b284eb"
+      },
+      {
+        "path": "\\\\wsl.localhost\\Ubuntu\\home\\frater418\\projekte\\opencode-omo-integration\\config\\package.json",
+        "bytes": 411,
+        "sha256": "9e11991deba65a112cd220c2cc669171dd934b79073ce8d7b71202377216a4a4"
+      },
+      {
+        "path": "\\\\wsl.localhost\\Ubuntu\\home\\frater418\\projekte\\opencode-omo-integration\\config\\package-lock.json",
+        "bytes": 140290,
+        "sha256": "a72f61753ddd4c8ce0cf9aab5b194e06caa672c9549ac526991228a666a05b4f"
+      }
+    ]
+  }
+}

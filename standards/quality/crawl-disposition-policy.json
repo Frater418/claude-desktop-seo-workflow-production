@@ -1,0 +1,21 @@
+{
+  "policy_id": "heartweb-crawl-disposition",
+  "version": "1.0.0",
+  "rules": [
+    {"finding_key": "status_5xx", "allowed_count": 0, "applicability": "always", "step1_disposition": "block", "step4b_disposition": "block", "failure_code": "ERROR_CRAWL_SERVER_ERROR"},
+    {"finding_key": "internal_html_4xx", "allowed_count": 0, "applicability": "always", "step1_disposition": "block", "step4b_disposition": "block", "failure_code": "ERROR_CRAWL_INTERNAL_HTML_4XX"},
+    {"finding_key": "resource_4xx", "allowed_count": 0, "applicability": "always", "step1_disposition": "waiver_required", "step4b_disposition": "block", "failure_code": "ERROR_CRAWL_RESOURCE_4XX"},
+    {"finding_key": "broken_internal_links", "allowed_count": 0, "applicability": "always", "step1_disposition": "block", "step4b_disposition": "block", "failure_code": "ERROR_CRAWL_BROKEN_INTERNAL_LINK"},
+    {"finding_key": "redirect_issues", "allowed_count": 0, "applicability": "always", "step1_disposition": "advisory", "step4b_disposition": "block", "failure_code": "ERROR_CRAWL_REDIRECT_ISSUE"},
+    {"finding_key": "missing_titles_indexable", "allowed_count": 0, "applicability": "always", "step1_disposition": "advisory", "step4b_disposition": "block", "failure_code": "ERROR_CRAWL_TITLE_MISSING"},
+    {"finding_key": "missing_meta_descriptions_indexable", "allowed_count": 0, "applicability": "always", "step1_disposition": "advisory", "step4b_disposition": "advisory", "failure_code": "ERROR_CRAWL_META_MISSING"},
+    {"finding_key": "missing_h1_indexable", "allowed_count": 0, "applicability": "always", "step1_disposition": "advisory", "step4b_disposition": "block", "failure_code": "ERROR_CRAWL_H1_MISSING"},
+    {"finding_key": "missing_h2_indexable", "allowed_count": 0, "applicability": "always", "step1_disposition": "advisory", "step4b_disposition": "advisory", "failure_code": "ERROR_CRAWL_H2_MISSING"},
+    {"finding_key": "canonical_issues_indexable", "allowed_count": 0, "applicability": "always", "step1_disposition": "advisory", "step4b_disposition": "block", "failure_code": "ERROR_CRAWL_CANONICAL_ISSUE"},
+    {"finding_key": "internal_link_issues", "allowed_count": 0, "applicability": "always", "step1_disposition": "advisory", "step4b_disposition": "block", "failure_code": "ERROR_CRAWL_INTERNAL_LINK_ISSUE"},
+    {"finding_key": "hreflang_issues", "allowed_count": 0, "applicability": "when_multilingual", "step1_disposition": "advisory", "step4b_disposition": "block", "failure_code": "ERROR_CRAWL_HREFLANG_ISSUE"},
+    {"finding_key": "structured_data_issues", "allowed_count": 0, "applicability": "always", "step1_disposition": "advisory", "step4b_disposition": "block", "failure_code": "ERROR_CRAWL_STRUCTURED_DATA_ISSUE"},
+    {"finding_key": "critical_security_issues", "allowed_count": 0, "applicability": "always", "step1_disposition": "advisory", "step4b_disposition": "block", "failure_code": "ERROR_CRAWL_SECURITY_CRITICAL"},
+    {"finding_key": "security_issues", "allowed_count": 0, "applicability": "always", "step1_disposition": "advisory", "step4b_disposition": "advisory", "failure_code": "ERROR_CRAWL_SECURITY_ISSUE"}
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/integrations/notion-projection.schema.json",
+  "title": "Heartweb Notion Operative Projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["projection_id", "schema_version", "integration_mode", "projected_at", "source_event_id", "identity", "projection_role", "state_authority", "atomic_state_writer", "records"],
+  "properties": {
+    "projection_id": {"type": "string", "pattern": "^notion-projection-[a-z0-9][a-z0-9-]{7,63}$"},
+    "schema_version": {"const": "1.0.0"},
+    "integration_mode": {"type": "string", "enum": ["simulated", "live"]},
+    "simulation_id": {"type": "string", "pattern": "^sim-[a-z0-9][a-z0-9-]{7,63}$"},
+    "live_connection_id": {"type": "string", "pattern": "^live-[a-z0-9][a-z0-9-]{7,63}$"},
+    "projected_at": {"type": "string", "format": "date-time"},
+    "source_event_id": {"type": "string", "pattern": "^event-[a-z0-9][a-z0-9-]{7,63}$"},
+    "identity": {"$ref": "#/$defs/identity"},
+    "projection_role": {"const": "operative_projection"},
+    "state_authority": {"const": "transition_service"},
+    "atomic_state_writer": {"const": false},
+    "records": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/record"}}
+  },
+  "allOf": [
+    {"if": {"properties": {"integration_mode": {"const": "simulated"}}}, "then": {"required": ["simulation_id"], "not": {"required": ["live_connection_id"]}}},
+    {"if": {"properties": {"integration_mode": {"const": "live"}}}, "then": {"required": ["live_connection_id"], "not": {"required": ["simulation_id"]}}}
+  ],
+  "$defs": {
+    "identity": {"type": "object", "additionalProperties": false, "required": ["tenant_id", "project_id"], "properties": {"tenant_id": {"type": "string", "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$"}, "project_id": {"type": "string", "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$"}, "run_id": {"type": "string", "pattern": "^run-[a-z0-9][a-z0-9-]{7,63}$"}, "step_id": {"type": "string", "enum": ["0", "1", "1b", "1c", "2", "3", "3b", "4a", "4b"]}, "revision": {"type": "integer", "minimum": 1}}},
+    "record": {"type": "object", "additionalProperties": false, "required": ["record_id", "record_type", "title", "projected_status", "source_revision", "source_event_id"], "properties": {"record_id": {"type": "string", "pattern": "^(project|run|task|gate|artifact|review)-[a-z0-9][a-z0-9-]{2,63}$"}, "record_type": {"type": "string", "enum": ["project", "run", "task", "gate", "artifact", "review"]}, "title": {"type": "string", "minLength": 1}, "projected_status": {"type": "string", "minLength": 1}, "source_revision": {"type": "integer", "minimum": 1}, "source_event_id": {"type": "string", "pattern": "^event-[a-z0-9][a-z0-9-]{7,63}$"}}}
+  }
+}

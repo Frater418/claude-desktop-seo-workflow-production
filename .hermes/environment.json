@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "recipe": {
+    "name": "Heartweb SEO/GEO Framework Acceptance",
+    "kind": "python",
+    "bootstrap": [],
+    "build": [],
+    "test": [
+      "python tests/run_acceptance_tests.py"
+    ],
+    "start": null,
+    "port": null,
+    "readinessPath": "/",
+    "evidence": [
+      "tests/run_acceptance_tests.py"
+    ]
+  }
+}

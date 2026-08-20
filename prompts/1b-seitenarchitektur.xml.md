@@ -1,78 +1,56 @@
-# SCHRITT 1b: Finale Seitenarchitektur & Menuestruktur
+# SCHRITT 1B: Seitenarchitektur und Menuestruktur
 
 ```xml
 <prompt_metadata>
   <step>1b</step>
-  <name>Finale Seitenarchitektur & Menuestruktur</name>
+  <name>Canonical Site Architecture</name>
   <author>Raphael Rechberger</author>
-  <version>1.4.0</version>
-  <previous_step>prompts/1-pillar-identifikation.xml.md</previous_step>
-  <next_step>prompts/1c-pillar-template.xml.md</next_step>
+  <version>2.0.0</version>
+  <predecessor_step>1</predecessor_step>
+  <gate_id>GATE-1B</gate_id>
 </prompt_metadata>
 
 <system_role>
-Du bist Senior Informationsarchitekt und SEO/GEO-Stratege.
-Deine Aufgabe ist es, fuer jedes Pillar- und Cluster-Thema aus Schritt 1 einen konkreten, verbindlichen Platz in der Navigation, URL-Struktur und semantischen HTML-Architektur der Website festzulegen:
-1. Ist-Zustand vs. Soll-Zustand der Menuefuehrung.
-2. Zuordnung: Primaere Pillar-Page vs. unterstuetzender Hub vs. GEO Data-Hub.
-3. Zuordnung: Wo leben die Cluster-Seiten strukturell (URL-Schema).
-4. Semantische Section-ID Konvention fuer spae粋ere RAG- und Schema-Verknuepfungen.
-5. Erzeugung eines textlichen Dokuments (`outputs/1b-seitenarchitektur.md`) UND eines vollstaendigen, interaktiven HTML-Baumdiagramms (`outputs/1b-menuestruktur.html`).
+Du erzeugst ausschliesslich einen kanonischen Step-1B-Architektur-Kandidaten. Die JSON-Datei ist die einzige Quelle der Wahrheit. Markdown und HTML sind deterministische Ansichten desselben JSON-Baums und enthalten keine eigenstaendig erstellten Daten.
 </system_role>
 
-<context_files>
-  <required_file path="manifest.json" purpose="Liest Kunden-Domain, Relaunch-URLs, GEO-Targets und Entitaeten ein" />
-  <required_file path="outputs/1-pillar-themen.md" purpose="Liest die freigegebenen Pillar- und Cluster-Themen aus Schritt 1 ein" />
-</context_files>
+<required_inputs>
+  <file path="Project V2" purpose="Validiertes Projekt, Deployment und Tenant-Kontext" />
+  <file path="released Step 1 predecessor" purpose="Unveraenderliches freigegebenes Pillar- und Cluster-Inventar" />
+  <file path="standards/outputs/step-1b-architecture.schema.json" purpose="Geschlossener Draft-2020-12-Ausgabevertrag" />
+  <file path="standards/runtime/transition-command.schema.json" purpose="Einzige erlaubte Uebergabeoperation" />
+</required_inputs>
 
 <instructions>
-  <step number="1" name="Input-Validierung">
-    Lies `outputs/1-pillar-themen.md`. Fehlt die Datei, stoppe mit `ERROR_INPUT_MISSING`.
-  </step>
-  <step number="2" name="Ist-Zustand scannen">
-    Erfasse die aktuelle Hauptnavigation, Sitemap und URL-Muster der Live-Website (sowie der Staging-Domain, falls vorhanden).
-  </step>
-  <step number="3" name="Pillar-, Cluster- & GEO-Zuordnung">
-    Weise jedes Pillar-Thema einem Navigationsort zu (bestehender Nav-Punkt, neuer Nav-Punkt oder Dropdown-Unterpunkt).
-    Unterscheide: Gibt es bereits eine starke Seite, die als primare Pillar-Page dient, oder muss eine neue gebaut werden?
-    Lege das saubere URL-Schema fest (z.B. `/leistungen/[service]/`, `/ratgeber/[artikel]/`, `/standorte/[stadt]/`, `/wissen/[data-hub]/`).
-    Definiere fuer Hauptsektionen semantische Anchor-IDs (z.B. `#definition-[thema]`, `#vergleich-[optionen]`, `#faq-[thema]`).
-  </step>
-  <step number="4" name="Textliches Architektur-Dokument erzeugen">
-    Schreibe `outputs/1b-seitenarchitektur.md` mit Ist-Zustand, Soll-Menuebaum, Zuordnungstabelle, GEO-Typ-Klassifizierung, Begruendungen und offenen Freigabepunkten.
-  </step>
-  <step number="5" name="Visuelles HTML-Menuediagramm erzeugen">
-    Schreibe `outputs/1b-menuestruktur.html`.
-    Die Datei muss vollstaendig autark sein (keine externen CDNs/JS), responsive und ein klares Tree-/Knoten-Diagramm darstellen:
-    - Farbige Badges: Pillar-Page (lila), Landingpage lokal (gruen), Cluster-Hub (blau), Data-Hub / GEO-Anchor (cyan), bestehend (grau), neu zu bauen (gelb).
-    - Inklusive Legende und sauberem Styling gemaess Design-Tokens.
-  </step>
-  <step number="6" name="Manifest aktualisieren">
-    Aktualisiere `manifest.json` fuer Phase `step_1b_site_architecture` auf `completed`.
-  </step>
+  <step number="1">Pruefe Project V2, den freigegebenen Step-1-Artefaktbezug und die Deployment-ID. Fehlt ein Input oder ist seine Revision nicht freigegeben, stoppe.</step>
+  <step number="2">Erzeuge kanonisches ASCII-JSON nach dem geschlossenen Step-1B-Schema. Setze schema_version 2.0.0, artifact_id, run_id, project_id, deployment_id, step_id 1b, revision, source_artifact_ids, evidence_ids, decision_records und candidate_status awaiting_gate.</step>
+  <step number="3">Erfasse fuer jedes freigegebene Pillar und jeden Cluster genau eine Entscheidung: existing, new, update, merge, redirect oder backlog. Jede Entscheidung braucht URL, Navigation und kanonische URL. Redirect braucht redirect_to_url.</step>
+  <step number="4">Erzeuge ausschliesslich aus diesem JSON-Baum die deterministische Markdown-Ansicht und die autarke HTML-Ansicht. Fuehre keine zweite Tabelle, keinen zweiten Menuebaum und keine abweichenden Werte.</step>
+  <step number="5">Fuehre services.step1b_preflight aus. Pruefe URL-, Navigation-, Canonical-, Redirect-, vertikale und horizontale Link-Graph-, Orphan- und Konfliktregeln.</step>
+  <step number="6">Bei bestandener Vorpruefung darf nur ueber den Transition Service ein submit_for_gate-Kommando mit Status awaiting_gate erstellt werden. Binde es an kanonische Bytes, Revision, Vorgänger-Release und GATE-1B.</step>
 </instructions>
 
+<prohibitions>
+  <rule>Erstelle keinen Approval-Record und keine Freigabeentscheidung.</rule>
+  <rule>Setze keinen Status completed, starte keinen Folgeschritt und mutiere kein Legacy-Manifest.</rule>
+  <rule>Rufe keine Provider auf, sende nichts ausser dem awaiting_gate-Transition-Kommando und fuehre keine externe Einreichung aus.</rule>
+</prohibitions>
+
 <validation_rules>
-  - Regel 1: 100%ige Synchronitaet zwischen Textdokument (`.md`) und HTML-Uebersicht (`.html`).
-  - Regel 2: HTML-Datei muss ohne Webserver direkt per Doppelklick im Browser fehlerfrei oeffenbar sein.
-  - Regel 3: Jedes Pillar-Thema aus Schritt 1 muss lueckenlos in der Menuefuehrung verortet sein.
-  - Regel 4: Alle URLs muessen einheitlichen Slug- und Kebab-Case-Regeln folgen.
+  <rule>Akzeptiere nur eine geschlossene Step-1B-Struktur mit freigegebenem Vorgänger, gültiger Vorpruefung und einer ausschliesslichen awaiting_gate-Uebergabe.</rule>
+  <rule>Bei einem Vertrags- oder Vorpruefungsfehler gib ERROR_STEP1B_1C_OPERATOR_ACTION_REQUIRED aus und stoppe ohne Seiteneffekte.</rule>
 </validation_rules>
 
-<output_format>
-Speichere die beiden Dateien:
-1. `outputs/1b-seitenarchitektur.md`
-2. `outputs/1b-menuestruktur.html`
+<operator_error>
+  <code>ERROR_STEP1B_1C_OPERATOR_ACTION_REQUIRED</code>
+  <message>Die erforderlichen freigegebenen Eingaben, Nachweise oder die geschlossene Vorpruefung fehlen oder sind inkonsistent.</message>
+  <action>Stoppe ohne Seiteneffekte und uebergib die strukturierten Vorpruefungsfehler an den Operator.</action>
+</operator_error>
 
-Antworte im Chat mit:
-1. Zusammenfassung der wichtigsten Navigations-Aenderungen.
-2. Bestaetigung der Dateispeicherungen.
-3. Hinweis auf Quality Gate 2 und Vorbereitung auf `prompts/1c-pillar-template.xml.md`.
-</output_format>
-
-<human_review_gate>
-  <gate_id>GATE-1B</gate_id>
-  <reviewer>Raphael Rechberger</reviewer>
-  <checkpoint>Oeffne outputs/1b-menuestruktur.html im Browser und pruefe, ob die Menuefuehrung kundenpraesentabel ist.</checkpoint>
-</human_review_gate>
+  <output_format>
+  <canonical_artifact>Step-1B JSON nach standards/outputs/step-1b-architecture.schema.json</canonical_artifact>
+  <derived_views>Deterministisches Markdown und autarkes HTML ausschliesslich aus dem kanonischen JSON</derived_views>
+  <transition>submit_for_gate mit awaiting_gate nach Transition-Service-Vertrag</transition>
+  </output_format>
+  <v2_output_contract>Canonical JSON 2.0.0 uses a released predecessor and yields only derived views. The awaiting_gate candidate is submitted to the external Human Gate.</v2_output_contract>
 ```

@@ -1,0 +1,15 @@
+{
+  "registry_version": "v1.1.0",
+  "markets": [
+    {"market_id": "de-de-germany", "country_code": "DE", "language": "de", "locale": "de-DE", "legal_jurisdiction": "DE", "provider_location_verification": {"status": "unknown", "provider_location_code": null, "verified_at": null, "verification_source": null}},
+    {"market_id": "at-de-austria", "country_code": "AT", "language": "de", "locale": "de-AT", "legal_jurisdiction": "AT", "provider_location_verification": {"status": "unknown", "provider_location_code": null, "verified_at": null, "verification_source": null}},
+    {"market_id": "ch-de-switzerland", "country_code": "CH", "language": "de", "locale": "de-CH", "legal_jurisdiction": "CH", "provider_location_verification": {"status": "unknown", "provider_location_code": null, "verified_at": null, "verification_source": null}},
+    {"market_id": "fr-fr-france", "country_code": "FR", "language": "fr", "locale": "fr-FR", "legal_jurisdiction": "FR", "provider_location_verification": {"status": "unknown", "provider_location_code": null, "verified_at": null, "verification_source": null}},
+    {"market_id": "lu-fr-luxembourg", "country_code": "LU", "language": "fr", "locale": "fr-LU", "legal_jurisdiction": "LU", "provider_location_verification": {"status": "unknown", "provider_location_code": null, "verified_at": null, "verification_source": null}},
+    {"market_id": "lk-en-sri-lanka", "country_code": "LK", "language": "en", "locale": "en-LK", "legal_jurisdiction": "LK", "provider_location_verification": {"status": "unknown", "provider_location_code": null, "verified_at": null, "verification_source": null}},
+    {"market_id": "id-id-indonesia", "country_code": "ID", "language": "id", "locale": "id-ID", "legal_jurisdiction": "ID", "provider_location_verification": {"status": "unknown", "provider_location_code": null, "verified_at": null, "verification_source": null}},
+    {"market_id": "ae-en-united-arab-emirates", "country_code": "AE", "language": "en", "locale": "en-AE", "legal_jurisdiction": "AE", "provider_location_verification": {"status": "unknown", "provider_location_code": null, "verified_at": null, "verification_source": null}},
+    {"market_id": "gb-en-united-kingdom", "country_code": "GB", "language": "en", "locale": "en-GB", "legal_jurisdiction": "GB", "provider_location_verification": {"status": "unknown", "provider_location_code": null, "verified_at": null, "verification_source": null}},
+    {"market_id": "us-en-united-states", "country_code": "US", "language": "en", "locale": "en-US", "legal_jurisdiction": "US", "provider_location_verification": {"status": "unknown", "provider_location_code": null, "verified_at": null, "verification_source": null}}
+  ]
+}

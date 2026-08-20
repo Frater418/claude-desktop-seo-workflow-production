@@ -1,0 +1,15 @@
+{
+  "schema_version": "2.0.0",
+  "artifact_id": "artifact-outdoor-design-system-0001",
+  "run_id": "run-outdoor-design-system-0001",
+  "project_id": "project-coastline-gear",
+  "deployment_id": "dep-coastline-gear",
+  "step_id": "1c",
+  "revision": 2,
+  "source_artifact_ids": ["artifact-outdoor-architecture-0001"],
+  "evidence_ids": ["evidence-outdoor-screenshot-0001", "evidence-outdoor-brand-0001"],
+  "decision_records": [{"decision_id": "decision-outdoor-design-0001", "question": "Brand token provenance", "outcome": "fixture screenshot and brand evidence", "evidence_ids": ["evidence-outdoor-screenshot-0001", "evidence-outdoor-brand-0001"]}],
+  "candidate_status": "awaiting_gate",
+  "tokens": {"color_primary": "#d95f02", "color_surface": "#f6f0e5", "font_body": "Verdana", "radius_card": "0px"},
+  "accessibility": {"contrast_evidence_ids": ["evidence-outdoor-screenshot-0001", "evidence-outdoor-brand-0001"], "focus_indicator": "visible"}
+}

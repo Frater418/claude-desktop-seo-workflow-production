@@ -1,0 +1,21 @@
+{
+  "revision_request_id": "revision-step-1-0001",
+  "tenant_id": "tenant-ahd",
+  "project_id": "project-ahd",
+  "run_id": "run-step-1-0001",
+  "step_id": "1",
+  "current_artifact_id": "artifact-step-1-0001",
+  "current_content_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "current_revision": 1,
+  "artifact": {"artifact_id": "artifact-step-1-0001", "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "revision": 1},
+  "affected_sections": ["pillar inventory"],
+  "problem": "The artifact omits the verified crawl finding.",
+  "expected_result": "A new revision records the crawl finding and its disposition.",
+  "immutable_constraints": ["Do not overwrite the current artifact."],
+  "evidence": [{"evidence_id": "evidence-crawl-0001", "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}],
+  "reviewer_feedback": "Add the finding and rerun the required gates.",
+  "attempt_number": 1,
+  "status": "open",
+  "requested_by": "reviewer-raphael",
+  "requested_at": "2026-08-19T12:00:00Z"
+}

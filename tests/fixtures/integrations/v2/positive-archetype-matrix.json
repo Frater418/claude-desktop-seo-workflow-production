@@ -1,0 +1,15 @@
+{
+  "variants": ["standard", "international_multilingual", "regulated_local"],
+  "archetypes": [
+    {"source_fixture":"national-b2b.json","variant":"standard"},
+    {"source_fixture":"regional-solo-expert.json","variant":"standard"},
+    {"source_fixture":"programmatic-local-satellite-network.json","variant":"standard"},
+    {"source_fixture":"english-international-resort-ota-social.json","variant":"international_multilingual"},
+    {"source_fixture":"international-speaker-brand.json","variant":"international_multilingual"},
+    {"source_fixture":"cross-border-finance.json","variant":"international_multilingual"},
+    {"source_fixture":"sri-lankan-ayurveda-dach.json","variant":"international_multilingual"},
+    {"source_fixture":"local-medical.json","variant":"regulated_local"},
+    {"source_fixture":"regional-care.json","variant":"regulated_local"},
+    {"source_fixture":"sensitive-education-retreat.json","variant":"regulated_local"}
+  ]
+}

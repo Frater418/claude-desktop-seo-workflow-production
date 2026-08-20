@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/integrations/n8n-simulation-state.schema.json",
+  "title": "Heartweb n8n Local Simulation State",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["simulation_state_id", "schema_version", "integration_mode", "simulation_id", "clock", "retry_policy", "command_queue", "confirmed_checkpoint_days"],
+  "properties": {
+    "simulation_state_id": {"type": "string", "pattern": "^n8n-state-[a-z0-9][a-z0-9-]{7,63}$"}, "schema_version": {"const": "2.0.0"}, "integration_mode": {"const": "simulated"}, "simulation_id": {"type": "string", "pattern": "^sim-[a-z0-9][a-z0-9-]{7,63}$"}, "clock": {"$ref": "#/$defs/clock"}, "retry_policy": {"$ref": "#/$defs/retryPolicy"}, "command_queue": {"type": "array", "items": {"$ref": "#/$defs/queueEntry"}}, "confirmed_checkpoint_days": {"type": "array", "minItems": 3, "maxItems": 3, "prefixItems": [{"const": 30}, {"const": 60}, {"const": 90}], "items": false}
+  },
+  "$defs": {
+    "clock": {"type": "object", "additionalProperties": false, "required": ["clock_type", "current_time"], "properties": {"clock_type": {"const": "deterministic"}, "current_time": {"type": "string", "format": "date-time"}}},
+    "retryPolicy": {"type": "object", "additionalProperties": false, "required": ["max_attempts", "backoff_seconds"], "properties": {"max_attempts": {"const": 3}, "backoff_seconds": {"type": "integer", "minimum": 0, "maximum": 3600}}},
+    "queueEntry": {"type": "object", "additionalProperties": false, "required": ["command_id", "command_type", "tenant_id", "project_id", "run_id", "step_id", "expected_revision", "correlation_id", "idempotency_key"], "properties": {"command_id": {"type": "string", "pattern": "^command-[a-z0-9][a-z0-9-]{7,63}$"}, "command_type": {"enum": ["dispatch_tool_run", "wait_for_gate", "retry_delivery", "resume_run", "dead_letter"]}, "tenant_id": {"type": "string", "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$"}, "project_id": {"type": "string", "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$"}, "run_id": {"type": "string", "pattern": "^run-[a-z0-9][a-z0-9-]{7,63}$"}, "step_id": {"enum": ["0", "1", "1b", "1c", "2", "3", "3b", "4a", "4b"]}, "expected_revision": {"type": "integer", "minimum": 1}, "correlation_id": {"type": "string", "pattern": "^corr-[a-z0-9][a-z0-9-]{7,63}$"}, "idempotency_key": {"type": "string", "pattern": "^idem-[a-z0-9][a-z0-9-]{7,127}$"}}}
+  }
+}

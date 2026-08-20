@@ -52,6 +52,73 @@ RELEVANCE_FACTORS = {
     "Vertrauen": 1.0
 }
 
+
+class CapacityValidationError(ValueError):
+    """Structured fail-fast error for invalid solver inputs."""
+
+    def __init__(self, code: str, message: str, item_index: int | None = None, field: str | None = None):
+        super().__init__(message)
+        self.code = code
+        self.message = message
+        self.item_index = item_index
+        self.field = field
+
+    def to_dict(self) -> dict:
+        return {
+            "code": self.code,
+            "message": self.message,
+            "item_index": self.item_index,
+            "field": self.field,
+        }
+
+
+def _required_value(item: dict, aliases: tuple[str, ...], canonical: str, item_index: int):
+    for key in aliases:
+        if key in item and item[key] is not None and str(item[key]).strip() != "":
+            return item[key]
+    raise CapacityValidationError(
+        "ERROR_SOLVER_REQUIRED_FIELD_MISSING",
+        f"Item #{item_index} is missing required field '{canonical}'.",
+        item_index=item_index,
+        field=canonical,
+    )
+
+
+def _non_negative_float(value, canonical: str, item_index: int) -> float:
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError) as exc:
+        raise CapacityValidationError(
+            "ERROR_SOLVER_METRIC_INVALID",
+            f"Item #{item_index} field '{canonical}' must be numeric.",
+            item_index=item_index,
+            field=canonical,
+        ) from exc
+    if parsed < 0:
+        raise CapacityValidationError(
+            "ERROR_SOLVER_METRIC_INVALID",
+            f"Item #{item_index} field '{canonical}' must be non-negative.",
+            item_index=item_index,
+            field=canonical,
+        )
+    return parsed
+
+
+def _explicit_bool(value, canonical: str, item_index: int) -> bool:
+    if isinstance(value, bool):
+        return value
+    normalized = str(value).strip().lower()
+    if normalized in {"true", "1", "yes", "ja"}:
+        return True
+    if normalized in {"false", "0", "no", "nein"}:
+        return False
+    raise CapacityValidationError(
+        "ERROR_SOLVER_BOOLEAN_INVALID",
+        f"Item #{item_index} field '{canonical}' must be an explicit boolean.",
+        item_index=item_index,
+        field=canonical,
+    )
+
 def calculate_score(search_volume: float, difficulty: float, category: str, content_type: str, is_mandatory: bool, info_gain: float = 0.0, entity_density: float = 0.0) -> float:
     cat_clean = str(category or "").strip()
     c_type_clean = str(content_type or "").strip()
@@ -103,34 +170,83 @@ def load_items_from_file(file_path: Path) -> list:
     else:
         raise ValueError(f"Nicht unterstuetztes Format: {ext}. Bitte .json oder .csv verwenden.")
         
+    if not isinstance(items, list):
+        raise CapacityValidationError(
+            "ERROR_SOLVER_INPUT_SHAPE_INVALID",
+            "Input must be a JSON array, a JSON object with an 'items' array, or a CSV table.",
+        )
     return items
 
 def solve_capacity_plan(items: list, hours_min=10.0, hours_max=15.0, total_weeks=17):
-    if not items:
-        return [{"week": w + 1, "phase": 1 if w < 4 else (2 if w < 8 else (3 if w < 13 else 4)), "items": [], "hours": 0.0} for w in range(total_weeks)]
+    if not isinstance(items, list) or not items:
+        raise CapacityValidationError(
+            "ERROR_SOLVER_EMPTY_INPUT",
+            "At least one validated content item is required to create a capacity plan.",
+        )
+    if not isinstance(total_weeks, int) or total_weeks < 1:
+        raise CapacityValidationError(
+            "ERROR_SOLVER_CAPACITY_INVALID",
+            "The planning horizon must be a positive integer number of weeks.",
+            field="total_weeks",
+        )
+    if hours_min <= 0 or hours_max <= 0 or hours_min > hours_max:
+        raise CapacityValidationError(
+            "ERROR_SOLVER_CAPACITY_INVALID",
+            "Capacity requires positive values and hours_min must not exceed hours_max.",
+            field="hours_min/hours_max",
+        )
         
     processed = []
-    for item in items:
-        sv = float(item.get("Suchvolumen", 0) or item.get("search_volume", 0) or 0)
-        kd = float(item.get("Difficulty", 0) or item.get("difficulty", 0) or 0)
-        cat = str(item.get("Kategorie", item.get("category", "Informational")))
-        c_type = str(item.get("Content_Type", item.get("content_type", "Blogartikel")))
+    for item_index, item in enumerate(items):
+        if not isinstance(item, dict):
+            raise CapacityValidationError(
+                "ERROR_SOLVER_ITEM_INVALID",
+                f"Item #{item_index} must be an object.",
+                item_index=item_index,
+            )
+        pillar = str(_required_value(item, ("Pillar_Thema", "pillar"), "pillar", item_index)).strip()
+        title = str(_required_value(item, ("Cluster_Thema", "title"), "title", item_index)).strip()
+        keyword = str(_required_value(item, ("Ziel_Keyword", "keyword"), "keyword", item_index)).strip()
+        cat = str(_required_value(item, ("Kategorie", "category"), "category", item_index)).strip()
+        c_type = str(_required_value(item, ("Content_Type", "content_type"), "content_type", item_index)).strip()
+        sv = _non_negative_float(
+            _required_value(item, ("Suchvolumen", "search_volume"), "search_volume", item_index),
+            "search_volume",
+            item_index,
+        )
+        kd = _non_negative_float(
+            _required_value(item, ("Difficulty", "difficulty"), "difficulty", item_index),
+            "difficulty",
+            item_index,
+        )
+        if c_type not in EFFORT_WEIGHTS:
+            raise CapacityValidationError(
+                "ERROR_SOLVER_CONTENT_TYPE_UNKNOWN",
+                f"Item #{item_index} uses unknown content type '{c_type}'.",
+                item_index=item_index,
+                field="content_type",
+            )
         
         info_gain = float(item.get("Information_Gain_Score", item.get("information_gain", item.get("info_gain", 0))) or 0)
         entity_density = float(item.get("Entity_Density_Score", item.get("entity_density", 0)) or 0)
         geo_type = str(item.get("GEO_Typ", item.get("geo_type", "Standard-SEO")))
         engine_target = str(item.get("Engine_Ziel", item.get("engine_target", "Google AI Overviews / Search")))
         
-        is_mand_raw = item.get("Is_Mandatory_Location", item.get("is_mandatory", False))
-        is_mand = str(is_mand_raw).lower() in ["true", "1", "yes", "ja"]
+        is_mand_raw = _required_value(
+            item,
+            ("Is_Mandatory_Location", "is_mandatory"),
+            "is_mandatory",
+            item_index,
+        )
+        is_mand = _explicit_bool(is_mand_raw, "is_mandatory", item_index)
         
         score = calculate_score(sv, kd, cat, c_type, is_mand, info_gain, entity_density)
-        effort = EFFORT_WEIGHTS.get(c_type, 2.5)
+        effort = EFFORT_WEIGHTS[c_type]
         
         processed.append({
-            "pillar": item.get("Pillar_Thema", item.get("pillar", "Hauptkategorie")),
-            "title": item.get("Cluster_Thema", item.get("title", "")),
-            "keyword": item.get("Ziel_Keyword", item.get("keyword", "")),
+            "pillar": pillar,
+            "title": title,
+            "keyword": keyword,
             "search_volume": int(sv),
             "difficulty": int(kd),
             "content_type": c_type,
@@ -162,6 +278,7 @@ def solve_capacity_plan(items: list, hours_min=10.0, hours_max=15.0, total_weeks
             break
             
     remaining_pool = mand_items[mand_idx:] + other_items
+    unplaced = []
     
     for item in remaining_pool:
         placed = False
@@ -172,12 +289,12 @@ def solve_capacity_plan(items: list, hours_min=10.0, hours_max=15.0, total_weeks
                 placed = True
                 break
         if not placed:
-            pass
+            unplaced.append(item)
 
     for w in weeks:
         w["hours"] = round(w["hours"], 2)
 
-    return weeks
+    return {"weeks": weeks, "unplaced": unplaced}
 
 def generate_internal_linking_map(weeks: list) -> str:
     all_allocated = []
@@ -215,14 +332,21 @@ def generate_internal_linking_map(weeks: list) -> str:
             
     return "\n".join(md)
 
-def generate_markdown_plan(weeks: list, hours_min: float = 10.0, hours_max: float = 15.0) -> str:
+def generate_markdown_plan(plan_result, hours_min: float = 10.0, hours_max: float = 15.0) -> str:
+    if isinstance(plan_result, dict):
+        weeks = plan_result["weeks"]
+        unplaced = plan_result.get("unplaced", [])
+    else:
+        weeks = plan_result
+        unplaced = []
+
     md = []
     total_hours = sum(w["hours"] for w in weeks)
     active_weeks = len([w for w in weeks if w["hours"] > 0])
     total_items = sum(len(w["items"]) for w in weeks)
     
     md.append("# 120-Tage-Content-Plan (Deterministisch geloest inkl. GEO)\n")
-    md.append(f"**Gesamtumfang:** {total_items} Content-Stuecke | **Gesamtaufwand:** {round(total_hours, 2)} Stunden ueber {active_weeks} aktive Wochen.\n")
+    md.append(f"**Gesamtumfang:** {total_items} verplante Content-Stuecke | **Gesamtaufwand:** {round(total_hours, 2)} Stunden ueber {active_weeks} aktive Wochen.\n")
     active = [w for w in weeks if w["hours"] > 0]
     if active:
         lo = min(w["hours"] for w in active)
@@ -267,6 +391,18 @@ def generate_markdown_plan(weeks: list, hours_min: float = 10.0, hours_max: floa
         md.append(f"\n**Phase {p_num} Zwischensumme:** {round(p_hours, 2)}h\n")
         
     md.append("\n" + generate_internal_linking_map(weeks))
+
+    # Backlog Section fuer nicht verplante Items
+    md.append("\n## Backlog / Unverplante Opportunitaeten\n")
+    if unplaced:
+        md.append(f"Folgende {len(unplaced)} Items konnten im aktuellen 120-Tage-Kapazitaetsfenster ({hours_max}h/Woche Max) nicht platziert werden und bilden das Backlog fuer Folge-Phasen:\n")
+        md.append("| Titel/Thema | Content-Typ | GEO-Typ | Ziel-Keyword | Suchvolumen | KD | Aufwand (Std) | Score |")
+        md.append("|---|---|---|---|---|---|---|---|")
+        for up in unplaced:
+            md.append(f"| {up['title']} | {up['content_type']} | {up.get('geo_type', 'Standard-SEO')} | {up['keyword']} | {up['search_volume']} | {up['difficulty']} | {up['effort_hours']}h | {up['score']} |")
+    else:
+        md.append("*Alle eingereichten Themen wurden vollstaendig verplant (0 unverplante Items im Backlog).*\n")
+
     return "\n".join(md)
 
 def main():
@@ -286,13 +422,29 @@ def main():
         return
         
     input_path = Path(args.input)
-    items = load_items_from_file(input_path)
-    weeks = solve_capacity_plan(items, hours_min=args.hours_min, hours_max=args.hours_max, total_weeks=args.weeks)
+    try:
+        items = load_items_from_file(input_path)
+        plan_result = solve_capacity_plan(items, hours_min=args.hours_min, hours_max=args.hours_max, total_weeks=args.weeks)
+    except (CapacityValidationError, FileNotFoundError, json.JSONDecodeError, ValueError) as exc:
+        if isinstance(exc, CapacityValidationError):
+            error = exc.to_dict()
+        else:
+            error = {
+                "code": "ERROR_SOLVER_INPUT_INVALID",
+                "message": str(exc),
+                "item_index": None,
+                "field": None,
+            }
+        if args.json_out:
+            print(json.dumps({"status": "failed", "error": error}, indent=2, ensure_ascii=False))
+        else:
+            print(f"[NICHT BESTANDEN] {error['code']}: {error['message']}", file=sys.stderr)
+        sys.exit(1)
     
     if args.json_out:
-        out_content = json.dumps(weeks, indent=2, ensure_ascii=False)
+        out_content = json.dumps(plan_result, indent=2, ensure_ascii=False)
     else:
-        out_content = generate_markdown_plan(weeks, hours_min=args.hours_min, hours_max=args.hours_max)
+        out_content = generate_markdown_plan(plan_result, hours_min=args.hours_min, hours_max=args.hours_max)
         
     if args.output:
         out_path = Path(args.output)

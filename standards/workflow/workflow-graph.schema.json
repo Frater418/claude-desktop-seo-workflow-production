@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/workflow/workflow-graph.schema.json",
+  "title": "Heartweb Workflow Graph",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["graph_id", "version", "initial_route", "steps", "initial_edges", "post_publication_sideflows"],
+  "properties": {
+    "$schema": {"const": "https://heartweb.example/schema/workflow/workflow-graph.schema.json"},
+    "graph_id": {"type": "string", "const": "heartweb-seo-workflow"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "initial_route": {
+      "type": "array", "minItems": 8, "maxItems": 8,
+      "prefixItems": [{"const": "0"}, {"const": "1"}, {"const": "1b"}, {"const": "1c"}, {"const": "2"}, {"const": "3"}, {"const": "4a"}, {"const": "4b"}],
+      "items": false
+    },
+    "steps": {
+      "type": "array", "minItems": 8, "maxItems": 8,
+      "items": {"$ref": "#/$defs/step"}
+    },
+    "initial_edges": {
+      "type": "array", "minItems": 7, "maxItems": 7,
+      "prefixItems": [
+        {"$ref": "#/$defs/edge0to1"}, {"$ref": "#/$defs/edge1to1b"}, {"$ref": "#/$defs/edge1bto1c"},
+        {"$ref": "#/$defs/edge1cto2"}, {"$ref": "#/$defs/edge2to3"}, {"$ref": "#/$defs/edge3to4a"}, {"$ref": "#/$defs/edge4ato4b"}
+      ],
+      "items": false
+    },
+    "post_publication_sideflows": {
+      "type": "array", "minItems": 1, "maxItems": 1,
+      "items": {"$ref": "#/$defs/sideflow"}
+    }
+  },
+  "$defs": {
+    "step": {
+      "type": "object", "additionalProperties": false,
+      "required": ["step_id", "gate_id", "requires_released_predecessor", "requires_artifact", "requires_quality_gate"],
+      "properties": {
+        "step_id": {"type": "string", "enum": ["0", "1", "1b", "1c", "2", "3", "4a", "4b"]},
+        "gate_id": {"type": "string", "pattern": "^GATE-(0|1|1B|1C|2|3|4A|4B)$"},
+        "requires_released_predecessor": {"type": "boolean"},
+        "requires_artifact": {"const": true},
+        "requires_quality_gate": {"const": true}
+      }
+    },
+    "edge": {
+      "type": "object", "additionalProperties": false,
+      "required": ["from_step_id", "to_step_id", "requires_released_predecessor", "requires_artifact", "requires_gate_record"],
+      "properties": {
+        "from_step_id": {"type": "string"}, "to_step_id": {"type": "string"},
+        "requires_released_predecessor": {"const": true}, "requires_artifact": {"const": true}, "requires_gate_record": {"const": true}
+      }
+    },
+    "edge0to1": {"allOf": [{"$ref": "#/$defs/edge"}, {"properties": {"from_step_id": {"const": "0"}, "to_step_id": {"const": "1"}}}]},
+    "edge1to1b": {"allOf": [{"$ref": "#/$defs/edge"}, {"properties": {"from_step_id": {"const": "1"}, "to_step_id": {"const": "1b"}}}]},
+    "edge1bto1c": {"allOf": [{"$ref": "#/$defs/edge"}, {"properties": {"from_step_id": {"const": "1b"}, "to_step_id": {"const": "1c"}}}]},
+    "edge1cto2": {"allOf": [{"$ref": "#/$defs/edge"}, {"properties": {"from_step_id": {"const": "1c"}, "to_step_id": {"const": "2"}}}]},
+    "edge2to3": {"allOf": [{"$ref": "#/$defs/edge"}, {"properties": {"from_step_id": {"const": "2"}, "to_step_id": {"const": "3"}}}]},
+    "edge3to4a": {"allOf": [{"$ref": "#/$defs/edge"}, {"properties": {"from_step_id": {"const": "3"}, "to_step_id": {"const": "4a"}}}]},
+    "edge4ato4b": {"allOf": [{"$ref": "#/$defs/edge"}, {"properties": {"from_step_id": {"const": "4a"}, "to_step_id": {"const": "4b"}}}]},
+    "sideflow": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sideflow_id", "step_id", "trigger", "days_after_publication", "repeatable", "creates_new_revision"],
+      "properties": {
+        "sideflow_id": {"const": "performance-check-3b"}, "step_id": {"const": "3b"}, "trigger": {"const": "post_publication"},
+        "days_after_publication": {"type": "array", "minItems": 3, "maxItems": 3, "prefixItems": [{"const": 30}, {"const": 60}, {"const": 90}], "items": false},
+        "repeatable": {"const": true}, "creates_new_revision": {"const": true}
+      }
+    }
+  }
+}

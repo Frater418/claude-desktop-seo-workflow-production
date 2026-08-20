@@ -1,0 +1,18 @@
+{
+  "task_id": "task-resource-404-001",
+  "tenant_id": "tenant-ahd",
+  "project_id": "project-ahd",
+  "run_id": "run-step-1-0001",
+  "step_id": "1",
+  "task_type": "missing_input",
+  "title": "Provide the missing crawl export",
+  "description": "Upload the verified crawl export before the Step 1 gate can continue.",
+  "owner_role": "operator",
+  "priority": "high",
+  "blocking_scope": "step",
+  "artifact": {"artifact_id": "artifact-step-1-0001", "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "revision": 1},
+  "evidence": [{"evidence_id": "evidence-crawl-0001", "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}],
+  "acceptance_criteria": ["The crawl export is stored as immutable evidence."],
+  "resolution_method": "provide_input",
+  "status": "open"
+}

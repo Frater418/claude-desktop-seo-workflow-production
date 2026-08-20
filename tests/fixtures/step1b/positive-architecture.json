@@ -1,0 +1,18 @@
+{
+  "schema_version": "2.0.0",
+  "artifact_id": "artifact-architecture-0001",
+  "run_id": "run-architecture-0001",
+  "project_id": "project-heartweb-demo",
+  "deployment_id": "dep-heartweb-demo",
+  "step_id": "1b",
+  "revision": 1,
+  "source_artifact_ids": ["artifact-topic-inventory-0001"],
+  "evidence_ids": ["evidence-navigation-0001"],
+  "decision_records": [{"decision_id": "decision-architecture-0001", "question": "Navigation placement", "outcome": "approved", "evidence_ids": ["evidence-navigation-0001"]}],
+  "candidate_status": "awaiting_gate",
+  "content_decisions": [
+    {"content_id": "pillar-care", "decision": "existing", "url": "/care/", "canonical_url": "https://example.test/care/", "navigation": "primary"},
+    {"content_id": "cluster-care-guide", "decision": "new", "url": "/care/guide/", "canonical_url": "https://example.test/care/guide/", "navigation": "child"}
+  ],
+  "link_graph": [{"from_content_id": "pillar-care", "to_content_id": "cluster-care-guide", "relationship": "vertical"}]
+}

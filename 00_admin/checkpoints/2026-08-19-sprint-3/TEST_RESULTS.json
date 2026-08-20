@@ -1,0 +1,62 @@
+{
+  "date": "2026-08-19",
+  "sprint": "3",
+  "host": {
+    "runtime": "Windows Python 3.11",
+    "acceptance": 7,
+    "root_unittest": 171,
+    "contract_unittest": 37,
+    "total": 215,
+    "status": "passed"
+  },
+  "omo": {
+    "runtime": "Linux Python 3.12",
+    "acceptance": 7,
+    "root_unittest": 171,
+    "contract_unittest": 37,
+    "total": 215,
+    "status": "passed"
+  },
+  "focused_provider_renderer": {
+    "tests": 22,
+    "status": "passed"
+  },
+  "hermes_verify": {
+    "recipe": "Heartweb SEO/GEO Framework Acceptance",
+    "ok": true,
+    "acceptance": "7/7"
+  },
+  "git_diff_check": {
+    "windows": "passed",
+    "omo": "passed"
+  },
+  "ahd_step0": {
+    "status": "byte_identical",
+    "checks": [
+      {
+        "path": "manifest.json",
+        "expected_sha256": "d9255f839a140ead367ef15656a22424d91daf9a9b63bf648901be8fd5ba98ab",
+        "actual_sha256": "d9255f839a140ead367ef15656a22424d91daf9a9b63bf648901be8fd5ba98ab",
+        "matches": true
+      },
+      {
+        "path": "logs/step-0-report.json",
+        "expected_sha256": "bb02701faa3f8d55e307d7f81a06ae18f92c7511b84dd978e65f594736c646c1",
+        "actual_sha256": "bb02701faa3f8d55e307d7f81a06ae18f92c7511b84dd978e65f594736c646c1",
+        "matches": true
+      },
+      {
+        "path": "run.json",
+        "expected_sha256": "bdbd63b4c9c55bbbdfa6c1ad4aa15829403f8d864d95027a29b410d1a848894a",
+        "actual_sha256": "bdbd63b4c9c55bbbdfa6c1ad4aa15829403f8d864d95027a29b410d1a848894a",
+        "matches": true
+      },
+      {
+        "path": "inputs/competitor-preflight.json",
+        "expected_sha256": "14c9709b2a0f0ca680dd5e2bf75ba16e858491ce6b2cce45a44b789ae40d09f8",
+        "actual_sha256": "14c9709b2a0f0ca680dd5e2bf75ba16e858491ce6b2cce45a44b789ae40d09f8",
+        "matches": true
+      }
+    ]
+  }
+}

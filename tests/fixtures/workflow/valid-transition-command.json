@@ -1,0 +1,18 @@
+{
+  "command_id": "command-00000001",
+  "tenant_id": "tenant-demo",
+  "project_id": "project-demo",
+  "run_id": "run-00000001",
+  "expected_revision": 7,
+  "idempotency_key": "idem-00000001",
+  "operation": "approve",
+  "from_step_id": "0",
+  "to_step_id": "1",
+  "input_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "output_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "requested_at": "2026-08-19T12:00:00Z",
+  "predecessor_release": {"step_id": "0", "gate_id": "GATE-0", "status": "released", "artifact_id": "artifact-00000001", "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "artifact_revision": 2},
+  "artifacts": [{"artifact_id": "artifact-00000001", "revision": 2, "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}],
+  "quality_gate": {"quality_gate_run_id": "qgr-00000001", "result": "passed", "artifact_id": "artifact-00000001", "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+  "approval": {"approval_id": "approval-00000001", "gate_id": "GATE-0", "artifact_id": "artifact-00000001", "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "artifact_revision": 2, "policy_version": "1.0.0", "reviewer_id": "reviewer-raphael", "decision": "approved", "decided_at": "2026-08-19T12:00:00Z", "expires_at": "2026-08-20T12:00:00Z"}
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/integrations/notion-record-v2.schema.json",
+  "title": "Heartweb Notion Record Map V2",
+  "type": "object",
+  "minProperties": 1,
+  "patternProperties": {
+    "^customer-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/customer"},
+    "^project-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/project"},
+    "^run-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/run"},
+    "^step-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/step"},
+    "^task-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/task"},
+    "^assignment-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/assignment"},
+    "^artifact-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/artifact"},
+    "^gate-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/gate"},
+    "^review-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/review"},
+    "^approval-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/approval"},
+    "^blocker-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/blocker"},
+    "^defect-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/defect"},
+    "^escalation-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/escalation"},
+    "^performance-checkpoint-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/performance_checkpoint"},
+    "^metric-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/metric"},
+    "^adjustment-proposal-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/adjustment_proposal"},
+    "^integration-status-[a-z0-9][a-z0-9-]{2,63}$": {"$ref": "#/$defs/integration_status"}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "recordId": {"type": "string", "pattern": "^(customer|project|run|step|task|assignment|artifact|gate|review|approval|blocker|defect|escalation|performance-checkpoint|metric|adjustment-proposal|integration-status)-[a-z0-9][a-z0-9-]{2,63}$"},
+    "relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relation_type", "target_record_id"],
+      "properties": {
+        "relation_type": {"enum": ["customer", "project", "run", "step", "task", "assignment", "artifact", "gate", "review", "approval", "blocker", "defect", "escalation", "performance_checkpoint", "metric", "adjustment_proposal", "integration_status"]},
+        "target_record_id": {"$ref": "#/$defs/recordId"}
+      },
+      "oneOf": [
+        {"properties": {"relation_type": {"const": "customer"}, "target_record_id": {"pattern": "^customer-[a-z0-9][a-z0-9-]{2,63}$"}}},
+        {"properties": {"relation_type": {"const": "project"}, "target_record_id": {"pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$"}}},
+        {"properties": {"relation_type": {"const": "run"}, "target_record_id": {"pattern": "^run-[a-z0-9][a-z0-9-]{2,63}$"}}},
+        {"properties": {"relation_type": {"const": "step"}, "target_record_id": {"pattern": "^step-[a-z0-9][a-z0-9-]{2,63}$"}}},
+        {"properties": {"relation_type": {"const": "task"}, "target_record_id": {"pattern": "^task-[a-z0-9][a-z0-9-]{2,63}$"}}},
+        {"properties": {"relation_type": {"const": "assignment"}, "target_record_id": {"pattern": "^assignment-[a-z0-9][a-z0-9-]{2,63}$"}}},
+        {"properties": {"relation_type": {"const": "artifact"}, "target_record_id": {"pattern": "^artifact-[a-z0-9][a-z0-9-]{2,63}$"}}},
+        {"properties": {"relation_type": {"const": "gate"}, "target_record_id": {"pattern": "^gate-[a-z0-9][a-z0-9-]{2,63}$"}}},
+        {"properties": {"relation_type": {"const": "review"}, "target_record_id": {"pattern": "^review-[a-z0-9][a-z0-9-]{2,63}$"}}},
+        {"properties": {"relation_type": {"const": "approval"}, "target_record_id": {"pattern": "^approval-[a-z0-9][a-z0-9-]{2,63}$"}}},
+        {"properties": {"relation_type": {"const": "blocker"}, "target_record_id": {"pattern": "^blocker-[a-z0-9][a-z0-9-]{2,63}$"}}},
+        {"properties": {"relation_type": {"const": "defect"}, "target_record_id": {"pattern": "^defect-[a-z0-9][a-z0-9-]{2,63}$"}}},
+        {"properties": {"relation_type": {"const": "escalation"}, "target_record_id": {"pattern": "^escalation-[a-z0-9][a-z0-9-]{2,63}$"}}},
+        {"properties": {"relation_type": {"const": "performance_checkpoint"}, "target_record_id": {"pattern": "^performance-checkpoint-[a-z0-9][a-z0-9-]{2,63}$"}}},
+        {"properties": {"relation_type": {"const": "metric"}, "target_record_id": {"pattern": "^metric-[a-z0-9][a-z0-9-]{2,63}$"}}},
+        {"properties": {"relation_type": {"const": "adjustment_proposal"}, "target_record_id": {"pattern": "^adjustment-proposal-[a-z0-9][a-z0-9-]{2,63}$"}}},
+        {"properties": {"relation_type": {"const": "integration_status"}, "target_record_id": {"pattern": "^integration-status-[a-z0-9][a-z0-9-]{2,63}$"}}}
+      ]
+    },
+    "recordValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_type", "subject_id", "title", "projected_status", "source_event_id", "source_revision", "relations"],
+      "properties": {
+        "record_type": {"enum": ["customer", "project", "run", "step", "task", "assignment", "artifact", "gate", "review", "approval", "blocker", "defect", "escalation", "performance_checkpoint", "metric", "adjustment_proposal", "integration_status"]},
+        "subject_id": {"$ref": "#/$defs/recordId"},
+        "title": {"type": "string", "minLength": 1},
+        "projected_status": {"type": "string", "minLength": 1},
+        "source_event_id": {"type": "string", "pattern": "^event-[a-z0-9][a-z0-9-]{7,63}$"},
+        "source_revision": {"type": "integer", "minimum": 1},
+        "relations": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/relation"}}
+      }
+    },
+    "customer": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "customer"}}}]},
+    "project": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "project"}}}]},
+    "run": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "run"}}}]},
+    "step": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "step"}}}]},
+    "task": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "task"}}}]},
+    "assignment": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "assignment"}}}]},
+    "artifact": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "artifact"}}}]},
+    "gate": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "gate"}}}]},
+    "review": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "review"}}}]},
+    "approval": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "approval"}}}]},
+    "blocker": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "blocker"}}}]},
+    "defect": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "defect"}}}]},
+    "escalation": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "escalation"}}}]},
+    "performance_checkpoint": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "performance_checkpoint"}}}]},
+    "metric": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "metric"}}}]},
+    "adjustment_proposal": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "adjustment_proposal"}}}]},
+    "integration_status": {"allOf": [{"$ref": "#/$defs/recordValue"}, {"properties": {"record_type": {"const": "integration_status"}}}]}
+  }
+}

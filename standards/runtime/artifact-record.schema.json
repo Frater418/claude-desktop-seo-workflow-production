@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/runtime/artifact-record.schema.json",
+  "title": "Heartweb Immutable Artifact Record", "type": "object", "additionalProperties": false,
+  "required": ["artifact_id", "tenant_id", "project_id", "run_id", "step_id", "revision", "input_hash", "content_sha256", "contract_version", "producer_version", "storage_key", "created_at"],
+  "properties": {
+    "artifact_id": {"type": "string", "pattern": "^artifact-[a-z0-9][a-z0-9-]{7,63}$"}, "tenant_id": {"type": "string", "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$"}, "project_id": {"type": "string", "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$"}, "run_id": {"type": "string", "pattern": "^run-[a-z0-9][a-z0-9-]{7,63}$"},
+    "step_id": {"type": "string", "enum": ["0", "1", "1b", "1c", "2", "3", "3b", "4a", "4b"]}, "revision": {"type": "integer", "minimum": 1}, "input_hash": {"$ref": "#/$defs/sha256"}, "content_sha256": {"$ref": "#/$defs/sha256"},
+    "parent_artifact_ids": {"type": "array", "items": {"type": "string", "pattern": "^artifact-[a-z0-9][a-z0-9-]{7,63}$"}}, "contract_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"}, "producer_version": {"type": "string", "minLength": 1},
+    "storage_key": {"type": "string", "pattern": "^tenants/tenant-[a-z0-9][a-z0-9-]{2,63}/projects/project-[a-z0-9][a-z0-9-]{2,63}/runs/run-[a-z0-9][a-z0-9-]{7,63}/artifacts/artifact-[a-z0-9][a-z0-9-]{7,63}/[^/]+$"}, "created_at": {"type": "string", "format": "date-time"}
+  }, "$defs": {"sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+}

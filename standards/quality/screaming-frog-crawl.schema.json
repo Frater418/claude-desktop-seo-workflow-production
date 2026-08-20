@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.dev/schemas/quality/screaming-frog-crawl.schema.json",
+  "title": "Screaming Frog Crawl Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "run_id", "project_id", "deployment_id", "start_url", "final_url", "tool", "status", "started_at", "completed_at", "url_count", "html_url_count", "limit_hit", "exports", "findings", "policy_disposition"],
+  "properties": {
+    "schema_version": {"const": "1.1.0"},
+    "run_id": {"type": "string", "pattern": "^run-[a-z0-9][a-z0-9-]{5,63}$"},
+    "project_id": {"type": "string", "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$"},
+    "deployment_id": {"type": "string", "pattern": "^dep-[a-z0-9][a-z0-9-]{2,63}$"},
+    "start_url": {"type": "string", "format": "uri", "pattern": "^https?://"},
+    "final_url": {"type": "string", "format": "uri", "pattern": "^https?://"},
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "binary_path", "capability_hash"],
+      "properties": {
+        "id": {"const": "screaming-frog-cli"},
+        "binary_path": {"type": "string", "minLength": 3},
+        "capability_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "status": {"enum": ["passed", "blocked", "failed"]},
+    "started_at": {"type": "string", "format": "date-time"},
+    "completed_at": {"type": "string", "format": "date-time"},
+    "url_count": {"type": "integer", "minimum": 0},
+    "html_url_count": {"type": "integer", "minimum": 0},
+    "limit_hit": {"type": "boolean"},
+    "exports": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["relative_path", "bytes", "sha256"],
+        "properties": {
+          "relative_path": {"type": "string", "minLength": 1},
+          "bytes": {"type": "integer", "minimum": 1},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        }
+      }
+    },
+    "findings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status_4xx", "status_5xx", "internal_html_4xx", "resource_4xx", "non_indexable", "missing_titles", "missing_titles_indexable", "missing_meta_descriptions", "missing_meta_descriptions_indexable", "missing_h1", "missing_h1_indexable", "missing_h2_indexable", "canonical_issues", "canonical_issues_indexable", "internal_link_issues", "redirect_issues", "broken_internal_links", "hreflang_issues", "structured_data_issues", "critical_security_issues", "security_issues"],
+      "properties": {
+        "status_4xx": {"type": "integer", "minimum": 0},
+        "status_5xx": {"type": "integer", "minimum": 0},
+        "internal_html_4xx": {"type": "integer", "minimum": 0},
+        "resource_4xx": {"type": "integer", "minimum": 0},
+        "non_indexable": {"type": "integer", "minimum": 0},
+        "missing_titles": {"type": "integer", "minimum": 0},
+        "missing_titles_indexable": {"type": "integer", "minimum": 0},
+        "missing_meta_descriptions": {"type": "integer", "minimum": 0},
+        "missing_meta_descriptions_indexable": {"type": "integer", "minimum": 0},
+        "missing_h1": {"type": "integer", "minimum": 0},
+        "missing_h1_indexable": {"type": "integer", "minimum": 0},
+        "missing_h2_indexable": {"type": "integer", "minimum": 0},
+        "canonical_issues": {"type": "integer", "minimum": 0},
+        "canonical_issues_indexable": {"type": "integer", "minimum": 0},
+        "internal_link_issues": {"type": "integer", "minimum": 0},
+        "redirect_issues": {"type": "integer", "minimum": 0},
+        "broken_internal_links": {"type": "integer", "minimum": 0},
+        "hreflang_issues": {"type": "integer", "minimum": 0},
+        "structured_data_issues": {"type": "integer", "minimum": 0},
+        "critical_security_issues": {"type": "integer", "minimum": 0},
+        "security_issues": {"type": "integer", "minimum": 0}
+      }
+    },
+    "policy_disposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy_id", "policy_version", "step_id", "result", "advisory_findings", "waiver_required_findings", "blocking_findings", "waived_findings", "waiver_ids"],
+      "properties": {
+        "policy_id": {"const": "heartweb-crawl-disposition"},
+        "policy_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "step_id": {"enum": ["1", "4b"]},
+        "result": {"enum": ["passed", "passed_with_warnings", "blocked"]},
+        "advisory_findings": {"type": "array", "items": {"$ref": "#/$defs/dispositionFinding"}},
+        "waiver_required_findings": {"type": "array", "items": {"$ref": "#/$defs/dispositionFinding"}},
+        "blocking_findings": {"type": "array", "items": {"$ref": "#/$defs/dispositionFinding"}},
+        "waived_findings": {"type": "array", "items": {"$ref": "#/$defs/dispositionFinding"}},
+        "waiver_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^waiver-[a-z0-9][a-z0-9-]{7,63}$"}}
+      }
+    },
+    "error": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["code", "message", "remediation"],
+          "properties": {
+            "code": {"type": "string", "pattern": "^ERROR_[A-Z0-9_]+$"},
+            "message": {"type": "string", "minLength": 3},
+            "remediation": {"type": "string", "minLength": 10}
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "dispositionFinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_key", "count", "allowed_count", "failure_code", "disposition"],
+      "properties": {
+        "finding_key": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "count": {"type": "integer", "minimum": 0},
+        "allowed_count": {"type": "integer", "minimum": 0},
+        "failure_code": {"type": "string", "pattern": "^ERROR_[A-Z0-9_]+$"},
+        "disposition": {"enum": ["advisory", "waiver_required", "block"]}
+      }
+    }
+  }
+}

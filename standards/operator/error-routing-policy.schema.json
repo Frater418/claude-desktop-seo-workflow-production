@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/operator/error-routing-policy.schema.json",
+  "title": "Heartweb Runtime Error Routing Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "policy_id", "mappings"],
+  "properties": {
+    "schema_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "policy_id": {"const": "heartweb-runtime-error-routing"},
+    "mappings": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/mapping"}}
+  },
+  "$defs": {
+    "mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "route", "owner_type"],
+      "properties": {
+        "code": {"type": "string", "pattern": "^(ERR|ERROR)_[A-Z0-9_]+$"},
+        "route": {"enum": ["retryable_technical", "missing_input", "revision_required", "waiver_candidate", "workflow_defect", "management_decision", "compliance_decision", "abort"]},
+        "owner_type": {"enum": ["operator", "workflow_maintainer", "business_owner", "compliance_reviewer", "incident_responder"]}
+      }
+    }
+  }
+}

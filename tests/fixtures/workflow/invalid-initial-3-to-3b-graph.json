@@ -1,0 +1,28 @@
+{
+  "$schema": "https://heartweb.example/schema/workflow/workflow-graph.schema.json",
+  "graph_id": "heartweb-seo-workflow",
+  "version": "1.0.0",
+  "initial_route": ["0", "1", "1b", "1c", "2", "3", "4a", "4b"],
+  "steps": [
+    {"step_id": "0", "gate_id": "GATE-0", "requires_released_predecessor": false, "requires_artifact": true, "requires_quality_gate": true},
+    {"step_id": "1", "gate_id": "GATE-1", "requires_released_predecessor": true, "requires_artifact": true, "requires_quality_gate": true},
+    {"step_id": "1b", "gate_id": "GATE-1B", "requires_released_predecessor": true, "requires_artifact": true, "requires_quality_gate": true},
+    {"step_id": "1c", "gate_id": "GATE-1C", "requires_released_predecessor": true, "requires_artifact": true, "requires_quality_gate": true},
+    {"step_id": "2", "gate_id": "GATE-2", "requires_released_predecessor": true, "requires_artifact": true, "requires_quality_gate": true},
+    {"step_id": "3", "gate_id": "GATE-3", "requires_released_predecessor": true, "requires_artifact": true, "requires_quality_gate": true},
+    {"step_id": "4a", "gate_id": "GATE-4A", "requires_released_predecessor": true, "requires_artifact": true, "requires_quality_gate": true},
+    {"step_id": "4b", "gate_id": "GATE-4B", "requires_released_predecessor": true, "requires_artifact": true, "requires_quality_gate": true}
+  ],
+  "initial_edges": [
+    {"from_step_id": "0", "to_step_id": "1", "requires_released_predecessor": true, "requires_artifact": true, "requires_gate_record": true},
+    {"from_step_id": "1", "to_step_id": "1b", "requires_released_predecessor": true, "requires_artifact": true, "requires_gate_record": true},
+    {"from_step_id": "1b", "to_step_id": "1c", "requires_released_predecessor": true, "requires_artifact": true, "requires_gate_record": true},
+    {"from_step_id": "1c", "to_step_id": "2", "requires_released_predecessor": true, "requires_artifact": true, "requires_gate_record": true},
+    {"from_step_id": "2", "to_step_id": "3", "requires_released_predecessor": true, "requires_artifact": true, "requires_gate_record": true},
+    {"from_step_id": "3", "to_step_id": "3b", "requires_released_predecessor": true, "requires_artifact": true, "requires_gate_record": true},
+    {"from_step_id": "4a", "to_step_id": "4b", "requires_released_predecessor": true, "requires_artifact": true, "requires_gate_record": true}
+  ],
+  "post_publication_sideflows": [
+    {"sideflow_id": "performance-check-3b", "step_id": "3b", "trigger": "post_publication", "days_after_publication": [30, 60, 90], "repeatable": true, "creates_new_revision": true}
+  ]
+}

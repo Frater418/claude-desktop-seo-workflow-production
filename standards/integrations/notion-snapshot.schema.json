@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/integrations/notion-snapshot.schema.json",
+  "title": "Heartweb Notion Projection Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["snapshot_id", "schema_version", "integration_mode", "simulation_id", "materialized_at", "projection_revision", "source_event_watermark", "state_authority", "atomic_state_writer", "records", "conflicts"],
+  "properties": {
+    "snapshot_id": {"type": "string", "pattern": "^notion-snapshot-[a-z0-9][a-z0-9-]{7,63}$"}, "schema_version": {"const": "2.0.0"}, "integration_mode": {"const": "simulated"}, "simulation_id": {"type": "string", "pattern": "^sim-[a-z0-9][a-z0-9-]{7,63}$"}, "materialized_at": {"type": "string", "format": "date-time"}, "projection_revision": {"type": "integer", "minimum": 1}, "source_event_watermark": {"type": "string", "pattern": "^event-[a-z0-9][a-z0-9-]{7,63}$"}, "state_authority": {"const": "transition_service"}, "atomic_state_writer": {"const": false}, "records": {"$ref": "https://heartweb.example/schema/integrations/notion-record-v2.schema.json"}, "conflicts": {"type": "array", "items": {"$ref": "#/$defs/conflict"}}
+  },
+  "$defs": {"conflict": {"type": "object", "additionalProperties": false, "required": ["conflict_id", "record_id", "expected_revision", "observed_revision"], "properties": {"conflict_id": {"type": "string", "pattern": "^conflict-[a-z0-9-]+$"}, "record_id": {"$ref": "https://heartweb.example/schema/integrations/notion-record-v2.schema.json#/$defs/recordId"}, "expected_revision": {"type": "integer", "minimum": 1}, "observed_revision": {"type": "integer", "minimum": 1}}}}
+}

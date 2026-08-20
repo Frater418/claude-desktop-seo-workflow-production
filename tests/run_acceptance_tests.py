@@ -70,6 +70,35 @@ def test_fail_fast_prompts():
         assert "<validation_rules>" in content
         assert "ERROR_" in content or "Regel" in content
 
+def test_end_to_end_fixtures():
+    # 1. Test sample_briefing.md
+    briefing_path = Path("tests/fixtures/sample_briefing.md")
+    assert briefing_path.exists()
+    cmd1 = [sys.executable, "mcp/tools/validate_schema_jsonld.py", "--input", str(briefing_path), "--strict"]
+    res1 = subprocess.run(cmd1, capture_output=True, text=True, check=True)
+    assert "[BESTANDEN]" in res1.stdout
+
+    # 2. Test sample_landingpage.html
+    html_path = Path("tests/fixtures/sample_landingpage.html")
+    assert html_path.exists()
+    cmd2 = [sys.executable, "mcp/tools/validate_schema_jsonld.py", "--input", str(html_path), "--strict"]
+    res2 = subprocess.run(cmd2, capture_output=True, text=True, check=True)
+    assert "[BESTANDEN]" in res2.stdout
+
+def test_prompt0_operational_contract():
+    cmd = [
+        sys.executable,
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_prompt0_contract.py",
+        "-v",
+    ]
+    subprocess.run(cmd, capture_output=True, text=True, check=True)
+
 def main():
     print("==================================================")
     print("Heartweb SEO/GEO Framework - Acceptance Test Suite")
@@ -81,7 +110,9 @@ def main():
         ("TEST-02: Deterministic Capacity Matrix Solver v1.3.0", test_solver),
         ("TEST-03: Schema.org JSON-LD Validator CLI & GEO Graph", test_jsonld_validator),
         ("TEST-04: Standalone Design System CSS & GEO Tokens", test_design_system),
-        ("TEST-05: Strict Fail-Fast Validation Across All 9 Prompts", test_fail_fast_prompts)
+        ("TEST-05: Strict Fail-Fast Validation Across All 9 Prompts", test_fail_fast_prompts),
+        ("TEST-06: End-to-End Briefing & Landingpage Fixtures", test_end_to_end_fixtures),
+        ("TEST-07: Step-0 Operational Contract", test_prompt0_operational_contract)
     ]
     
     passed = 0

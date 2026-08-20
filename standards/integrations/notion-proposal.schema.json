@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/integrations/notion-proposal.schema.json",
+  "title": "Heartweb Notion Human Intent Proposal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["proposal_id", "schema_version", "integration_mode", "simulation_id", "submitted_at", "intent", "expected_revision", "actor", "correlation_id", "idempotency_key", "target"],
+  "properties": {
+    "proposal_id": {"type": "string", "pattern": "^notion-proposal-[a-z0-9][a-z0-9-]{7,63}$"}, "schema_version": {"const": "2.0.0"}, "integration_mode": {"const": "simulated"}, "simulation_id": {"type": "string", "pattern": "^sim-[a-z0-9][a-z0-9-]{7,63}$"}, "submitted_at": {"type": "string", "format": "date-time"},
+    "intent": {"enum": ["start", "request_revision", "request_input", "create_defect", "escalate", "request_waiver", "approve", "reject", "resolve", "resume"]}, "expected_revision": {"type": "integer", "minimum": 1}, "actor": {"type": "object", "additionalProperties": false, "required": ["actor_id", "role"], "properties": {"actor_id": {"type": "string", "pattern": "^(operator|reviewer|owner)-[a-z0-9][a-z0-9-]{2,63}$"}, "role": {"enum": ["operator", "reviewer", "business_owner", "compliance_reviewer"]}}},
+    "correlation_id": {"type": "string", "pattern": "^corr-[a-z0-9][a-z0-9-]{7,63}$"}, "idempotency_key": {"type": "string", "pattern": "^idem-[a-z0-9][a-z0-9-]{7,127}$"}, "target": {"type": "object", "additionalProperties": false, "required": ["tenant_id", "project_id", "run_id", "step_id"], "properties": {"tenant_id": {"type": "string", "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$"}, "project_id": {"type": "string", "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$"}, "run_id": {"type": "string", "pattern": "^run-[a-z0-9][a-z0-9-]{7,63}$"}, "step_id": {"enum": ["0", "1", "1b", "1c", "2", "3", "3b", "4a", "4b"]}}}
+  },
+  "not": {"anyOf": [{"required": ["live_connection_id"]}, {"required": ["canonical_status"]}, {"required": ["content_sha256"]}, {"required": ["revision"]}]}
+}

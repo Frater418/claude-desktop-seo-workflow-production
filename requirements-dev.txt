@@ -1,0 +1,3 @@
+# Autor: Raphael Rechberger
+# Reproducible development and contract validation dependencies.
+jsonschema[format]==4.26.0

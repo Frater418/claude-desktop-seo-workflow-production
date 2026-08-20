@@ -1,0 +1,30 @@
+{
+  "created_at": "2026-08-19T00:00:00-04:00",
+  "purpose": "Immutable verification baseline before Foundation Gate implementation",
+  "author": "Raphael Rechberger",
+  "repository_head": "5e786790d84af3c6fba57c3b3f3c1834b74a9a61",
+  "ahd_run": "C:\\Users\\offic\\Documents\\Projekte\\Heartweb\\Workflow-Lab\\ahd-hausbesuch\\STAGING-20260818-001",
+  "files": [
+    {
+      "path": "manifest.json",
+      "bytes": 5343,
+      "sha256": "d9255f839a140ead367ef15656a22424d91daf9a9b63bf648901be8fd5ba98ab"
+    },
+    {
+      "path": "logs/step-0-report.json",
+      "bytes": 3993,
+      "sha256": "bb02701faa3f8d55e307d7f81a06ae18f92c7511b84dd978e65f594736c646c1"
+    },
+    {
+      "path": "run.json",
+      "bytes": 479,
+      "sha256": "bdbd63b4c9c55bbbdfa6c1ad4aa15829403f8d864d95027a29b410d1a848894a"
+    },
+    {
+      "path": "inputs/competitor-preflight.json",
+      "bytes": 1097,
+      "sha256": "14c9709b2a0f0ca680dd5e2bf75ba16e858491ce6b2cce45a44b789ae40d09f8"
+    }
+  ],
+  "rule": "Foundation migrations create sidecar v2 artifacts and must not modify these four files."
+}

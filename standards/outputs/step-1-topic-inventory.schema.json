@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/outputs/step-1-topic-inventory.schema.json",
+  "title": "Heartweb Step 1 Canonical Topic Inventory V2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "artifact_id", "run_id", "project_id", "deployment_id", "step_id", "revision", "source_artifact_ids", "evidence_ids", "candidate_status", "site_applicability", "source_evidence_ids", "competitor_evidence_ids", "existing_url_evidence_ids", "crawl_snapshot_evidence_ids", "pillars", "hypotheses", "gaps", "decision_records"],
+  "properties": {
+    "schema_version": {"const": "2.0.0"},
+    "artifact_id": {"$ref": "#/$defs/artifactId"},
+    "run_id": {"$ref": "#/$defs/runId"},
+    "project_id": {"$ref": "#/$defs/projectId"},
+    "deployment_id": {"$ref": "#/$defs/deploymentId"},
+    "step_id": {"const": "1"},
+    "revision": {"type": "integer", "minimum": 1},
+    "source_artifact_ids": {"$ref": "#/$defs/artifactIds"},
+    "evidence_ids": {"$ref": "#/$defs/evidenceIds"},
+    "candidate_status": {"const": "awaiting_gate"},
+    "source_evidence_ids": {"$ref": "#/$defs/evidenceIds"},
+    "competitor_evidence_ids": {"$ref": "#/$defs/evidenceIds"},
+    "existing_url_evidence_ids": {"$ref": "#/$defs/evidenceIds"},
+    "site_applicability": {"type": "object", "additionalProperties": false, "required": ["site_status"], "properties": {"site_status": {"enum": ["existing_site", "non_existing_site"]}, "no_crawl_decision_id": {"type": "string", "pattern": "^decision-[a-z0-9][a-z0-9-]{2,63}$"}}, "allOf": [{"if": {"properties": {"site_status": {"const": "non_existing_site"}}}, "then": {"required": ["no_crawl_decision_id"]}}]},
+    "crawl_snapshot_evidence_ids": {"type": "array", "items": {"$ref": "#/$defs/evidenceId"}, "uniqueItems": true},
+    "pillars": {"type": "array", "minItems": 3, "maxItems": 8, "items": {"$ref": "#/$defs/pillar"}},
+    "hypotheses": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/hypothesis"}},
+    "gaps": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/gap"}},
+    "decision_records": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/decision"}}
+  },
+  "allOf": [
+    {"if": {"properties": {"site_applicability": {"properties": {"site_status": {"const": "existing_site"}}}}}, "then": {"properties": {"crawl_snapshot_evidence_ids": {"minItems": 1}}}},
+    {"if": {"properties": {"site_applicability": {"properties": {"site_status": {"const": "non_existing_site"}}}}}, "then": {"properties": {"crawl_snapshot_evidence_ids": {"maxItems": 0}}}}
+  ],
+  "$defs": {
+    "artifactId": {"type": "string", "pattern": "^artifact-[a-z0-9][a-z0-9-]{7,63}$"},
+    "runId": {"type": "string", "pattern": "^run-[a-z0-9][a-z0-9-]{7,63}$"},
+    "projectId": {"type": "string", "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$"},
+    "deploymentId": {"type": "string", "pattern": "^dep-[a-z0-9][a-z0-9-]{2,63}$"},
+    "evidenceId": {"type": "string", "pattern": "^evidence-[a-z0-9][a-z0-9-]{7,63}$"},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "evidenceIds": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidenceId"}, "uniqueItems": true},
+    "artifactIds": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/artifactId"}, "uniqueItems": true},
+    "crawlSnapshotRef": {"type": "object", "additionalProperties": false, "required": ["deployment_id", "evidence_id", "content_sha256"], "properties": {"deployment_id": {"$ref": "#/$defs/deploymentId"}, "evidence_id": {"$ref": "#/$defs/evidenceId"}, "content_sha256": {"$ref": "#/$defs/sha256"}}},
+    "pillar": {"type": "object", "additionalProperties": false, "required": ["pillar_id", "name", "source_evidence_ids", "cluster_candidates"], "properties": {"pillar_id": {"type": "string", "pattern": "^pillar-[a-z0-9][a-z0-9-]{2,63}$"}, "name": {"type": "string", "minLength": 1}, "source_evidence_ids": {"$ref": "#/$defs/evidenceIds"}, "cluster_candidates": {"type": "array", "minItems": 8, "maxItems": 15, "items": {"$ref": "#/$defs/cluster"}}}},
+    "cluster": {"type": "object", "additionalProperties": false, "required": ["cluster_id", "name", "content_type", "hypothesized_intent", "information_gain_score", "conversational_query_patterns", "geo_engine_targets", "regional_scope", "source_evidence_ids", "status"], "properties": {"cluster_id": {"type": "string", "pattern": "^cluster-[a-z0-9][a-z0-9-]{2,63}$"}, "name": {"type": "string", "minLength": 1}, "content_type": {"enum": ["guide", "landing_page", "location_landing_page", "data_hub", "entity_anchor", "comparison_table", "faq_hub"]}, "hypothesized_intent": {"enum": ["informational", "transactional", "commercial", "local", "conversational"]}, "information_gain_score": {"type": "integer", "minimum": 1, "maximum": 5}, "conversational_query_patterns": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}, "geo_engine_targets": {"type": "array", "minItems": 1, "items": {"enum": ["google_classic", "google_ai_overviews", "local_maps", "bing", "perplexity", "claude", "chatgpt_search"]}, "uniqueItems": true}, "regional_scope": {"type": "string", "minLength": 1}, "source_evidence_ids": {"$ref": "#/$defs/evidenceIds"}, "status": {"const": "hypothesis"}}},
+    "hypothesis": {"type": "object", "additionalProperties": false, "required": ["hypothesis_id", "statement", "status", "evidence_ids"], "properties": {"hypothesis_id": {"type": "string", "pattern": "^hypothesis-[a-z0-9][a-z0-9-]{2,63}$"}, "statement": {"type": "string", "minLength": 1}, "status": {"const": "hypothesis"}, "evidence_ids": {"$ref": "#/$defs/evidenceIds"}}},
+    "gap": {"type": "object", "additionalProperties": false, "required": ["gap_id", "statement"], "properties": {"gap_id": {"type": "string", "pattern": "^gap-[a-z0-9][a-z0-9-]{2,63}$"}, "statement": {"type": "string", "minLength": 1}, "evidence_ids": {"$ref": "#/$defs/evidenceIds"}}},
+    "decision": {"type": "object", "additionalProperties": false, "required": ["decision_id", "question", "outcome", "evidence_ids"], "properties": {"decision_id": {"type": "string", "pattern": "^decision-[a-z0-9][a-z0-9-]{2,63}$"}, "question": {"type": "string", "minLength": 1}, "outcome": {"type": "string", "minLength": 1}, "evidence_ids": {"$ref": "#/$defs/evidenceIds"}}}
+  }
+}

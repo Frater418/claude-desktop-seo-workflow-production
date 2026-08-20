@@ -1,0 +1,20 @@
+{
+  "schema_version": "2.0.0",
+  "artifact_id": "artifact-template-0001",
+  "run_id": "run-template-0001",
+  "project_id": "project-heartweb-demo",
+  "deployment_id": "dep-heartweb-demo",
+  "step_id": "1c",
+  "revision": 1,
+  "source_artifact_ids": ["artifact-architecture-0001", "artifact-design-system-0001"],
+  "evidence_ids": ["evidence-service-area-0001"],
+  "decision_records": [{"decision_id": "decision-template-0001", "question": "Location claim", "outcome": "service_area_only", "evidence_ids": ["evidence-service-area-0001"]}],
+  "candidate_status": "awaiting_gate",
+  "template_family": "pillar-page",
+  "template_id": "template-care-0001",
+  "content_id": "pillar-care",
+  "location_context": {"claim_type": "service_area", "evidence_ids": ["evidence-service-area-0001"]},
+  "accessibility": {"landmarks": ["main", "nav"], "skip_link": true},
+  "jsonld_references": [{"reference_id": "jsonld-care-0001", "type": "FAQPage", "evidence_ids": ["evidence-service-area-0001"]}],
+  "links": [{"target_content_id": "cluster-care-guide", "relationship": "vertical"}]
+}

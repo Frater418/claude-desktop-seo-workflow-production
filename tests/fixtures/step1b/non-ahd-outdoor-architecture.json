@@ -1,0 +1,22 @@
+{
+  "schema_version": "2.0.0",
+  "artifact_id": "artifact-outdoor-architecture-0001",
+  "run_id": "run-outdoor-architecture-0001",
+  "project_id": "project-coastline-gear",
+  "deployment_id": "dep-coastline-gear",
+  "step_id": "1b",
+  "revision": 2,
+  "source_artifact_ids": ["artifact-outdoor-inventory-0001"],
+  "evidence_ids": ["evidence-outdoor-navigation-0001"],
+  "decision_records": [{"decision_id": "decision-outdoor-architecture-0001", "question": "Product navigation placement", "outcome": "candidate", "evidence_ids": ["evidence-outdoor-navigation-0001"]}],
+  "candidate_status": "awaiting_gate",
+  "content_decisions": [
+    {"content_id": "pillar-kayaks", "decision": "existing", "url": "/kayaks/", "canonical_url": "https://coastline.example/kayaks/", "navigation": "primary"},
+    {"content_id": "pillar-camping", "decision": "new", "url": "/camping/", "canonical_url": "https://coastline.example/camping/", "navigation": "primary"},
+    {"content_id": "cluster-kayak-safety", "decision": "new", "url": "/kayaks/safety-checklist/", "canonical_url": "https://coastline.example/kayaks/safety-checklist/", "navigation": "child"}
+  ],
+  "link_graph": [
+    {"from_content_id": "pillar-kayaks", "to_content_id": "cluster-kayak-safety", "relationship": "vertical"},
+    {"from_content_id": "pillar-kayaks", "to_content_id": "pillar-camping", "relationship": "horizontal"}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "escalation_id": "escalation-scope-0001",
+  "tenant_id": "tenant-ahd",
+  "project_id": "project-ahd",
+  "run_id": "run-step-1-0001",
+  "step_id": "1",
+  "route": "management_decision",
+  "title": "Decide whether the resource is in production scope",
+  "decision_owner_role": "business_owner",
+  "options": [{"option_id": "option-remediate", "description": "Remediate the resource before continuing."}, {"option_id": "option-waive", "description": "Approve a permitted waiver."}],
+  "impacts": ["The Step 1 release remains blocked until a decision is recorded."],
+  "deadline": "2026-08-20T12:00:00Z",
+  "evidence": [{"evidence_id": "evidence-crawl-0001", "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}],
+  "blocking_scope": "run",
+  "final_decision": null,
+  "status": "open",
+  "created_at": "2026-08-19T12:00:00Z"
+}

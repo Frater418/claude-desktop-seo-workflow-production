@@ -1,0 +1,20 @@
+{
+  "schema_version": "2.0.0",
+  "artifact_id": "artifact-outdoor-template-0001",
+  "run_id": "run-outdoor-template-0001",
+  "project_id": "project-coastline-gear",
+  "deployment_id": "dep-coastline-gear",
+  "step_id": "1c",
+  "revision": 2,
+  "source_artifact_ids": ["artifact-outdoor-architecture-0001", "artifact-outdoor-design-system-0001"],
+  "evidence_ids": ["evidence-outdoor-location-0001", "evidence-outdoor-brand-0001"],
+  "decision_records": [{"decision_id": "decision-outdoor-template-0001", "question": "Showroom location claim", "outcome": "physical location evidence", "evidence_ids": ["evidence-outdoor-location-0001"]}],
+  "candidate_status": "awaiting_gate",
+  "template_family": "pillar-page",
+  "template_id": "template-outdoor-kayaks-0001",
+  "content_id": "pillar-kayaks",
+  "location_context": {"claim_type": "physical_location", "evidence_ids": ["evidence-outdoor-location-0001"], "physical_location_evidence_ids": ["evidence-outdoor-location-0001"], "physical_address": "101 Harbor Road", "nap": "Coastline Gear, 101 Harbor Road", "gbp_claim": "Verified showroom"},
+  "accessibility": {"landmarks": ["header", "nav", "main", "footer"], "skip_link": true},
+  "jsonld_references": [{"reference_id": "jsonld-outdoor-kayaks-0001", "type": "LocalBusiness", "evidence_ids": ["evidence-outdoor-location-0001", "evidence-outdoor-brand-0001"]}],
+  "links": [{"target_content_id": "cluster-kayak-safety", "relationship": "vertical"}]
+}

@@ -1,0 +1,273 @@
+{
+  "created_at": "2026-08-19T11:22:34-04:00",
+  "author": "Raphael Rechberger",
+  "sprint": 2,
+  "file_count": 53,
+  "files": [
+    {
+      "path": "00_admin/audits/2026-08-19-e2e-demo/sprint-2/01_OPERATOR_CONTRACT_IMPLEMENTATION.md",
+      "bytes": 2940,
+      "sha256": "08181b6c2d818c824f7ca2f00a24afadbc759301595babd269c08f059ea9713d"
+    },
+    {
+      "path": "00_admin/audits/2026-08-19-e2e-demo/sprint-2/02_INTEGRATION_CONTRACT_IMPLEMENTATION.md",
+      "bytes": 5725,
+      "sha256": "1490b47f7913968fab40a8eb16485e879052aa1531bf31a3cddcc6f496776089"
+    },
+    {
+      "path": "00_admin/audits/2026-08-19-e2e-demo/sprint-2/03_FULL_SUITE_DISCOVERY_FIX.md",
+      "bytes": 3059,
+      "sha256": "e8c385f28f74c1ad01e5404cead06b1c653c69302575e34c3ebebff619fcb603"
+    },
+    {
+      "path": "00_admin/audits/2026-08-19-e2e-demo/sprint-2/04_SPEC_REVIEW.md",
+      "bytes": 5517,
+      "sha256": "e54eccf144b61d3d7dd8a511d4c40c530937ba7ff5674edf8e652f6bf4370f23"
+    },
+    {
+      "path": "00_admin/audits/2026-08-19-e2e-demo/sprint-2/05_QUALITY_REVIEW.md",
+      "bytes": 7370,
+      "sha256": "66b579c6ce43af1980dc86416adf63aaf1f33fe95c622b454de3bfaa4dfe1f93"
+    },
+    {
+      "path": "docs/integrations/n8n-orchestration-model.md",
+      "bytes": 2445,
+      "sha256": "493f46c230b8deab4a4248c776b452ddd6beeefa058b86331033ffd85211a475"
+    },
+    {
+      "path": "docs/integrations/notion-operating-model.md",
+      "bytes": 2902,
+      "sha256": "a990c5b58065d845e145378ed8a0f10f050068e766c3c8f7e077924cef6b63da"
+    },
+    {
+      "path": "standards/integrations/event-catalog.json",
+      "bytes": 442,
+      "sha256": "2117bf672a975c7343a55349211339ae84b3428ac53abc15a56c3b798a96bdba"
+    },
+    {
+      "path": "standards/integrations/n8n-command.schema.json",
+      "bytes": 2338,
+      "sha256": "92537292d562bd5574806dc39e74884ddf09a97ea968ed4723afa5751369fa21"
+    },
+    {
+      "path": "standards/integrations/notion-projection.schema.json",
+      "bytes": 2793,
+      "sha256": "afbec5cd1c5bf1d4a6fec97eb258eb9248103c102e5fcb8dc21cac972eee325a"
+    },
+    {
+      "path": "standards/integrations/workflow-event.schema.json",
+      "bytes": 9063,
+      "sha256": "cf49b1790c7350061a0ce0c21a9c69a5b5e6708748daf493aee1231a6f76f29b"
+    },
+    {
+      "path": "standards/operator/blocker-record.schema.json",
+      "bytes": 2234,
+      "sha256": "fe362b075aa13373ee4864c6ae50d5a55dd89e1b4cb8e554261adf32c5eaccbb"
+    },
+    {
+      "path": "standards/operator/error-routing-policy.json",
+      "bytes": 10907,
+      "sha256": "f9a8480e51ac75729026355b833d03a78dcbc0b448461dea0d79402f78adf484"
+    },
+    {
+      "path": "standards/operator/error-routing-policy.schema.json",
+      "bytes": 1142,
+      "sha256": "0a898b3f33ff40fb0b53099568e39133d3140eedf826720af9b36f9d3dd94516"
+    },
+    {
+      "path": "standards/operator/escalation-record.schema.json",
+      "bytes": 2349,
+      "sha256": "b968135d1310731a593450c317eabc8dc43f714699e2aa595e2e89b87e37c33a"
+    },
+    {
+      "path": "standards/operator/operator-task.schema.json",
+      "bytes": 3477,
+      "sha256": "139880d1df4011712d3960644f71b53ed85ef0675ce925341bf42c68b307d2f8"
+    },
+    {
+      "path": "standards/operator/resolution-record.schema.json",
+      "bytes": 3007,
+      "sha256": "ac67497c85fd8490dcecf4b08d0e97aa4266fff16f8b7371f9c77f6edea3b22b"
+    },
+    {
+      "path": "standards/operator/revision-request.schema.json",
+      "bytes": 2787,
+      "sha256": "34ccb7cdc58da395d8b22977d35e6fb63a713bc94a5b1113515e715ba4479e2a"
+    },
+    {
+      "path": "standards/operator/workflow-defect.schema.json",
+      "bytes": 2015,
+      "sha256": "f3660967176f46b8ae4b5681074c01933231ec23aea5589aa59e6fe8affbdf89"
+    },
+    {
+      "path": "tests/contracts/test_integration_contracts.py",
+      "bytes": 6263,
+      "sha256": "342eb84a4856783db012497ca143355bd9963e363acb560d54a21d0f05e56751"
+    },
+    {
+      "path": "tests/contracts/test_operator_records.py",
+      "bytes": 3756,
+      "sha256": "feb48089af59cf050f66a849b6098bc5352aaf17731ab34838418705df96c7fe"
+    },
+    {
+      "path": "tests/contracts/test_quality_gate_registry.py",
+      "bytes": 5315,
+      "sha256": "0ee57f562e06ee471c843b938ab4a4bb89f5b36f0d01be5bedebeddd38fc13a8"
+    },
+    {
+      "path": "tests/contracts/test_real_customer_domain_fixtures.py",
+      "bytes": 7766,
+      "sha256": "70ae64c3040c41c44575a2446989c13731495fa5eaf780dfd2a3ebafd6718180"
+    },
+    {
+      "path": "tests/contracts/test_transition_contract.py",
+      "bytes": 5000,
+      "sha256": "4e9eac6df47fdec9aa071bf77255be2c78829bd31bfc9936ee150a8c80181f90"
+    },
+    {
+      "path": "tests/contracts/test_workflow_graph.py",
+      "bytes": 2967,
+      "sha256": "360ad09ddf033354573b143c11eb9f4ce18333181a5d2c190fb64cbb230d2231"
+    },
+    {
+      "path": "tests/fixtures/integrations/n8n/wait-for-gate-command.json",
+      "bytes": 454,
+      "sha256": "fdd80a975330307015322c085608837e3afbc6d988cb62b75db71ee553f9f6c0"
+    },
+    {
+      "path": "tests/fixtures/integrations/notion/project-projection.json",
+      "bytes": 652,
+      "sha256": "d3d59b934948fe349eaab146381f99fbf44cd5644765224be816626403e6d815"
+    },
+    {
+      "path": "tests/fixtures/integrations/workflow-events/artifact-created.json",
+      "bytes": 611,
+      "sha256": "579c90b6faf59de99baef8c1ec5e6c11ae5f922efe86e2031653223772a8e64e"
+    },
+    {
+      "path": "tests/fixtures/integrations/workflow-events/defect-created.json",
+      "bytes": 469,
+      "sha256": "d63079d544e5d720b9b8f60ff28dfeffc22b3a095e5b7779c516853933972368"
+    },
+    {
+      "path": "tests/fixtures/integrations/workflow-events/escalation-created.json",
+      "bytes": 503,
+      "sha256": "b3fead4059cfa52e2fcf12896b0a68a2fde13debbb1de6a675278c914b448923"
+    },
+    {
+      "path": "tests/fixtures/integrations/workflow-events/gate-approved.json",
+      "bytes": 592,
+      "sha256": "8504b6ecf570a7f0d417018c2aba983ebf02d1726cbc8ad05a670566f05ce96f"
+    },
+    {
+      "path": "tests/fixtures/integrations/workflow-events/gate-ready.json",
+      "bytes": 549,
+      "sha256": "f89f2f097b89d8e780cbc6b2868e01a1a95e781e441a8855df75e19820b87eb9"
+    },
+    {
+      "path": "tests/fixtures/integrations/workflow-events/gate-rejected.json",
+      "bytes": 544,
+      "sha256": "27c9a7a125d9e2cc888027c771885a6a545c56b2eb3f08cb418418cb68670b23"
+    },
+    {
+      "path": "tests/fixtures/integrations/workflow-events/project-created.json",
+      "bytes": 425,
+      "sha256": "3cf9ed80962963e90973ebf967ad3f7aed4e7bdce5cfe8ebf02619cb895942ce"
+    },
+    {
+      "path": "tests/fixtures/integrations/workflow-events/release-created.json",
+      "bytes": 596,
+      "sha256": "bd57e3cd05ef0a304d045e10f6e4c65409bef0accb0c5e92fa6853f8dfa172ab"
+    },
+    {
+      "path": "tests/fixtures/integrations/workflow-events/run-resumed.json",
+      "bytes": 456,
+      "sha256": "ef7962e120e4dee87ab00c5b8774892ce463fa82d1cfe42b4725601b2896f26d"
+    },
+    {
+      "path": "tests/fixtures/integrations/workflow-events/run-started.json",
+      "bytes": 502,
+      "sha256": "7cadf222e3bb02c8b8bd16489c0c62694b62e9334240ab9f2d5140f1970ba9a8"
+    },
+    {
+      "path": "tests/fixtures/integrations/workflow-events/step-blocked.json",
+      "bytes": 508,
+      "sha256": "950a3169d8fd8cbd3c166fb3ff52cc04bfea1cc5d4b2e6547e23792fe6b1206b"
+    },
+    {
+      "path": "tests/fixtures/integrations/workflow-events/task-created.json",
+      "bytes": 487,
+      "sha256": "7a7ddaeb8aef2536e27e111f9b0344ae5cda985cd8a45c16882045560e7f3a8b"
+    },
+    {
+      "path": "tests/fixtures/integrations/workflow-events/task-resolved.json",
+      "bytes": 484,
+      "sha256": "aa7c438f7191d6df125607632d719f03e386573e0ba602b63ed26caea60d1575"
+    },
+    {
+      "path": "tests/fixtures/operator/negative-operator-missing-operator-action.json",
+      "bytes": 835,
+      "sha256": "e9e66b71ea9aab7b6f1afd90d54820c754c4fcdb02acb8a726ad27550b655889"
+    },
+    {
+      "path": "tests/fixtures/operator/negative-operator-unknown-field.json",
+      "bytes": 1042,
+      "sha256": "f95c1f0d72e63467ea075ff8f0a92f00f4691e5acb74ab5c0de8c6fbe3d635f1"
+    },
+    {
+      "path": "tests/fixtures/operator/negative-operator-wrong-ids.json",
+      "bytes": 990,
+      "sha256": "bd88f45907e7c1b8bb105e6f278b984956db2242003d9616be1f67c54726c817"
+    },
+    {
+      "path": "tests/fixtures/operator/negative-revision-request-stale-artifact.json",
+      "bytes": 1089,
+      "sha256": "723e78a7cf7b4a271660982e30acb17c7172c1e46f5f7689c62ae86ba2ca785e"
+    },
+    {
+      "path": "tests/fixtures/operator/negative-workflow-defect-invalid-status.json",
+      "bytes": 761,
+      "sha256": "3925e78f81eacac76dd57ad5def56d82cc65cda77bd8b524881aa2ce987c6a69"
+    },
+    {
+      "path": "tests/fixtures/operator/valid-blocker-record.json",
+      "bytes": 764,
+      "sha256": "f5b2b268268cfa431d36307b5dede17408677fa4f0dac0df504ed94886b98c8b"
+    },
+    {
+      "path": "tests/fixtures/operator/valid-escalation-record.json",
+      "bytes": 861,
+      "sha256": "ee51fcbcaacb1e57c6e055a5ee03b3a221146c68281ba2da4936d30e9926145a"
+    },
+    {
+      "path": "tests/fixtures/operator/valid-operator-task.json",
+      "bytes": 1050,
+      "sha256": "9292f0c89958820f2184e3206b605c70fd1538441092fd287e8280b60d19a03c"
+    },
+    {
+      "path": "tests/fixtures/operator/valid-resolution-record.json",
+      "bytes": 955,
+      "sha256": "b34c48b9f86b64d7cf72b98b3315b92e4e9fe3af065f6cc30c2bff49d4b5b8a4"
+    },
+    {
+      "path": "tests/fixtures/operator/valid-revision-request.json",
+      "bytes": 1089,
+      "sha256": "e0bea0aad998be3f4a3683a9f379b56d7c07714eafc8c3d96009916efcb67733"
+    },
+    {
+      "path": "tests/fixtures/operator/valid-workflow-defect.json",
+      "bytes": 760,
+      "sha256": "56fd45753bad29257d597214a450602da2ee3ceca1abd317ee21c8aa87606306"
+    },
+    {
+      "path": "tests/run_full_suite.py",
+      "bytes": 4945,
+      "sha256": "b7b8e760950a6ed34c6aecf0afbd93512074fd0361210b4f88543a03f9fba9f6"
+    },
+    {
+      "path": "tests/test_full_suite_runner.py",
+      "bytes": 1377,
+      "sha256": "654d79ce7f694e16242f7e4c2b6128733d6d01cf6c4f30c45656c4d1d9e6495c"
+    }
+  ]
+}

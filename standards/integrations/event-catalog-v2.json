@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/integrations/event-catalog-v2.json",
+  "additionalProperties": false,
+  "catalog_version": "2.0.0",
+  "events": ["project.created", "run.started", "step.blocked", "artifact.created", "gate.ready", "gate.approved", "gate.rejected", "task.created", "task.resolved", "defect.created", "escalation.created", "run.resumed", "release.created", "assignment.created", "approval.recorded", "blocker.resolved", "performance.checkpoint_due", "metric.recorded", "adjustment.proposed", "integration.delivery_failed", "integration.conflict_detected"],
+  "purposes": {
+    "project.created": "project initialization", "run.started": "run lifecycle", "step.blocked": "blocker visibility", "artifact.created": "immutable artifact", "gate.ready": "gate readiness", "gate.approved": "gate decision", "gate.rejected": "gate decision", "task.created": "task distribution", "task.resolved": "task resolution", "defect.created": "defect routing", "escalation.created": "decision routing", "run.resumed": "resume request result", "release.created": "released artifact", "assignment.created": "role assignment", "approval.recorded": "approval projection", "blocker.resolved": "blocker resolution", "performance.checkpoint_due": "performance cadence", "metric.recorded": "metric materialization", "adjustment.proposed": "immutable adjustment", "integration.delivery_failed": "delivery failure", "integration.conflict_detected": "projection conflict"
+  }
+}

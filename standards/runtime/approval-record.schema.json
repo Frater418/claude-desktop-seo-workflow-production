@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/runtime/approval-record.schema.json",
+  "title": "Heartweb Revision Bound Approval Record", "type": "object", "additionalProperties": false,
+  "required": ["approval_id", "tenant_id", "run_id", "gate_id", "artifact_id", "artifact_sha256", "artifact_revision", "policy_version", "reviewer_id", "decision", "decided_at", "expires_at"],
+  "properties": {
+    "approval_id": {"type": "string", "pattern": "^approval-[a-z0-9][a-z0-9-]{7,63}$"}, "tenant_id": {"type": "string", "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$"},
+    "run_id": {"type": "string", "pattern": "^run-[a-z0-9][a-z0-9-]{7,63}$"}, "gate_id": {"type": "string", "pattern": "^GATE-(0|1|1B|1C|2|3|3B|4A|4B)$"},
+    "artifact_id": {"type": "string", "pattern": "^artifact-[a-z0-9][a-z0-9-]{7,63}$"}, "artifact_sha256": {"$ref": "#/$defs/sha256"}, "artifact_revision": {"type": "integer", "minimum": 1},
+    "policy_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"}, "reviewer_id": {"type": "string", "pattern": "^reviewer-[a-z0-9][a-z0-9-]{2,63}$"},
+    "decision": {"type": "string", "enum": ["approved", "rejected"]}, "reason": {"type": "string", "minLength": 1}, "decided_at": {"type": "string", "format": "date-time"}, "expires_at": {"type": "string", "format": "date-time"}
+  }, "$defs": {"sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+}

@@ -11,6 +11,32 @@
     "https://diakonie-frankfurt.de",
     "https://drk-frankfurt.de"
   ],
+  "competitor_preflight": [
+    {
+      "url": "https://pflege-frankfurt-main.de",
+      "status": "reachable_https",
+      "http_status": 200,
+      "final_url": "https://pflege-frankfurt-main.de",
+      "warning_code": null,
+      "error_code": null
+    },
+    {
+      "url": "https://diakonie-frankfurt.de",
+      "status": "reachable_https",
+      "http_status": 200,
+      "final_url": "https://diakonie-frankfurt.de",
+      "warning_code": null,
+      "error_code": null
+    },
+    {
+      "url": "https://drk-frankfurt.de",
+      "status": "reachable_https",
+      "http_status": 200,
+      "final_url": "https://drk-frankfurt.de",
+      "warning_code": null,
+      "error_code": null
+    }
+  ],
   "target_audience": "Angehoerige von pflegebeduerftigen Senioren in Frankfurt und Umgebung",
   "target_regions": [
     "Frankfurt am Main",
@@ -21,13 +47,19 @@
     "Westend",
     "Offenbach"
   ],
+  "primary_region": "Frankfurt am Main",
+  "secondary_regions": [
+    "Offenbach"
+  ],
   "language": "de",
   "business_goal": "Terminanfragen fuer Erstberatungen und haeusliche Pflegekraefte",
   "content_focus": "Viele Standort-Landingpages und vertrauensbildende Leistungs-Ratgeber",
   "brand_tone": "vertrauensbildend_ymyl",
   "capacity_hours_per_week": {
     "min": 10.0,
-    "max": 15.0
+    "max": 15.0,
+    "source": "operator_confirmed",
+    "provisional": false
   },
   "geo_targets": {
     "primary_engines": [
@@ -63,6 +95,24 @@
         "wikidata_id": "Q814144"
       }
     ]
+  },
+  "workstreams": [
+    {
+      "name": "Patientengewinnung Frankfurt",
+      "category": "customer_acquisition",
+      "priority": "primary",
+      "regions": [
+        "Frankfurt am Main"
+      ]
+    }
+  ],
+  "missing_accesses": [],
+  "gate_0": {
+    "status": "approved",
+    "reviewer": "Raphael Rechberger",
+    "approved_at": "2026-08-16T10:05:00Z",
+    "warnings": [],
+    "operator_message": null
   },
   "created_at": "2026-08-16T10:00:00Z",
   "updated_at": "2026-08-17T14:00:00Z",

@@ -1,0 +1,17 @@
+{
+  "defect_id": "defect-routing-0001",
+  "tenant_id": "tenant-ahd",
+  "project_id": "project-ahd",
+  "affected_run_id": "run-step-1-0001",
+  "step_id": "1",
+  "title": "Gate result was not routed to the operator",
+  "expected_behavior": "A failed gate creates an operator task and pauses the run.",
+  "actual_behavior": "The failed gate did not create an operator task.",
+  "reproducer": "Run the failed Step 1 quality gate with the recorded evidence.",
+  "severity": "high",
+  "regression_test_status": "required",
+  "owner_role": "workflow_maintainer",
+  "status": "open",
+  "evidence": [{"evidence_id": "evidence-crawl-0001", "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}],
+  "reported_at": "2026-08-19T12:00:00Z"
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/runtime/error-envelope.schema.json",
+  "title": "Heartweb Error Envelope", "type": "object", "additionalProperties": false,
+  "required": ["error_id", "tenant_id", "run_id", "step_id", "code", "message", "retry_class", "occurred_at"],
+  "properties": {
+    "error_id": {"type": "string", "pattern": "^error-[a-z0-9][a-z0-9-]{7,63}$"}, "tenant_id": {"type": "string", "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$"}, "run_id": {"type": "string", "pattern": "^run-[a-z0-9][a-z0-9-]{7,63}$"},
+    "step_id": {"type": "string", "enum": ["0", "1", "1b", "1c", "2", "3", "3b", "4a", "4b"]}, "code": {"type": "string", "enum": ["ERR_TRANSITION_NOT_ALLOWED", "ERR_STALE_REVISION", "ERR_APPROVAL_STALE", "ERR_ARTIFACT_REQUIRED", "ERR_GATE_REQUIRED", "ERR_TENANT_ISOLATION", "ERR_IDEMPOTENCY_CONFLICT", "ERR_RETRY_EXHAUSTED"]},
+    "message": {"type": "string", "minLength": 1}, "retry_class": {"type": "string", "enum": ["never", "retryable", "manual"]}, "retry_after_seconds": {"type": "integer", "minimum": 1}, "occurred_at": {"type": "string", "format": "date-time"}
+  }
+}

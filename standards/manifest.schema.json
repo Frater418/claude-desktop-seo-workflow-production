@@ -7,15 +7,28 @@
     "project_id",
     "project_name",
     "domain",
+    "competitors",
+    "competitor_preflight",
     "target_audience",
+    "primary_region",
+    "secondary_regions",
+    "language",
     "business_goal",
+    "content_focus",
+    "brand_tone",
+    "capacity_hours_per_week",
     "created_at",
     "author",
     "status",
     "phases",
     "artifacts",
     "country",
-    "location_code"
+    "location_code",
+    "geo_targets",
+    "entities",
+    "workstreams",
+    "missing_accesses",
+    "gate_0"
   ],
   "properties": {
     "project_id": {
@@ -52,7 +65,57 @@
         "type": "string",
         "format": "uri"
       },
-      "description": "Top 3 bis 5 Wettbewerber-Domains fuer Content-Gap- und Benchmark-Analysen."
+      "description": "Vom Briefing genannte Wettbewerber als Startliste. Schritt 1 ergaenzt organische Suchwettbewerber."
+    },
+    "competitor_preflight": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "url",
+          "status"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "reachable_https",
+              "reachable_http_only",
+              "unavailable"
+            ]
+          },
+          "http_status": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "final_url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "warning_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "error_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "description": "Technischer Step-0-Preflight der genannten Wettbewerber. HTTP-only ist eine Warnung, nicht automatisch ein Blocker."
     },
     "target_audience": {
       "type": "string",
@@ -64,6 +127,17 @@
         "type": "string"
       },
       "description": "Zielstaedte oder Regionen bei Multi-Location-Projekten."
+    },
+    "primary_region": {
+      "type": "string",
+      "description": "Primaerer Zielmarkt oder Hauptstandort des aktuellen Rollouts."
+    },
+    "secondary_regions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Nachrangige Zielregionen, keine Kernleistungen."
     },
     "language": {
       "type": "string",
@@ -102,8 +176,106 @@
         "max": {
           "type": "number",
           "default": 15.0
+        },
+        "source": {
+          "type": "string"
+        },
+        "provisional": {
+          "type": "boolean",
+          "default": false
         }
       }
+    },
+    "workstreams": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "category",
+          "priority"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "customer_acquisition",
+              "recruiting",
+              "content",
+              "tracking",
+              "operations",
+              "other"
+            ]
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "primary",
+              "secondary",
+              "tertiary"
+            ]
+          },
+          "regions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "Operative Projekt-Workstreams. Recruiting, Content und Tracking sind keine Kernleistungen."
+    },
+    "missing_accesses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Fehlende operative Zugaenge aus dem Briefing."
+    },
+    "gate_0": {
+      "type": "object",
+      "required": [
+        "status",
+        "reviewer"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "review_pending",
+            "approved",
+            "approved_with_warnings",
+            "blocked"
+          ]
+        },
+        "reviewer": {
+          "type": "string",
+          "const": "Raphael Rechberger"
+        },
+        "approved_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "operator_message": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "description": "Human Gate vor Abschluss von Schritt 0."
     },
     "created_at": {
       "type": "string",
@@ -518,6 +690,7 @@
         },
         "core_services": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "type": "object",
             "properties": {
@@ -538,7 +711,7 @@
               "name"
             ]
           },
-          "description": "Liste der Kernleistungen mit optionalen Wikidata-URIs fuer Schema.org about/mentions."
+          "description": "Liste echter kundenbezogener Kernleistungen mit optionalen Wikidata-URIs. Enthaelt keine Regionen, keine Standortvarianten und keine Recruiting-Workstreams."
         }
       },
       "required": [

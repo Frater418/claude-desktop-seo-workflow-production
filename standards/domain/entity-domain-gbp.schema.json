@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/entity-domain-gbp.schema.json",
+  "title": "Heartweb Entity Domain GBP",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["brand", "domains", "physical_locations", "service_areas", "gbp_profiles"],
+  "properties": {
+    "brand": {"$ref": "#/$defs/brand"},
+    "domains": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/domain"}},
+    "physical_locations": {"type": "array", "items": {"$ref": "#/$defs/location"}},
+    "service_areas": {"type": "array", "items": {"$ref": "#/$defs/serviceArea"}},
+    "gbp_profiles": {"type": "array", "items": {"$ref": "#/$defs/gbp"}}
+  },
+  "$defs": {
+    "brand": {"type": "object", "additionalProperties": false, "required": ["brand_id", "name"], "properties": {"brand_id": {"type": "string", "pattern": "^brand-[a-z0-9][a-z0-9-]{2,63}$"}, "name": {"type": "string", "minLength": 1}}},
+    "domain": {"type": "object", "additionalProperties": false, "required": ["domain_id", "host", "role"], "properties": {"domain_id": {"type": "string", "pattern": "^domain-[a-z0-9][a-z0-9-]{2,63}$"}, "host": {"type": "string", "pattern": "^[a-z0-9.-]+\\.[a-z]{2,}$"}, "role": {"type": "string", "enum": ["primary", "satellite", "campaign"]}}},
+    "location": {"type": "object", "additionalProperties": false, "required": ["location_id", "name", "locality", "country_code", "evidence_status"], "properties": {"location_id": {"type": "string", "pattern": "^location-[a-z0-9][a-z0-9-]{2,63}$"}, "name": {"type": "string", "minLength": 1}, "locality": {"type": "string", "minLength": 1}, "country_code": {"type": "string", "pattern": "^[A-Z]{2}$"}, "evidence_status": {"type": "string", "enum": ["verified", "unverified"]}}},
+    "serviceArea": {"type": "object", "additionalProperties": false, "required": ["service_area_id", "name", "regions", "country_code", "evidence_status"], "properties": {"service_area_id": {"type": "string", "pattern": "^service-area-[a-z0-9][a-z0-9-]{2,63}$"}, "name": {"type": "string", "minLength": 1}, "regions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}, "country_code": {"type": "string", "pattern": "^[A-Z]{2}$"}, "evidence_status": {"type": "string", "enum": ["verified", "unverified"]}}},
+    "gbp": {"type": "object", "additionalProperties": false, "required": ["gbp_id", "location_id", "verification_status"], "properties": {"gbp_id": {"type": "string", "pattern": "^gbp-[a-z0-9][a-z0-9-]{2,63}$"}, "location_id": {"type": "string", "pattern": "^location-[a-z0-9][a-z0-9-]{2,63}$"}, "verification_status": {"type": "string", "enum": ["verified", "unverified", "not_claimed"]}}}
+  }
+}
