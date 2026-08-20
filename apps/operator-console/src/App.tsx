@@ -1,12 +1,29 @@
 import { useEffect, useState } from "react"
 import { createOperatorApiClient, OperatorApiError } from "./api/client"
-import { neutralDemoProject, type WorkflowStep } from "./dev/neutralDemo"
+import {
+  baselineComparisonRows,
+  demoIntegrations,
+  demoTaskQueue,
+  demoTasks,
+  neutralDemoProject,
+  reviewDecisionIds,
+  taskIds,
+  type DemoTaskId,
+  type ReviewDecisionId,
+  type WorkflowStep,
+} from "./dev/neutralDemo"
 import { ArtifactPreview, defaultDemoArtifact, demoArtifacts } from "./features/artifacts/ArtifactPreview"
 import { RevisionDiff } from "./features/artifacts/RevisionDiff"
+import { IntegrationStatus } from "./features/integrations/IntegrationStatus"
+import { BaselineComparison } from "./features/presentation/BaselineComparison"
+import { WorkflowMatrix } from "./features/presentation/WorkflowMatrix"
 import { ProjectDashboard } from "./features/projects/ProjectDashboard"
+import { ReviewCenter } from "./features/reviews/ReviewCenter"
 import { ContextPackageSummary } from "./features/runs/ContextPackageSummary"
 import { RevisionRunPreview } from "./features/runs/RevisionRunPreview"
 import { RunHistory } from "./features/runs/RunHistory"
+import { TaskQueue } from "./features/tasks/TaskQueue"
+import { TicketDetail } from "./features/tasks/TicketDetail"
 import { StepDetail } from "./features/workflow/StepDetail"
 import { WorkflowTimeline } from "./features/workflow/WorkflowTimeline"
 
@@ -24,7 +41,7 @@ type AppProps = {
   readonly search?: string
 }
 
-type DemoWorkspace = "workflow" | "artifacts"
+type DemoWorkspace = "workflow" | "artifacts" | "operations" | "presentation"
 
 function isDemoSearch(search: string): boolean {
   return search === "?mode=demo"
@@ -46,6 +63,8 @@ export function App({ search = window.location.search }: AppProps): JSX.Element 
   const [selectedStepId, setSelectedStepId] = useState("1b")
   const [demoWorkspace, setDemoWorkspace] = useState<DemoWorkspace>("workflow")
   const [selectedArtifactId, setSelectedArtifactId] = useState(defaultDemoArtifact.id)
+  const [selectedTaskId, setSelectedTaskId] = useState<DemoTaskId>(taskIds.missingInput)
+  const [selectedReviewDecisionId, setSelectedReviewDecisionId] = useState<ReviewDecisionId>(reviewDecisionIds.requestInput)
   const [realApiState, setRealApiState] = useState<RealApiState>({ kind: "loading" })
 
   useEffect(() => {
@@ -96,6 +115,7 @@ export function App({ search = window.location.search }: AppProps): JSX.Element 
 
   const selectedStep = selectedDemoStep(selectedStepId)
   const selectedArtifact = demoArtifacts.find((artifact) => artifact.id === selectedArtifactId) ?? defaultDemoArtifact
+  const selectedTask = demoTasks[selectedTaskId]
 
   return (
     <main className="app-shell">
@@ -112,7 +132,7 @@ export function App({ search = window.location.search }: AppProps): JSX.Element 
             <StepDetail projectId={neutralDemoProject.id} step={selectedStep} />
           </div>
         </section>
-      ) : (
+      ) : demoWorkspace === "artifacts" ? (
         <section aria-labelledby="artifacts-workspace-tab" className="artifact-run-workspace" id="artifacts-workspace" role="tabpanel" tabIndex={0}>
           <div className="workspace-heading"><p className="eyebrow">Artifact and run workspace</p><h2>Artifacts &amp; runs</h2><p>Immutable outputs, revision evidence, and replaceable technical-session cache state.</p></div>
           <div className="artifact-run-grid">
@@ -125,6 +145,24 @@ export function App({ search = window.location.search }: AppProps): JSX.Element 
               <ContextPackageSummary />
               <RevisionRunPreview />
             </div>
+          </div>
+        </section>
+      ) : demoWorkspace === "operations" ? (
+        <section aria-labelledby="operations-workspace-tab" className="operations-workspace" id="operations-workspace" role="tabpanel" tabIndex={0}>
+          <div className="workspace-heading"><p className="eyebrow">Operator action workspace</p><h2>Operations</h2><p>Local task, review, and integration previews remain non-authoritative until Transition Service records an authorized outcome.</p></div>
+          <div className="operations-grid">
+            <TaskQueue onSelectTask={setSelectedTaskId} selectedTaskId={selectedTaskId} tasks={demoTaskQueue} />
+            <TicketDetail task={selectedTask} />
+            <ReviewCenter onSelectDecision={setSelectedReviewDecisionId} selectedDecisionId={selectedReviewDecisionId} />
+            <IntegrationStatus integrations={demoIntegrations} />
+          </div>
+        </section>
+      ) : (
+        <section aria-labelledby="presentation-workspace-tab" className="presentation-workspace" id="presentation-workspace" role="tabpanel" tabIndex={0}>
+          <div className="workspace-heading"><p className="eyebrow">Decision support workspace</p><h2>Presentation</h2><p>Readable capability and workflow evidence for local operator orientation.</p></div>
+          <div className="presentation-grid">
+            <WorkflowMatrix sideflow={neutralDemoProject.sideflow} steps={neutralDemoProject.steps} />
+            <BaselineComparison rows={baselineComparisonRows} />
           </div>
         </section>
       )}
@@ -143,6 +181,8 @@ function DemoWorkspaceSwitch({ selectedWorkspace, onSelect }: DemoWorkspaceSwitc
       <div aria-label="Demo workspace" className="workspace-tabs" role="tablist">
         <button aria-controls="workflow-workspace" aria-selected={selectedWorkspace === "workflow"} id="workflow-workspace-tab" onClick={() => onSelect("workflow")} role="tab" type="button">Workflow</button>
         <button aria-controls="artifacts-workspace" aria-selected={selectedWorkspace === "artifacts"} id="artifacts-workspace-tab" onClick={() => onSelect("artifacts")} role="tab" type="button">Artifacts &amp; runs</button>
+        <button aria-controls="operations-workspace" aria-selected={selectedWorkspace === "operations"} id="operations-workspace-tab" onClick={() => onSelect("operations")} role="tab" type="button">Operations</button>
+        <button aria-controls="presentation-workspace" aria-selected={selectedWorkspace === "presentation"} id="presentation-workspace-tab" onClick={() => onSelect("presentation")} role="tab" type="button">Presentation</button>
       </div>
     </nav>
   )

@@ -4,7 +4,7 @@
 **Autor & Architektur:** Raphael Rechberger  
 **Organisation:** Heartweb / Zusammenarbeit Raphael Rechberger & Jesse Jensen  
 **Datum:** 20. August 2026
-**Status:** End-to-End Operator Workflow System in Ausfuehrung. Sprint 4 ist vollstaendig implementiert und verifiziert. Sprint 5 Operator Console ist aktiv, Packages 1 und 2 sind abgeschlossen.
+**Status:** End-to-End Operator Workflow System in Ausfuehrung. Sprint 4 ist vollstaendig implementiert und verifiziert. Sprint 5 Operator Console ist aktiv, Packages 1 bis 3 sind abgeschlossen.
 **GitHub Repository:** https://github.com/Frater418/claude-desktop-seo-workflow-production  
 **Kanonischer Pfad:** `C:\Users\offic\Documents\Projekte\Hermes\04_projects\active\Heartweb-Claude-Desktop-SEO-Workflow\`  
 **Desktop-Pfad:** `C:\Users\offic\Desktop\Heartweb\claude-desktop-seo-workflow-production\`  
@@ -121,9 +121,11 @@
 - Package-1-Evidence: finaler Lockfile-`npm ci` erfolgreich, npm Audit 0 Vulnerabilities, 11 von 11 UI-Tests, TypeScript und Vite-8-Production-Build gruen, OpenAPI-Codegen unveraendert, Browser-QA auf Desktop, Tablet und echter 390-Pixel-Mobile-Emulation bestanden.
 - Sprint 5 Package 2 ist abgeschlossen. Artefaktvorschau, immutable Revision Diff, LLM Run-Historie, Context-Package-Zusammenfassung und disabled Revision-Run-Preview sind integriert.
 - Package-2-Evidence: 16 von 16 UI-Tests, TypeScript und Vite-8-Production-Build gruen, npm Audit 0 Vulnerabilities, OpenAPI-Codegen unveraendert, Browser-QA auf Desktop und echter 390-Pixel-Mobile-Emulation bestanden.
+- Sprint 5 Package 3 ist abgeschlossen. Taskqueue, Ticket Detail, Review Center, Integrationsstatus, Workflow Matrix und Baseline Comparison sind integriert.
+- Package-3-Evidence: 23 von 23 UI-Tests, TypeScript und Vite-8-Production-Build gruen, npm Audit 0 Vulnerabilities, OpenAPI-Codegen unveraendert, Operations- und Presentation-Browser-QA auf Desktop und echter 390-Pixel-Mobile-Emulation bestanden.
 - Sichtbare Demo: `http://127.0.0.1:4173/?mode=demo`, solange der lokale Vite-Server laeuft.
 - Kompressionssicherer Fortsetzungspunkt: `00_admin/audits/2026-08-19-e2e-demo/sprint-4/CURRENT_POINT_OF_WORK.md`.
-- Naechster Gate: Sprint 5 Package 3 mit Taskqueue, Review Center, Integrationsstatus und Praesentationsmatrix implementieren.
+- Naechster Gate: bestehende Sprint-5-Aktionen real an Local API und Transition Service binden und einen vollstaendigen neutralen Step-0-bis-4b-Flow ueber die UI ausfuehren. Erst danach ist Sprint 5 abgeschlossen.
 
 ### Aktive Risiken und externe Voraussetzungen
 
