@@ -6,3 +6,6 @@ __pycache__/
 Thumbs.db
 *.tmp
 .omo/
+apps/operator-console/node_modules/
+apps/operator-console/dist/
+apps/operator-console/coverage/

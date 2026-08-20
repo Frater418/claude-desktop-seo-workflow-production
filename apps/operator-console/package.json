@@ -1,0 +1,32 @@
+{
+  "name": "operator-console",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node ./node_modules/vite/bin/vite.js",
+    "build": "node ./node_modules/typescript/bin/tsc --noEmit && node ./node_modules/vite/bin/vite.js build",
+    "test": "node ./node_modules/vitest/vitest.mjs run --pool=threads"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "6.6.3",
+    "@testing-library/react": "16.0.1",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "6.1.0",
+    "jsdom": "25.0.1",
+    "typescript": "5.7.2",
+    "vite": "8.2.2",
+    "vitest": "4.1.11"
+  },
+  "optionalDependencies": {
+    "@rolldown/binding-linux-x64-gnu": "1.2.5",
+    "@rolldown/binding-win32-x64-msvc": "1.2.5",
+    "@rollup/rollup-linux-x64-gnu": "4.62.4",
+    "@rollup/rollup-win32-x64-msvc": "4.62.4"
+  }
+}

@@ -4,7 +4,7 @@
 **Autor & Architektur:** Raphael Rechberger  
 **Organisation:** Heartweb / Zusammenarbeit Raphael Rechberger & Jesse Jensen  
 **Datum:** 20. August 2026
-**Status:** End-to-End Operator Workflow System in Ausfuehrung. Sprint 4 ist vollstaendig implementiert und verifiziert. Sprint 5 Operator Console ist der naechste aktive Block.
+**Status:** End-to-End Operator Workflow System in Ausfuehrung. Sprint 4 ist vollstaendig implementiert und verifiziert. Sprint 5 Operator Console ist aktiv, Package 1 ist abgeschlossen.
 **GitHub Repository:** https://github.com/Frater418/claude-desktop-seo-workflow-production  
 **Kanonischer Pfad:** `C:\Users\offic\Documents\Projekte\Hermes\04_projects\active\Heartweb-Claude-Desktop-SEO-Workflow\`  
 **Desktop-Pfad:** `C:\Users\offic\Desktop\Heartweb\claude-desktop-seo-workflow-production\`  
@@ -117,8 +117,11 @@
 - Sprint 4 Stage D ist abgeschlossen. Der deterministische FastAPI-OpenAPI-Snapshot, generierte TypeScript-Typen und die lokale API-/Simulator-Integration sind implementiert und verifiziert.
 - Stage-D-Fokus: 6 von 6 Tests auf Host und OMO. Full Suite: 313 von 313 Tests auf Host und OMO. TypeScript strict in OMO: Exit 0. `hermes verify --json`: `ok: true`.
 - Sprint-4-Checkpoint: `00_admin/checkpoints/2026-08-20-sprint-4/` mit 983 Datei-Hashes, Testevidence, Reviewstatus und Branchzustand.
+- Sprint 5 Package 1 ist abgeschlossen. Frontend-Grundgeruest, generierter API-Client, Project Dashboard, Workflow Timeline und Step Detail sind als explizite lokale Simulation vorhanden.
+- Package-1-Evidence: finaler Lockfile-`npm ci` erfolgreich, npm Audit 0 Vulnerabilities, 11 von 11 UI-Tests, TypeScript und Vite-8-Production-Build gruen, OpenAPI-Codegen unveraendert, Browser-QA auf Desktop, Tablet und echter 390-Pixel-Mobile-Emulation bestanden.
+- Sichtbare Demo: `http://127.0.0.1:4173/?mode=demo`, solange der lokale Vite-Server laeuft.
 - Kompressionssicherer Fortsetzungspunkt: `00_admin/audits/2026-08-19-e2e-demo/sprint-4/CURRENT_POINT_OF_WORK.md`.
-- Naechster Gate: Sprint-4-Checkpoint auf dem Feature-Branch sichern und Sprint 5 Operator Console gegen die generierten API-Typen implementieren.
+- Naechster Gate: Sprint 5 Package 2 mit Artefaktvorschau, Revision Diff, Run-Historie und Context-Package-Zusammenfassung implementieren.
 
 ### Aktive Risiken und externe Voraussetzungen
 
