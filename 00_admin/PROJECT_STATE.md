@@ -109,9 +109,11 @@
 - Aktiver Entwicklungsbranch: `feature/e2e-operator-workflow-system`. Kein Commit oder Push auf `master` vor vollstaendigem Workflow, tiefer Dokumentation, unabhaengiger Finalauditierung und expliziter Freigabe durch Raphael.
 - Externer verifizierter Live-Snapshot: `C:\Users\offic\Documents\Projekte\Hermes\90_archive\project-snapshots\Heartweb-Claude-Desktop-SEO-Workflow\2026-08-19_20-26-39_-0400`.
 - Sprint 4 Stage A: Integrationsvertraege und deterministische Notion-Graph-Validierung implementiert. Terminaler Spec Review `APPROVED`. Terminaler Quality Review `APPROVED`. Offene Findings: P0 0, P1 0, P2 0, P3 0.
+- Sprint-4-Stage-A-Checkpoint: `00_admin/checkpoints/2026-08-19-sprint-4-stage-a/` mit 597 Datei-Hashes, 236 Tests je Runtime und 4 von 4 byte-identischen AHD-Step-0-Dateien.
+- Feature-Branch-Checkpoint auf GitHub: `feature/e2e-operator-workflow-system`, Commit `a3b8ea1`. Lokaler und remote `master` bleiben unveraendert auf `5e78679`.
 - Sprint 4 Stage A2 ist unter DEC-0019, im Sprint-4-Buildplan und im E2E-Masterplan verbindlich. Sie baut logische Projektsessions, Context Packages, Workerprofile, LLM Run Request/Result, Session-Cache-Policy, Revision-Reruns und Fail-Fast Context Validation vor API und UI.
 - Kompressionssicherer Fortsetzungspunkt: `00_admin/audits/2026-08-19-e2e-demo/sprint-4/CURRENT_POINT_OF_WORK.md`.
-- Naechster Gate: Stage-A-Checkpoint und Feature-Branch-Push abschliessen, danach Stage A2 implementieren und unabhaengig reviewen. Erst danach folgen Local Workflow API, Event Store, Notion-/n8n-Simulator und Sprint 5.
+- Naechster Gate: Stage A2 implementieren und unabhaengig reviewen. Erst danach folgen Local Workflow API, Event Store, Notion-/n8n-Simulator und Sprint 5.
 
 ### Aktive Risiken und externe Voraussetzungen
 

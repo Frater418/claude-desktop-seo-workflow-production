@@ -27,7 +27,10 @@ Status: active controller handoff
 - Snapshot archive SHA-256:
   `38edf25bea7ec8b08b806bd48d6bf02b2eb2e7e42b5f1ac87ab7d51108d0df4c`
 - Snapshot verification: 613 files reopened and matched against `FILE_MANIFEST.json`.
-- GitHub does not yet contain the current working tree. The feature branch will be committed and pushed only after Stage A is approved.
+- GitHub feature branch: `feature/e2e-operator-workflow-system`.
+- Stage A checkpoint commit: `a3b8ea1`.
+- The feature branch is pushed and tracks `origin/feature/e2e-operator-workflow-system`.
+- Local and remote `master` remain unchanged at `5e78679`.
 
 ## Completed Foundation
 
@@ -90,9 +93,9 @@ Approval evidence:
 
 Current action:
 
-- create Stage A checkpoint and feature-branch commit
-- push only `feature/e2e-operator-workflow-system`
-- begin Stage A2 after checkpoint verification
+- Stage A checkpoint, commit and feature-branch push are complete
+- begin Stage A2 contract and deterministic Context Builder implementation
+- do not begin Stage B before Stage A2 spec and quality approval
 
 ### Stage A2: Context Packages And Reproducible LLM Runs
 
@@ -185,10 +188,10 @@ Sprint 5 must display and operate:
 
 ## Immediate Next Gates
 
-1. Create and verify the Stage A checkpoint.
-2. Run final secret and branch-scope checks.
-3. Commit and push only the feature branch.
-4. Implement and review Stage A2 before any API or UI work.
+1. Implement Stage A2 runtime contracts with negative tests first.
+2. Implement deterministic Context Builder and session policy.
+3. Verify Stage A2 on Windows and OMO.
+4. Run independent Stage A2 specification and quality reviews.
 5. Keep `master` unchanged until the complete workflow and final audit are approved.
 
 ## Explicit Non-Actions
