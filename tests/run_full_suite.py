@@ -18,6 +18,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TESTS = ROOT / "tests"
 CONTRACTS = TESTS / "contracts"
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 ACCEPTANCE_COUNT = re.compile(r"Ergebnis: (\d+)/(\d+) Tests erfolgreich bestanden\.")
 PHASE_COUNT = re.compile(r"\[PHASE PASSED\] .+: (\d+) tests")
 

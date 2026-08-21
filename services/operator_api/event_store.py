@@ -13,6 +13,7 @@ from typing import Final, Iterator
 from jsonschema import Draft202012Validator, FormatChecker
 
 from .models import JsonValue
+from services.owned_file_lock import OwnedFileLock, OwnedFileLockError
 
 EVENTS_RELATIVE_PATH: Final = Path("v2/operator/events/events.jsonl")
 
@@ -136,17 +137,11 @@ class EventStore:
     @contextmanager
     def _lock(self, path: Path) -> Iterator[None]:
         lock_path = path.with_suffix(path.suffix + ".lock")
-        lock_path.parent.mkdir(parents=True, exist_ok=True)
-        created = False
         try:
-            with lock_path.open("x", encoding="utf-8"):
-                created = True
+            with OwnedFileLock(lock_path, grace_seconds=0):
                 yield
-        except FileExistsError as exc:
+        except OwnedFileLockError as exc:
             raise EventStoreError("ERROR_TRANSITION_LEDGER_LOCKED", "Event store writer lock is active.") from exc
-        finally:
-            if created:
-                lock_path.unlink()
 
     @staticmethod
     def _resolve_workspace(workspace: Path) -> Path:

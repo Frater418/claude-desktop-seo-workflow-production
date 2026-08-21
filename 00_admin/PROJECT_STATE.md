@@ -134,6 +134,8 @@
 3. Reale Notion- und n8n-Verbindungen sind noch nicht konfiguriert. Sprint 4 baut versionierte lokale Simulatoren mit denselben Commands, Events und Projektionen.
 4. Der UI-Stack beginnt jetzt in Sprint 5 und nutzt ausschliesslich die in Stage D generierten API-Typen.
 5. Der bestaetigte Performance-Zyklus fuer Notion, n8n und Step 3b ist Tag 30, 60 und 90.
+6. Verbindliche spaetere Nacharbeit: Beim V2-Umbau wurden konkrete ADR-011-Anforderungen fuer Step 4a und Step 4b nicht vollstaendig in die ausfuehrbaren Schemas, Prompts und Validatoren uebernommen. Nach stabilem Sprint-5-/5E-Abschluss ist `.hermes/plans/2026-08-20-deferred-geo-v2-contract-restoration.md` auszufuehren. Vorher darf keine vollstaendige GEO-Produktionsqualitaet fuer Copywriter- und Developer-Pakete behauptet werden.
+7. Kanonischer Sammelpunkt fuer neue Probleme, Verbesserungen, UI-Feedback und spaetere Integrationsarbeit ist `00_admin/DEFERRED_INTEGRATION_BACKLOG.md`. Das Erfassen eines Punkts autorisiert keine sofortige Umsetzung. Der Backlog wird erst nach stabiler Basis und ausdruecklicher Freigabe in einem Integrations-Sprint abgearbeitet.
 
 1. **GEO-Architektur-Spezifikation (`docs/07-geo-architecture-specification.md`):**
    - Vollstaendige Dokumentation des GEO-Erweiterungskonzepts (Selection vs. Absorption, Query Fan-Out, Evidence Containers, Schema.org about/mentions, Solver GEO-Gewichte).

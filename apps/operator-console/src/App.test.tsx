@@ -1,226 +1,164 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react"
 import { App } from "./App"
+import { createOperatorApiFixture } from "./test/operatorApiFixture"
 
 afterEach(() => {
   cleanup()
+  vi.unstubAllEnvs()
   vi.unstubAllGlobals()
 })
 
-describe("Operator console modes", () => {
-  it("uses local simulation only when the query is exactly mode=demo", async () => {
-    render(<App search="?mode=demo" />)
+async function renderConsole(): Promise<ReturnType<typeof createOperatorApiFixture>> {
+  const fixture = createOperatorApiFixture()
+  vi.stubGlobal("fetch", fixture.fetch)
+  render(<App tenantId="tenant-welle-zwei" />)
+  await screen.findByRole("heading", { name: "Pflegedienst Alpha" })
+  return fixture
+}
 
-    expect(screen.getByText("Local simulation")).toBeInTheDocument()
-    expect(screen.getByText("Northwind Facilities rollout")).toBeInTheDocument()
+function activateDisclosure(toggle: HTMLElement, key: "Enter" | " "): void {
+  toggle.focus()
+  fireEvent.keyDown(toggle, { key })
+  fireEvent.keyUp(toggle, { key })
+  fireEvent.click(toggle)
+}
+
+describe("Heartweb Admin Operator Console", () => {
+  it("loads the canonical project into the German work shell without demo fallback", async () => {
+    await renderConsole()
+
+    const navigation = screen.getByRole("navigation", { name: "Hauptnavigation" })
+    expect(within(navigation).getByRole("link", { name: "Projekte" })).toBeInTheDocument()
+    expect(within(navigation).getByRole("link", { name: "Uebergabe und Export" })).toBeInTheDocument()
+    expect(within(screen.getByRole("banner")).getByText("Aktiver Schritt")).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Pflegedienst Alpha waehlen" })).toHaveAttribute("aria-current", "true")
+    expect(within(screen.getByRole("banner")).getByText("Informationsarchitektur pruefen")).toBeInTheDocument()
+    expect(within(screen.getByRole("region", { name: "Projekt waehlen" })).getByText("Informationsarchitektur pruefen")).toBeInTheDocument()
+    expect(screen.queryByText(/demo|presentation/i)).not.toBeInTheDocument()
   })
 
-  it.each(["", "?mode=demo&x=1", "?x=1&mode=demo", "?mode=Demo", "?mode=demo&mode=demo"])(
-    "does not enable simulation for %s",
-    async (search) => {
-      vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("connection refused")))
+  it("lists canonical projects, keeps the selected project marked, and reloads its canonical workspace", async () => {
+    const fixture = await renderConsole()
 
-      render(<App search={search} />)
+    const betaProject = screen.getByRole("button", { name: "Pflegedienst Beta waehlen" })
+    expect(betaProject).not.toHaveAttribute("aria-current")
+    fireEvent.click(betaProject)
 
-      await waitFor(() => {
-        expect(screen.getByText("Real API unavailable")).toBeInTheDocument()
-      })
-      expect(screen.queryByText("Local simulation")).not.toBeInTheDocument()
-    }
-  )
+    expect(await screen.findByRole("heading", { name: "Pflegedienst Beta" })).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Pflegedienst Beta waehlen" })).toHaveAttribute("aria-current", "true")
+    expect(within(screen.getByRole("banner")).getByText("Beta Pflege GmbH")).toBeInTheDocument()
+    expect(fixture.state.calls.some((call) => call.endsWith("GET /v1/tenants/tenant-welle-zwei/projects/projekt-beta-welle-zwei/runs/current"))).toBe(true)
 
-  it("does not fall back to demo data when the real API is unavailable", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("connection refused")))
-
-    render(<App search="" />)
-
-    await waitFor(() => {
-      expect(screen.getByText("Real API unavailable")).toBeInTheDocument()
-    })
-    expect(screen.queryByText("Local simulation")).not.toBeInTheDocument()
-    expect(screen.queryByText("Northwind Facilities rollout")).not.toBeInTheDocument()
-  })
-})
-
-describe("Workflow route and detail", () => {
-  it("presents the exact initial route and keeps 3b as a post-publication sideflow", () => {
-    render(<App search="?mode=demo" />)
-
-    expect(screen.getByLabelText("Initial workflow route")).toHaveTextContent(
-      "0 1 1b 1c 2 3 4a 4b"
-    )
-    expect(screen.getByLabelText("Post-publication sideflow")).toHaveTextContent("3b")
+    fireEvent.click(screen.getByRole("link", { name: "Workflow" }))
+    fireEvent.click(screen.getByRole("link", { name: "Projekte" }))
+    expect(screen.getByRole("button", { name: "Pflegedienst Beta waehlen" })).toHaveAttribute("aria-current", "true")
   })
 
-  it("updates the selected step detail", () => {
-    render(<App search="?mode=demo" />)
+  it("operates the collapsible context by pointer, Enter, and Space without leaving collapsed controls in the keyboard flow", async () => {
+    await renderConsole()
 
-    fireEvent.click(screen.getByRole("button", { name: "Step 1b: Information architecture" }))
+    const toggle = screen.getByRole("button", { name: "Kontext einklappen" })
+    const contentId = toggle.getAttribute("aria-controls")
+    expect(toggle).toHaveAttribute("aria-expanded", "true")
+    expect(document.getElementById(contentId ?? "")).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "Nachweise" })).toBeInTheDocument()
 
-    expect(screen.getByRole("heading", { name: "Information architecture" })).toBeInTheDocument()
-    expect(screen.getByText("Map the approved themes into a usable site structure.")).toBeInTheDocument()
+    toggle.focus()
+    fireEvent.click(toggle)
+    expect(toggle).toHaveAttribute("aria-expanded", "false")
+    expect(document.activeElement).toBe(toggle)
+    expect(document.getElementById(contentId ?? "")).not.toBeInTheDocument()
+    expect(screen.queryByText("Technische Details")).not.toBeInTheDocument()
+
+    activateDisclosure(toggle, "Enter")
+    expect(toggle).toHaveAttribute("aria-expanded", "true")
+    expect(screen.getByRole("heading", { name: "Feststellungen" })).toBeInTheDocument()
+
+    activateDisclosure(toggle, " ")
+    expect(toggle).toHaveAttribute("aria-expanded", "false")
   })
 
-  it("keeps raw projection data inside a closed technical disclosure", () => {
-    render(<App search="?mode=demo" />)
+  it("shows the workflow route, exact gate result, and the separate 3b not-due sideflow", async () => {
+    await renderConsole()
+    fireEvent.click(screen.getByRole("link", { name: "Workflow" }))
 
-    const details = screen.getByText("Technical details").closest("details")
-    expect(details).not.toHaveAttribute("open")
-
-    fireEvent.click(screen.getByText("Technical details"))
-    expect(details).toHaveAttribute("open")
-    expect(screen.getByText("project-neutral-031")).toBeInTheDocument()
+    expect(screen.getByLabelText("Initiale Workflow-Schritte")).toHaveTextContent("011b1c234a4b")
+    expect(screen.getByText("3b: noch nicht faellig")).toBeInTheDocument()
+    expect(screen.getByText("Maschinenpruefung bestanden")).toBeInTheDocument()
   })
 
-  it("keeps blocked and locked human actions unavailable as previews", () => {
-    render(<App search="?mode=demo" />)
+  it("previews pasted and selected Markdown intake, accepts reviewed corrections, and reads back canonical data", async () => {
+    const fixture = await renderConsole()
+    fireEvent.click(screen.getByRole("button", { name: "Projekt anlegen" }))
+    const briefing = screen.getByLabelText("Markdown-Briefing")
+    fireEvent.change(briefing, { target: { value: "# Pflege Alpha" } })
+    fireEvent.change(screen.getByLabelText("Markdown-Datei"), { target: { files: [new File(["# Datei"], "briefing.md", { type: "text/markdown" })] } })
+    fireEvent.click(screen.getByRole("button", { name: "Vorschau erstellen" }))
+    await screen.findByDisplayValue("Pflegedienst Alpha")
+    fireEvent.change(screen.getByLabelText("Projektname pruefen"), { target: { value: "Pflegedienst Alpha korrigiert" } })
+    fireEvent.click(screen.getByRole("button", { name: "Intake verbindlich annehmen" }))
 
-    fireEvent.click(screen.getByRole("button", { name: "Step 1c: Template system" }))
-
-    expect(screen.getByText("Blocked until the information architecture gate releases.")).toBeInTheDocument()
-    expect(screen.getByRole("button", { name: "Start step preview" })).toBeDisabled()
-    expect(screen.getByRole("button", { name: "Approve gate preview" })).toBeDisabled()
-
-    fireEvent.click(screen.getByRole("button", { name: "Step 3b: Performance check" }))
-
-    expect(screen.getByRole("button", { name: "Start step preview" })).toBeDisabled()
-    expect(screen.getByRole("button", { name: "Approve gate preview" })).toBeDisabled()
-  })
-})
-
-describe("Artifact and run workspace", () => {
-  it("switches the demo workspace without changing the workflow route", () => {
-    render(<App search="?mode=demo" />)
-
-    fireEvent.click(screen.getByRole("tab", { name: "Artifacts & runs" }))
-
-    expect(screen.getByRole("tabpanel", { name: "Artifacts & runs" })).toBeInTheDocument()
-    expect(screen.getByText("Current artifact")).toBeInTheDocument()
-    expect(screen.queryByLabelText("Initial workflow route")).not.toBeInTheDocument()
-
-    fireEvent.click(screen.getByRole("tab", { name: "Workflow" }))
-
-    expect(screen.getByLabelText("Initial workflow route")).toHaveTextContent("0 1 1b 1c 2 3 4a 4b")
+    await waitFor(() => expect(fixture.state.calls.some((call) => call.includes("POST /v1/tenants/tenant-welle-zwei/intake/accept"))).toBe(true))
+    expect(screen.getByText("Schritt 0 bereit")).toBeInTheDocument()
   })
 
-  it("updates the revision diff when an artifact is selected", () => {
-    render(<App search="?mode=demo" />)
-
-    fireEvent.click(screen.getByRole("tab", { name: "Artifacts & runs" }))
-    fireEvent.click(screen.getByRole("button", { name: "Artifact: Navigation resolution package, revision 3" }))
-
-    expect(screen.getByText("Revision 3 compared with revision 2")).toBeInTheDocument()
-    expect(screen.getByText(/Rejected candidate retained for review/)).toBeInTheDocument()
+  it("loads artifact content into a real editor, saves an immutable revision, compares it, and validates it", async () => {
+    await renderConsole()
+    fireEvent.click(screen.getByRole("link", { name: "Artefakte" }))
+    fireEvent.click(screen.getByRole("button", { name: "outputs/themenstruktur.md, Revision 17" }))
+    const editor = await screen.findByLabelText("Artefaktinhalt bearbeiten")
+    expect(editor).toHaveValue("# Themenstruktur")
+    fireEvent.change(editor, { target: { value: "# Neue Themenstruktur" } })
+    fireEvent.click(within(screen.getByLabelText("Artefaktaktionen")).getByRole("button", { name: "Als neue Revision speichern" }))
+    expect(await screen.findByText("Revision 18 wurde unveraenderlich gespeichert.")).toBeInTheDocument()
+    fireEvent.click(screen.getByRole("button", { name: "Revisionen vergleichen" }))
+    expect(await screen.findByText("+ Neue Themenstruktur")).toBeInTheDocument()
+    fireEvent.click(screen.getByRole("button", { name: "Erneut pruefen" }))
+    expect(await screen.findByText("Maschinenpruefung bestanden")).toBeInTheDocument()
   })
 
-  it("keeps artifact raw details closed until an operator opens them", () => {
-    render(<App search="?mode=demo" />)
+  it("keeps task context while filtering and sorting the compact queue", async () => {
+    await renderConsole()
+    fireEvent.click(screen.getByRole("link", { name: "Aufgaben" }))
+    fireEvent.change(screen.getByLabelText("Status filtern"), { target: { value: "offen" } })
+    fireEvent.click(screen.getByRole("button", { name: "Nach Prioritaet sortieren" }))
+    fireEvent.click(screen.getByRole("button", { name: "Themenstruktur pruefen" }))
 
-    fireEvent.click(screen.getByRole("tab", { name: "Artifacts & runs" }))
-
-    const details = screen.getByText("Technical details", { selector: ".artifact-preview summary" }).closest("details")
-    expect(details).not.toHaveAttribute("open")
+    expect(screen.getByText("Pillar-Struktur pruefen")).toBeInTheDocument()
+    expect(screen.getByText("Freigabe der Themenstruktur")).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Themenstruktur pruefen" })).toHaveAttribute("aria-pressed", "true")
   })
 
-  it("shows recover fresh for a lost technical session while the immutable package remains valid", () => {
-    render(<App search="?mode=demo" />)
+  it("previews illegal action remediation, confirms an allowed review, and renders canonical readback", async () => {
+    const fixture = await renderConsole()
+    fireEvent.click(screen.getByRole("link", { name: "Pruefungen und Freigaben" }))
+    fireEvent.click(screen.getByRole("button", { name: "Ausnahme anfragen" }))
+    fireEvent.change(screen.getByLabelText("Begruendung"), { target: { value: "Blockierte Ausnahme" } })
+    fireEvent.change(screen.getByLabelText("Pruefanweisung fuer Ausnahme"), { target: { value: "Ausnahme pruefen" } })
+    fireEvent.click(screen.getByRole("button", { name: "Vorschau fuer Ausnahme erstellen" }))
+    expect(await screen.findByText("Pruefung abschliessen und erneut versuchen.")).toBeInTheDocument()
+    fireEvent.click(screen.getByRole("button", { name: "Freigabe vorbereiten" }))
+    expect(await screen.findByText("Freigabe wird als menschliche Entscheidung gespeichert.")).toBeInTheDocument()
+    await waitFor(() => expect(fixture.state.requestBodies.some((body) => body.includes("\"tenant_id\":\"tenant-welle-zwei\"") && body.includes("\"project_id\":\"projekt-welle-zwei\"") && body.includes("\"run_id\":\"lauf-20260821-a\"") && body.includes("\"step_id\":\"1b\"") && body.includes("\"expected_revision\":17"))).toBe(true))
+    fireEvent.click(screen.getByRole("button", { name: "Freigabe bestaetigen" }))
 
-    fireEvent.click(screen.getByRole("tab", { name: "Artifacts & runs" }))
-
-    expect(screen.getByText("recover fresh")).toBeInTheDocument()
-    expect(screen.getByText("Immutable context package remains valid.")).toBeInTheDocument()
+    await waitFor(() => expect(fixture.state.calls.some((call) => call.endsWith("GET /v1/tenants/tenant-welle-zwei/projects/projekt-welle-zwei"))).toBe(true))
+    expect(screen.getByText("Kanonischer Stand aktualisiert")).toBeInTheDocument()
   })
 
-  it("shows revision boundaries and leaves dispatch disabled for Review Center", () => {
-    render(<App search="?mode=demo" />)
-
-    fireEvent.click(screen.getByRole("tab", { name: "Artifacts & runs" }))
-
-    expect(screen.getByText("Immutable fields")).toBeInTheDocument()
-    expect(screen.getByText("Forbidden changes")).toBeInTheDocument()
-    expect(screen.getByRole("button", { name: "Review Center is required" })).toBeDisabled()
-  })
-})
-
-describe("Operations and presentation workspaces", () => {
-  it("adds Operations and Presentation after the preserved demo workspaces", () => {
-    render(<App search="?mode=demo" />)
-
-    expect(screen.getAllByRole("tab").map((tab) => tab.textContent)).toEqual([
-      "Workflow",
-      "Artifacts & runs",
-      "Operations",
-      "Presentation",
-    ])
-  })
-
-  it("updates ticket detail when an operator selects a queue item", () => {
-    render(<App search="?mode=demo" />)
-
-    fireEvent.click(screen.getByRole("tab", { name: "Operations" }))
-    fireEvent.click(screen.getByRole("button", { name: "Task: Resolve duplicate primary navigation route" }))
-
-    expect(screen.getByRole("heading", { name: "Resolve duplicate primary navigation route" })).toBeInTheDocument()
-    expect(screen.getByRole("button", { name: "Task: Resolve duplicate primary navigation route" })).toHaveAttribute("aria-pressed", "true")
-  })
-
-  it("shows a local review consequence while Transition Service submission remains disabled", () => {
-    render(<App search="?mode=demo" />)
-
-    fireEvent.click(screen.getByRole("tab", { name: "Operations" }))
-    expect(screen.getAllByRole("radio")).toHaveLength(6)
-    const initialConsequence = screen.getByLabelText("Decision consequence").textContent
-
-    fireEvent.click(screen.getByRole("radio", { name: "request revision" }))
-
-    const decisionPreview = screen.getByLabelText("Decision consequence")
-    expect(decisionPreview).toHaveAttribute("data-decision", "request revision")
-    expect(decisionPreview.textContent).not.toBe(initialConsequence)
-    expect(decisionPreview).toHaveAttribute("aria-live", "polite")
-    expect(within(decisionPreview).getByText("Expected revision")).toBeInTheDocument()
-    expect(within(decisionPreview).getByText("Consequence")).toBeInTheDocument()
-    expect(screen.getByRole("button", { name: "Transition Service/API required" })).toBeDisabled()
-  })
-
-  it("preserves operations selections across demo workspace switches", () => {
-    render(<App search="?mode=demo" />)
-
-    fireEvent.click(screen.getByRole("tab", { name: "Operations" }))
-    fireEvent.click(screen.getByRole("button", { name: "Task: Resolve duplicate primary navigation route" }))
-    fireEvent.click(screen.getByRole("radio", { name: "escalate" }))
-    fireEvent.click(screen.getByRole("tab", { name: "Presentation" }))
-    fireEvent.click(screen.getByRole("tab", { name: "Operations" }))
-
-    expect(screen.getByRole("heading", { name: "Resolve duplicate primary navigation route" })).toBeInTheDocument()
-    expect(screen.getByRole("radio", { name: "escalate" })).toBeChecked()
-  })
-
-  it("labels the integrations as simulated and production disabled", () => {
-    render(<App search="?mode=demo" />)
-
-    fireEvent.click(screen.getByRole("tab", { name: "Operations" }))
-
-    const integrationStatus = screen.getByRole("region", { name: "Integration status" })
-    expect(within(integrationStatus).getByRole("rowheader", { name: "Notion simulated" })).toBeInTheDocument()
-    expect(within(integrationStatus).getByRole("rowheader", { name: "n8n simulated" })).toBeInTheDocument()
-    expect(within(integrationStatus).getByRole("rowheader", { name: "Production disabled" })).toBeInTheDocument()
-  })
-
-  it("keeps the full initial matrix route separate from 3b", () => {
-    render(<App search="?mode=demo" />)
-
-    fireEvent.click(screen.getByRole("tab", { name: "Presentation" }))
-
-    expect(screen.getByLabelText("Initial workflow matrix route")).toHaveTextContent("0 1 1b 1c 2 3 4a 4b")
-    expect(screen.getByLabelText("Workflow matrix sideflow")).toHaveTextContent("3b")
-  })
-
-  it("keeps new ticket technical details closed until requested", () => {
-    render(<App search="?mode=demo" />)
-
-    fireEvent.click(screen.getByRole("tab", { name: "Operations" }))
-
-    const details = screen.getByText("Technical details", { selector: ".ticket-detail summary" }).closest("details")
-    expect(details).not.toHaveAttribute("open")
+  it("labels local integration simulation and keeps delivery contract-gated without requests", async () => {
+    const fixture = await renderConsole()
+    fireEvent.click(screen.getByRole("link", { name: "Workflow" }))
+    expect(screen.getByText("Notion: simuliert")).toBeInTheDocument()
+    expect(screen.getByText("n8n: simuliert")).toBeInTheDocument()
+    const callsBeforeDelivery = [...fixture.state.calls]
+    const prohibitedDeliveryRequest = /\b(?:deliver(?:y|ies)|preview|create|exports?|downloads?|folders?|notion)\b/i
+    fireEvent.click(screen.getByRole("link", { name: "Uebergabe und Export" }))
+    expect(screen.getByRole("heading", { name: "Uebergabe und Export" })).toBeInTheDocument()
+    expect(screen.getByText("Sprint 5E Liefervertraege sind noch nicht installiert.")).toBeInTheDocument()
+    expect(fixture.state.calls).toEqual(callsBeforeDelivery)
+    expect(fixture.state.calls.filter((call) => prohibitedDeliveryRequest.test(call))).toEqual([])
+    expect(screen.queryByRole("button", { name: /Vorschau|Export|Download|Ordner|Notion/i })).not.toBeInTheDocument()
   })
 })

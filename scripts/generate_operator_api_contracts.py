@@ -21,6 +21,7 @@ from services.operator_api.repository import WorkspaceRegistration, WorkspaceReg
 JsonValue: TypeAlias = str | int | float | bool | None | list["JsonValue"] | dict[str, "JsonValue"]
 SNAPSHOT_RELATIVE = Path("standards/api/operator-api.openapi.json")
 TYPES_RELATIVE = Path("apps/operator-console/src/generated/api-types.ts")
+PROMPT_REGISTRY_RELATIVE = Path("standards/runtime/official-prompt-registry.json")
 HTTP_METHODS = frozenset({"delete", "get", "head", "options", "patch", "post", "put", "trace"})
 
 
@@ -180,6 +181,25 @@ def generate_artifacts(root: Path) -> tuple[str, str]:
     return snapshot, _typescript(snapshot)
 
 
+def generate_prompt_registry(root: Path) -> str:
+    """Return the prompt registry with every output-contract hash refreshed from its source bytes."""
+    registry = _mapping(json.loads((root / PROMPT_REGISTRY_RELATIVE).read_text(encoding="utf-8")))
+    entries = registry.get("entries")
+    if not isinstance(entries, list):
+        raise ContractGenerationError("Prompt registry entries are unavailable.")
+    for entry in entries:
+        contracts = _mapping(entry).get("output_contracts")
+        if not isinstance(contracts, list):
+            raise ContractGenerationError("Prompt registry output contracts are unavailable.")
+        for contract in contracts:
+            mapping = _mapping(contract)
+            path = mapping.get("contract_path")
+            if not isinstance(path, str):
+                raise ContractGenerationError("Prompt registry output contract path is unavailable.")
+            mapping["contract_sha256"] = hashlib.sha256((root / path).read_bytes()).hexdigest()
+    return _canonical_json(registry)
+
+
 def _write_artifacts(root: Path, snapshot: str, types: str) -> None:
     for relative, content in ((SNAPSHOT_RELATIVE, snapshot), (TYPES_RELATIVE, types)):
         target = root / relative
@@ -192,10 +212,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--check", action="store_true")
     arguments = parser.parse_args(argv)
     snapshot, types = generate_artifacts(ROOT)
+    registry = generate_prompt_registry(ROOT)
     if arguments.check:
         stale = [
             str(relative)
-            for relative, content in ((SNAPSHOT_RELATIVE, snapshot), (TYPES_RELATIVE, types))
+            for relative, content in ((SNAPSHOT_RELATIVE, snapshot), (TYPES_RELATIVE, types), (PROMPT_REGISTRY_RELATIVE, registry))
             if not (ROOT / relative).is_file() or (ROOT / relative).read_text(encoding="utf-8") != content
         ]
         if stale:
@@ -203,6 +224,7 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         return 0
     _write_artifacts(ROOT, snapshot, types)
+    (ROOT / PROMPT_REGISTRY_RELATIVE).write_text(registry, encoding="utf-8", newline="\n")
     return 0
 
 

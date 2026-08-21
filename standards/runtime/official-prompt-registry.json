@@ -1,1 +1,167 @@
-{"schema_version":"1.0.0","entries":[{"step_id":"0","prompt_id":"heartweb.step.0","prompt_version":"1.5.0","prompt_path":"prompts/0-kickoff.xml.md","prompt_sha256":"e8b85ebdc3cf95864cd2351d3a5c20516c298ea87935acb1b180b55185197248","output_contracts":[{"contract_id":"https://heartweb.example/schema/manifest.schema.json","contract_version":"1.0.0","contract_path":"standards/manifest.schema.json","contract_sha256":"21f818797007d35adf47996d45ac3de2f666de71d0b5c937cc69f0755cd77c2e"}],"active":true},{"step_id":"1","prompt_id":"heartweb.step.1","prompt_version":"2.0.0","prompt_path":"prompts/1-pillar-identifikation.xml.md","prompt_sha256":"cae20da200aa9c8b86c8ce8289b542037b9f6d45b3a3a56f61bd6b4f97fe2ca0","output_contracts":[{"contract_id":"https://heartweb.example/schema/outputs/step-1-topic-inventory.schema.json","contract_version":"2.0.0","contract_path":"standards/outputs/step-1-topic-inventory.schema.json","contract_sha256":"3efe1839ecdb511db63410480c58a78daae655206464efbac39bc9d9dbd35ec1"}],"active":true},{"step_id":"1b","prompt_id":"heartweb.step.1b","prompt_version":"2.0.0","prompt_path":"prompts/1b-seitenarchitektur.xml.md","prompt_sha256":"941848c056f0a8f8e98dfdacbbcf038e195d490f6011560f9d711737d2ffcb19","output_contracts":[{"contract_id":"https://heartweb.example/schema/outputs/step-1b-architecture.schema.json","contract_version":"2.0.0","contract_path":"standards/outputs/step-1b-architecture.schema.json","contract_sha256":"974e9c77db334f8deb81eb626dc0b7a6876f5c7ff9e7c62c55851634c82539db"}],"active":true},{"step_id":"1c","prompt_id":"heartweb.step.1c","prompt_version":"2.0.0","prompt_path":"prompts/1c-pillar-template.xml.md","prompt_sha256":"6e52211f4a41b9c254e1e4500188539266e216071a6900a5099a8a9a25dc8fe1","output_contracts":[{"contract_id":"https://heartweb.example/schema/outputs/step-1c-design-system.schema.json","contract_version":"2.0.0","contract_path":"standards/outputs/step-1c-design-system.schema.json","contract_sha256":"93f4baecbe7373de8268a50f5969aa9bfda208f67cf259c1392c98611024ec0b"},{"contract_id":"https://heartweb.example/schema/outputs/step-1c-template.schema.json","contract_version":"2.0.0","contract_path":"standards/outputs/step-1c-template.schema.json","contract_sha256":"1132622baee66092348510cc824578b26391eb413fb0c1b70bd8b7d834d07762"}],"active":true},{"step_id":"2","prompt_id":"heartweb.step.2","prompt_version":"2.0.0","prompt_path":"prompts/2-cluster-recherche.xml.md","prompt_sha256":"775ff2e00ab14bbe333f5b398f1ac7b94a5b301d3c2b71c4ded7b0e7c29ef095","output_contracts":[{"contract_id":"https://heartweb.example/schema/outputs/step-2-keyword-evidence.schema.json","contract_version":"2.0.0","contract_path":"standards/outputs/step-2-keyword-evidence.schema.json","contract_sha256":"37aa061a1a97f6fee717832fd89a361eb8572f0c5192a805d3096d47a3e2608a"}],"active":true},{"step_id":"3","prompt_id":"heartweb.step.3","prompt_version":"2.0.0","prompt_path":"prompts/3-120-tage-plan.xml.md","prompt_sha256":"cee9427f57f96f6daafe16330c2753d87a4fca237057edafe915feb38cb21ed5","output_contracts":[{"contract_id":"https://heartweb.example/schema/outputs/step-3-plan.schema.json","contract_version":"2.0.0","contract_path":"standards/outputs/step-3-plan.schema.json","contract_sha256":"48be5b0820545b26bc9673e6cf84e0318ee5d085ca6170dbd0910f1ef40581c3"}],"active":true},{"step_id":"3b","prompt_id":"heartweb.step.3b","prompt_version":"2.0.0","prompt_path":"prompts/3b-performance-check.xml.md","prompt_sha256":"ff5d5aff300823ab859e72f150a331fadab6b426b4de71d77350363872215369","output_contracts":[{"contract_id":"https://heartweb.example/schema/outputs/step-3b-adjustment.schema.json","contract_version":"2.0.0","contract_path":"standards/outputs/step-3b-adjustment.schema.json","contract_sha256":"42be410fab80415a8afb8eca3675d4760e64800c69106a56261ced73fd8b0f9b"}],"active":true},{"step_id":"4a","prompt_id":"heartweb.step.4a","prompt_version":"2.0.0","prompt_path":"prompts/4a-content-briefing-und-schema.xml.md","prompt_sha256":"7f3cded4e877178b05c06f8e131f944bf6e22be35d272a8980c7fa7c8b296d44","output_contracts":[{"contract_id":"https://heartweb.example/schema/outputs/step-4a-briefing.schema.json","contract_version":"2.0.0","contract_path":"standards/outputs/step-4a-briefing.schema.json","contract_sha256":"f6b1906eecc52b8e61b92dd7325b5780f137cf5d091683ceb5c49b4e681f0533"},{"contract_id":"https://heartweb.example/schema/outputs/claim-ledger.schema.json","contract_version":"2.0.0","contract_path":"standards/outputs/claim-ledger.schema.json","contract_sha256":"945f23deec09ec8d371365eae4d8a4fef37f320f45e161c0c048d758f26ff990"}],"active":true},{"step_id":"4b","prompt_id":"heartweb.step.4b","prompt_version":"2.0.0","prompt_path":"prompts/4b-landingpage-html.xml.md","prompt_sha256":"0aa48a777f1abc8c7b4626a5bb6c628a82ee9d0bddd46f8ee871b9770d5520a4","output_contracts":[{"contract_id":"https://heartweb.example/schema/outputs/step-4b-page-spec.schema.json","contract_version":"2.0.0","contract_path":"standards/outputs/step-4b-page-spec.schema.json","contract_sha256":"c2dd754175e084bdd44c965d74cb914f01eb8e06650332f633698fc4e14354f7"},{"contract_id":"https://heartweb.example/schema/outputs/staging-evidence.schema.json","contract_version":"2.0.0","contract_path":"standards/outputs/staging-evidence.schema.json","contract_sha256":"cdf68b99bbeff1a0f24c43a0de0f6fa7d64f124844ca8c61fb3fdd9079731560"}],"active":true}]}
+{
+  "entries": [
+    {
+      "active": true,
+      "output_contracts": [
+        {
+          "contract_id": "https://heartweb.example/schema/manifest.schema.json",
+          "contract_path": "standards/manifest.schema.json",
+          "contract_sha256": "5b47fdb13300c059d9701568171936e4903e2cdb591e803da0c1d5fd2f0871c1",
+          "contract_version": "1.0.0"
+        }
+      ],
+      "prompt_id": "heartweb.step.0",
+      "prompt_path": "prompts/0-kickoff.xml.md",
+      "prompt_sha256": "e8b85ebdc3cf95864cd2351d3a5c20516c298ea87935acb1b180b55185197248",
+      "prompt_version": "1.5.0",
+      "step_id": "0"
+    },
+    {
+      "active": true,
+      "output_contracts": [
+        {
+          "contract_id": "https://heartweb.example/schema/outputs/step-1-topic-inventory.schema.json",
+          "contract_path": "standards/outputs/step-1-topic-inventory.schema.json",
+          "contract_sha256": "3efe1839ecdb511db63410480c58a78daae655206464efbac39bc9d9dbd35ec1",
+          "contract_version": "2.0.0"
+        }
+      ],
+      "prompt_id": "heartweb.step.1",
+      "prompt_path": "prompts/1-pillar-identifikation.xml.md",
+      "prompt_sha256": "cae20da200aa9c8b86c8ce8289b542037b9f6d45b3a3a56f61bd6b4f97fe2ca0",
+      "prompt_version": "2.0.0",
+      "step_id": "1"
+    },
+    {
+      "active": true,
+      "output_contracts": [
+        {
+          "contract_id": "https://heartweb.example/schema/outputs/step-1b-architecture.schema.json",
+          "contract_path": "standards/outputs/step-1b-architecture.schema.json",
+          "contract_sha256": "974e9c77db334f8deb81eb626dc0b7a6876f5c7ff9e7c62c55851634c82539db",
+          "contract_version": "2.0.0"
+        }
+      ],
+      "prompt_id": "heartweb.step.1b",
+      "prompt_path": "prompts/1b-seitenarchitektur.xml.md",
+      "prompt_sha256": "941848c056f0a8f8e98dfdacbbcf038e195d490f6011560f9d711737d2ffcb19",
+      "prompt_version": "2.0.0",
+      "step_id": "1b"
+    },
+    {
+      "active": true,
+      "output_contracts": [
+        {
+          "contract_id": "https://heartweb.example/schema/outputs/step-1c-design-system.schema.json",
+          "contract_path": "standards/outputs/step-1c-design-system.schema.json",
+          "contract_sha256": "93f4baecbe7373de8268a50f5969aa9bfda208f67cf259c1392c98611024ec0b",
+          "contract_version": "2.0.0"
+        },
+        {
+          "contract_id": "https://heartweb.example/schema/outputs/step-1c-template.schema.json",
+          "contract_path": "standards/outputs/step-1c-template.schema.json",
+          "contract_sha256": "1132622baee66092348510cc824578b26391eb413fb0c1b70bd8b7d834d07762",
+          "contract_version": "2.0.0"
+        }
+      ],
+      "prompt_id": "heartweb.step.1c",
+      "prompt_path": "prompts/1c-pillar-template.xml.md",
+      "prompt_sha256": "6e52211f4a41b9c254e1e4500188539266e216071a6900a5099a8a9a25dc8fe1",
+      "prompt_version": "2.0.0",
+      "step_id": "1c"
+    },
+    {
+      "active": true,
+      "output_contracts": [
+        {
+          "contract_id": "https://heartweb.example/schema/outputs/step-2-keyword-evidence.schema.json",
+          "contract_path": "standards/outputs/step-2-keyword-evidence.schema.json",
+          "contract_sha256": "37aa061a1a97f6fee717832fd89a361eb8572f0c5192a805d3096d47a3e2608a",
+          "contract_version": "2.0.0"
+        }
+      ],
+      "prompt_id": "heartweb.step.2",
+      "prompt_path": "prompts/2-cluster-recherche.xml.md",
+      "prompt_sha256": "775ff2e00ab14bbe333f5b398f1ac7b94a5b301d3c2b71c4ded7b0e7c29ef095",
+      "prompt_version": "2.0.0",
+      "step_id": "2"
+    },
+    {
+      "active": true,
+      "output_contracts": [
+        {
+          "contract_id": "https://heartweb.example/schema/outputs/step-3-plan.schema.json",
+          "contract_path": "standards/outputs/step-3-plan.schema.json",
+          "contract_sha256": "48be5b0820545b26bc9673e6cf84e0318ee5d085ca6170dbd0910f1ef40581c3",
+          "contract_version": "2.0.0"
+        }
+      ],
+      "prompt_id": "heartweb.step.3",
+      "prompt_path": "prompts/3-120-tage-plan.xml.md",
+      "prompt_sha256": "cee9427f57f96f6daafe16330c2753d87a4fca237057edafe915feb38cb21ed5",
+      "prompt_version": "2.0.0",
+      "step_id": "3"
+    },
+    {
+      "active": true,
+      "output_contracts": [
+        {
+          "contract_id": "https://heartweb.example/schema/outputs/step-3b-adjustment.schema.json",
+          "contract_path": "standards/outputs/step-3b-adjustment.schema.json",
+          "contract_sha256": "42be410fab80415a8afb8eca3675d4760e64800c69106a56261ced73fd8b0f9b",
+          "contract_version": "2.0.0"
+        }
+      ],
+      "prompt_id": "heartweb.step.3b",
+      "prompt_path": "prompts/3b-performance-check.xml.md",
+      "prompt_sha256": "ff5d5aff300823ab859e72f150a331fadab6b426b4de71d77350363872215369",
+      "prompt_version": "2.0.0",
+      "step_id": "3b"
+    },
+    {
+      "active": true,
+      "output_contracts": [
+        {
+          "contract_id": "https://heartweb.example/schema/outputs/step-4a-briefing.schema.json",
+          "contract_path": "standards/outputs/step-4a-briefing.schema.json",
+          "contract_sha256": "f6b1906eecc52b8e61b92dd7325b5780f137cf5d091683ceb5c49b4e681f0533",
+          "contract_version": "2.0.0"
+        },
+        {
+          "contract_id": "https://heartweb.example/schema/outputs/claim-ledger.schema.json",
+          "contract_path": "standards/outputs/claim-ledger.schema.json",
+          "contract_sha256": "945f23deec09ec8d371365eae4d8a4fef37f320f45e161c0c048d758f26ff990",
+          "contract_version": "2.0.0"
+        }
+      ],
+      "prompt_id": "heartweb.step.4a",
+      "prompt_path": "prompts/4a-content-briefing-und-schema.xml.md",
+      "prompt_sha256": "7f3cded4e877178b05c06f8e131f944bf6e22be35d272a8980c7fa7c8b296d44",
+      "prompt_version": "2.0.0",
+      "step_id": "4a"
+    },
+    {
+      "active": true,
+      "output_contracts": [
+        {
+          "contract_id": "https://heartweb.example/schema/outputs/step-4b-page-spec.schema.json",
+          "contract_path": "standards/outputs/step-4b-page-spec.schema.json",
+          "contract_sha256": "c2dd754175e084bdd44c965d74cb914f01eb8e06650332f633698fc4e14354f7",
+          "contract_version": "2.0.0"
+        },
+        {
+          "contract_id": "https://heartweb.example/schema/outputs/staging-evidence.schema.json",
+          "contract_path": "standards/outputs/staging-evidence.schema.json",
+          "contract_sha256": "cdf68b99bbeff1a0f24c43a0de0f6fa7d64f124844ca8c61fb3fdd9079731560",
+          "contract_version": "2.0.0"
+        }
+      ],
+      "prompt_id": "heartweb.step.4b",
+      "prompt_path": "prompts/4b-landingpage-html.xml.md",
+      "prompt_sha256": "0aa48a777f1abc8c7b4626a5bb6c628a82ee9d0bddd46f8ee871b9770d5520a4",
+      "prompt_version": "2.0.0",
+      "step_id": "4b"
+    }
+  ],
+  "schema_version": "1.0.0"
+}

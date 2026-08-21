@@ -76,7 +76,7 @@ class OperatorApiCodegenTests(unittest.TestCase):
         self.assertEqual(len(document_routes), len({operation_id for _, _, operation_id in document_routes}))
         command_schema = document["components"]["schemas"]["CommandRequest"]
         self.assertEqual(
-            ["start", "request-revision", "request-input", "create-defect", "escalate", "request-waiver", "approve", "reject", "resolve", "resume"],
+            ["start", "request-revision", "request-input", "create-defect", "escalate", "request-waiver", "submit-for-gate", "approve", "complete", "reject", "resolve", "resume"],
             command_schema["properties"]["command"]["enum"],
         )
         types = TYPES.read_text(encoding="utf-8")
@@ -105,16 +105,16 @@ class OperatorApiCodegenTests(unittest.TestCase):
         self.assertEqual("", result.stdout)
         with tempfile.TemporaryDirectory() as temporary:
             temporary_root = Path(temporary)
-            expected = ("snapshot\n", "types\n")
-            for relative, content in ((generator.SNAPSHOT_RELATIVE, expected[0]), (generator.TYPES_RELATIVE, expected[1])):
+            expected = ("snapshot\n", "types\n", "registry\n")
+            for relative, content in ((generator.SNAPSHOT_RELATIVE, expected[0]), (generator.TYPES_RELATIVE, expected[1]), (generator.PROMPT_REGISTRY_RELATIVE, expected[2])):
                 target = temporary_root / relative
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_text(content, encoding="utf-8")
-            with patch.object(generator, "ROOT", temporary_root), patch.object(generator, "generate_artifacts", return_value=expected):
+            with patch.object(generator, "ROOT", temporary_root), patch.object(generator, "generate_artifacts", return_value=expected[:2]), patch.object(generator, "generate_prompt_registry", return_value=expected[2]):
                 with redirect_stderr(io.StringIO()):
                     self.assertEqual(0, generator.main(["--check"]))
-                for relative in (generator.SNAPSHOT_RELATIVE, generator.TYPES_RELATIVE):
+                for relative, content in ((generator.SNAPSHOT_RELATIVE, expected[0]), (generator.TYPES_RELATIVE, expected[1]), (generator.PROMPT_REGISTRY_RELATIVE, expected[2])):
                     (temporary_root / relative).write_text("drift\n", encoding="utf-8")
                     with redirect_stderr(io.StringIO()):
                         self.assertEqual(1, generator.main(["--check"]))
-                    (temporary_root / relative).write_text(expected[0] if relative == generator.SNAPSHOT_RELATIVE else expected[1], encoding="utf-8")
+                    (temporary_root / relative).write_text(content, encoding="utf-8")

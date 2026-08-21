@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Heartweb Admin Workflow - Funktions- und Systemkarte</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #081018;
+      --panel: #101b25;
+      --panel-2: #14222e;
+      --line: #2d4352;
+      --text: #edf5f7;
+      --muted: #9db0bb;
+      --cyan: #6ee7d8;
+      --blue: #75b8ff;
+      --amber: #f4c56b;
+      --red: #ff8585;
+      --green: #72dda7;
+      --violet: #c4a7ff;
+      --gray: #81919b;
+      --shadow: 0 18px 50px rgba(0,0,0,.26);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: linear-gradient(180deg,#081018 0%,#0b141d 100%); color: var(--text); font-family: Inter, "Segoe UI", Arial, sans-serif; line-height: 1.48; }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    .shell { max-width: 1720px; margin: 0 auto; padding: 24px; }
+    .hero { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 24px; align-items: end; padding: 26px; border: 1px solid var(--line); background: rgba(16,27,37,.94); box-shadow: var(--shadow); }
+    .eyebrow { margin: 0 0 7px; color: var(--cyan); font-weight: 800; font-size: .73rem; text-transform: uppercase; letter-spacing: .12em; }
+    h1 { margin: 0; font-size: clamp(1.75rem,3vw,3.25rem); letter-spacing: -.035em; line-height: 1.05; }
+    .hero p:not(.eyebrow) { max-width: 930px; margin: 12px 0 0; color: var(--muted); }
+    .reality { min-width: 260px; padding: 14px; border-left: 4px solid var(--amber); background: #0c151d; }
+    .reality strong { display: block; color: var(--amber); }
+    .status-line { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .pill { display: inline-flex; align-items: center; gap: 7px; min-height: 28px; padding: 4px 9px; border: 1px solid var(--line); background: #0d1821; color: var(--muted); font-size: .78rem; font-weight: 700; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+    .done { color: var(--green); }
+    .building { color: var(--amber); }
+    .planned { color: var(--violet); }
+    .simulated { color: var(--blue); }
+    .external { color: var(--red); }
+    .tabs { position: sticky; top: 0; z-index: 20; display: flex; gap: 4px; overflow-x: auto; margin-top: 16px; padding: 8px; border: 1px solid var(--line); background: rgba(8,16,24,.96); backdrop-filter: blur(12px); }
+    .tab { border: 1px solid transparent; background: transparent; padding: 10px 13px; white-space: nowrap; cursor: pointer; font-weight: 750; color: var(--muted); }
+    .tab[aria-selected="true"] { color: var(--text); border-color: var(--line); background: var(--panel-2); box-shadow: inset 0 2px 0 var(--cyan); }
+    .view { display: none; margin-top: 16px; }
+    .view.active { display: block; }
+    .panel { border: 1px solid var(--line); background: var(--panel); box-shadow: var(--shadow); }
+    .panel-head { display: flex; justify-content: space-between; gap: 16px; align-items: start; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+    .panel-head h2 { margin: 0; font-size: 1.2rem; }
+    .panel-head p { margin: 5px 0 0; color: var(--muted); font-size: .9rem; }
+    .panel-body { padding: 20px; }
+    .flow-wrap { overflow-x: auto; padding-bottom: 8px; }
+    .flow { display: flex; min-width: 1320px; align-items: stretch; gap: 28px; }
+    .step-card { position: relative; width: 145px; flex: 0 0 145px; min-height: 180px; padding: 14px; text-align: left; cursor: pointer; border: 1px solid var(--line); background: #0d1821; box-shadow: none; transition: transform .16s ease,border-color .16s ease,background .16s ease; }
+    .step-card:hover, .step-card:focus-visible { transform: translateY(-3px); border-color: var(--cyan); outline: none; }
+    .step-card.selected { border-color: var(--cyan); background: #142731; box-shadow: inset 0 3px 0 var(--cyan); }
+    .step-card:not(:last-child)::after { content: "→"; position: absolute; right: -22px; top: 72px; color: var(--muted); font-size: 1.5rem; }
+    .step-id { display: inline-grid; place-items: center; width: 34px; height: 34px; margin-bottom: 13px; border: 1px solid var(--cyan); color: var(--cyan); font-weight: 900; }
+    .step-card h3 { margin: 0; font-size: .98rem; }
+    .step-card p { margin: 8px 0 0; color: var(--muted); font-size: .78rem; }
+    .step-card .mini { display: block; margin-top: 14px; color: var(--amber); font-size: .71rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+    .sideflow { display: flex; align-items: center; gap: 16px; margin-top: 18px; padding: 15px; border: 1px dashed var(--line); background: #0b151d; }
+    .sideflow button { width: auto; min-width: 180px; min-height: auto; }
+    .detail-grid { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(340px,.85fr); gap: 16px; margin-top: 16px; }
+    .detail { border: 1px solid var(--line); background: var(--panel); }
+    .detail-title { display: flex; justify-content: space-between; gap: 16px; align-items: center; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+    .detail-title h2 { margin: 0; }
+    .detail-title p { margin: 4px 0 0; color: var(--muted); }
+    .detail-content { padding: 20px; }
+    .facts { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+    .fact { min-width: 0; padding: 14px; border: 1px solid var(--line); background: #0d1821; }
+    .fact h3 { margin: 0 0 8px; color: var(--cyan); font-size: .77rem; text-transform: uppercase; letter-spacing: .07em; }
+    .fact p, .fact ul { margin: 0; color: #d9e5e9; font-size: .88rem; }
+    .fact ul { padding-left: 18px; }
+    .fact li + li { margin-top: 5px; }
+    .edit-grid { display: grid; gap: 10px; }
+    .edit-row { display: grid; grid-template-columns: 160px minmax(0,1fr); gap: 12px; padding: 12px; border: 1px solid var(--line); background: #0d1821; }
+    .edit-row strong { color: var(--muted); font-size: .82rem; }
+    .edit-row span { font-size: .88rem; }
+    .yes { color: var(--green); }
+    .no { color: var(--red); }
+    .conditional { color: var(--amber); }
+    .lane-board { display: grid; gap: 8px; min-width: 1120px; }
+    .lane { display: grid; grid-template-columns: 130px repeat(6,minmax(150px,1fr)); gap: 8px; }
+    .lane-label { display: grid; place-items: center start; padding: 11px; color: var(--cyan); font-weight: 800; background: #0c1720; border: 1px solid var(--line); }
+    .lane-cell { position: relative; padding: 11px; border: 1px solid var(--line); background: var(--panel-2); font-size: .82rem; }
+    .lane-cell strong { display: block; margin-bottom: 4px; }
+    .matrix-wrap { overflow: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 1060px; }
+    th, td { padding: 11px 12px; vertical-align: top; border: 1px solid var(--line); text-align: left; font-size: .82rem; }
+    th { position: sticky; top: 0; background: #12212c; color: var(--cyan); text-transform: uppercase; letter-spacing: .04em; font-size: .7rem; }
+    td:first-child { font-weight: 850; color: var(--text); }
+    .route-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; }
+    .route { border: 1px solid var(--line); background: #0d1821; padding: 14px; }
+    .route h3 { margin: 0 0 7px; font-size: .95rem; }
+    .route p { margin: 0; color: var(--muted); font-size: .82rem; }
+    .route code { display: block; margin-top: 8px; color: var(--amber); font-size: .72rem; overflow-wrap: anywhere; }
+    .integration { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+    .integration-card { padding: 16px; border: 1px solid var(--line); background: #0d1821; }
+    .integration-card h3 { margin: 0 0 8px; }
+    .integration-card p, .integration-card ul { color: var(--muted); font-size: .84rem; }
+    .integration-card ul { padding-left: 18px; }
+    .notion-flow { display: flex; gap: 30px; align-items: stretch; min-width: 980px; }
+    .notion-node { position: relative; flex: 1; padding: 16px; border: 1px solid var(--line); background: var(--panel-2); }
+    .notion-node:not(:last-child)::after { content: "→"; position: absolute; right: -22px; top: 42%; color: var(--muted); font-size: 1.4rem; }
+    .notion-node h3 { margin: 0 0 7px; font-size: .93rem; }
+    .notion-node p { margin: 0; color: var(--muted); font-size: .8rem; }
+    .progress-list { display: grid; gap: 10px; }
+    .progress-item { display: grid; grid-template-columns: 110px minmax(0,1fr) 150px; gap: 12px; align-items: center; padding: 13px; border: 1px solid var(--line); background: #0d1821; }
+    .progress-bar { height: 8px; background: #263744; overflow: hidden; }
+    .progress-bar span { display: block; height: 100%; background: var(--cyan); }
+    .callout { margin-top: 14px; padding: 15px; border-left: 4px solid var(--amber); background: #151b1d; color: #ecd7aa; }
+    .sources { margin-top: 16px; color: var(--muted); font-size: .75rem; }
+    .sources code { color: #c8d8df; }
+    @media (max-width: 1050px) {
+      .hero, .detail-grid { grid-template-columns: 1fr; }
+      .reality { min-width: 0; }
+      .route-grid, .integration { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    }
+    @media (max-width: 680px) {
+      .shell { padding: 10px; }
+      .hero, .panel-body, .detail-content { padding: 14px; }
+      .facts, .route-grid, .integration { grid-template-columns: 1fr; }
+      .edit-row { grid-template-columns: 1fr; }
+      .progress-item { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Heartweb Admin Workflow</p>
+        <h1>Funktions- und Systemkarte</h1>
+        <p>Eine Rolle: der Heartweb Admin Operator. Diese Karte zeigt den gesamten Ablauf von Briefing Intake bis Übergabe, inklusive Editierbarkeit, Wiederholung, Gates, Third Parties, Fehler-Routing und Notion-Projektion.</p>
+        <div class="status-line" aria-label="Legende">
+          <span class="pill done"><i class="dot"></i> implementiert und verifiziert</span>
+          <span class="pill building"><i class="dot"></i> aktuell im Bau</span>
+          <span class="pill planned"><i class="dot"></i> geplant</span>
+          <span class="pill simulated"><i class="dot"></i> lokal simuliert</span>
+          <span class="pill external"><i class="dot"></i> live extern noch nicht aktiv</span>
+        </div>
+      </div>
+      <aside class="reality">
+        <strong>Stand: Sprint 5 Package 4</strong>
+        Backend in Arbeit. Das bisherige englische Kartendemo ist als finales Interface abgelehnt. Deutsches Admin-Frontend und Delivery Center folgen danach.
+      </aside>
+    </header>
+
+    <nav class="tabs" role="tablist" aria-label="Visualisierungsansichten">
+      <button class="tab" role="tab" aria-selected="true" data-view="flow">Gesamtfluss</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="actions">Operator-Aktionen</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="errors">Fehler und Routing</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="integrations">Third Parties und Notion</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="reality">Umsetzungsstand</button>
+    </nav>
+
+    <section class="view active" id="view-flow">
+      <article class="panel">
+        <div class="panel-head">
+          <div><h2>Initialer Produktionsfluss</h2><p>Klicke einen Step an. Jeder Step endet mit Maschinenprüfung und explizitem Admin-Gate.</p></div>
+          <span class="pill">0 -> 1 -> 1b -> 1c -> 2 -> 3 -> 4a -> 4b</span>
+        </div>
+        <div class="panel-body">
+          <div class="flow-wrap"><div class="flow" id="stepFlow"></div></div>
+          <div class="sideflow"><button class="step-card" id="sideflowCard" data-step="3b"></button><div><strong>Separater Post-Publication-Flow</strong><br><span style="color:var(--muted)">Nur an Tag 30, 60 und 90. Er verändert den freigegebenen Step-3-Plan niemals direkt.</span></div></div>
+        </div>
+      </article>
+
+      <div class="detail-grid">
+        <article class="detail">
+          <div class="detail-title"><div><p class="eyebrow" id="detailEyebrow">Step 0</p><h2 id="detailName">Projekt aufnehmen</h2><p id="detailPurpose"></p></div><span class="pill" id="detailGate"></span></div>
+          <div class="detail-content"><div class="facts" id="detailFacts"></div></div>
+        </article>
+        <aside class="detail">
+          <div class="detail-title"><div><p class="eyebrow">Editieren und Wiederholen</p><h2>Was darf der Admin?</h2></div></div>
+          <div class="detail-content"><div class="edit-grid" id="editFacts"></div><div class="callout" id="editCallout"></div></div>
+        </aside>
+      </div>
+
+      <article class="panel" style="margin-top:16px">
+        <div class="panel-head"><div><h2>Was passiert technisch beim Weitergehen?</h2><p>Die UI entscheidet keinen Status selbst. Jeder Übergang läuft durch dieselbe kontrollierte Kette.</p></div></div>
+        <div class="panel-body flow-wrap">
+          <div class="lane-board">
+            <div class="lane"><div class="lane-label">Admin</div><div class="lane-cell"><strong>1. Prüfen</strong>Input, Output, Findings</div><div class="lane-cell"><strong>2. Aktion wählen</strong>Start, Revision, Freigabe</div><div class="lane-cell"><strong>3. Vorschau</strong>Konsequenz und Revision</div><div class="lane-cell"><strong>4. Bestätigen</strong>Expliziter Klick</div><div class="lane-cell"><strong>5. Ergebnis</strong>Status und nächste Aktion</div><div class="lane-cell"><strong>6. Weiter</strong>Nächster Step oder Wait</div></div>
+            <div class="lane"><div class="lane-label">Operator UI</div><div class="lane-cell">Screen-Projektion laden</div><div class="lane-cell">Erlaubte Aktion vom Server</div><div class="lane-cell">Command Preview</div><div class="lane-cell">Typed Command senden</div><div class="lane-cell">Kanonische Projektion neu laden</div><div class="lane-cell">Arbeitsfläche wechseln</div></div>
+            <div class="lane"><div class="lane-label">Local Core</div><div class="lane-cell">Identität und Revision prüfen</div><div class="lane-cell">Transition und Policy prüfen</div><div class="lane-cell">Idempotency reservieren</div><div class="lane-cell">Event append-only schreiben</div><div class="lane-cell">Run, Gate, Release persistieren</div><div class="lane-cell">Folgeschritt auf ready setzen</div></div>
+            <div class="lane"><div class="lane-label">Runtime</div><div class="lane-cell">Context Package bauen</div><div class="lane-cell">Promptversion und Toolpolicy</div><div class="lane-cell">Worker oder Gateway ausführen</div><div class="lane-cell">Kandidatenartefakt speichern</div><div class="lane-cell">Machine Gates ausführen</div><div class="lane-cell">awaiting_gate oder blocked</div></div>
+            <div class="lane"><div class="lane-label">Notion</div><div class="lane-cell">Noch kein Live-Write</div><div class="lane-cell">Event als Quelle</div><div class="lane-cell">Projektion vorbereiten</div><div class="lane-cell">Simulator aktualisieren</div><div class="lane-cell">Status, Task, Artefaktmetadaten</div><div class="lane-cell">Später expliziter Live-Sync</div></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="view" id="view-actions">
+      <article class="panel">
+        <div class="panel-head"><div><h2>Globale Operator-Aktionsmatrix</h2><p>Was möglich ist, was verändert wird und wie der aktuelle Implementierungsstatus aussieht.</p></div></div>
+        <div class="panel-body matrix-wrap">
+          <table>
+            <thead><tr><th>Aktion</th><th>Wann sichtbar</th><th>Was der Admin eingibt</th><th>Systemwirkung</th><th>Was niemals passiert</th><th>Status</th></tr></thead>
+            <tbody id="actionRows"></tbody>
+          </table>
+        </div>
+      </article>
+      <article class="panel" style="margin-top:16px">
+        <div class="panel-head"><div><h2>Klare Antwort: Prompt und Output editieren</h2></div></div>
+        <div class="panel-body">
+          <div class="edit-grid">
+            <div class="edit-row"><strong>Basis-Prompt</strong><span class="no">Im normalen Workflow nicht editierbar. Er ist versioniert und reproduzierbar.</span></div>
+            <div class="edit-row"><strong>Run-Anweisung</strong><span class="yes">Editierbar als zusätzlicher Admin-Kontext bei Revision oder Wiederholung.</span></div>
+            <div class="edit-row"><strong>Draft-Output</strong><span class="yes">Im Zielinterface editierbar. Speichern erzeugt immer eine neue immutable Revision.</span></div>
+            <div class="edit-row"><strong>Released Output</strong><span class="no">Nie überschreibbar. Änderungen benötigen eine neue Revision und neue Freigabe.</span></div>
+            <div class="edit-row"><strong>Raw Providerdaten</strong><span class="no">Nicht manuell überschreibbar. Falsche Daten werden verworfen oder neu abgefragt.</span></div>
+            <div class="edit-row"><strong>Markdown/HTML View</strong><span class="no">Nicht separat editieren. Diese Dateien werden aus kanonischem JSON neu gerendert.</span></div>
+            <div class="edit-row"><strong>Wiederholung</strong><span class="yes">Request Revision oder Retry erzeugt neuen Run und neue Artefaktrevision. Der alte Stand bleibt erhalten.</span></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="view" id="view-errors">
+      <article class="panel">
+        <div class="panel-head"><div><h2>Fehler-Routing</h2><p>Nicht jeder Fehler geht zurück an das LLM. Der Core entscheidet eine von acht festen Routen.</p></div></div>
+        <div class="panel-body"><div class="route-grid" id="errorRoutes"></div></div>
+      </article>
+      <article class="panel" style="margin-top:16px">
+        <div class="panel-head"><div><h2>Typische Fehler entlang des Workflows</h2></div></div>
+        <div class="panel-body matrix-wrap"><table><thead><tr><th>Bereich</th><th>Beispiele</th><th>Route</th><th>Was der Admin sieht</th></tr></thead><tbody id="errorExamples"></tbody></table></div>
+      </article>
+    </section>
+
+    <section class="view" id="view-integrations">
+      <article class="panel">
+        <div class="panel-head"><div><h2>Third-Party- und Middleware-Aufrufe</h2><p>Externe Systeme werden nur an definierten Grenzen aufgerufen. Prompts rufen Provider niemals direkt auf.</p></div></div>
+        <div class="panel-body"><div class="integration" id="integrationCards"></div></div>
+      </article>
+      <article class="panel" style="margin-top:16px">
+        <div class="panel-head"><div><h2>Notion-Projektion</h2><p>Notion ist operative Projektion, aber niemals technische Statusautorität.</p></div></div>
+        <div class="panel-body flow-wrap">
+          <div class="notion-flow">
+            <div class="notion-node"><h3>1. Core Event</h3><p>Projekt, Run, Step, Task, Artefakt, Gate, Approval, Release oder Fehler wird append-only gespeichert.</p></div>
+            <div class="notion-node"><h3>2. Notion Adapter</h3><p>Heute lokal simuliert. Später Live-Modus mit expliziter Connection und idempotenter Delivery.</p></div>
+            <div class="notion-node"><h3>3. Record Map</h3><p>Customer, Project, Run, Step, Task, Assignment, Artifact, Gate, Review, Approval, Blocker, Defect, Escalation, Performance und Integration Status.</p></div>
+            <div class="notion-node"><h3>4. Notion</h3><p>Status, Titel, Revision und Relationen. Keine direkte Mutation des Core-Status.</p></div>
+          </div>
+          <div class="callout"><strong>Heute:</strong> Notion-Simulator und später manueller Import Pack. <strong>Nicht implementiert:</strong> echter externer Notion-Write. Ein zukünftiger Live-Sync benötigt Preview, Bestätigung, Adapter-Response und Core-Readback.</div>
+        </div>
+      </article>
+    </section>
+
+    <section class="view" id="view-reality">
+      <article class="panel">
+        <div class="panel-head"><div><h2>Was ist wirklich fertig?</h2><p>Diese Liste trennt nachgewiesene Implementierung von laufender und geplanter Arbeit.</p></div></div>
+        <div class="panel-body"><div class="progress-list" id="progressList"></div></div>
+      </article>
+      <article class="panel" style="margin-top:16px">
+        <div class="panel-head"><div><h2>Was der Admin am Ende tatsächlich tun kann</h2></div></div>
+        <div class="panel-body">
+          <div class="notion-flow">
+            <div class="notion-node"><h3>Briefing rein</h3><p>Markdown hochladen oder einfügen, extrahierte Felder korrigieren, Intake bestätigen.</p></div>
+            <div class="notion-node"><h3>Workflow ausführen</h3><p>Step starten, Fortschritt sehen, Machine Gate und Output prüfen.</p></div>
+            <div class="notion-node"><h3>Editieren und freigeben</h3><p>Draft bearbeiten, neue Revision speichern, vergleichen, validieren, freigeben oder wiederholen.</p></div>
+            <div class="notion-node"><h3>Übergabe</h3><p>Checkpoint ZIP, Final ZIP, Copywriter-/Developer-Pakete und Notion Import Pack herunterladen.</p></div>
+          </div>
+        </div>
+      </article>
+      <p class="sources">Quellen: <code>workflow-graph.json</code>, <code>quality-gate-registry.json</code>, <code>event-catalog-v2.json</code>, <code>error-routing-policy.json</code>, <code>operator-api.openapi.json</code>, neun versionierte Prompts und Sprint-5-Pläne. Generiert am 20.08.2026.</p>
+    </section>
+  </main>
+
+  <script>
+    const steps = [
+      {id:'0',name:'Projekt aufnehmen',short:'Briefing -> Project V2',gate:'GATE-0',purpose:'Kundenbriefing in einen validierten, revisionsgebundenen Projektvertrag überführen.',entry:['Markdown-Briefing','optionale Operator-Bestätigungen','Wettbewerber-Preflight','Markt- und Location-Codes'],operator:['Briefing hochladen oder einfügen','extrahierte Felder korrigieren','fehlende Eingaben ergänzen','Intake bestätigen','GATE-0 freigeben oder ablehnen'],output:['Project V2 und Manifest','Projektordner und Standardpfade','Run- und Artifact Record','Machine-Preflight-Bericht'],tools:['JSON Schema Validator','Location-Code-Tabelle','optionaler Wettbewerber-Preflight'],errors:['Pflichtfeld fehlt','Schema ungültig','Geo/Locale-Mismatch','lokale Präsenz nicht belegt'],exit:'Nach GATE-0 Approval wird Step 1 ready.',notion:'Project, Step 0, Run, Tasks/Blocker, Approval und Release als Projektion.',prompt:'Basis-Prompt nicht editierbar. Intake-Felder und ergänzende Admin-Angaben sind editierbar.',edit:'Vor Annahme direkt korrigierbar. Danach nur neue Revision.',rerun:'Ja. Korrigierter Intake oder Request Revision erzeugt neuen Run.'},
+      {id:'1',name:'Pillars und Themen',short:'Themeninventar und Gaps',gate:'GATE-1',purpose:'3 bis 8 Pillars und 8 bis 15 Clusterhypothesen je Pillar evidenzgebunden erzeugen.',entry:['released Step 0','Project V2','Site-Applicability','Crawl-/Wettbewerber-Evidence'],operator:['Site-Status bestätigen','Crawl- oder No-Crawl-Evidence prüfen','Themeninventar reviewen','Draft als neue Revision korrigieren','Revision anfordern oder freigeben'],output:['Topic Inventory JSON','1-pillar-themen.md','Gaps und Decision Records','Quality Gate Run'],tools:['Screaming Frog bei bestehender Site','Ahrefs/GSC nur wenn konfiguriert','lokale Contract Validatoren'],errors:['Crawl fehlt oder URL-Limit erreicht','Wettbewerber-Evidence fehlt','4xx/Links/Canonical fehlerhaft','Artifact Hash oder Lineage falsch'],exit:'Nach GATE-1 Approval wird Step 1b ready.',notion:'Artifact-Metadaten, Gate, Review, Tasks, Blocker, Approval, Release.',prompt:'Basis-Prompt nicht editierbar. Operator-Feedback für Revision ist editierbar.',edit:'Kandidateninhalt als neue Revision editierbar. Evidence und Providerwerte nicht erfinden.',rerun:'Ja. Request Revision mit Findings, erwarteten Änderungen und immutable Constraints.'},
+      {id:'1b',name:'Seitenarchitektur',short:'URLs, Navigation, Links',gate:'GATE-1B',purpose:'Jedes freigegebene Thema genau einer kanonischen URL- und Architekturentscheidung zuordnen.',entry:['released Step 1','Project V2','Architektur-Schema','bestehende URL-Evidence'],operator:['Sitemap und Menübaum prüfen','URL-Konflikte lösen','Redirects und Canonicals reviewen','Draft editieren','freigeben oder Revision anfordern'],output:['Architecture JSON','deterministisches Markdown','autarkes HTML','Link- und Redirect-Map'],tools:['Architecture Contract Validator','Link Map Validator','keine externen Provider'],errors:['URL-Konflikt','Orphan','Redirect-/Canonical-Fehler','Cluster ohne Entscheidung','Vorgänger nicht released'],exit:'Nach GATE-1B Approval wird Step 1c ready.',notion:'Architekturartefakt, Gate, Findings, Tasks, Review, Approval, Release.',prompt:'Basis-Prompt nicht editierbar. Admin kann konkrete Architekturkorrektur als Revision Request formulieren.',edit:'Draft-Architektur als neue Revision editierbar. Abgeleitete HTML/Markdown Views nicht separat editieren.',rerun:'Ja. Neue Architekturrevision, dann erneuter Preflight und Gate.'},
+      {id:'1c',name:'Design und Templates',short:'Tokens, Pillar-Templates',gate:'GATE-1C',purpose:'Evidenzgebundenes Designsystem und wiederverwendbare Pillar-Templates erzeugen.',entry:['released Step 1b','Brand-Screenshot/Evidence','Design- und Template-Schemas','Location-Safety-Kontext'],operator:['Brand-Evidence prüfen','Design-Tokens und Templates visuell prüfen','Draft editieren','Accessibility Findings lösen','freigeben oder Revision anfordern'],output:['Design-System JSON/CSS','Template JSON','deterministisches HTML','Accessibility- und Visual-Evidence'],tools:['CSS Token Validator','axe','Browser Visual Regression'],errors:['Brand-Evidence fehlt','Token unvollständig','Accessibility fehlerhaft','Location Claim unsicher','Lineage/JSON-LD-Referenz falsch'],exit:'Nach GATE-1C Approval wird Step 2 ready.',notion:'Design-/Template-Artefakte, Gate, Findings, Review, Tasks, Approval, Release.',prompt:'Basis-Prompt nicht editierbar. Admin kann Designkorrektur und immutable Brand-Grenzen vorgeben.',edit:'Design- und Template-Drafts als neue Revision editierbar. CSS/HTML werden neu gerendert.',rerun:'Ja. Neue Revision plus erneute Browser-, Accessibility- und Contract-QA.'},
+      {id:'2',name:'Keyword-Evidence',short:'Verifizierte Marktdaten',gate:'GATE-2',purpose:'Für freigegebene Pillars verifizierte Keyword- und SERP-Evidence sammeln.',entry:['released Step 1c','Deployment, Geo, Sprache, Device','Provider-Budget','Research Request Contract'],operator:['Provider-Readiness und Kosten prüfen','Abfrage starten','Coverage und Rohdaten prüfen','fehlerhafte Rows verwerfen/neu anfordern','Dataset freigeben oder Revision anfordern'],output:['Keyword Evidence JSON/CSV','Raw Provider Response','Job IDs, Kosten und Hashes','Coverage-Gate'],tools:['DataForSEO primär','AgentSEO bedingt','immer über Provider Gateway'],errors:['Credentials fehlen','Gateway/Netzwerk/Timeout','Geo-Mismatch','Raw Response unvollständig','unter 25 verifizierte Rows pro Pillar'],exit:'Nach GATE-2 Approval wird Step 3 ready.',notion:'Runstatus, Provider-Task/Blocker, Dataset-Artefakt, Gate, Kostenmetadaten, Approval.',prompt:'Basis-Prompt nicht editierbar. Providerrequest wird aus Projekt und Policy erzeugt.',edit:'Raw Providerwerte nicht editierbar. Admin kann Rows markieren, entfernen oder neue Abfrage anfordern.',rerun:'Ja. Idempotenter Retry oder neuer Research Request mit korrigierter Scope.'},
+      {id:'3',name:'120-Tage-Plan',short:'17 Wochen und Linkgraph',gate:'GATE-3',purpose:'Freigegebene Keyword-Evidence deterministisch in einen kapazitätsgerechten Plan umwandeln.',entry:['released Step 2','Kapazität und Policy','sortierte Keyword-Daten','Solver-Version'],operator:['Kapazität vor Run bestätigen','Prioritäten und Backlog prüfen','Plan-Draft korrigieren','Solver erneut ausführen','freigeben oder Revision anfordern'],output:['Plan JSON/Markdown','17-Wochen-Roadmap','Backlog','vertikaler und horizontaler Linkgraph'],tools:['lokaler Capacity Matrix Solver','keine externe Abfrage'],errors:['Metrik fehlt','Content-Typ unbekannt','Kapazitätsgrenze verletzt','Pflichtitem fehlt','Input-/Output-Hash falsch'],exit:'Nach GATE-3 Approval wird Step 4a ready.',notion:'Roadmap-Artefakt, Tasks/Assignments als Metadaten, Gate, Review, Approval, Release.',prompt:'Basis-Prompt nicht editierbar. Admin kann Kapazitäts- und Prioritätsinput vor dem Run ändern.',edit:'Plan-Draft als neue Revision editierbar, solange Solver- und Pflichtregeln erneut bestehen.',rerun:'Ja. Solver mit korrigiertem Dataset oder Policy erneut ausführen.'},
+      {id:'4a',name:'Content Briefing',short:'Briefing, Claims, Schema',gate:'GATE-4A',purpose:'Für das priorisierte Planitem ein vollständiges Copywriter-Briefing und Claim Ledger erzeugen.',entry:['released Step 3','priorisiertes Item','SERP-Evidence über Gateway','Briefing- und Claim-Schemas'],operator:['Prioritätsitem bestätigen','Briefing im Editor prüfen','Claims und Quellen korrigieren','neue Revision speichern','freigeben oder Revision anfordern'],output:['Briefing JSON/Markdown','Claim Ledger','JSON-LD-Graph','Notion-Frontmatter als View'],tools:['Provider Gateway für SERP','JSON-LD Validator','Screaming Frog Structured Data','Google Rich Results als externe Verifikation'],errors:['SERP-Boundary ungültig','Claim ohne Evidence','YMYL/Compliance-Problem','JSON-LD oder Hash falsch','Vorgänger nicht released'],exit:'Nach GATE-4A Approval wird Step 4b ready.',notion:'Briefing-Metadaten und abgeleitete Notion-Ansicht, Taskstatus, Gate, Approval, Release.',prompt:'Basis-Prompt nicht editierbar. Admin kann Revision Feedback und redaktionelle Zusatzanweisung eingeben.',edit:'Briefing-Draft und Claims als neue Revision editierbar. Evidence-Bindungen müssen bestehen.',rerun:'Ja. Neuer Run mit gleichem freigegebenen Vorgänger und strukturiertem Revision Request.'},
+      {id:'4b',name:'Page Spec und HTML',short:'Staging-ready Ausgabe',gate:'GATE-4B',purpose:'Aus dem freigegebenen Briefing eine sichere Page Spec und deterministische HTML-Ansicht erzeugen.',entry:['released Step 4a','Project V2','Page-Spec-Schema','Staging-Evidence-Kontext'],operator:['Page Spec und HTML prüfen','Draft editieren','Form, Consent, Tracking, JSON-LD prüfen','technische QA reviewen','staging_ready freigeben oder Revision anfordern'],output:['Page Spec JSON','HTML View','Staging Evidence','Rollback-Revision und QA-Berichte'],tools:['Renderer','Screaming Frog','Lighthouse','axe','Browser Visual Regression'],errors:['Unsafe Markup','Service-Area-Claim unsicher','Content-/JSON-LD-Hash falsch','Staging Evidence unvollständig','Form/Consent/Link/Canonical fehlerhaft'],exit:'GATE-4B erzeugt staging_ready Release. Kein automatisches Live-Deployment.',notion:'Finaler Artefaktstatus, Staging-Link, QA, Release, Tasks, Handoff-Status.',prompt:'Basis-Prompt nicht editierbar. Admin kann konkrete Page-Korrektur als Run-Anweisung geben.',edit:'Page-Spec-Draft als neue Revision editierbar. HTML wird daraus neu erzeugt.',rerun:'Ja. Neue Page-Revision, erneute vollständige technische QA und GATE-4B.'},
+      {id:'3b',name:'Performance Check',short:'Tag 30, 60, 90',gate:'GATE-3B',purpose:'Performance-Evidence prüfen und bei Bedarf eine neue Planrevision vorschlagen.',entry:['released Step 3','Measurement Plan','GSC Baseline und Vergleichsfenster','optionale GA4/GBP/Ahrefs Evidence'],operator:['Datenvollständigkeit prüfen','Metriken importieren','Adjustment Proposal reviewen','freigeben oder Revision anfordern'],output:['Metric Records','Adjustment Proposal','neue Planrevision bei Approval','Originalplan bleibt unverändert'],tools:['Google Search Console','GA4 bedingt','Google Business Profile bedingt','Ahrefs als unabhängige Verifikation'],errors:['Messquelle fehlt','Fenster/Baseline unvollständig','Confidence fehlt','Source Plan falsch','Originalplan-Mutation versucht'],exit:'Approval erzeugt eine neue Planrevision. Initialroute wird nicht zurückgesetzt.',notion:'Performance Checkpoint, Metrics, Adjustment Proposal, Review, Approval und neuer Planstatus.',prompt:'Basis-Prompt nicht editierbar. Admin kann Analysefokus und Revision Feedback ergänzen.',edit:'Adjustment Draft als neue Revision editierbar. Original Step-3-Plan niemals überschreiben.',rerun:'Ja. Wiederholbar an Tag 30, 60 und 90 oder nach korrigierter Evidence.'}
+    ];
+
+    const actions = [
+      ['Projekt anlegen','Noch kein Projekt vorhanden','Markdown-Briefing und korrigierte Intake-Felder','Erzeugt Project V2, Run und Step-0-Kandidat','Kein stilles Erfinden fehlender Pflichtdaten','building'],
+      ['Step starten','Vorgänger released und Preflight bereit','Bestätigung der angezeigten Inputs und Kosten','Typed start Command, Context Package, Run','Kein direkter Statuswrite im Browser','building'],
+      ['Draft editieren','Kandidatenartefakt vorhanden','Inhalt innerhalb des geschlossenen Vertrags','Neue Artefaktrevision mit Parent und Hash','Kein Überschreiben alter oder released Artefakte','planned'],
+      ['Validieren','Neue oder geänderte Revision','Keine zusätzliche Eingabe oder ausgewählte Prüfungen','Machine Gates und Findings','Kein automatisches Human Approval','building'],
+      ['Revision anfordern','Finding oder unzureichender Output','Problem, betroffene Bereiche, erwartetes Ergebnis, Zusatzanweisung','Neuer Run mit strukturiertem Revision Request','Kein Wiederverwenden eines veralteten technischen Sessions','building'],
+      ['Input anfordern','Pflichtinput oder Zugang fehlt','Was fehlt und warum es blockiert','Task plus Wait-Zustand','Keine Schätzung und kein leerer Erfolg','done'],
+      ['Freigeben','Machine Gates bestanden, genaue Revision ausgewählt','Explizite Bestätigung','Approval, Release und nächster Step ready','Kein Approval für alte Revision','building'],
+      ['Ablehnen','Review nicht bestanden','Grund und erwartete Korrektur','Gate rejected, Revision Request oder Defect','Kein Verlust des abgelehnten Artefakts','building'],
+      ['Waiver anfordern','Policy erlaubt nichtkritische Ausnahme','Evidence, Begründung, Scope und Ablaufdatum','Revision-bound Waiver Review','Kein Waiver bei Security, Integrity oder verbotener Policy','done'],
+      ['Retry/Resume','Retryable Technical Error oder behobener Wait','Bestätigung derselben idempotenten Operation','Begrenzter Retry oder Resume','Keine Duplikate','done'],
+      ['Exportieren','Checkpoint oder Final Package ist bereit','Scope und enthaltene Items bestätigen','Ordner, ZIP, Checksums und Import Pack','Kein Live-Notion-Write','planned'],
+      ['An Notion übertragen','Zukünftiger Live Adapter konfiguriert','Transfer Preview plus explizite Bestätigung','Idempotente Notion-Projektion und Readback','Heute nicht live verfügbar','external']
+    ];
+
+    const routes = [
+      ['Retryable Technical','Temporärer Netzwerk-, Timeout- oder Lockfehler. Begrenzter Retry, danach Defect.','ERROR_AGENTSEO_TIMEOUT, ERROR_TRANSITION_LEDGER_LOCKED'],
+      ['Missing Input','Admin erhält eine konkrete fehlende Eingabe und der Run wartet.','API Key, Toolzugang, Location, Site-Applicability'],
+      ['Revision Required','Artefakt oder Evidence ist korrigierbar. Neue Revision und neue Prüfung.','Stale Revision, URL-Konflikt, Schema-, Crawl- oder Contentfehler'],
+      ['Waiver Candidate','Nur erlaubte nichtkritische Ausnahme mit Evidence und Ablaufdatum.','Resource-404 in erlaubtem Scope'],
+      ['Workflow Defect','Fehler in Tooling, Contract oder Orchestrierung. Maintainer-Ticket.','unbekannter Step, invalides Providerformat, Exportproblem'],
+      ['Management Decision','Scope, Budget oder Strategie braucht explizite Adminentscheidung.','Budgetüberschreitung oder Prioritätskonflikt'],
+      ['Compliance Decision','Rechtlicher, YMYL- oder Security-relevanter Entscheid.','unbelegter medizinischer Claim, kritischer Security-Fund'],
+      ['Abort','Integrity, Isolation oder Hash verletzt. Sofort stoppen, kein Retry.','Tenant Isolation, Idempotency Conflict, Hash Mismatch, Path Escape']
+    ];
+
+    const errorExamples = [
+      ['Projekt und Intake','Pflichtfeld, Markt, Locale, Location oder Vertrag ungültig','Missing Input / Revision / Abort','Konsolidierter Blocker mit genau fehlendem Feld und Korrektur'],
+      ['Crawl','Binary fehlt, Timeout, URL-Limit, 4xx, Broken Links, Canonical, Security','Missing Input / Retry / Revision / Waiver / Compliance','Crawlbericht, betroffene URLs, erlaubte Aktion'],
+      ['Provider','Credentials, Netzwerk, Job-ID, Geo-Mismatch, Raw Response oder Kosten','Missing Input / Retry / Revision / Defect / Abort','Providerstatus, Kosten, Retry oder Korrektur'],
+      ['Artefakt','Schema, Lineage, Hash, unsafe Markup oder stale Revision','Revision / Abort','betroffene Revision, Findings und neue Revision Action'],
+      ['Gate','Machine Gate fehlt, Approval stale, falsche Revision','Revision Required','Freigabe gesperrt und genauer Grund'],
+      ['Integration','Delivery Failed, Conflict, Retry Exhausted','Retry / Defect / Abort','Notion/n8n bleibt nicht fälschlich grün'],
+      ['Performance','Messquelle, Baseline, Window, Completeness oder Confidence fehlt','Missing Input / Revision','Checkpoint bleibt blocked, Originalplan unverändert']
+    ];
+
+    const integrations = [
+      ['LLM Runtime','Steps 0, 1, 1b, 1c, 2, 3, 3b, 4a, 4b','Versionierter Prompt plus validiertes Context Package. Provider darf keinen Status schreiben.','simulated'],
+      ['Screaming Frog','Step 1 und Step 4b','Crawl- und strukturierte Evidence, Exports mit Hash. Lizenz erst bei aktivem URL-Limit relevant.','external'],
+      ['DataForSEO','Step 2, primär','Keyword Metrics und SERP über Provider Gateway. Geo, Sprache, Device, Kosten und Raw Hash sind Pflicht.','external'],
+      ['AgentSEO','Step 2 und 4a, bedingt','Nur über Provider Gateway. Kein direkter Prompt-Aufruf.','external'],
+      ['Ahrefs / GSC','Step 1 optional, Step 3b','Unabhängige Search Evidence und Performance-Messung. Fehlender konfigurierter Zugang blockiert.','external'],
+      ['GA4 / GBP','Step 3b, bedingt','Conversion-, Engagement- oder Local-Performance-Evidence passend zum Measurement Plan.','external'],
+      ['Google Rich Results','Step 4a externe Prüfung','Externe Eligibility separat von internem JSON-LD-Parsing dokumentieren.','external'],
+      ['Lighthouse / axe / Browser','Step 1c und 4b','Accessibility, Performance, Responsive und Visual Regression Evidence.','building'],
+      ['n8n','Gesamtorchestrierung später','Heute transporttreuer Simulator. Core bleibt unabhängig.','simulated'],
+      ['Notion','laufende operative Projektion später','Heute Simulator und geplanter Import Pack. Live-Sync noch nicht aktiv.','simulated']
+    ];
+
+    const progress = [
+      ['Sprint 0-4','Core, Contracts, Events, Context Packages, API und Simulatoren','100','done'],
+      ['UI Packages 1-3','Demo-Komponenten vorhanden, aber als finales Interface abgelehnt','100','simulated'],
+      ['Package 4 Backend','Intake, Runtime, Artefakte, Gates und neutraler E2E','55','building'],
+      ['Deutsches Admin-Frontend','Work Shell, Intake, Editor, Review und Actions','0','planned'],
+      ['Sprint 5E Delivery','ZIP, Role-Packages, Notion Import und Delivery Center','0','planned'],
+      ['Final Audit','Full Tests, Task-QA, Browser, Export und Go/No-Go','0','planned'],
+      ['Live Notion/n8n','Externe Production Connectoren','0','external']
+    ];
+
+    const statusLabel = {done:'verifiziert',building:'im Bau',planned:'geplant',simulated:'simuliert',external:'nicht live'};
+    const flow = document.getElementById('stepFlow');
+    const mainSteps = steps.filter(s => s.id !== '3b');
+    mainSteps.forEach((s,i) => {
+      const b = document.createElement('button'); b.className='step-card'+(i===0?' selected':''); b.dataset.step=s.id;
+      b.innerHTML=`<span class="step-id">${s.id}</span><h3>${s.name}</h3><p>${s.short}</p><span class="mini">${s.gate}</span>`;
+      flow.appendChild(b);
+    });
+    const sf=steps.find(s=>s.id==='3b'); document.getElementById('sideflowCard').innerHTML=`<span class="step-id">3b</span><h3>${sf.name}</h3><p>${sf.short}</p><span class="mini">${sf.gate}</span>`;
+
+    function renderStep(id){
+      const s=steps.find(x=>x.id===id); if(!s)return;
+      document.querySelectorAll('.step-card').forEach(b=>b.classList.toggle('selected',b.dataset.step===id));
+      document.getElementById('detailEyebrow').textContent=`Step ${s.id}`;
+      document.getElementById('detailName').textContent=s.name;
+      document.getElementById('detailPurpose').textContent=s.purpose;
+      document.getElementById('detailGate').textContent=s.gate;
+      const blocks=[['Eingang',s.entry],['Admin-Aktionen',s.operator],['Erzeugte Outputs',s.output],['Tools und Third Parties',s.tools],['Typische Fehler',s.errors],['Ausgang',s.exit],['Notion-Projektion',s.notion]];
+      document.getElementById('detailFacts').innerHTML=blocks.map(([h,v])=>`<section class="fact"><h3>${h}</h3>${Array.isArray(v)?`<ul>${v.map(x=>`<li>${x}</li>`).join('')}</ul>`:`<p>${v}</p>`}</section>`).join('');
+      document.getElementById('editFacts').innerHTML=`<div class="edit-row"><strong>Prompt editieren?</strong><span>${s.prompt}</span></div><div class="edit-row"><strong>Output editieren?</strong><span>${s.edit}</span></div><div class="edit-row"><strong>Wiederholen?</strong><span>${s.rerun}</span></div>`;
+      document.getElementById('editCallout').textContent='Grundregel: Basis-Prompts bleiben versioniert. Der Admin verändert Run-Anweisungen und Draft-Revisionen, aber niemals released Artefakte, Raw Evidence oder abgeleitete Views direkt.';
+    }
+    document.addEventListener('click',e=>{const b=e.target.closest('.step-card');if(b)renderStep(b.dataset.step)});
+    renderStep('0');
+
+    document.getElementById('actionRows').innerHTML=actions.map(a=>`<tr><td>${a[0]}</td><td>${a[1]}</td><td>${a[2]}</td><td>${a[3]}</td><td>${a[4]}</td><td><span class="pill ${a[5]}"><i class="dot"></i>${statusLabel[a[5]]}</span></td></tr>`).join('');
+    document.getElementById('errorRoutes').innerHTML=routes.map(r=>`<article class="route"><h3>${r[0]}</h3><p>${r[1]}</p><code>${r[2]}</code></article>`).join('');
+    document.getElementById('errorExamples').innerHTML=errorExamples.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+    document.getElementById('integrationCards').innerHTML=integrations.map(i=>`<article class="integration-card"><span class="pill ${i[3]}"><i class="dot"></i>${statusLabel[i[3]]}</span><h3>${i[0]}</h3><p><strong>${i[1]}</strong></p><p>${i[2]}</p></article>`).join('');
+    document.getElementById('progressList').innerHTML=progress.map(p=>`<div class="progress-item"><strong>${p[0]}</strong><div><div>${p[1]}</div><div class="progress-bar"><span style="width:${p[2]}%"></span></div></div><span class="pill ${p[3]}"><i class="dot"></i>${statusLabel[p[3]]}</span></div>`).join('');
+
+    document.querySelectorAll('.tab').forEach(tab=>tab.addEventListener('click',()=>{
+      document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',String(x===tab)));
+      document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${tab.dataset.view}`));
+    }));
+  </script>
+</body>
+</html>

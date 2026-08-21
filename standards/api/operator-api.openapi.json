@@ -1,6 +1,542 @@
 {
   "components": {
     "schemas": {
+      "ActionBlocker": {
+        "additionalProperties": false,
+        "description": "A canonical lifecycle or schema blocker with a direct remediation.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "remediation": {
+            "title": "Remediation",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "remediation"
+        ],
+        "title": "ActionBlocker",
+        "type": "object"
+      },
+      "ActionConfirmRequest": {
+        "additionalProperties": false,
+        "description": "Explicit confirmation bound to one action intent and preview.",
+        "properties": {
+          "confirmed": {
+            "const": true,
+            "title": "Confirmed",
+            "type": "boolean"
+          },
+          "idempotency_key": {
+            "pattern": "^idem-[a-z0-9][a-z0-9-]{7,127}$",
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "intent": {
+            "$ref": "#/components/schemas/ActionIntent"
+          },
+          "preview_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Preview Hash",
+            "type": "string"
+          }
+        },
+        "required": [
+          "intent",
+          "preview_hash",
+          "idempotency_key",
+          "confirmed"
+        ],
+        "title": "ActionConfirmRequest",
+        "type": "object"
+      },
+      "ActionConfirmResult": {
+        "additionalProperties": false,
+        "description": "Accepted or replayed action with server-loaded canonical projections.",
+        "properties": {
+          "canonical": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "title": "Canonical",
+            "type": "object"
+          },
+          "preview_hash": {
+            "title": "Preview Hash",
+            "type": "string"
+          },
+          "readback_urls": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Readback Urls",
+            "type": "array"
+          },
+          "replay": {
+            "title": "Replay",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "replay",
+          "preview_hash",
+          "readback_urls",
+          "canonical"
+        ],
+        "title": "ActionConfirmResult",
+        "type": "object"
+      },
+      "ActionIntent": {
+        "additionalProperties": false,
+        "description": "The only client-supplied expression of a public admin action.",
+        "properties": {
+          "action": {
+            "enum": [
+              "start",
+              "submit-for-gate",
+              "approve",
+              "reject",
+              "request-revision",
+              "request-input",
+              "escalate",
+              "request-waiver",
+              "resolve",
+              "complete"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/ActionPayload",
+            "default": {
+              "affected_sections": [
+                "Canonical operator review"
+              ],
+              "immutable_constraints": [
+                "Preserve the canonical run identity."
+              ],
+              "impacts": [
+                "The current workflow step remains blocked."
+              ],
+              "instructions": "Apply the canonical action.",
+              "options": [
+                "Proceed",
+                "Escalate"
+              ],
+              "reason": "Operator action is required."
+            }
+          },
+          "project_id": {
+            "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "run_id": {
+            "pattern": "^run-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "step_id": {
+            "pattern": "^(0|1|1b|1c|2|3|3b|4a|4b)$",
+            "title": "Step Id",
+            "type": "string"
+          },
+          "tenant_id": {
+            "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Tenant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "tenant_id",
+          "project_id",
+          "run_id",
+          "step_id",
+          "expected_revision"
+        ],
+        "title": "ActionIntent",
+        "type": "object"
+      },
+      "ActionPayload": {
+        "additionalProperties": false,
+        "description": "Closed operator-authored details from which the server derives records.",
+        "properties": {
+          "affected_sections": {
+            "default": [
+              "Canonical operator review"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "Affected Sections",
+            "type": "array"
+          },
+          "immutable_constraints": {
+            "default": [
+              "Preserve the canonical run identity."
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "Immutable Constraints",
+            "type": "array"
+          },
+          "impacts": {
+            "default": [
+              "The current workflow step remains blocked."
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "Impacts",
+            "type": "array"
+          },
+          "instructions": {
+            "default": "Apply the canonical action.",
+            "minLength": 1,
+            "title": "Instructions",
+            "type": "string"
+          },
+          "options": {
+            "default": [
+              "Proceed",
+              "Escalate"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "Options",
+            "type": "array"
+          },
+          "reason": {
+            "default": "Operator action is required.",
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          },
+          "source_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Id"
+          },
+          "source_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "operator_task",
+                  "blocker",
+                  "revision_request",
+                  "workflow_defect",
+                  "escalation"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Type"
+          }
+        },
+        "title": "ActionPayload",
+        "type": "object"
+      },
+      "ActionPreview": {
+        "additionalProperties": false,
+        "description": "Read-only canonical consequences for an action intent.",
+        "properties": {
+          "allowed": {
+            "title": "Allowed",
+            "type": "boolean"
+          },
+          "blockers": {
+            "items": {
+              "$ref": "#/components/schemas/ActionBlocker"
+            },
+            "title": "Blockers",
+            "type": "array"
+          },
+          "consequence": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "title": "Consequence",
+            "type": "object"
+          },
+          "intent": {
+            "$ref": "#/components/schemas/ActionIntent"
+          },
+          "preview_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Preview Hash",
+            "type": "string"
+          }
+        },
+        "required": [
+          "intent",
+          "allowed",
+          "blockers",
+          "consequence",
+          "preview_hash"
+        ],
+        "title": "ActionPreview",
+        "type": "object"
+      },
+      "ArtifactCandidateSaveRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "bundle": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "title": "Bundle",
+            "type": "object"
+          },
+          "expected_parent_revision": {
+            "minimum": 1.0,
+            "title": "Expected Parent Revision",
+            "type": "integer"
+          },
+          "gate_context": {
+            "$ref": "#/components/schemas/GateContext"
+          },
+          "idempotency_key": {
+            "minLength": 1,
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "primary_document": {
+            "$ref": "#/components/schemas/JsonValue"
+          },
+          "run_id": {
+            "pattern": "^run-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "supporting_documents": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "title": "Supporting Documents",
+            "type": "array"
+          }
+        },
+        "required": [
+          "run_id",
+          "expected_parent_revision",
+          "idempotency_key",
+          "primary_document",
+          "bundle",
+          "gate_context"
+        ],
+        "title": "ArtifactCandidateSaveRequest",
+        "type": "object"
+      },
+      "ArtifactContentResponse": {
+        "additionalProperties": false,
+        "description": "Exact immutable artifact bytes encoded for JSON transport.",
+        "properties": {
+          "artifact": {
+            "$ref": "#/components/schemas/ArtifactRecord"
+          },
+          "content_base64": {
+            "title": "Content Base64",
+            "type": "string"
+          }
+        },
+        "required": [
+          "artifact",
+          "content_base64"
+        ],
+        "title": "ArtifactContentResponse",
+        "type": "object"
+      },
+      "ArtifactDiffRequest": {
+        "additionalProperties": false,
+        "description": "Two canonical artifact identities selected for a read-only comparison.",
+        "properties": {
+          "left_artifact_id": {
+            "pattern": "^artifact-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Left Artifact Id",
+            "type": "string"
+          },
+          "right_artifact_id": {
+            "pattern": "^artifact-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Right Artifact Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "left_artifact_id",
+          "right_artifact_id"
+        ],
+        "title": "ArtifactDiffRequest",
+        "type": "object"
+      },
+      "ArtifactDiffResponse": {
+        "additionalProperties": false,
+        "description": "Deterministic unified text diff between two immutable artifacts.",
+        "properties": {
+          "left_artifact": {
+            "$ref": "#/components/schemas/ArtifactRecord"
+          },
+          "right_artifact": {
+            "$ref": "#/components/schemas/ArtifactRecord"
+          },
+          "unified_diff": {
+            "title": "Unified Diff",
+            "type": "string"
+          }
+        },
+        "required": [
+          "left_artifact",
+          "right_artifact",
+          "unified_diff"
+        ],
+        "title": "ArtifactDiffResponse",
+        "type": "object"
+      },
+      "ArtifactRecord": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_id": {
+            "pattern": "^artifact-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "content_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Content Sha256",
+            "type": "string"
+          },
+          "contract_version": {
+            "default": "1.0.0",
+            "title": "Contract Version",
+            "type": "string"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "input_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Input Hash",
+            "type": "string"
+          },
+          "parent_artifact_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Parent Artifact Ids",
+            "type": "array"
+          },
+          "producer_version": {
+            "default": "provider-output-set",
+            "title": "Producer Version",
+            "type": "string"
+          },
+          "project_id": {
+            "title": "Project Id",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "run_id": {
+            "title": "Run Id",
+            "type": "string"
+          },
+          "step_id": {
+            "title": "Step Id",
+            "type": "string"
+          },
+          "storage_key": {
+            "title": "Storage Key",
+            "type": "string"
+          },
+          "tenant_id": {
+            "title": "Tenant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "artifact_id",
+          "tenant_id",
+          "project_id",
+          "run_id",
+          "step_id",
+          "revision",
+          "input_hash",
+          "content_sha256",
+          "storage_key",
+          "created_at"
+        ],
+        "title": "ArtifactRecord",
+        "type": "object"
+      },
+      "ArtifactRevisionListResponse": {
+        "additionalProperties": false,
+        "description": "Closed canonical revision list for one run-step identity.",
+        "properties": {
+          "artifacts": {
+            "items": {
+              "$ref": "#/components/schemas/ArtifactRecord"
+            },
+            "title": "Artifacts",
+            "type": "array"
+          }
+        },
+        "required": [
+          "artifacts"
+        ],
+        "title": "ArtifactRevisionListResponse",
+        "type": "object"
+      },
+      "ArtifactValidationRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "content_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Content Sha256",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "revision",
+          "content_sha256"
+        ],
+        "title": "ArtifactValidationRequest",
+        "type": "object"
+      },
       "CommandRequest": {
         "additionalProperties": false,
         "description": "Closed transport shape for a single versioned command.",
@@ -13,7 +549,9 @@
               "create-defect",
               "escalate",
               "request-waiver",
+              "submit-for-gate",
               "approve",
+              "complete",
               "reject",
               "resolve",
               "resume"
@@ -134,6 +672,10 @@
             "title": "Event",
             "type": "object"
           },
+          "readback_url": {
+            "title": "Readback Url",
+            "type": "string"
+          },
           "replay": {
             "title": "Replay",
             "type": "boolean"
@@ -157,9 +699,58 @@
           "command_id",
           "correlation_id",
           "replay",
-          "event"
+          "event",
+          "readback_url"
         ],
         "title": "CommandResult",
+        "type": "object"
+      },
+      "CurrentRunResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "project_id": {
+            "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "run_id": {
+            "pattern": "^run-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "step_id": {
+            "enum": [
+              "0",
+              "1",
+              "1b",
+              "1c",
+              "2",
+              "3",
+              "4a",
+              "4b"
+            ],
+            "title": "Step Id",
+            "type": "string"
+          },
+          "tenant_id": {
+            "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Tenant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tenant_id",
+          "project_id",
+          "run_id",
+          "step_id",
+          "expected_revision"
+        ],
+        "title": "CurrentRunResponse",
         "type": "object"
       },
       "DataEnvelope": {
@@ -176,6 +767,81 @@
         "title": "DataEnvelope",
         "type": "object"
       },
+      "GateContext": {
+        "additionalProperties": false,
+        "properties": {
+          "available_tools": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Available Tools",
+            "type": "array"
+          },
+          "configured_tools": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Configured Tools",
+            "type": "array"
+          },
+          "evidence_by_gate": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
+              },
+              "type": "object"
+            },
+            "title": "Evidence By Gate",
+            "type": "object"
+          },
+          "not_applicable_decisions": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "$ref": "#/components/schemas/JsonValue"
+              },
+              "type": "object"
+            },
+            "default": {},
+            "title": "Not Applicable Decisions",
+            "type": "object"
+          },
+          "site_status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "existing_site",
+                  "non_existing_site"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Site Status"
+          }
+        },
+        "required": [
+          "evidence_by_gate"
+        ],
+        "title": "GateContext",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -189,7 +855,123 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "IntakeAcceptanceRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "confirmed": {
+            "title": "Confirmed",
+            "type": "boolean"
+          },
+          "markdown": {
+            "minLength": 1,
+            "title": "Markdown",
+            "type": "string"
+          },
+          "preview_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Preview Hash",
+            "type": "string"
+          },
+          "reviewed": {
+            "$ref": "#/components/schemas/ReviewedIntake"
+          },
+          "source_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source Sha256",
+            "type": "string"
+          }
+        },
+        "required": [
+          "markdown",
+          "source_sha256",
+          "reviewed",
+          "preview_hash",
+          "confirmed"
+        ],
+        "title": "IntakeAcceptanceRequest",
+        "type": "object"
+      },
+      "IntakePreviewRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "markdown": {
+            "minLength": 1,
+            "title": "Markdown",
+            "type": "string"
+          }
+        },
+        "required": [
+          "markdown"
+        ],
+        "title": "IntakePreviewRequest",
+        "type": "object"
+      },
       "JsonValue": {},
+      "ReviewedIntake": {
+        "additionalProperties": false,
+        "properties": {
+          "project_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Id"
+          },
+          "project_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Name"
+          },
+          "project_v2": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/JsonValue"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project V2"
+          },
+          "tenant_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tenant Id"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "ReviewedIntake",
+        "type": "object"
+      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -272,6 +1054,104 @@
           }
         },
         "summary": "Readyz"
+      }
+    },
+    "/v1/tenants/{tenant_id}/intake/accept": {
+      "post": {
+        "operationId": "acceptMarkdownIntake",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntakeAcceptanceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Intake Accept"
+      }
+    },
+    "/v1/tenants/{tenant_id}/intake/preview": {
+      "post": {
+        "operationId": "previewMarkdownIntake",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntakePreviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Intake Preview"
       }
     },
     "/v1/tenants/{tenant_id}/projects": {
@@ -361,6 +1241,140 @@
         "summary": "Get Project"
       }
     },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/actions/{verb}/confirm": {
+      "post": {
+        "operationId": "confirmAdminAction",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "verb",
+            "required": true,
+            "schema": {
+              "title": "Verb",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActionConfirmRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionConfirmResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Action Confirm"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/actions/{verb}/preview": {
+      "post": {
+        "operationId": "previewAdminAction",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "verb",
+            "required": true,
+            "schema": {
+              "title": "Verb",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActionIntent"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionPreview"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Action Preview"
+      }
+    },
     "/v1/tenants/{tenant_id}/projects/{project_id}/adjustment-proposals": {
       "get": {
         "operationId": "listAdjustmentProposals",
@@ -409,6 +1423,112 @@
         "summary": "Handler"
       }
     },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/approvals": {
+      "get": {
+        "operationId": "listApprovals",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Handler"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/artifact-revisions/compare": {
+      "post": {
+        "operationId": "compareArtifactRevisions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArtifactDiffRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtifactDiffResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Artifact Diff"
+      }
+    },
     "/v1/tenants/{tenant_id}/projects/{project_id}/artifacts": {
       "get": {
         "operationId": "listArtifacts",
@@ -455,6 +1575,243 @@
           }
         },
         "summary": "Handler"
+      },
+      "post": {
+        "operationId": "saveArtifactRevision",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArtifactCandidateSaveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Artifact Save"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/artifacts/{artifact_id}": {
+      "get": {
+        "operationId": "getArtifactRevision",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "artifact_id",
+            "required": true,
+            "schema": {
+              "title": "Artifact Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtifactContentResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Artifact Content"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/artifacts/{artifact_id}/content": {
+      "get": {
+        "operationId": "getArtifactRevisionContent",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "artifact_id",
+            "required": true,
+            "schema": {
+              "title": "Artifact Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtifactContentResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Artifact Content"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/artifacts/{artifact_id}/validate": {
+      "post": {
+        "operationId": "validateArtifactRevision",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "artifact_id",
+            "required": true,
+            "schema": {
+              "title": "Artifact Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArtifactValidationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Artifact Validate"
       }
     },
     "/v1/tenants/{tenant_id}/projects/{project_id}/assignments": {
@@ -507,6 +1864,7 @@
     },
     "/v1/tenants/{tenant_id}/projects/{project_id}/commands/{verb}": {
       "post": {
+        "deprecated": true,
         "operationId": "submitOperatorCommand",
         "parameters": [
           {
@@ -668,6 +2026,54 @@
         "summary": "Handler"
       }
     },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/intake": {
+      "get": {
+        "operationId": "getMarkdownIntake",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Intake"
+      }
+    },
     "/v1/tenants/{tenant_id}/projects/{project_id}/integrations/status": {
       "get": {
         "operationId": "getIntegrationStatus",
@@ -812,6 +2218,72 @@
         "summary": "Handler"
       }
     },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/operator-records/{record_type}/{record_id}": {
+      "get": {
+        "operationId": "getOperatorRecord",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "record_type",
+            "required": true,
+            "schema": {
+              "title": "Record Type",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "record_id",
+            "required": true,
+            "schema": {
+              "title": "Record Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Operator Record"
+      }
+    },
     "/v1/tenants/{tenant_id}/projects/{project_id}/performance-checkpoints": {
       "get": {
         "operationId": "listPerformanceCheckpoints",
@@ -858,6 +2330,102 @@
           }
         },
         "summary": "Handler"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/releases": {
+      "get": {
+        "operationId": "listReleases",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Releases"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/runs/current": {
+      "get": {
+        "operationId": "getCurrentRun",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentRunResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Current Run"
       }
     },
     "/v1/tenants/{tenant_id}/projects/{project_id}/runs/{run_id}": {
@@ -972,6 +2540,72 @@
           }
         },
         "summary": "Run History"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/runs/{run_id}/steps/{step_id}/artifact-revisions": {
+      "get": {
+        "operationId": "listArtifactRevisions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "step_id",
+            "required": true,
+            "schema": {
+              "title": "Step Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtifactRevisionListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Artifact Revisions"
       }
     },
     "/v1/tenants/{tenant_id}/projects/{project_id}/steps": {

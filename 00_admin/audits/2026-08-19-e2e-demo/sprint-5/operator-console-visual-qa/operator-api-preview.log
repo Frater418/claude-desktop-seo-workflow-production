@@ -1,0 +1,22 @@
+INFO:     Started server process [280479]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:43179 (Press CTRL+C to quit)
+INFO:     127.0.0.1:49880 - "GET /readyz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49880 - "GET /readyz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49892 - "GET /v1/tenants/tenant-visual-qa/projects HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49892 - "GET /v1/tenants/tenant-visual-qa/projects HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44992 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44992 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60618 - "GET /v1/tenants/tenant-visual-qa/projects/project-alpha/runs/current HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60618 - "GET /v1/tenants/tenant-visual-qa/projects/project-alpha/runs/current HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55278 - "GET /v1/tenants/tenant-visual-qa/projects/project-beta/runs/current HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55278 - "GET /v1/tenants/tenant-visual-qa/projects/project-beta/runs/current HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55290 - "GET /v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55290 - "GET /v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49724 - "GET /v1/tenants/tenant-visual-qa/projects/project-beta/releases HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49724 - "GET /v1/tenants/tenant-visual-qa/projects/project-beta/releases HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [280479]

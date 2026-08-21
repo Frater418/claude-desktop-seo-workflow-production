@@ -168,6 +168,22 @@
     {"code": "ERROR_LLM_REQUEST_INVALID", "route": "revision_required", "owner_type": "operator"},
     {"code": "ERROR_LLM_REQUEST_IDEMPOTENCY_CONFLICT", "route": "abort", "owner_type": "incident_responder"},
     {"code": "ERROR_LLM_RESULT_INVALID", "route": "revision_required", "owner_type": "operator"},
-    {"code": "ERROR_TECHNICAL_SESSION_POLICY_DENIED", "route": "abort", "owner_type": "incident_responder"}
+    {"code": "ERROR_TECHNICAL_SESSION_POLICY_DENIED", "route": "abort", "owner_type": "incident_responder"},
+    {"code": "ERR_CONCURRENT_PARENT_CONFLICT", "route": "retryable_technical", "owner_type": "workflow_maintainer"},
+    {"code": "ERR_RELEASED_ARTIFACT_IMMUTABLE", "route": "workflow_defect", "owner_type": "workflow_maintainer"},
+    {"code": "ERROR_ARTIFACT_CONTENT_UNSUPPORTED", "route": "revision_required", "owner_type": "operator"},
+    {"code": "ERROR_ARTIFACT_PERSISTENCE", "route": "retryable_technical", "owner_type": "workflow_maintainer"},
+    {"code": "ERROR_GATE_APPLICABILITY_INVALID", "route": "missing_input", "owner_type": "operator"},
+    {"code": "ERROR_INITIAL_ROUTE_STEP_INVALID", "route": "workflow_defect", "owner_type": "workflow_maintainer"},
+    {"code": "ERROR_LOCAL_FIXTURE_UNAVAILABLE", "route": "missing_input", "owner_type": "operator"},
+    {"code": "ERROR_OUTPUT_CONTRACT_INVALID", "route": "workflow_defect", "owner_type": "workflow_maintainer"},
+    {"code": "ERROR_OUTPUT_SCHEMA_INVALID", "route": "revision_required", "owner_type": "operator"},
+    {"code": "ERROR_QUALITY_GATE_BINDING_INVALID", "route": "revision_required", "owner_type": "operator"},
+    {"code": "ERROR_QUALITY_GATE_EVIDENCE_INVALID", "route": "revision_required", "owner_type": "operator"},
+    {"code": "ERROR_QUALITY_GATE_RUN_SCHEMA_INVALID", "route": "revision_required", "owner_type": "operator"},
+    {"code": "ERROR_REGISTRY_INVALID", "route": "workflow_defect", "owner_type": "workflow_maintainer"},
+    {"code": "ERROR_RUNTIME_PROVIDER_BLOCKED", "route": "revision_required", "owner_type": "operator"},
+    {"code": "ERROR_STEP_PREFLIGHT_INVALID", "route": "revision_required", "owner_type": "operator"},
+    {"code": "ERROR_STEP0_CROSS_BINDING_INVALID", "route": "revision_required", "owner_type": "operator"}
   ]
 }
