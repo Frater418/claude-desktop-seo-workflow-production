@@ -1,68 +1,93 @@
-# Copywriter-Handoff & Notion-Guidelines
+# Copywriter handoff and Notion guidelines
 
-**Projekt:** Modernisierung des Claude Desktop SEO-Workflows  
-**Autor:** Raphael Rechberger  
-**Zielgruppe:** Regina, Katja, Alexander (Heartweb Copywriting Team) & Projektleiter  
-**Version:** 1.0.0  
+**Author:** Raphael Rechberger
+**Status:** Current handoff guidance
+**Updated:** 2026-08-22
+**Audience:** Heartweb Copywriters and project leads
 
----
+## 1. Purpose
 
-## 1. Ueberblick fuer die Redaktion
+Heartweb produces the verified strategic and structural foundation for a content item. The final editorial text is written and refined by a human Copywriter.
 
-Dieses Dokument beschreibt, wie das Copywriting-Team (Regina, Katja, Alexander) die aus Schritt 4a erzeugten Content-Briefings erhaelt, interpretiert und in fertige, hochkonvertierende Texte verwandelt.
+The system supplies:
 
-**Unser Leitsatz:**
-Reiner KI-Text existiert bei Heartweb nicht. Claude Desktop liefert das datengestuetzte, SEO-gepruefte Fundament (SERP-Intent, Wettbewerbsstruktur, FAQs, Keywords, Schema-Markup); ihr als erfahrene Copywriter haucht den Texten Leben, Tonalitaet, Conversion-Psychologie und echte Erfahrung (EEAT) ein.
+- target audience and Search Intent
+- target keyword and verified metrics
+- page type and Pillar relationship
+- required structure and information goals
+- approved claims and Evidence references
+- internal-linking instructions
+- local and compliance constraints
+- metadata and structured-data guidance
+- priority, deadline and implementation context
 
----
+The Copywriter adds human language, brand voice, empathy, examples, conversion judgment and editorial quality.
 
-## 2. Struktur eines Briefings (Schritt 4a)
+## 2. Delivery package
 
-Jedes Briefing liegt als saubere Markdown-Datei unter `outputs/briefings/briefing-[thema-slug].md` vor und enthaelt:
+A released Copywriter package contains only role-relevant approved material:
 
-### 2.1 Notion-Frontmatter (fuer die Datenbank)
-```yaml
----
-title: "Pflegedienst Frankfurt Bornheim"
-pillar: "Ambulante Pflege"
-content_type: "Landingpage"
-target_keyword: "pflegedienst frankfurt bornheim"
-search_volume: 70
-difficulty: 12
-priority: "Hoch"
-phase: 1
-status: "Bereit fuer Copywriting"
-author: "Raphael Rechberger"
----
-```
-Diese Eigenschaften werden in Notion automatisch als Tabellen-Eigenschaften (Properties) erkannt.
+- Step-4A briefing
+- YAML frontmatter or equivalent Notion properties
+- keyword and intent summary
+- section-by-section structure
+- claim and Evidence ledger
+- link instructions
+- required FAQ or comparison modules
+- task, priority and deadline
+- review requirements
 
-### 2.2 Die 4 redaktionellen Kern-Abschnitte im Briefing:
-1. **Search Intent & Zielgruppen-Fokus:** Was sucht der Nutzer in diesem Moment wirklich (akute Notsituation, reiner Preisvergleich oder rechtliche Information)?
-2. **Meta-Tags:** Vorgeschlagener Meta-Title und Meta-Description mit Keyword-Platzierung (koennen stilistisch verfeinert werden).
-3. **Section-fuer-Section Gliederung:**
-   - Jede H2/H3-Ueberschrift mit Zweck und inhaltlichen Pflichtpunkten.
-   - Konkrete Text- und Einstiegsbeispiele in der vorgegebenen Tonalitaet.
-   - Platzierung von Zwischen-CTAs.
-4. **Verlinkungsvorgaben:**
-   - Vertikaler Link: Zwingender Link zur uebergeordneten Pillar-Page (mit empfohlenem Ankertext).
-   - Horizontaler Sibling-Link: Zwingender Link zu einem verwandten Cluster-Artikel oder Nachbar-Standort.
+Draft or rejected artifacts must be labeled and must not appear as released instructions.
 
----
+## 3. Notion workflow
 
-## 3. Redaktions-Checkliste vor dem Handoff
+After the final Heartweb handoff, the implementation task belongs to Notion.
 
-Bevor ein Text als "Fertiggestellt" in Notion markiert wird, prueft der Copywriter:
-- [ ] Wurde das Haupt-Keyword natuerlich in der H1, im ersten Absatz und in mindestens einer H2 eingebunden?
-- [ ] Wurden die Fragen aus dem FAQ-Bereich mit echten, fachlich fundierten Antworten beantwortet?
-- [ ] Wurden die beiden internen Links (Pillar + Sibling) mit natuerlichen Ankertexten gesetzt?
-- [ ] Bei Standort-Seiten: Wurden Stadtteil-Besonderheiten natuerlich eingeflochten (kein generisches Template-Feeling)?
-- [ ] Klingt der Text lebendig, menschlich und empathisch?
-
----
-
-## 4. Notion-Workflow-Phasen
+Typical flow:
 
 ```text
-[Bereit fuer Copywriting] ---> [In Bearbeitung (Texter)] ---> [Review / Lektorat] ---> [Bereit fuer Upload/HTML]
+Ready for Copywriting
+-> In progress
+-> Editorial review
+-> Ready for implementation
 ```
+
+The status names may be mapped to the actual Heartweb Notion setup.
+
+Copywriter task changes do not call or resume the Heartweb Core. Notion is the operative workspace after handoff.
+
+## 4. Editorial responsibilities
+
+Before submission, verify:
+
+- the page answers the stated Search Intent directly
+- the main topic appears naturally in title, opening and relevant headings
+- required questions have useful and accurate answers
+- claims stay within approved Evidence
+- local details are specific and verified
+- Pillar and sibling links are included with natural anchor text
+- the text follows customer tone and brand
+- examples are concrete rather than generic filler
+- CTA language matches the intended action
+- no metric, certification, service area or customer fact was invented
+
+## 5. Evidence and claims
+
+Evidence references in the briefing are constraints, not optional inspiration.
+
+If a required fact is missing or unclear:
+
+1. mark the Notion task blocked
+2. identify the exact missing fact or source
+3. request clarification from the project lead
+4. do not fill the gap with an estimate
+
+## 6. Revision handling
+
+Heartweb revisions before final handoff remain Core artifacts. Editorial revisions after handoff are managed in Notion and the agreed document workflow.
+
+A later Step-3B performance adjustment may create new or changed future tasks. It does not rewrite already approved editorial work silently.
+
+## 7. Human quality standard
+
+The briefing is a production specification, not final prose. A finished Heartweb text should sound like the customer, use genuine expertise and help the reader take the intended next step.

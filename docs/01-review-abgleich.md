@@ -1,5 +1,7 @@
 # 01. Review-Abgleich und Entscheidungslog
 
+> **Lifecycle: historical.** Dieses Dokument beschreibt den Ausgangsstand vor der V2-Runtime. Aktuelle Autoritaet: `docs/00-current-production-architecture.md`, `00_admin/PROJECT_STATE.md` und `00_admin/DECISIONS.md`. Nur fuer Ursprung und Vergleich verwenden.
+
 **Projekt:** Modernisierung des Claude Desktop SEO-Workflows  
 **Datum:** 16. August 2026, Nachtrag 17. August 2026  
 **Status:** Baseline-Abgleich ueberarbeitet (Strikte Fail-Fast- und Qualitaets-Doktrin)  

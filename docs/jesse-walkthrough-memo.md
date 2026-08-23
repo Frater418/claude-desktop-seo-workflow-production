@@ -1,5 +1,7 @@
 # Implementierungs-Memo: Claude Desktop SEO-Workflow & Notion-Bridge
 
+> **Lifecycle: historical stakeholder snapshot.** Dieses Memo dokumentiert den Stand vom 16. und 17. August 2026. Aktueller Produktstand: `README.md`, `docs/00-current-production-architecture.md` und `00_admin/PROJECT_STATE.md`.
+
 **An:** Jesse Jensen (Heartweb)  
 **Von:** Raphael Rechberger  
 **Datum:** 16. August 2026, aktualisiert 17. August 2026  

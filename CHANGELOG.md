@@ -5,6 +5,38 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) 
 
 ---
 
+## [Unreleased] - V2 Production-first
+
+### Current Feature line
+
+- V2 domain, workflow, Transition Service, artifacts, Evidence, approvals, releases and recovery
+- Context Packages and reproducible LLM Run Records
+- provider-neutral Gateway and fail-fast market binding
+- Local Operator API and German Single-Admin Console
+- browser-verified release-critical operator actions
+- Sprint-5E deterministic Delivery, role packages, Notion import and secure ZIP under active completion
+- Production-first sequence with live Notion, live n8n, deployment, Step 3B and broad expansion separated from the first local output
+- DEC-0025 one-way Notion handoff with scheduled Step-3B re-entry only
+
+### Documentation and retrieval branch
+
+- current V2 README and production architecture
+- extension and evolution guide for prompts, contracts, providers, tools and workflow steps
+- deterministic Document Registry JSON and RAG-ready JSONL
+- Session Bootstrap and lifecycle indexes for docs, plans, audits and research
+- visible lifecycle banners on historical and superseded Markdown sources
+- automated drift, hash, link, supersession, sensitive-path and reproducibility tests
+
+### Before release and integration
+
+- finish Sprint 5E API, Delivery Center and Delivery E2E
+- implement minimal DIB-005 diagnostic trace
+- restore bounded PQ-0, PQ-1, PQ-2 and PQ-4 output quality
+- run targeted Production audit and first real customer Golden Path
+- refresh volatile documentation facts from the final stable Feature commit
+
+---
+
 ## [1.4.0] - 2026-08-17
 
 ### Generative Engine Optimization (GEO), RAG Evidence Containers, Schema.org Graph & Validator CLI

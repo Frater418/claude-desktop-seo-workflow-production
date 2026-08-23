@@ -10,6 +10,8 @@ workspace: "Heartweb-Claude-Desktop-SEO-Workflow"
 
 # Heartweb Operations Platform: End-to-End-Automatisierungsplan
 
+> **Lifecycle: superseded.** Aktuelle Architektur: `docs/00-current-production-architecture.md`. Aktuelle Sequenz: `00_admin/PROJECT_STATE.md` und DEC-0024/25. Dieses Dokument bleibt als Ursprung der Plattformidee erhalten.
+
 > **UEBERHOLT:** Dieser Entwurf basiert auf einer falschen Architekturinterpretation. Er behandelt PostgreSQL als operative Source of Truth und OpenCode OMO als Bestandteil der Zielarchitektur. Verbindlich ist stattdessen der korrigierte Plan `2026-08-18_085500-heartweb-notion-n8n-ui-migrationsplan.md`: Notion ist das zentrale Steuerelement, n8n fuehrt den automatisierten Workflow aus, die eigene UI steuert den Prozess und ersetzt die lokale Claude Desktop App. OpenCode OMO wird ausschliesslich von Raphael und Hermes zur Entwicklung der UI verwendet.
 
 **Praesentationsgrafik:** `.hermes/plans/heartweb-operations-platform-architecture.png`

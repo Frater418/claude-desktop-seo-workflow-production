@@ -1,5 +1,7 @@
 # 03. Sprint-Plan: Modernisierung des Claude Desktop SEO-Workflows
 
+> **Lifecycle: superseded.** Die damalige Sprintfolge wurde durch die aktiven V2- und Production-first-Plaene ersetzt. Aktuelle Auswahl: `.hermes/plans/INDEX.md`. Dieses Dokument bleibt fuer historische Rekonstruktion erhalten.
+
 **Projekt:** Modernisierung des Claude Desktop SEO-Workflows  
 **Datum:** 16. August 2026, Stand aktualisiert 17. August 2026  
 **Status:** Freigegeben am 16.08.2026 und in vier Sprints umgesetzt  

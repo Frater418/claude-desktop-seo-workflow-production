@@ -1,5 +1,7 @@
 # 04. Entscheidungslog (Architecture Decision Records)
 
+> **Lifecycle: superseded.** Aktuelle Entscheidungsautoritaet: `00_admin/DECISIONS.md`. Alte ADRs bleiben als fachliche Quelle erhalten, gelten aber nicht automatisch als aktive Entscheidung.
+
 **Projekt:** Modernisierung des Claude Desktop SEO-Workflows  
 **Autor:** Raphael Rechberger  
 **Status:** Aktiv  

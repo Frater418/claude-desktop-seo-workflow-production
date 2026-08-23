@@ -1,5 +1,7 @@
 # AHD End-to-End Operator Workflow System Implementation Plan
 
+> **Lifecycle: active foundation plan.** Die enthaltene breite Sprintfolge wird durch die aktuelle Production-first-Sequenz in `00_admin/PROJECT_STATE.md`, DEC-0024 und `00_admin/POST_RELEASE_BACKLOG.md` priorisiert. AHD bleibt Pilot, nicht Shared-Core-Logik.
+
 > **Fuer Hermes:** Diesen Plan mit `subagent-driven-development` task-by-task ausfuehren. Pro Schreibbereich arbeitet immer nur ein Implementer. Nach jedem Paket folgen Spec-Review und Quality-Review. Keine Commits, Pushes oder Deployments ohne ausdrueckliche Freigabe von Raphael Rechberger.
 
 **Autor:** Raphael Rechberger

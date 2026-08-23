@@ -1,5 +1,7 @@
 # 06. Pilot-Abnahme-Checkliste
 
+> **Lifecycle: historical.** Diese Checkliste beschreibt einen frueheren Pilotstand. Aktuelle Releasefolge und Abnahmekriterien stehen in `00_admin/PROJECT_STATE.md`, DEC-0024 und den aktiven Plaenen.
+
 **Projekt:** Modernisierung des Claude Desktop SEO-Workflows  
 **Autor:** Raphael Rechberger  
 **Version:** 1.1.0  

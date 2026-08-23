@@ -1,12 +1,14 @@
 # Local Delivery, Export and Notion Handoff Implementation Plan
 
+> **Lifecycle: active Sprint-5E plan.** DEC-0025 ist verbindlich: Ein komplettes Kundenprojekt wird nach Notion uebergeben. Mitarbeiteraufgaben bleiben danach in Notion. Nur Step 3B an Tag 30, 60 und 90 darf spaeter erneut in den Core eintreten.
+
 > **For implementation:** Hermes communicates only with Sisyphus. Hermes supplies the approved outcome, architecture boundary, hard constraints and Definition of Done. Sisyphus owns every internal implementation decision and delegation.
 
 **Author:** Raphael Rechberger
 **Date:** 2026-08-20
-**Status:** Proposed insertion after Sprint 5 operational wiring and before Sprint 6
+**Status:** Approved production-first Sprint 5E plan. Handoff boundary clarified by DEC-0025.
 
-**Goal:** Make every Heartweb project locally deliverable and manually operable without live Notion or n8n by producing deterministic checkpoint and final handoff folders, ZIP downloads, role-specific packages and a Notion import pack.
+**Goal:** Make every Heartweb project locally deliverable without live Notion or n8n by producing deterministic checkpoint and final handoff folders, ZIP downloads, role-specific packages and a Notion import pack that creates a complete customer concept and implementation project for Jesse and the team.
 
 **Architecture:** The Heartweb Core and customer workspace remain the source of truth. The delivery layer reads released or explicitly included draft records, builds derived export views, writes an immutable delivery manifest and produces deterministic ZIP files. It never changes workflow state, approves a gate, overwrites an artifact or requires Notion/n8n.
 
@@ -148,6 +150,23 @@ n8n
 
 Live Notion and n8n are not dependencies of local export.
 
+## 5.1 Binding handoff boundary
+
+Sprint 5E exports two distinct task classes and must never merge them:
+
+1. **Core-internal production tasks:** Temporary blockers, reviews and Human-Gate work required to complete Step 0 through Step 4B. These remain Core records and may resume an active Core run before release.
+2. **Notion implementation tasks:** Copywriter, design, development, review, launch and tracking work derived from the approved concept. These are created for operational execution after release and are owned by Notion.
+
+After final handoff:
+
+- Notion owns implementation-task status, comments, assignees, priorities and deadlines
+- implementation-task completion does not call the Core
+- implementation-task completion does not resume a run, approve a gate, create a revision or mutate an artifact
+- no callback, webhook or command mapping for daily staff-task changes is included in the Notion import pack
+- stable Heartweb IDs and artifact hashes exist only for traceability to the approved concept
+
+The only planned automated post-handoff Core re-entry is Step 3B at day 30, 60 and 90. The Notion project includes performance-checkpoint records and source references required to compare released strategy with actual results. Step 3B remains post-release and is not implemented by Sprint 5E.
+
 ## 6. Export Types
 
 ### 6.1 Checkpoint Export
@@ -189,7 +208,7 @@ Derived subsets:
 
 ### 6.4 Notion Import Pack
 
-A portable manual import package:
+A portable manual import package that creates the complete customer concept and operational implementation project:
 
 - projects.csv
 - tasks.csv
@@ -204,6 +223,8 @@ A portable manual import package:
 - IMPORT_ORDER.md
 - PROPERTY_MAPPING.md
 - USER_MAPPING_TEMPLATE.csv
+
+The pack distinguishes read-only concept provenance from Notion-owned implementation execution. It contains no inbound Core callback configuration.
 
 ## 7. Deterministic Folder Layout
 
@@ -342,6 +363,12 @@ All paths inside the manifest are relative POSIX-style paths. No absolute host p
 - include user mapping template when Notion User IDs are unknown
 - mark unresolved assignees as unassigned, never guess
 - label integration mode as manual import
+- classify exported tasks as `core_history` or `notion_implementation`
+- export Core-internal tasks only as immutable history when required for audit context
+- make Notion implementation-task status, assignee, priority, deadline and comments editable in Notion
+- include no `resume_run`, gate, revision, artifact mutation or task-completion callback mapping for Notion implementation tasks
+- include performance checkpoint rows for day 30, 60 and 90 with released strategy, plan and publication-registry references
+- state in `PROPERTY_MAPPING.md` that only scheduled Step 3B may later re-enter the Core after handoff
 
 **Recommended import order:**
 
@@ -354,6 +381,13 @@ All paths inside the manifest are relative POSIX-style paths. No absolute host p
 7. blockers and escalations
 8. relations
 9. performance checkpoints
+
+**Required negative proofs:**
+
+- a Notion implementation task cannot be exported with a Core resume command
+- a Copywriter or Developer completion field cannot map to a gate or artifact mutation
+- a performance checkpoint without released strategy and plan references fails
+- duplicate import retains stable external IDs and does not duplicate customer, project or implementation tasks
 
 ## 12. Deterministic ZIP Builder
 

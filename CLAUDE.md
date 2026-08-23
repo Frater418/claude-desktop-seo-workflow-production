@@ -1,53 +1,71 @@
-# CLAUDE.md: Instructions for Claude Code & AI Assistants
+# CLAUDE.md: Heartweb V2 quick operating contract
 
-**Project:** Heartweb Modernized Claude Desktop SEO Workflow Framework  
-**Author & Architect:** Raphael Rechberger  
-**Version:** 1.3.0  
-**Context:** Heartweb SEO Production Infrastructure  
+**Author:** Raphael Rechberger
+**Status:** Current V2 agent authority
+**Updated:** 2026-08-22
 
----
+## Read first
 
-## 1. Architectural Model: Framework vs. Client Project Workspace
+1. `00_admin/SESSION_BOOTSTRAP.md`
+2. `00_admin/PROJECT_STATE.md`
+3. `00_admin/DECISIONS.md`
+4. `00_admin/REPOSITORY_INDEX.md`
+5. the active task plan from `.hermes/plans/INDEX.md`
+6. before any test or review decision, `standards/testing/PROTOTYPE_TEST_POLICY.md`
 
-This project enforces a strict boundary between two layers:
+Current Project State and active Decisions override old docs, old plans and audit prose. Historical, superseded and evidence records are opt-in context only.
 
-1. **Framework Repository (The Master Blueprint & Tooling Suite):**
-   Contains the reusable prompt templates (`prompts/`), schemas (`standards/manifest.schema.json`), the binding target-market table (`standards/location-codes.json`), global design tokens (`standards/design-system.css`), and deterministic Python tools (`mcp/tools/`).
+`standards/testing/PROTOTYPE_TEST_POLICY.md` is the binding Production-first test authority. It preserves prior green baseline evidence and selects tests only for the proven affected dependency closure. Without new explicit Raphael authorization, do not run the complete repository suite, restart a passed matrix after a later-cell failure, or launch repeated broad multi-agent review rounds.
 
-2. **Client Project Directory (The Local Customer Workspace):**
-   A dedicated local Windows folder (`C:\Users\offic\Documents\Projekte\Heartweb\Kunden\<client-slug>\`) containing the customer's actual project state (`manifest.json`), extracted CSS (`design-system.css`), and all deliverables under `outputs/`.
+## Product
 
----
+Heartweb is a client-neutral local SEO and GEO production Core with a German Single-Admin Console. It turns verified client inputs into strategy, architecture, keyword evidence, a 120-day roadmap, Copywriter briefings, Developer specifications and deterministic Delivery packages.
 
-## 2. Context Persistence Across Claude Desktop Sessions
+Human Copywriters write the final editorial copy. External team members work from files and Notion, not from the Admin Console.
 
-Claude Desktop maintains state across separate chat conversations via the **Filesystem MCP Server**:
-- Every step writes its structured artifact (`manifest.json`, `1-pillar-themen.md`, `2-cluster.csv`, `3-plan.md`, `briefing-*.md`) to the client directory.
-- Subsequent steps read the required context directly from the filesystem, eliminating conversational context drift.
+## Workflow
 
----
-
-## 3. Strict Operating Rules
-
-1. **Authorship:** All project deliverables and commits are authored exclusively by **Raphael Rechberger**.
-2. **Typography Rule:** Never use em-dashes or en-dashes. Always use standard hyphens (-), colons (:), or clean sentences.
-3. **Fail-Fast Quality Gate:** Never guess or hallucinate keyword search volumes or metrics. If an API call fails or inputs are missing, fail immediately with an explicit error code.
-4. **Execution Order:** Always execute in strict sequence: `0-kickoff -> 1-pillar -> 1b-architecture -> 1c-templates -> 2-cluster -> 3-plan -> 4a-briefing -> 4b-html`, danach zyklisch `3b-performance-check` an Tag 30, 60 und 90.
-5. **Notion Compatibility:** All step 4a briefings must include structured YAML frontmatter for seamless Notion database synchronization.
-6. **Target Market:** Every AgentSEO call passes `location`, `location_code` and `language` together, sourced from `country` and `location_code` in `manifest.json` via `standards/location-codes.json`. Never pass a location name alone, and never let the provider default to another market.
-7. **Async Tool Calls:** Every AgentSEO call uses `sync: false` and collects the result via `agentseo_job_status`. Synchronous calls abort after 60 seconds.
-8. **Machine-Checked Counts:** Quantity rules are written into `manifest.json` at the end of each step and enforced by the schema (`clusters_per_pillar` 8 to 15, `validated_rows_per_pillar` minimum 25). A step must not be marked `completed` when a count is short.
-
----
-
-## 4. Helper Commands
-
-```bash
-# Run 120-day capacity matrix solver (v1.2.0)
-python mcp/tools/capacity_matrix_solver.py --input tests/fixtures/sample_cluster_keywords.json --output outputs/3-plan.md
-
-# Validate Schema.org JSON-LD blocks
-# Open issue: this script has no CLI yet. Running it only prints a readiness message
-# and exits 0 without validating anything. Use the Google Rich Results Test until fixed.
-python mcp/tools/validate_schema_jsonld.py
+```text
+0 -> 1 -> 1b -> 1c -> 2 -> 3 -> 4a -> 4b -> Delivery
 ```
+
+Step 3B runs separately at day 30, 60 and 90 using verified post-publication performance data.
+
+## Authority
+
+- Transition Service is the only canonical workflow state writer.
+- Prompts create candidates and never approve or complete steps.
+- Provider calls go through Provider Gateway with explicit market, code and language.
+- Released artifacts are immutable. Changes create new revisions.
+- Delivery is deterministic and read-only with respect to Core state.
+- Notion owns staff execution after final handoff.
+- Post-handoff Notion task changes do not call the Core.
+- n8n later orchestrates the concept workflow, Notion handoff and Step-3B checkpoints. It never owns business state.
+
+## Fail-fast
+
+Never guess missing metrics, facts, claims, locations, Evidence, IDs, revisions or approvals. Stop with a stable error code and remediation. Preserve the last valid canonical state.
+
+Never present simulated output as live or production Evidence.
+
+## Extensibility
+
+Prompt and tool changes are allowed through versioned resources. A semantic output change requires coordinated prompt, schema, validator, renderer, gate, fixtures, Context Package and activation review.
+
+Contracts guarantee accepted structure, identity, lineage and persistence. They reduce and expose hallucination risk but cannot guarantee semantic truth or excellent output alone.
+
+See `docs/09-extension-and-evolution-guide.md`.
+
+## Project separation
+
+Shared runtime and prompts remain client-neutral. Customer facts, claims, regions, branding, Evidence and design remain in isolated customer workspaces. AHD is a pilot fixture, not shared product logic.
+
+## Git and agents
+
+Do not commit, push, merge, deploy or rewrite history without explicit Raphael authorization. Parallel work uses an isolated worktree.
+
+When OpenCode OMO is active, Hermes communicates only with root Sisyphus. Do not control child sessions. Native Hermes subagents require explicit Raphael authorization.
+
+## Writing
+
+Raphael Rechberger is the sole author. Never use Em Dash or En Dash characters. Clearly label implemented, verified, simulated, planned, deferred and absent behavior.

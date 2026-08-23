@@ -1,5 +1,7 @@
 # Sprint 5 Operational Completion Contract
 
+> **Lifecycle: active completion contract.** Aktueller Ausfuehrungsstand und Production-Cut-Line stehen in `00_admin/PROJECT_STATE.md` und DEC-0024.
+
 **Author:** Raphael Rechberger
 **Date:** 2026-08-20
 **Status:** Approved for implementation

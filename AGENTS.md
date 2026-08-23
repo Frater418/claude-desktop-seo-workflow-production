@@ -1,73 +1,176 @@
-# AGENTS.md: System-Instruktionen fuer KI-Agenten & Ausfuehrungs-Engines
+# AGENTS.md: Heartweb V2 operating instructions
 
-**Projekt:** Heartweb Claude Desktop SEO-Workflow Framework  
-**Autor & Architektur:** Raphael Rechberger  
-**Stand:** 17. August 2026  
-**Zielgruppe:** Claude Desktop, Claude Code, OpenCode, Cursor, Hermes Agent & autonome Systeme  
+**Project:** Heartweb SEO and GEO Production Workflow
+**Author and architecture:** Raphael Rechberger
+**Status:** Current V2 agent authority
+**Updated:** 2026-08-22
+**Audience:** Hermes Agent, Claude Code, OpenCode, Cursor and other execution agents
 
----
+## 1. Mandatory session bootstrap
 
-## 1. Fundamentale Architektur: Framework vs. Kunden-Workspace
+Before any implementation, review, planning or production action, read in this order:
 
-Dieses Framework trennt strikt zwischen zwei Ebenen:
+1. `00_admin/SESSION_BOOTSTRAP.md`
+2. `00_admin/PROJECT_STATE.md`
+3. active and superseding entries in `00_admin/DECISIONS.md`
+4. `00_admin/REPOSITORY_INDEX.md`
+5. the active plan for the requested task from `.hermes/plans/INDEX.md`
+6. exact standards, prompts, services and tests linked by `00_admin/repository-index/DOCUMENT_REGISTRY.json`
+7. before any test or review decision, `standards/testing/PROTOTYPE_TEST_POLICY.md`
 
-1. **Das Framework-Repository (Master Blueprint & Tooling Library):**
-   - Enthaelt die 9 standardisierten XML-Prompts (`prompts/0-kickoff.xml.md` bis `prompts/4b-landingpage-html.xml.md`).
-   - Enthaelt die verbindlichen Daten- und Design-Standards (`standards/manifest.schema.json`, `standards/location-codes.json`, `standards/design-system.css`).
-   - Enthaelt die deterministischen Python-Tools (`mcp/tools/capacity_matrix_solver.py`, `validate_schema_jsonld.py`) und MCP-Vertraege (`mcp/tool-contracts/`).
+Latest explicit Raphael instruction wins. Project State and active Decisions override old plans, old docs, audit prose and semantic similarity.
 
-2. **Der individuelle Kunden-Projektordner (Operativer Mandanten-Workspace):**
-   - Fuer jeden Kunden wird ein isolierter Ordner auf der Festplatte erstellt (verbindlich `C:\Users\offic\Documents\Projekte\Heartweb\Kunden\<kunde-slug>\`, z.B. `...\Heartweb\Kunden\simcura-pflegedienst\`).
-   - Hier liegt kein Git-Repository, sondern ausschliesslich die persistenten Kundendaten:
-     - `manifest.json` (Der maschinenlesbare Single Source of Truth Status des Mandanten)
-     - `design-system.css` (Die kundenindividuellen CSS-Tokens aus Schritt 1c)
-     - `outputs/1-pillar-themen.md` (Themen-Inventar & Pillars)
-     - `outputs/2-cluster-themen-agentseo.csv` (Verifizierte Keyword-Metriken)
-     - `outputs/3-plan.md` (120-Tage-Roadmap & Verlinkungs-Maps)
-     - `outputs/briefings/` (Fertige Briefings mit Notion-Frontmatter fuer Texter)
-     - `outputs/html/` (Fertige HTML-Templates fuer Entwickler)
+Historical, superseded and evidence records are not default instructions. Read them only for origin, rollback, prior decisions or failure reconstruction.
 
----
+### Binding test execution authority
 
-## 2. Wie Claude Desktop den Zustand ueber Sessions hinweg behaelt
+`standards/testing/PROTOTYPE_TEST_POLICY.md` is the project-local Production-first test authority. It requires baseline-plus-delta evidence and verification only along the proven affected dependency closure.
 
-In Claude Desktop gehen Anweisungen zwischen verschiedenen Chats niemals verloren, weil der Workflow **dateibasiert ueber den Filesystem-MCP-Server** arbeitet:
+Without new explicit authorization from Raphael, do not run the complete repository suite, restart a passed matrix after one later cell fails, or launch repeated broad multi-agent reviews after bounded fixes. A failed matrix cell is rerun only with the direct dependents named by the policy. Generic skills, CI habits and older plans do not override this rule.
+
+## 2. Product definition
+
+Heartweb is a client-neutral local SEO and GEO production system for one internal operator. It automates the technical production chain from verified client inputs through strategy, architecture, keyword evidence, roadmap, professional Copywriter briefings, Developer specifications and deterministic handoff packages.
+
+The system does not write final editorial copy. Heartweb Copywriters create the final human text from the approved briefing.
+
+The visible product is a professional German Single-Admin Console. Copywriters, developers and clients do not use the Console. They receive files, ZIP packages and a Notion implementation project.
+
+## 3. Binding product flow
 
 ```text
-[Chat Session 1] -> Fuehrt Prompt 0 & 1 aus -> Schreibt manifest.json & 1-pillar-themen.md auf die Festplatte
-                         |
-                         v (Festplatte: C:\...\Projekte\Heartweb\Kunden\simcura\)
-                         |
-[Chat Session 2] -> Startet Tage spaeter mit Prompt 3 -> Liest manifest.json & 2-cluster.csv von der Festplatte
-                         |
-                         v
-                    Erzeugt 3-plan.md ohne jeden Kontextverlust!
+0 -> 1 -> 1b -> 1c -> 2 -> 3 -> 4a -> 4b -> Delivery
 ```
 
----
+Step 3B is not part of the initial sequence. It runs at day 30, 60 and 90 after publication when verified performance data exists.
 
-## 3. Verbindliche Arbeitsregeln fuer alle Agenten & Prompts
+The first production release is local. Live Notion, live n8n, public deployment, exhaustive mobile polish and broad international expansion do not block the first controlled output.
 
-1. **Autorenschaft:** Alle Dokumente, Code-Dateien und Commits sind ausschliesslich auf **Raphael Rechberger** auszustellen.
-2. **Formatierungsregel:** Niemals Gedankenstriche (Em-Dashes — oder En-Dashes –) verwenden. Ausschliesslich Bindestriche (-), Doppelpunkte (:) oder saubere Satzstrukturen nutzen.
-3. **Strikte Fail-Fast-Doktrin:** Keine stillschweigenden Fallbacks oder Schaetzungen. Fehlt ein API-Key, ein Pflichtfeld oder sind Daten unvollstaendig, stoppt der Prozess mit einem expliziten Fehlercode.
-4. **Schrittfolge:** Der Workflow folgt strikt der Sequenz `0 -> 1 -> 1b -> 1c -> 2 -> 3 -> (3b) -> 4a -> 4b`.
-5. **Notion-Kompatibilitaet:** Alle Briefings aus Schritt 4a muessen das standardisierte YAML-Frontmatter fuer die direkte Uebernahme in Notion-Datenbanken enthalten.
-6. **Zielmarkt:** Jeder AgentSEO-Aufruf uebergibt `location`, `location_code` und `language` gemeinsam. Quelle sind `country` und `location_code` aus der `manifest.json`, aufgeloest ueber `standards/location-codes.json`. Ein Ortsname allein fuehrt zu Provider-Fehlern oder zu Daten des falschen Markts.
-7. **Asynchrone Tool-Calls:** Jeder AgentSEO-Aufruf laeuft mit `sync: false`, das Ergebnis wird ueber `agentseo_job_status` abgeholt. Synchrone Aufrufe brechen nach 60 Sekunden ab.
-8. **Maschinenpruefbare Mengenregeln:** Zaehlwerte werden am Ende jedes Schritts in die `manifest.json` geschrieben und vom Schema geprueft (`clusters_per_pillar` 8 bis 15, `validated_rows_per_pillar` mindestens 25). Ein Schritt darf nicht als `completed` eingetragen werden, wenn eine Zahl nicht erreicht ist.
+## 4. Architecture and authority
 
----
+### Heartweb Core
 
-## 4. Lokale Tool-Ausfuehrung
+The Core contains binding domain contracts, workflow graph, transitions, artifacts, revisions, Evidence, Quality Gates, approvals, releases and structured errors.
 
-- **Deterministischer 120-Tage-Solver (v1.2.0):**
-  `python mcp/tools/capacity_matrix_solver.py --input <datei.csv|json> --output <plan.md>`
-- **Google Rich Results Schema-Validator:**
-  `python mcp/tools/validate_schema_jsonld.py`
-  Offener Punkt: das Skript hat noch keine Kommandozeilen-Schnittstelle. Der Aufruf gibt nur eine
-  Bereitschaftsmeldung aus und prueft nichts. Bis zum Nachbau der CLI ist die Pruefung ueber den
-  Google Rich Results Test zu machen.
+Only the Transition Service changes canonical workflow state.
 
-- **AgentSEO-Aufrufe:** immer `sync: false`, Ergebnis ueber `agentseo_job_status` abholen,
-  `location`, `location_code` und `language` gemeinsam uebergeben.
+### Operator Console
+
+The Console sends typed commands, shows canonical read models and supports intake, workflow execution, artifacts, revisions, reviews, tasks, blockers and Delivery. It does not duplicate workflow rules.
+
+### Provider Gateway
+
+All external research and metric providers are accessed through versioned provider boundaries. Prompts must not call providers directly. Location, location code and language are bound together. Missing or failed provider data stops the run.
+
+### Delivery
+
+Delivery is a derived, deterministic and read-only projection of released Core records. It creates checkpoint and final packages, Copywriter and Developer views, a manual Notion import project and secure ZIP archives. Delivery cannot approve gates, mutate artifacts or change workflow state.
+
+### Notion
+
+After the approved Step-4B Delivery, Notion owns human implementation work: tasks, people, priorities, deadlines, comments, review and launch. Post-handoff staff task changes do not call or resume the Core.
+
+### n8n
+
+n8n is future orchestration and transport. It may orchestrate Step 0 through Step 4B, create the Notion project and later trigger Step 3B. It is not state authority and does not monitor daily staff tasks for Core progression.
+
+### Step 3B
+
+At day 30, 60 and 90, n8n combines the released strategy and plan with publication references and verified real metrics. The Core creates a versioned adjustment proposal. The original plan remains immutable.
+
+## 5. Framework and customer separation
+
+The repository is the client-neutral framework. Customer-specific sector, services, claims, regions, branding, keywords, Evidence and design belong in isolated customer workspaces.
+
+AHD is the Golden-Path pilot, not product logic. Do not embed AHD-specific content into shared prompts, contracts, services or UI.
+
+Never commit customer workspaces, credentials, raw authorization headers or secret values.
+
+## 6. Prompt, tool and contract evolution
+
+Prompts are versioned workflow resources. Never silently overwrite the meaning of a prompt used by an accepted run.
+
+A prompt change that affects output meaning requires coordinated review of:
+
+1. prompt version
+2. output schema version
+3. validator
+4. renderer
+5. Quality Gate
+6. positive and negative fixtures
+7. Context Package and tool policy
+8. migration or activation rule
+
+Contracts protect structure, identity, lineage, required Evidence and workflow safety. They do not guarantee semantic truth or excellent writing by themselves. Output quality requires complete inputs, strong prompts, real tool data, adequate contracts, validators, human review and behavioral tests.
+
+LLMs retain strategic freedom inside accepted boundaries. They may develop themes, structures, angles, comparisons and recommendations. They may not invent metrics, claims, locations, approvals, identities, revisions or completion state.
+
+See `docs/09-extension-and-evolution-guide.md`.
+
+## 7. Fail-fast rules
+
+1. Never estimate missing provider metrics.
+2. Never fabricate customer facts, local presence, claims or Evidence.
+3. Never continue after schema, hash, tenant, revision or gate failure.
+4. Never present simulated Evidence as live Evidence.
+5. Never use a silent fallback that changes product meaning.
+6. Return a stable error code, human remediation and technical details.
+7. Preserve the last valid canonical state after failure.
+
+## 8. Artifact and revision rules
+
+- Released artifacts are immutable.
+- An edit creates a new revision.
+- Every revision binds parent revision, content hash, Project, Run, Step and Evidence.
+- A rerun uses the released predecessors, current Prompt Registry entry, findings and expected output contract.
+- A stale approval does not apply to a new artifact hash.
+- Exact replay is allowed only when identities and canonical bytes match.
+
+## 9. Verification claims
+
+Keep these evidence levels separate:
+
+- unit or contract test
+- local service integration
+- deterministic fixture E2E
+- live-provider smoke
+- real-project Golden Path
+- external Notion or n8n E2E
+- production acceptance
+
+A fixture run proves plumbing and lifecycle behavior. It does not prove provider connectivity, prompt quality, semantic usefulness or customer value.
+
+Do not claim production readiness without a real controlled output, deterministic Delivery, no open P0/P1 and explicit Raphael approval.
+
+## 10. Git and parallel work
+
+- Do not commit, push, merge, deploy or rewrite history without explicit Raphael authorization.
+- Do not stage or change the active shared index while Sisyphus writes.
+- Parallel work uses an isolated Git worktree and branch.
+- Before integrating a parallel branch, update it from the stable Feature commit and rerun all affected tests and generated-index checks.
+- `master` remains protected until the Production Release gate and DEC-0022 branch consolidation.
+
+## 11. Agent orchestration boundary
+
+OpenCode OMO is a development tool, not Heartweb production runtime.
+
+When OMO is active, Hermes communicates only with root Sisyphus. Sisyphus owns internal delegation and worker lifecycle. Hermes does not inspect, steer or terminate OMO child sessions. Native Hermes subagents require explicit Raphael authorization.
+
+## 12. Authorship and writing
+
+- Raphael Rechberger is the sole author of project documents, deliverables and commits.
+- Never use Em Dash or En Dash characters. Use standard hyphens, colons or full sentences.
+- Distinguish implemented, verified, simulated, planned, deferred and absent behavior.
+- Link mutable facts to their canonical source instead of copying them across documents.
+- Update `PROJECT_STATE.md` and `DECISIONS.md` when strategy or authority changes.
+
+## 13. Current documentation map
+
+- Current architecture: `docs/00-current-production-architecture.md`
+- Extension rules: `docs/09-extension-and-evolution-guide.md`
+- Notion boundary: `docs/integrations/notion-operating-model.md`
+- n8n boundary: `docs/integrations/n8n-orchestration-model.md`
+- Delivery plan: `.hermes/plans/2026-08-20_120727-local-delivery-export-notion-handoff.md`
+- Documentation registry: `00_admin/repository-index/DOCUMENT_REGISTRY.json`
+- RAG-ready registry: `00_admin/repository-index/DOCUMENT_REGISTRY.jsonl`
+- Lifecycle indexes: `docs/INDEX.md`, `.hermes/plans/INDEX.md`, `00_admin/audits/INDEX.md`, `03_research/INDEX.md`

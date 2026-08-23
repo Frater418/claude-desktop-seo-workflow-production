@@ -2,7 +2,7 @@
 """
 Automatisierter Akzeptanztest-Runner fuer das Heartweb SEO & GEO Framework
 Autor: Raphael Rechberger
-Version: 1.4.0
+Version: V2 Production-first
 """
 
 import sys
@@ -99,10 +99,19 @@ def test_prompt0_operational_contract():
     ]
     subprocess.run(cmd, capture_output=True, text=True, check=True)
 
+def test_repository_authority_registry():
+    check_command = [sys.executable, "scripts/build_repository_index.py", "--check"]
+    check_result = subprocess.run(check_command, capture_output=True, text=True)
+    assert check_result.returncode == 0, check_result.stdout + check_result.stderr
+
+    test_command = [sys.executable, "-m", "unittest", "tests.test_repository_index", "-v"]
+    test_result = subprocess.run(test_command, capture_output=True, text=True)
+    assert test_result.returncode == 0, test_result.stdout + test_result.stderr
+
 def main():
     print("==================================================")
     print("Heartweb SEO/GEO Framework - Acceptance Test Suite")
-    print("Autor: Raphael Rechberger | Version: 1.4.0")
+    print("Autor: Raphael Rechberger | Version: V2 Production-first")
     print("==================================================")
     
     tests = [
@@ -112,7 +121,8 @@ def main():
         ("TEST-04: Standalone Design System CSS & GEO Tokens", test_design_system),
         ("TEST-05: Strict Fail-Fast Validation Across All 9 Prompts", test_fail_fast_prompts),
         ("TEST-06: End-to-End Briefing & Landingpage Fixtures", test_end_to_end_fixtures),
-        ("TEST-07: Step-0 Operational Contract", test_prompt0_operational_contract)
+        ("TEST-07: Step-0 Operational Contract", test_prompt0_operational_contract),
+        ("TEST-08: Repository Authority, RAG Index and Documentation Drift", test_repository_authority_registry),
     ]
     
     passed = 0

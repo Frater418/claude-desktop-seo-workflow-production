@@ -1,5 +1,7 @@
 # Sprint 5 Operator Experience Specification
 
+> **Lifecycle: active product specification.** Desktop und Kernaktionen sind releasekritisch. Reine Mobile-Politur ist nach DEC-0024 Post-Release, sofern keine erforderliche Aktion blockiert wird.
+
 **Author:** Raphael Rechberger
 **Date:** 2026-08-20
 **Status:** Mandatory user correction for Sprint 5 completion

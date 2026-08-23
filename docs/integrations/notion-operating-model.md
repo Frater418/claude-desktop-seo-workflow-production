@@ -1,27 +1,88 @@
-# Notion Operating Model
+# Notion operating model
 
-## Authority and Scope
+**Author:** Raphael Rechberger
+**Status:** Current integration authority
+**Updated:** 2026-08-22
+**Decision:** DEC-0025
 
-Notion is Heartweb's central operative interface under DEC-0012. It presents projects, runs, tasks, gates, artifacts, reviews, and approvals in the daily operating view. The Operator Console is a specialized view reachable from that operating model. Neither Notion nor the Operator Console is the atomic state writer.
+## Product purpose
 
-The Transition Service is the only atomic state authority. It validates tenant, project, run, step, revision, artifact hash, quality gate, approval, and workflow graph rules before it changes a run. A Notion projection is created from accepted append-only workflow events. Every projection carries `source_event_id`, `source_revision`, `state_authority: transition_service`, and `atomic_state_writer: false`.
+Notion is Heartweb's central operative workspace for Jesse and the implementation team. Heartweb delivers a complete customer concept and implementation project to Notion after the Step-0-to-Step-4B workflow is approved.
 
-## Modes
+The Notion project contains:
 
-`simulated` means local fixture or simulator transport only. It requires a `simulation_id` and cannot carry a `live_connection_id`.
+- customer and project context
+- approved strategy and architecture
+- 120-day roadmap
+- Copywriter briefings
+- Developer specifications
+- artifact references
+- implementation tasks
+- assignees, priorities and deadlines
+- relations and performance checkpoints
 
-`live` means a future explicitly configured transport. It requires a `live_connection_id` and cannot carry a `simulation_id`. The current local wave has no live fixture, connection, credential, or write path. DEC-0015 therefore requires every current positive fixture to be `simulated`.
+## Lifecycle boundary
 
-## Field Edit and Conflict Semantics
+### Before handoff
 
-A Notion field edit is an operator proposal, comment, assignment, or display preference until it is translated to a versioned command and accepted by the Transition Service. Editing a projected status, approval label, revision, artifact reference, or gate field does not change canonical state. A projection must never emit an atomic state write.
+The Heartweb Core and Operator Console create, validate, revise and approve the customer concept. Core-internal tasks, blockers, reviews and Human Gates exist only to complete Step 0 through Step 4B.
 
-When a Notion edit conflicts with a newer projection, the newer accepted event and source revision win. The stale edit is retained as operator context and is not silently merged into canonical state. The UI must show the conflict, require an explicit next action, and submit that action with the current expected revision. A stale command fails fast and leaves the run unchanged.
+Only the Transition Service changes canonical workflow state.
 
-## Delivery Semantics
+### After handoff
 
-Projection delivery is at least once. Duplicate event delivery is deduplicated by `event_id` and projection source revision. An out-of-order event is retained for audit but does not overwrite a projection produced from a newer revision. The projector waits for missing predecessor events where ordering is required, then retries with the same idempotency key. Exhausted retries enter the dead-letter queue with the event, failure reason, attempt count, and correlation ID.
+The Delivery release creates the Notion customer project and its implementation task matrix. Copywriter, design, development, review and launch work is then owned and managed in Notion.
 
-## Gate and Resume Semantics
+Post-handoff Notion task status, comments, assignees, priorities and deadlines do not:
 
-Notion may show a wait state for a human gate or missing input. It cannot approve a gate directly. The approved or rejected decision becomes a command that the Transition Service validates against the current artifact revision and SHA-256. A resolved task or accepted approval can create a resume request, but only the Transition Service may resume the run after revision and workflow checks pass.
+- update Core workflow state
+- resume a Core run
+- approve a Core gate
+- create an artifact revision
+- mutate released content
+
+Stable Heartweb IDs and released artifact hashes remain attached for traceability only.
+
+## Allowed automated re-entry
+
+The only planned post-handoff Core re-entry is Step 3B at day 30, 60 and 90.
+
+At each checkpoint, n8n combines:
+
+- released strategy and 120-day plan
+- publication registry and actual URLs
+- publication dates
+- verified Google Search Console, Ahrefs and applicable local metrics
+
+The Core excludes content that has not reached the required observation window, compares plan and actual results and creates a versioned adjustment proposal. The original plan remains immutable.
+
+After explicit strategy approval, the accepted adjustment may update future planning and future Notion tasks.
+
+## First release
+
+The first local Production release creates a manual Notion import pack. It does not require a live Notion connection.
+
+The import pack separates:
+
+- read-only concept provenance
+- Notion-owned implementation execution
+- scheduled performance checkpoints
+
+It contains no inbound Core callback for daily staff tasks.
+
+## Future live adapter
+
+A live adapter may create or update customer, project, strategy, artifact references, tasks, assignments, priorities, deadlines, relations and performance checkpoints.
+
+Delivery must be idempotent by stable external ID and source revision. Duplicate delivery must not create duplicate projects or tasks. Conflicts fail visibly.
+
+## Explicit non-goals
+
+- no Copywriter completion callback to the Core
+- no Developer completion callback to the Core
+- no Core resume from post-handoff task status
+- no continuous synchronization of comments, assignees or deadlines into Core state
+- no automatic quality judgment of final human copy or implementation in the first operating model
+- no second workflow engine inside Notion
+
+The Core automates concept production. Notion controls human implementation. Step 3B is the planned performance feedback loop.

@@ -80,7 +80,7 @@
 
 ## DEC-0018: Lokaler Core, n8n-Gesamtorchestrierung und Notion-Projektbetrieb
 
-- Status: active
+- Status: superseded
 - Date: 2026-08-19
 - Owner/source: Raphael Rechberger
 - Context: Der gesamte Heartweb-Workflow soll spaeter ueber n8n orchestriert werden. Gleichzeitig muss der fachliche Core zuerst vollstaendig lokal laufen koennen. Jesse nutzt Notion als zentrale Projektoberflaeche fuer Kundendaten, Projekttracking, Aufgabenverteilung und Performance-Zyklen.
@@ -88,7 +88,7 @@
 - Rationale: Die lokale Ausfuehrbarkeit verhindert eine harte Abhaengigkeit von noch nicht abgestimmten Fremdsystemen. Die gleichen Commands, Events und Projektionen koennen spaeter durch echte n8n-Workflows und Notion-Datenbanken transportiert werden, ohne die fachliche Logik neu zu implementieren.
 - Confirmed cadence: Der Performance-Zyklus laeuft an Tag 30, 60 und 90. Notion-Tracking, n8n-Trigger und Step-3b-Anpassungen muessen diese bestaetigte Taktung gemeinsam abbilden.
 - Supersedes: none
-- Superseded by: none
+- Superseded by: DEC-0025
 - Evidence: Nutzerpraezisierung vom 19. August 2026; Meetingnotiz vom 17. August 2026
 - Impacted files/areas: Local Workflow API, Event Store, n8n Simulator, Notion Simulator, Aufgabenverteilung, Performance Tracking, Step 3b, Operator Console, Integrationsmeeting
 
@@ -133,3 +133,81 @@
 - Superseded by: none
 - Evidence: Nutzerentscheidung vom 20. August 2026
 - Impacted files/areas: Projektsteuerung, UI/UX, SEO/GEO Contracts, Integrationen, Quality Gates, spaeterer Integrations-Sprint
+
+## DEC-0022: Branchkonsolidierung erfolgt erst nach dem Final-Gate
+
+- Status: active
+- Date: 2026-08-21
+- Owner/source: Raphael Rechberger
+- Context: Master, Feature und WIP bilden eine lineare Historie. Browser, Delivery, Outputqualitaet und erster realer Lauf sind noch nicht vollstaendig abgeschlossen.
+- Decision: Vor dem Production Release Gate wird nichts nach master uebernommen. Hilfsbranches werden erst nach verifiziertem finalen SHA und ausdruecklicher Raphael-Freigabe konsolidiert oder geloescht.
+- Rationale: Unfertige Zwischenstaende duerfen nicht als offizieller Hauptbranch erscheinen.
+- Supersedes: none
+- Superseded by: none
+- Evidence: Branchgraph und Nutzerentscheidung vom 21. August 2026
+- Impacted files/areas: Git, Release Gate, Feature, WIP, master
+
+## DEC-0023: Vollstaendige Promptqualitaet vor dem damaligen Final-Audit
+
+- Status: superseded
+- Date: 2026-08-21
+- Owner/source: Raphael Rechberger
+- Context: Der Prompt-Paritaetsaudit zeigte reale V2-Qualitaetsluecken.
+- Decision: Der damalige breite Plan sah PQ-0 bis PQ-5 vor dem Final-Audit vor.
+- Rationale: Fachlich duenne, aber formal valide Outputs durften nicht freigegeben werden.
+- Supersedes: none
+- Superseded by: DEC-0024
+- Evidence: Prompt-Paritaetsaudit und Restaurationsplan
+- Impacted files/areas: Promptqualitaet, Final-Audit, Golden Path
+
+## DEC-0024: Production-first Cut-Line priorisiert den ersten echten Output
+
+- Status: active
+- Date: 2026-08-21
+- Owner/source: Raphael Rechberger
+- Context: Wiederholte Mobile-, Evidence- und Vollreife-Schleifen verzoegerten den ersten realen Kundenoutput unverhaeltnismaessig.
+- Decision: Vor dem ersten lokalen Production-Run werden nur releasekritische Desktop-Aktionen, Sprint 5E, DIB-005, bounded PQ-0, PQ-1, PQ-2 und PQ-4 sowie ein gezielter lokaler Audit abgeschlossen. Mobile-Politur, Live-Notion, Live-n8n, Deployment, Step 3B vor Tag 30 und breite Expansion bleiben Post-Release.
+- Rationale: Heartweb muss zuerst reale professionelle Outputs liefern und danach anhand realer Nutzung verbessert werden.
+- Supersedes: DEC-0023
+- Superseded by: none
+- Evidence: Nutzerentscheidung vom 21. August 2026; `00_admin/POST_RELEASE_BACKLOG.md`
+- Impacted files/areas: Releasefolge, Sprint 5E, DIB-005, DIB-006, Golden Path, Post-Release
+
+## DEC-0025: Notion uebernimmt die Umsetzung nach einmaligem Projekthandoff
+
+- Status: active
+- Date: 2026-08-21
+- Owner/source: Raphael Rechberger
+- Context: Heartweb soll den manuellen Strategie- und Planungsprozess automatisieren und ein vollstaendiges Kundenprojekt in Notion anlegen. Die spaetere Umsetzung durch Copywriter und Entwickler soll nicht als zweites Core-Workflow-System nachgebaut werden.
+- Decision: Core und Console produzieren Step 0 bis Step 4B bis zur freigegebenen Delivery. Danach bleiben Umsetzungsaufgaben, Status, Kommentare, Verantwortliche, Prioritaeten, Termine, Review und Launch in Notion. Sie duerfen keinen Core-Run fortsetzen, kein Gate freigeben und kein Artefakt veraendern. Der einzige geplante Post-Handoff-Wiedereinstieg ist Step 3B an Tag 30, 60 und 90 mit verifizierten Performance-Daten.
+- Rationale: Notion bleibt Jesses operative Steuerungsmatrix. Der Core wird nur erneut benoetigt, wenn reale Performance die Kernstrategie fachlich neu bewertet.
+- Supersedes: DEC-0018
+- Superseded by: none
+- Evidence: Originalworkflow; `docs/integrations/notion-operating-model.md`; `docs/integrations/n8n-orchestration-model.md`
+- Impacted files/areas: Sprint 5E, Notion, n8n, Tasks, Step 3B, Performance
+
+## DEC-0026: Deterministische Repository-Authority-Registry steuert Sessionkontext und RAG
+
+- Status: active
+- Date: 2026-08-22
+- Owner/source: Raphael Rechberger
+- Context: Entry-Dokumente, aktuelle Architektur, historische Plaene, Audits und Evidence waren ohne einheitliche Lifecycle-Klassifikation gemischt. Neue LLM-Sessions konnten relevante, aber veraltete Quellen als aktuelle Anweisung behandeln.
+- Decision: Heartweb verwendet eine deterministisch erzeugte Dokument-Registry mit Lifecycle, Authority-Level, Retrieval-Prioritaet, Default-Retrieval, Workflow-Step, Zielgruppe, Supersession und Content-Hash. Neue Sessions starten ueber `00_admin/SESSION_BOOTSTRAP.md`. Semantische RAG-Suche darf spaeter nur nach Lifecycle- und Authority-Filterung ranken. Historische und superseded Quellen bleiben erhalten, sind aber opt-in.
+- Rationale: Vollstaendiger Kontext muss auffindbar bleiben, ohne dass historische Naehe aktuelle Autoritaet ueberschreibt. Eine Registry ist leichter wartbar und portabler als ein neuer Vector- oder Logserver.
+- Supersedes: none
+- Superseded by: none
+- Evidence: `.hermes/plans/2026-08-22-repository-authority-rag-index.md`; `00_admin/repository-index/DOCUMENT_REGISTRY.json`; `tests/test_repository_index.py`
+- Impacted files/areas: AGENTS, CLAUDE, README, Project State, Decisions, docs, plans, audits, research, future RAG ingestion
+
+## DEC-0027: Heartweb testet Baseline plus betroffene Delta-Closure und berichtet ueber feste Main Tasks
+
+- Status: active
+- Date: 2026-08-22
+- Owner/source: Raphael Rechberger
+- Context: Wiederholte komplette Suites und breite Multi-Agent-Reviews nach kleinen Fixes verbrauchten Zeit und Modellbudget, waehrend wechselnde Root-Todo-Zaehler keinen stabilen Gesamtfortschritt zeigten.
+- Decision: `standards/testing/PROTOTYPE_TEST_POLICY.md` ist die bindende projektlokale Testautoritaet. Eine gruene Baseline bleibt fuer unveraenderte Bereiche gueltig. Nach einer Aenderung werden nur geaendertes Modul, betroffener Vertrag, Route, Flow, Gate und benannte direkte Abhaengigkeiten geprueft. Eine komplette Repository-Suite braucht neue ausdrueckliche Raphael-Freigabe. Der Gesamtfortschritt zeigt gleichzeitig die kanonische 13-Stufen-Sprint-Roadmap und die 10 festen Production-first-Main-Tasks aus `00_admin/MASTER_TASK_MATRIX.md`; dynamische Root-Todos sind Subtasks.
+- Rationale: Heartweb muss schnell operativ nutzbar werden, ohne Datenintegritaet und nachvollziehbare Evidence aufzugeben. Risikobasierte Delta-Pruefung erhaelt bestehende Evidence und verhindert endlose Test- und Review-Loops.
+- Supersedes: alte generische Full-Suite-, Vollmatrix- und wechselnde Root-Todo-Gesamtzaehler fuer dieses Projekt
+- Superseded by: none
+- Evidence: Raphael-Instruktionen vom 22. August 2026; `standards/testing/PROTOTYPE_TEST_POLICY.md`; `00_admin/MASTER_TASK_MATRIX.md`
+- Impacted files/areas: AGENTS, CLAUDE, Sprint-5- und Sprint-5E-Plaene, Root-Sisyphus-Todos, Cronstatus, Release Audit und Prototype-Matrix

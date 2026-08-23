@@ -1,5 +1,7 @@
 # Deferred GEO V2 Contract Restoration
 
+> **Lifecycle: active pre-release PQ-4 source.** Die releasekritischen Step-4A/4B-Anforderungen werden unter DIB-001 und DIB-006 in die bestehende V2-Architektur uebertragen. Breite Geo-Expansion bleibt Post-Release.
+
 **Author:** Raphael Rechberger
 **Date:** 2026-08-20
 **Status:** Mandatory deferred remediation
