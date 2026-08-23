@@ -1,0 +1,180 @@
+{
+  "schema_version": "2.0.0",
+  "artifact_id": "artifact-pillar-template-0001",
+  "run_id": "run-pillar-template-0001",
+  "project_id": "project-pillar-demo",
+  "deployment_id": "dep-pillar-demo",
+  "step_id": "1c",
+  "revision": 1,
+  "source_artifact_ids": ["artifact-architecture-0001", "artifact-pillar-design-0001"],
+  "evidence_ids": ["evidence-service-area-0001", "evidence-hero-0001", "evidence-facts-0001", "evidence-editorial-0001", "evidence-heartpiece-0001", "evidence-process-0001", "evidence-social-proof-0001", "evidence-faq-0001"],
+  "decision_records": [
+    {
+      "decision_id": "decision-pillar-location-0001",
+      "question": "Which local claim type is supported by this fixture?",
+      "outcome": "service_area_only",
+      "evidence_ids": ["evidence-service-area-0001"]
+    }
+  ],
+  "candidate_status": "awaiting_gate",
+  "template_family": "pillar-page",
+  "template_id": "template-outdoor-kayaks-0001",
+  "content_id": "pillar-outdoor-kayaks-0001",
+  "location_context": {
+    "claim_type": "service_area",
+    "evidence_ids": ["evidence-service-area-0001"]
+  },
+  "accessibility": {
+    "landmarks": ["header", "nav", "main", "footer"],
+    "skip_link": true,
+    "skip_link_label": "Skip to kayak guidance"
+  },
+  "jsonld_references": [
+    {
+      "reference_id": "jsonld-kayak-faq-0001",
+      "type": "FAQPage",
+      "evidence_ids": ["evidence-faq-0001"]
+    },
+    {
+      "reference_id": "jsonld-kayak-service-0001",
+      "type": "Service",
+      "evidence_ids": ["evidence-service-area-0001"]
+    }
+  ],
+  "links": [
+    {
+      "target_content_id": "cluster-kayak-selection-0001",
+      "relationship": "vertical",
+      "href": "/guides/kayak-selection"
+    },
+    {
+      "target_content_id": "cluster-kayak-safety-0001",
+      "relationship": "vertical",
+      "href": "/guides/kayak-safety"
+    },
+    {
+      "target_content_id": "pillar-outdoor-guides-0001",
+      "relationship": "horizontal",
+      "href": "/outdoor-guides"
+    }
+  ],
+  "content": {
+    "hero": {
+      "heading": "Choose a sea kayak with confidence",
+      "summary": "A practical overview of fit, handling, and evidence-bound coastal paddling guidance.",
+      "primary_cta": {
+        "label": "Plan your kayak consultation",
+        "target_content_id": "cluster-kayak-selection-0001",
+        "evidence_ids": ["evidence-hero-0001"]
+      }
+    },
+    "quick_facts": {
+      "heading": "Quick facts",
+      "facts": [
+        {
+          "label": "Best for",
+          "value": "Coastal day trips and skill-building sessions",
+          "evidence_ids": ["evidence-facts-0001"]
+        },
+        {
+          "label": "First decision",
+          "value": "Document fit before selecting equipment",
+          "evidence_ids": ["evidence-facts-0001"]
+        }
+      ]
+    },
+    "editorial": {
+      "heading": "Start with the conditions you will actually paddle",
+      "paragraphs": [
+        "A useful kayak decision begins with the water, weather, and support available for each planned trip.",
+        "The fixture keeps this editorial guidance tied to local evidence rather than generic filler copy."
+      ],
+      "evidence_ids": ["evidence-editorial-0001"]
+    },
+    "heartpiece": {
+      "heading": "The kayak fit check",
+      "body": "Compare paddler position, cockpit access, and recovery confidence before committing to a hull shape.",
+      "evidence_ids": ["evidence-heartpiece-0001"]
+    },
+    "grouped_cluster_links": {
+      "heading": "Explore the supporting guides",
+      "groups": [
+        {
+          "label": "Before you choose",
+          "links": [
+            {
+              "label": "Kayak selection checklist",
+              "target_content_id": "cluster-kayak-selection-0001",
+              "relationship": "vertical"
+            }
+          ]
+        },
+        {
+          "label": "Prepare safely",
+          "links": [
+            {
+              "label": "Coastal safety guide",
+              "target_content_id": "cluster-kayak-safety-0001",
+              "relationship": "vertical"
+            }
+          ]
+        }
+      ]
+    },
+    "process": {
+      "heading": "A clear selection process",
+      "steps": [
+        {
+          "title": "Describe the trip",
+          "description": "Record the typical water conditions and expected support.",
+          "evidence_ids": ["evidence-process-0001"]
+        },
+        {
+          "title": "Check the fit",
+          "description": "Confirm cockpit access and a stable paddling position.",
+          "evidence_ids": ["evidence-process-0001"]
+        }
+      ]
+    },
+    "social_proof": {
+      "heading": "Evidence record",
+      "entries": [
+        {
+          "quote": "Fixture review evidence confirms that preparation details remain traceable.",
+          "attribution": "Local deterministic contract record",
+          "evidence_ids": ["evidence-social-proof-0001"]
+        }
+      ]
+    },
+    "faq": {
+      "heading": "Frequently asked questions",
+      "items": [
+        {
+          "question": "Which kayak size should I consider first?",
+          "answer": "Start with a documented fit check, then compare the available hull options against the planned conditions.",
+          "jsonld_reference_id": "jsonld-kayak-faq-0001",
+          "evidence_ids": ["evidence-faq-0001"]
+        }
+      ]
+    },
+    "cross_pillar_links": {
+      "heading": "Continue with related outdoor guidance",
+      "links": [
+        {
+          "label": "Outdoor planning guides",
+          "target_content_id": "pillar-outdoor-guides-0001",
+          "relationship": "horizontal"
+        }
+      ]
+    },
+    "final_cta": {
+      "heading": "Ready to compare your options?",
+      "summary": "Use the documented selection checklist before your next coastal paddling session.",
+      "primary_cta": {
+        "label": "Open the selection checklist",
+        "target_content_id": "cluster-kayak-selection-0001",
+        "evidence_ids": ["evidence-hero-0001"]
+      }
+    }
+  }
+}

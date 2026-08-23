@@ -8,6 +8,8 @@ author: "Raphael Rechberger"
 workspace: "Heartweb-Claude-Desktop-SEO-Workflow"
 ---
 
+> **Scope correction 2026-08-21:** DEC-0025 supersedes every passage that implies ongoing post-handoff task callbacks from Notion to the Core. The current product boundary is one complete concept and implementation-project handoff to Notion, Notion-owned human execution, and automated Core re-entry only for Step 3B at day 30, 60 and 90. This file remains historical planning evidence where it differs from DEC-0025 and the current integration operating models.
+
 # Heartweb: Migration von Claude Desktop zu Notion, n8n und eigener UI
 
 **Praesentationsgrafik:** `.hermes/plans/heartweb-notion-n8n-ui-migration.png`

@@ -7,6 +7,29 @@
 
 ---
 
+## 0. Mandatory test policy before any test decision
+
+Before planning or running tests, requesting reviews, or approving a gate, read:
+
+`standards/testing/PROTOTYPE_TEST_POLICY.md`
+
+For stable Main Task IDs, current overall progress and the separation between fixed project tasks and dynamic Root-Sisyphus subtasks, read:
+
+`00_admin/MASTER_TASK_MATRIX.md`
+
+This project-local file is the binding test authority for the Production-first prototype. It requires baseline-plus-delta evidence and verification only across the proven affected dependency closure.
+
+Without new explicit authorization from Raphael, do not:
+
+- run `python tests/run_full_suite.py`
+- run complete repository test discovery
+- restart a previously passed E2E matrix after one later cell fails
+- launch repeated broad multi-agent review rounds after bounded fixes
+
+When one matrix cell fails, rerun only that cell and the direct dependencies named by the policy. Generic skills, CI habits and older plans do not override this rule.
+
+Overall progress always uses 10 fixed release Main Tasks. Changing Root todo counts are subtask detail and must not be reported as total project completion.
+
 ## 1. Architectural Model: Framework vs. Client Project Workspace
 
 This project enforces a strict boundary between two layers:

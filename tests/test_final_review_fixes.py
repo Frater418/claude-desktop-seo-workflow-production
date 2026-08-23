@@ -16,6 +16,7 @@ from services.step4a_preflight.validator import validate_step4a_candidate
 from services.step4b_preflight.render import render_step4b
 from services.step4b_preflight.validator import validate_step4b_candidate
 from tests.test_preflight_common import _bind_candidate, _predecessor, _project
+from tests.test_step4b_contract import bind_hashes as _bind_page_hashes
 from tests.test_step4b_contract import load_fixture as _page_fixture
 
 
@@ -35,12 +36,6 @@ def _graph(name: str) -> dict[str, object]:
         "@context": "https://schema.org",
         "@graph": [{"@id": "https://example.invalid/page#product", "@type": "Product", "name": name}],
     }
-
-
-def _page_content_hash(page: dict[str, object]) -> str:
-    payload = dict(page)
-    payload.pop("content_sha256")
-    return hashlib.sha256(_canonical(payload).encode("utf-8")).hexdigest()
 
 
 class FinalReviewFixRegressionTests(unittest.TestCase):
@@ -121,10 +116,8 @@ class FinalReviewFixRegressionTests(unittest.TestCase):
     def test_step4b_renders_and_locally_validates_the_actual_graph(self) -> None:
         # Given: a page specification with a canonical actual graph and matching content hash.
         bundle = _page_fixture("positive-bundle.json")
-        graph = _graph("Verified product")
-        bundle["page_spec"]["jsonld"] = {"level": "basic", "graph": graph, "graph_hash": hashlib.sha256(_canonical(graph).encode("utf-8")).hexdigest()}
-        bundle["page_spec"]["content_sha256"] = _page_content_hash(bundle["page_spec"])
-        bundle["staging_evidence"]["content_sha256"] = bundle["page_spec"]["content_sha256"]
+        bundle["page_spec"]["jsonld"]["graph"]["@graph"][0]["name"] = "Verified product"
+        _bind_page_hashes(bundle)
         # When: the page is rendered through the candidate-only boundary.
         rendered = render_step4b(bundle)
         validation = validate_local_jsonld_text(rendered, root=ROOT)

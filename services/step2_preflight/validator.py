@@ -7,12 +7,23 @@ import json
 from pathlib import Path
 from typing import Mapping, TypeAlias
 
-from jsonschema import Draft202012Validator, FormatChecker
+from jsonschema import Draft202012Validator, FormatChecker, ValidationError
+
 from services.preflight_common import validate_lineage
-from services.provider_gateway.core import ProviderGatewayError, validate_exchange
+from services.step2_preflight.provider_binding import validate_provider_binding
 
 
 JsonValue: TypeAlias = str | int | float | bool | None | list["JsonValue"] | dict[str, "JsonValue"]
+
+_ROOT = Path(__file__).resolve().parents[2]
+_CANDIDATE_SCHEMA = json.loads(
+    (_ROOT / "standards" / "outputs" / "step-2-keyword-evidence.schema.json").read_text(encoding="utf-8")
+)
+_CANDIDATE_VALIDATOR = Draft202012Validator(_CANDIDATE_SCHEMA, format_checker=FormatChecker())
+_METRIC_FIELDS = frozenset(("search_volume", "difficulty", "cpc_usd"))
+_CLASSIFICATION_FIELDS = frozenset(
+    ("content_type", "geo_type", "engine_target", "category", "mandatory_location_policy")
+)
 
 
 def _rows(value: JsonValue | None) -> list[Mapping[str, JsonValue]]:
@@ -28,95 +39,128 @@ def _candidate_rows(candidate: Mapping[str, JsonValue]) -> list[Mapping[str, Jso
     return [row for pillar in pillars if isinstance(pillar, dict) for row in _rows(pillar.get("rows"))]
 
 
-def _invalid(message: str) -> dict[str, JsonValue]:
-    return {"valid": False, "errors": [{"code": "ERROR_STEP2_PREFLIGHT", "message": message, "path": ["candidate"], "remediation": "Submit declared, completed provider-gateway evidence for every verified row."}]}
+def _error(code: str, message: str, path: list[str | int], remediation: str) -> dict[str, JsonValue]:
+    return {"valid": False, "errors": [{"code": code, "message": message, "path": path, "remediation": remediation}]}
+
+
+def _schema_error_key(error: ValidationError) -> tuple[tuple[str, ...], tuple[str, ...], str]:
+    return (
+        tuple(str(segment) for segment in error.absolute_path),
+        tuple(str(segment) for segment in error.absolute_schema_path),
+        error.message,
+    )
+
+
+def _schema_error_code(error: ValidationError) -> str:
+    path = tuple(str(segment) for segment in error.absolute_path)
+    if error.validator in {"minItems", "maxItems"} and path[-1:] == ("rows",):
+        return "ERROR_STEP2_PREFLIGHT"
+    missing_field = error.message.removeprefix("'").removesuffix("' is a required property") if error.validator == "required" else ""
+    fields = frozenset(field for field in _METRIC_FIELDS | _CLASSIFICATION_FIELDS if field in path or field == missing_field)
+    if fields & _METRIC_FIELDS and error.validator in {"type", "minimum", "maximum", "oneOf", "anyOf"}:
+        return "ERROR_STEP2_METRIC_INVALID"
+    if fields & _CLASSIFICATION_FIELDS:
+        return "ERROR_STEP2_CLASSIFICATION_INVALID"
+    return "ERROR_STEP2_SCHEMA_INVALID"
+
+
+def _schema_result(candidate: Mapping[str, JsonValue]) -> dict[str, JsonValue] | None:
+    errors = sorted(_CANDIDATE_VALIDATOR.iter_errors(candidate), key=_schema_error_key)
+    if not errors:
+        return None
+    error = errors[0]
+    return _error(
+        _schema_error_code(error),
+        error.message,
+        ["candidate", *list(error.absolute_path)],
+        "Correct the named schema field and resubmit the closed Step 2 candidate.",
+    )
+
+
+def _evidence_coverage_result(candidate: Mapping[str, JsonValue], rows: list[Mapping[str, JsonValue]]) -> dict[str, JsonValue] | None:
+    declared = candidate["evidence_ids"]
+    row_evidence = [row["evidence_id"] for row in rows]
+    if len(row_evidence) != len(set(row_evidence)):
+        return _error(
+            "ERROR_STEP2_PREFLIGHT",
+            "Every verified keyword row must reference distinct provider evidence.",
+            ["candidate", "pillars"],
+            "Assign one distinct declared evidence_id to each verified row.",
+        )
+    if set(row_evidence) != set(declared):
+        return _error(
+            "ERROR_STEP2_PREFLIGHT",
+            "Declared evidence_ids must exactly cover the verified keyword rows.",
+            ["candidate", "evidence_ids"],
+            "Declare every row evidence_id once and remove unreferenced evidence_ids.",
+        )
+    return None
+
+
+def _pillar_result(bundle: Mapping[str, JsonValue], candidate: Mapping[str, JsonValue]) -> dict[str, JsonValue] | None:
+    pillars = candidate["pillars"]
+    approved_value = bundle.get("approved_pillar_ids")
+    approved = approved_value if isinstance(approved_value, list) else [pillar["pillar_id"] for pillar in pillars]
+    verified_by_pillar = Counter(
+        pillar["pillar_id"]
+        for pillar in pillars
+        for row in _rows(pillar["rows"])
+        if row["status"] == "verified"
+    )
+    if any(not isinstance(pillar_id, str) or not 25 <= verified_by_pillar[pillar_id] <= 40 for pillar_id in approved):
+        return _error(
+            "ERROR_STEP2_PREFLIGHT",
+            "Each approved pillar requires 25 to 40 verified provider-evidence rows.",
+            ["candidate", "pillars"],
+            "Submit 25 to 40 verified rows for every approved pillar.",
+        )
+    for pillar in pillars:
+        approved_families = set(pillar["approved_category_families"])
+        categories = {row["category"] for row in _rows(pillar["rows"])}
+        if not categories <= approved_families or not approved_families <= categories:
+            return _error(
+                "ERROR_STEP2_CATEGORY_FAMILY_COVERAGE",
+                "Every row category must be an approved family and every approved family requires a verified row.",
+                ["candidate", "pillars", pillar["pillar_id"], "approved_category_families"],
+                "Use only approved category families and add a verified row for each declared family.",
+            )
+    return None
+
+
+def _candidate(bundle: Mapping[str, JsonValue]) -> Mapping[str, JsonValue]:
+    value = bundle.get("candidate")
+    return value if isinstance(value, dict) else bundle
 
 
 def validate_step2_candidate(bundle: Mapping[str, JsonValue]) -> dict[str, JsonValue]:
-    """Return one operator-surface error when keyword evidence is incomplete."""
-    candidate = bundle.get("candidate") if isinstance(bundle.get("candidate"), dict) else bundle
-    schema_path = Path(__file__).resolve().parents[2] / "standards" / "outputs" / "step-2-keyword-evidence.schema.json"
-    schema = json.loads(schema_path.read_text(encoding="utf-8"))
-    schema_errors = list(Draft202012Validator(schema, format_checker=FormatChecker()).iter_errors(candidate))
-    pillars = candidate.get("pillars") if isinstance(candidate, dict) else None
-    if schema_errors or not isinstance(pillars, list) or not pillars:
-        return _invalid("Step 2 requires a closed awaiting-gate canonical candidate with approved pillars.")
-    if not isinstance(candidate, dict):
-        return _invalid("Step 2 candidate must be an object.")
+    candidate = _candidate(bundle)
+    schema_result = _schema_result(candidate)
+    if schema_result is not None:
+        return schema_result
     rows = _candidate_rows(candidate)
-    declared_evidence = candidate.get("evidence_ids")
-    declared = set(declared_evidence) if isinstance(declared_evidence, list) else set()
-    row_evidence = [row.get("evidence_id") for row in rows]
-    if any(not isinstance(evidence_id, str) or evidence_id not in declared for evidence_id in row_evidence):
-        return _invalid("Every verified keyword row must declare an evidence_id listed by the canonical candidate.")
-    if len(row_evidence) != len(set(row_evidence)):
-        return _invalid("Every verified keyword row must reference distinct provider evidence.")
-    approved_pillar_ids = bundle.get("approved_pillar_ids")
-    approved = approved_pillar_ids if isinstance(approved_pillar_ids, list) else [pillar.get("pillar_id") for pillar in pillars if isinstance(pillar, dict)]
-    verified_by_pillar = Counter(
-        pillar.get("pillar_id")
-        for pillar in pillars
-        if isinstance(pillar, dict)
-        for row in _rows(pillar.get("rows"))
-        if row.get("status") == "verified"
-        and isinstance(row.get("keyword"), str)
-        and isinstance(row.get("evidence_id"), str)
-    )
-    missing = [pillar for pillar in approved if not isinstance(pillar, str) or verified_by_pillar[pillar] < 25]
-    if missing:
-        return {
-            "valid": False,
-            "errors": [{
-                "code": "ERROR_STEP2_PREFLIGHT",
-                "message": "Each approved pillar requires at least 25 verified provider-evidence rows.",
-                "path": ["rows"],
-                "remediation": "Obtain complete raw provider evidence through the provider gateway before submitting awaiting_gate.",
-            }],
-        }
+    evidence_result = _evidence_coverage_result(candidate, rows)
+    if evidence_result is not None:
+        return evidence_result
+    pillar_result = _pillar_result(bundle, candidate)
+    if pillar_result is not None:
+        return pillar_result
     return {"valid": True, "errors": []}
-
-
-def _provider_records_valid(bundle: Mapping[str, JsonValue], candidate: Mapping[str, JsonValue]) -> bool:
-    records = bundle.get("provider_evidence_records")
-    if not isinstance(records, list):
-        return False
-    rows = _candidate_rows(candidate)
-    referenced = {row.get("evidence_id") for row in rows}
-    record_ids = [record.get("evidence_id") for record in records if isinstance(record, dict)]
-    if len(record_ids) != len(records) or len(record_ids) != len(set(record_ids)) or set(record_ids) != referenced:
-        return False
-    for record in records:
-        if not isinstance(record, dict):
-            return False
-        request = record.get("request")
-        response = record.get("response")
-        if not isinstance(request, dict) or not isinstance(response, dict):
-            return False
-        root = Path(__file__).resolve().parents[2]
-        request_schema = json.loads((root / "standards" / "providers" / "research-request.schema.json").read_text(encoding="utf-8"))
-        response_schema = json.loads((root / "standards" / "providers" / "research-response.schema.json").read_text(encoding="utf-8"))
-        if list(Draft202012Validator(request_schema, format_checker=FormatChecker()).iter_errors(request)) or list(Draft202012Validator(response_schema, format_checker=FormatChecker()).iter_errors(response)):
-            return False
-        if any(request.get(field) != candidate.get(field) or response.get(field) != candidate.get(field) for field in ("project_id", "deployment_id", "language", "geo")):
-            return False
-        if request.get("language") != response.get("language") or request.get("geo") != response.get("geo"):
-            return False
-        try:
-            validated = validate_exchange(request, response)
-        except ProviderGatewayError:
-            return False
-        matches = [row for row in rows if row.get("evidence_id") == record["evidence_id"]]
-        if len(matches) != 1 or matches[0].get("provider") != validated["provider"] or matches[0].get("raw_response_sha256") != validated["raw_response_sha256"]:
-            return False
-    return True
 
 
 def validate_step2_preflight(bundle: Mapping[str, JsonValue]) -> dict[str, JsonValue]:
     result = validate_step2_candidate(bundle)
+    if not result["valid"]:
+        return result
     lineage_errors = validate_lineage(dict(bundle), "2", "1c", "GATE-1C", candidate_schema_name="step-2-keyword-evidence.schema.json")
     if lineage_errors:
         return {"valid": False, "errors": lineage_errors}
-    candidate = bundle.get("candidate")
-    if not isinstance(candidate, dict) or not _provider_records_valid(bundle, candidate):
-        return _invalid("Operational Step 2 preflight requires exact, completed provider-gateway evidence records for every declared row.")
+    candidate = _candidate(bundle)
+    binding_message = validate_provider_binding(bundle, candidate, _candidate_rows(candidate))
+    if binding_message is not None:
+        return _error(
+            "ERROR_STEP2_PROVIDER_BINDING",
+            binding_message,
+            ["provider_evidence_records"],
+            "Submit one schema-valid provider exchange per evidence_id with exact normalized row metrics and unique exchange identities.",
+        )
     return result

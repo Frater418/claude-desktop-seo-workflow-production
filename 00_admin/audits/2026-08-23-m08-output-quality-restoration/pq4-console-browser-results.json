@@ -1,0 +1,30 @@
+{
+  "run_at": "2026-08-23T18:23:14.489Z",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "checks": [
+    "exact primary payload visible",
+    "exact supporting evidence visible",
+    "local provenance warning visible",
+    "approval enabled only after exact payload and gate binding",
+    "desktop payload layout has contained horizontal overflow",
+    "approval preview requires explicit confirmation",
+    "no console errors:  HTTP: ",
+    "no failed requests"
+  ],
+  "console_errors": [],
+  "failed_requests": [],
+  "http_errors": [],
+  "screenshots": [
+    "pq4-console-review-desktop.png",
+    "pq4-console-review-payload.png",
+    "pq4-console-review-confirmation.png"
+  ],
+  "screenshot_bytes": {
+    "desktop": 167289,
+    "payload": 38689,
+    "confirmation": 113389
+  }
+}

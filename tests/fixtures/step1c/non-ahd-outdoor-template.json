@@ -7,14 +7,26 @@
   "step_id": "1c",
   "revision": 2,
   "source_artifact_ids": ["artifact-outdoor-architecture-0001", "artifact-outdoor-design-system-0001"],
-  "evidence_ids": ["evidence-outdoor-location-0001", "evidence-outdoor-brand-0001"],
+  "evidence_ids": ["evidence-outdoor-location-0001", "evidence-outdoor-brand-0001", "evidence-outdoor-content-0001"],
   "decision_records": [{"decision_id": "decision-outdoor-template-0001", "question": "Showroom location claim", "outcome": "physical location evidence", "evidence_ids": ["evidence-outdoor-location-0001"]}],
   "candidate_status": "awaiting_gate",
   "template_family": "pillar-page",
   "template_id": "template-outdoor-kayaks-0001",
   "content_id": "pillar-kayaks",
   "location_context": {"claim_type": "physical_location", "evidence_ids": ["evidence-outdoor-location-0001"], "physical_location_evidence_ids": ["evidence-outdoor-location-0001"], "physical_address": "101 Harbor Road", "nap": "Coastline Gear, 101 Harbor Road", "gbp_claim": "Verified showroom"},
-  "accessibility": {"landmarks": ["header", "nav", "main", "footer"], "skip_link": true},
-  "jsonld_references": [{"reference_id": "jsonld-outdoor-kayaks-0001", "type": "LocalBusiness", "evidence_ids": ["evidence-outdoor-location-0001", "evidence-outdoor-brand-0001"]}],
-  "links": [{"target_content_id": "cluster-kayak-safety", "relationship": "vertical"}]
+  "accessibility": {"landmarks": ["header", "nav", "main", "footer"], "skip_link": true, "skip_link_label": "Skip to kayak guidance"},
+  "jsonld_references": [{"reference_id": "jsonld-outdoor-kayaks-0001", "type": "LocalBusiness", "evidence_ids": ["evidence-outdoor-location-0001", "evidence-outdoor-brand-0001"]}, {"reference_id": "jsonld-outdoor-kayak-faq-0001", "type": "FAQPage", "evidence_ids": ["evidence-outdoor-content-0001"]}],
+  "links": [{"target_content_id": "cluster-kayak-safety", "relationship": "vertical", "href": "/kayak-safety"}],
+  "content": {
+    "hero": {"heading": "Choose coastal kayak equipment with care", "summary": "Showroom-led preparation guidance for Coastline Gear fixture customers.", "primary_cta": {"label": "Review kayak safety", "target_content_id": "cluster-kayak-safety", "evidence_ids": ["evidence-outdoor-content-0001"]}},
+    "quick_facts": {"heading": "Quick facts", "facts": [{"label": "Visit option", "value": "Physical showroom evidence supports the listed visit context", "evidence_ids": ["evidence-outdoor-location-0001"]}]},
+    "editorial": {"heading": "Match equipment to the water", "paragraphs": ["Start with expected coastal conditions before comparing kayak equipment."], "evidence_ids": ["evidence-outdoor-content-0001"]},
+    "heartpiece": {"heading": "The shoreline readiness check", "body": "Review launch conditions, fitted safety equipment, and a practical recovery plan.", "evidence_ids": ["evidence-outdoor-content-0001"]},
+    "grouped_cluster_links": {"heading": "Supporting kayak guidance", "groups": [{"label": "Safety first", "links": [{"label": "Kayak safety guide", "target_content_id": "cluster-kayak-safety", "relationship": "vertical"}]}]},
+    "process": {"heading": "A showroom-ready process", "steps": [{"title": "Describe the route", "description": "Bring the expected water conditions to the comparison.", "evidence_ids": ["evidence-outdoor-content-0001"]}]},
+    "social_proof": {"heading": "Evidence record", "entries": [{"quote": "Fixture evidence keeps the showroom preparation path traceable.", "attribution": "Coastline Gear local contract record", "evidence_ids": ["evidence-outdoor-content-0001"]}]},
+    "faq": {"heading": "Frequently asked questions", "items": [{"question": "What should I bring to a kayak comparison?", "answer": "Bring the planned route conditions and the equipment questions to the showroom visit.", "jsonld_reference_id": "jsonld-outdoor-kayak-faq-0001", "evidence_ids": ["evidence-outdoor-content-0001"]}]},
+    "cross_pillar_links": {"heading": "Related outdoor guidance", "links": []},
+    "final_cta": {"heading": "Ready for a safer comparison?", "summary": "Review the kayak safety guide before the showroom visit.", "primary_cta": {"label": "Open kayak safety", "target_content_id": "cluster-kayak-safety", "evidence_ids": ["evidence-outdoor-content-0001"]}}
+  }
 }

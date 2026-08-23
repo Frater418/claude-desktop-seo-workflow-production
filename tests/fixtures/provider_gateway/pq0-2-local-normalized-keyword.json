@@ -1,0 +1,63 @@
+{
+  "fixture_label": "local-deterministic-pq0-2-normalization-only",
+  "evidence_claim": "not_real_provider_evidence",
+  "request": {
+    "schema_version": "2.0.0",
+    "request_id": "request-pq2-local-001",
+    "run_id": "run-pq2-local-001",
+    "project_id": "project-pq2-local-001",
+    "deployment_id": "deploy-pq2-local-001",
+    "revision": 1,
+    "source_artifact_ids": ["artifact-pq1-local-001"],
+    "evidence_ids": ["evidence-pq2-0001"],
+    "decision_records": [{"decision_id": "decision-pq2-local-001", "outcome": "research", "evidence_ids": ["evidence-pq2-0001"]}],
+    "candidate_status": "candidate",
+    "provider": "agentseo",
+    "operation": "keyword_metrics",
+    "idempotency_key": "idem-pq2-local-001",
+    "request_sha256": "a826abc3d6f2815cb2f149478619017d2d2f298cfb4c3f502d45255c074dd50b",
+    "geo": {"country_code": "CA", "provider_location_code": 21174},
+    "language": "fr",
+    "device": "mobile",
+    "cost": {"currency": "USD", "maximum": 4.5},
+    "gateway_route": "provider_gateway"
+  },
+  "response": {
+    "schema_version": "2.0.0",
+    "response_id": "response-pq2-local-001",
+    "request_id": "request-pq2-local-001",
+    "run_id": "run-pq2-local-001",
+    "project_id": "project-pq2-local-001",
+    "deployment_id": "deploy-pq2-local-001",
+    "revision": 1,
+    "source_artifact_ids": ["artifact-pq1-local-001"],
+    "evidence_ids": ["evidence-pq2-0001"],
+    "decision_records": [{"decision_id": "decision-pq2-local-001", "outcome": "research", "evidence_ids": ["evidence-pq2-0001"]}],
+    "candidate_status": "candidate",
+    "provider": "agentseo",
+    "provider_job_id": "job-pq2-local-001",
+    "status": "completed",
+    "geo": {"country_code": "CA", "provider_location_code": 21174},
+    "language": "fr",
+    "device": "mobile",
+    "cost": {"currency": "USD", "actual": 1.75},
+    "raw_response": {"fixture_label": "local-deterministic-only", "keyword_metrics": [{"keyword": "panneaux solaires quebec", "search_volume": 720, "difficulty": 33}]},
+    "raw_response_sha256": "dcf835418387f3f8bc7b1851e8351e8d2d9ebcbd92ca0935e8e76f4765d9c729"
+  },
+  "normalized_keyword_records": [{
+    "evidence_id": "evidence-pq2-0001",
+    "keyword": "panneaux solaires quebec",
+    "metrics": {
+      "search_volume": {"availability": "available", "value": 720},
+      "difficulty": {"availability": "available", "value": 33},
+      "cpc_usd": {"availability": "unavailable", "reason": "not_returned_by_provider"}
+    },
+    "provenance": {
+      "provider": "agentseo",
+      "provider_job_id": "job-pq2-local-001",
+      "request_sha256": "a826abc3d6f2815cb2f149478619017d2d2f298cfb4c3f502d45255c074dd50b",
+      "raw_response_sha256": "dcf835418387f3f8bc7b1851e8351e8d2d9ebcbd92ca0935e8e76f4765d9c729",
+      "normalizer": {"identifier": "heartweb.keyword-metrics", "version": "1.0.0"}
+    }
+  }]
+}

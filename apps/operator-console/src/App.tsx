@@ -1,199 +1,114 @@
-import { useEffect, useState } from "react"
-import { createOperatorApiClient, OperatorApiError } from "./api/client"
-import {
-  baselineComparisonRows,
-  demoIntegrations,
-  demoTaskQueue,
-  demoTasks,
-  neutralDemoProject,
-  reviewDecisionIds,
-  taskIds,
-  type DemoTaskId,
-  type ReviewDecisionId,
-  type WorkflowStep,
-} from "./dev/neutralDemo"
-import { ArtifactPreview, defaultDemoArtifact, demoArtifacts } from "./features/artifacts/ArtifactPreview"
-import { RevisionDiff } from "./features/artifacts/RevisionDiff"
-import { IntegrationStatus } from "./features/integrations/IntegrationStatus"
-import { BaselineComparison } from "./features/presentation/BaselineComparison"
-import { WorkflowMatrix } from "./features/presentation/WorkflowMatrix"
-import { ProjectDashboard } from "./features/projects/ProjectDashboard"
-import { ReviewCenter } from "./features/reviews/ReviewCenter"
-import { ContextPackageSummary } from "./features/runs/ContextPackageSummary"
-import { RevisionRunPreview } from "./features/runs/RevisionRunPreview"
-import { RunHistory } from "./features/runs/RunHistory"
-import { TaskQueue } from "./features/tasks/TaskQueue"
-import { TicketDetail } from "./features/tasks/TicketDetail"
-import { StepDetail } from "./features/workflow/StepDetail"
-import { WorkflowTimeline } from "./features/workflow/WorkflowTimeline"
+import { useCallback, useMemo, useRef } from "react"
+import type { DiagnosticTraceCloseRequest, DiagnosticTraceStart } from "./generated/api-types"
+import { createDiagnosticTraceClient, type DiagnosticTrace } from "./api/diagnosticTraceClient"
+import { createOperatorApiClient } from "./api/client"
+import type { CurrentRun } from "./api/readModels"
+import { DiagnosticTraceProvider } from "./app/DiagnosticTraceProvider"
+import { OperatorShell } from "./app/OperatorShell"
+import { useOperatorWorkspace } from "./app/useOperatorWorkspace"
 
-const apiClient = createOperatorApiClient({
-  baseUrl: import.meta.env["VITE_OPERATOR_API_BASE_URL"] ?? "",
-  tenantId: import.meta.env["VITE_OPERATOR_TENANT_ID"] ?? "tenant-local",
-})
+type AppProps = { readonly baseUrl?: string; readonly search?: string; readonly tenantId?: string }
+type DiagnosticSessionConfig = { readonly scenarioId: string; readonly source: DiagnosticTraceStart["source"] }
+type ConfiguredAppProps = { readonly baseUrl: string; readonly diagnosticConfig: DiagnosticSessionConfig; readonly tenantId: string }
+type DiagnosticSession = { readonly createCloseRequest: (trace: DiagnosticTrace) => DiagnosticTraceCloseRequest; readonly start: DiagnosticTraceStart | undefined }
 
-type RealApiState =
-  | { readonly kind: "loading" }
-  | { readonly kind: "available" }
-  | { readonly kind: "unavailable"; readonly message: string }
+const canonicalScenarioSlug = /^[a-z][a-z0-9-]{2,127}$/
+const configurationMessages = {
+  ERROR_DIAGNOSTIC_PARAMETER_DUPLICATE: "Ein Diagnoseparameter darf nur einmal gesetzt sein.",
+  ERROR_DIAGNOSTIC_SCENARIO_INVALID: "diagnostic_scenario muss ein kanonischer Slug sein.",
+  ERROR_DIAGNOSTIC_SOURCE_INVALID: "diagnostic_source muss manual oder automated sein.",
+} as const
 
-type AppProps = {
-  readonly search?: string
-}
+type DiagnosticConfigurationErrorCode = keyof typeof configurationMessages
 
-type DemoWorkspace = "workflow" | "artifacts" | "operations" | "presentation"
+export class DiagnosticConfigurationError extends Error {
+  public readonly name = "DiagnosticConfigurationError"
 
-function isDemoSearch(search: string): boolean {
-  return search === "?mode=demo"
-}
-
-function selectedDemoStep(stepId: string): WorkflowStep {
-  if (stepId === neutralDemoProject.sideflow.id) {
-    return neutralDemoProject.sideflow
+  public constructor(public readonly code: DiagnosticConfigurationErrorCode) {
+    super(configurationMessages[code])
   }
-  const fallbackStep = neutralDemoProject.steps[0]
-  if (fallbackStep === undefined) {
-    throw new Error("The local simulation requires an initial workflow step.")
-  }
-  return neutralDemoProject.steps.find((step) => step.id === stepId) ?? fallbackStep
 }
 
-export function App({ search = window.location.search }: AppProps): JSX.Element {
-  const demoMode = isDemoSearch(search)
-  const [selectedStepId, setSelectedStepId] = useState("1b")
-  const [demoWorkspace, setDemoWorkspace] = useState<DemoWorkspace>("workflow")
-  const [selectedArtifactId, setSelectedArtifactId] = useState(defaultDemoArtifact.id)
-  const [selectedTaskId, setSelectedTaskId] = useState<DemoTaskId>(taskIds.missingInput)
-  const [selectedReviewDecisionId, setSelectedReviewDecisionId] = useState<ReviewDecisionId>(reviewDecisionIds.requestInput)
-  const [realApiState, setRealApiState] = useState<RealApiState>({ kind: "loading" })
-
-  useEffect(() => {
-    if (demoMode) {
-      return
-    }
-
-    const controller = new AbortController()
-    let active = true
-
-    void (async () => {
-      try {
-        await apiClient.readyz(controller.signal)
-        const projects = await apiClient.listProjects(controller.signal)
-        if (!Array.isArray(projects.data)) {
-          throw new OperatorApiError({
-            kind: "unparseable",
-            status: 200,
-            message: "The local Operator API project list is unavailable or unparseable.",
-          })
-        }
-        if (active) {
-          setRealApiState({ kind: "available" })
-        }
-      } catch (error) {
-        if (error instanceof OperatorApiError) {
-          if (active) {
-            setRealApiState({ kind: "unavailable", message: error.message })
-          }
-          return
-        }
-        if (error instanceof DOMException && error.name === "AbortError") {
-          return
-        }
-        throw error
-      }
-    })()
-
-    return () => {
-      active = false
-      controller.abort()
-    }
-  }, [demoMode])
-
-  if (!demoMode) {
-    return <RealApiSurface state={realApiState} />
-  }
-
-  const selectedStep = selectedDemoStep(selectedStepId)
-  const selectedArtifact = demoArtifacts.find((artifact) => artifact.id === selectedArtifactId) ?? defaultDemoArtifact
-  const selectedTask = demoTasks[selectedTaskId]
-
-  return (
-    <main className="app-shell">
-      <header className="project-bar">
-        <div><p className="eyebrow">Heartweb Operator Console</p><h1>{neutralDemoProject.title}</h1></div>
-        <div className="mode-stack"><span className="simulation-label">Local simulation</span><span>Notion simulated</span><span>n8n simulated</span></div>
-      </header>
-      <DemoWorkspaceSwitch onSelect={setDemoWorkspace} selectedWorkspace={demoWorkspace} />
-      {demoWorkspace === "workflow" ? (
-        <section aria-labelledby="workflow-workspace-tab" className="workflow-workspace" id="workflow-workspace" role="tabpanel" tabIndex={0}>
-          <ProjectDashboard project={neutralDemoProject} />
-          <div className="console-grid">
-            <WorkflowTimeline onSelect={setSelectedStepId} selectedStepId={selectedStepId} sideflow={neutralDemoProject.sideflow} steps={neutralDemoProject.steps} />
-            <StepDetail projectId={neutralDemoProject.id} step={selectedStep} />
-          </div>
-        </section>
-      ) : demoWorkspace === "artifacts" ? (
-        <section aria-labelledby="artifacts-workspace-tab" className="artifact-run-workspace" id="artifacts-workspace" role="tabpanel" tabIndex={0}>
-          <div className="workspace-heading"><p className="eyebrow">Artifact and run workspace</p><h2>Artifacts &amp; runs</h2><p>Immutable outputs, revision evidence, and replaceable technical-session cache state.</p></div>
-          <div className="artifact-run-grid">
-            <div className="artifact-column">
-              <ArtifactPreview onSelectArtifact={setSelectedArtifactId} selectedArtifact={selectedArtifact} />
-              <RevisionDiff artifact={selectedArtifact} />
-            </div>
-            <div className="run-column">
-              <RunHistory />
-              <ContextPackageSummary />
-              <RevisionRunPreview />
-            </div>
-          </div>
-        </section>
-      ) : demoWorkspace === "operations" ? (
-        <section aria-labelledby="operations-workspace-tab" className="operations-workspace" id="operations-workspace" role="tabpanel" tabIndex={0}>
-          <div className="workspace-heading"><p className="eyebrow">Operator action workspace</p><h2>Operations</h2><p>Local task, review, and integration previews remain non-authoritative until Transition Service records an authorized outcome.</p></div>
-          <div className="operations-grid">
-            <TaskQueue onSelectTask={setSelectedTaskId} selectedTaskId={selectedTaskId} tasks={demoTaskQueue} />
-            <TicketDetail task={selectedTask} />
-            <ReviewCenter onSelectDecision={setSelectedReviewDecisionId} selectedDecisionId={selectedReviewDecisionId} />
-            <IntegrationStatus integrations={demoIntegrations} />
-          </div>
-        </section>
-      ) : (
-        <section aria-labelledby="presentation-workspace-tab" className="presentation-workspace" id="presentation-workspace" role="tabpanel" tabIndex={0}>
-          <div className="workspace-heading"><p className="eyebrow">Decision support workspace</p><h2>Presentation</h2><p>Readable capability and workflow evidence for local operator orientation.</p></div>
-          <div className="presentation-grid">
-            <WorkflowMatrix sideflow={neutralDemoProject.sideflow} steps={neutralDemoProject.steps} />
-            <BaselineComparison rows={baselineComparisonRows} />
-          </div>
-        </section>
-      )}
-    </main>
-  )
+function diagnosticParameter(parameters: URLSearchParams, name: string): string | null {
+  const values = parameters.getAll(name)
+  if (values.length === 0) return null
+  if (values.length === 1) return values.at(0) ?? null
+  throw new DiagnosticConfigurationError("ERROR_DIAGNOSTIC_PARAMETER_DUPLICATE")
 }
 
-type DemoWorkspaceSwitchProps = {
-  readonly selectedWorkspace: DemoWorkspace
-  readonly onSelect: (workspace: DemoWorkspace) => void
+function diagnosticConfig(search: string): DiagnosticSessionConfig {
+  const parameters = new URLSearchParams(search)
+  const source = diagnosticParameter(parameters, "diagnostic_source")
+  const scenarioId = diagnosticParameter(parameters, "diagnostic_scenario")
+  let parsedSource: DiagnosticTraceStart["source"]
+  switch (source) {
+    case null:
+      parsedSource = "manual"
+      break
+    case "manual":
+    case "automated":
+      parsedSource = source
+      break
+    default:
+      throw new DiagnosticConfigurationError("ERROR_DIAGNOSTIC_SOURCE_INVALID")
+  }
+  if (scenarioId !== null && !canonicalScenarioSlug.test(scenarioId)) throw new DiagnosticConfigurationError("ERROR_DIAGNOSTIC_SCENARIO_INVALID")
+  return { scenarioId: scenarioId ?? "manual-walkthrough", source: parsedSource }
 }
 
-function DemoWorkspaceSwitch({ selectedWorkspace, onSelect }: DemoWorkspaceSwitchProps): JSX.Element {
-  return (
-    <nav aria-label="Demo workspace" className="workspace-switch">
-      <div aria-label="Demo workspace" className="workspace-tabs" role="tablist">
-        <button aria-controls="workflow-workspace" aria-selected={selectedWorkspace === "workflow"} id="workflow-workspace-tab" onClick={() => onSelect("workflow")} role="tab" type="button">Workflow</button>
-        <button aria-controls="artifacts-workspace" aria-selected={selectedWorkspace === "artifacts"} id="artifacts-workspace-tab" onClick={() => onSelect("artifacts")} role="tab" type="button">Artifacts &amp; runs</button>
-        <button aria-controls="operations-workspace" aria-selected={selectedWorkspace === "operations"} id="operations-workspace-tab" onClick={() => onSelect("operations")} role="tab" type="button">Operations</button>
-        <button aria-controls="presentation-workspace" aria-selected={selectedWorkspace === "presentation"} id="presentation-workspace-tab" onClick={() => onSelect("presentation")} role="tab" type="button">Presentation</button>
-      </div>
-    </nav>
-  )
+function utcSeconds(date: Date): string {
+  return date.toISOString().replace(/\.\d{3}Z$/, "Z")
 }
 
-function RealApiSurface({ state }: { readonly state: RealApiState }): JSX.Element {
-  if (state.kind === "loading") {
-    return <main className="api-status"><p className="eyebrow">Heartweb Operator Console</p><h1>Checking local Operator API</h1><p>Readiness and the configured neutral project list are being requested.</p></main>
+function canonicalIdentity(run: CurrentRun): string {
+  return [run.tenant_id, run.project_id, run.run_id].join("\u0000")
+}
+
+function closeId(trace: DiagnosticTrace, closedAt: string): string {
+  return `close-${trace.trace_id.slice("trace-".length)}-${closedAt.replace(/\D/g, "")}`
+}
+
+function useDiagnosticSession(config: DiagnosticSessionConfig, currentRun: CurrentRun | null): DiagnosticSession {
+  const createdAtByIdentity = useRef(new Map<string, string>())
+  const closeRequestsByTraceId = useRef(new Map<string, DiagnosticTraceCloseRequest>())
+  const createCloseRequest = useCallback((trace: DiagnosticTrace): DiagnosticTraceCloseRequest => {
+    const existing = closeRequestsByTraceId.current.get(trace.trace_id)
+    if (existing !== undefined) return existing
+    const closedAt = utcSeconds(new Date())
+    const request = { close_id: closeId(trace, closedAt), closed_at: closedAt } satisfies DiagnosticTraceCloseRequest
+    closeRequestsByTraceId.current.set(trace.trace_id, request)
+    return request
+  }, [])
+  const start = useMemo<DiagnosticTraceStart | undefined>(() => {
+    if (currentRun === null) return undefined
+    const identity = canonicalIdentity(currentRun)
+    const createdAt = createdAtByIdentity.current.get(identity) ?? utcSeconds(new Date())
+    createdAtByIdentity.current.set(identity, createdAt)
+    return { created_at: createdAt, project_id: currentRun.project_id, run_id: currentRun.run_id, scenario_id: config.scenarioId, schema_version: "1.0.0", source: config.source, tenant_id: currentRun.tenant_id }
+  }, [config, currentRun])
+  return { createCloseRequest, start }
+}
+
+function ConfiguredApp({ baseUrl, diagnosticConfig: configuration, tenantId }: ConfiguredAppProps): JSX.Element {
+  const api = useMemo(() => createOperatorApiClient({ baseUrl, tenantId }), [baseUrl, tenantId])
+  const diagnosticClient = useMemo(() => createDiagnosticTraceClient({ baseUrl }), [baseUrl])
+  const workspace = useOperatorWorkspace(api)
+  const state = workspace.state
+  const currentRun = state.kind === "ready" ? state.data.currentRun : null
+  const diagnosticSession = useDiagnosticSession(configuration, currentRun)
+  if (state.kind === "loading") return <main className="api-status"><p className="eyebrow">Heartweb Admin Operator</p><h1>Lokale Arbeitsdaten werden geladen</h1><p>Projekt, Workflow, Aufgaben und Nachweise werden aus der lokalen Operator-API gelesen.</p></main>
+  if (state.kind === "empty") return <main className="api-status"><p className="eyebrow">Heartweb Admin Operator</p><h1>Kein lokales Projekt vorhanden</h1><p>Ein Projekt kann nach dem Verbindungscheck aus einem Markdown-Briefing angelegt werden.</p></main>
+  if (state.kind === "error") return <main className="api-status"><p className="eyebrow">Heartweb Admin Operator</p><h1>Lokale Operator-API nicht verfuegbar</h1><p>{state.message}</p><p>Es werden keine Demo-Daten angezeigt.</p></main>
+  return <DiagnosticTraceProvider client={diagnosticClient} createCloseRequest={diagnosticSession.createCloseRequest} start={diagnosticSession.start}><OperatorShell api={api} data={state.data} onRefresh={workspace.reload} onIntakeAccepted={workspace.selectProject} projects={workspace.projects} selectedProjectId={workspace.selectedProjectId ?? state.data.projectId} selectProject={workspace.selectProject} /></DiagnosticTraceProvider>
+}
+
+export function App({ baseUrl, search, tenantId }: AppProps): JSX.Element {
+  const configuredTenantId = tenantId ?? import.meta.env["VITE_OPERATOR_TENANT_ID"]
+  if (configuredTenantId === undefined || configuredTenantId === "") return <main className="api-status"><p className="eyebrow">Heartweb Admin Operator</p><h1>Operator-Konfiguration unvollstaendig</h1><p>VITE_OPERATOR_TENANT_ID muss gesetzt sein, bevor die lokale Operator-API gelesen wird.</p></main>
+  try {
+    return <ConfiguredApp baseUrl={baseUrl ?? import.meta.env["VITE_OPERATOR_API_BASE_URL"] ?? ""} diagnosticConfig={diagnosticConfig(search ?? window.location.search)} tenantId={configuredTenantId} />
+  } catch (error) {
+    if (error instanceof DiagnosticConfigurationError) return <main className="api-status"><p className="eyebrow">Heartweb Admin Operator</p><h1>Operator-Konfiguration ungueltig</h1><p>{error.message}</p></main>
+    throw error
   }
-  if (state.kind === "available") {
-    return <main className="api-status"><p className="eyebrow">Heartweb Operator Console</p><h1>Real API connected</h1><p>The project list transport is available. Its generated payload remains unknown, so Package 1 does not invent a projection view.</p></main>
-  }
-  return <main className="api-status"><p className="eyebrow">Heartweb Operator Console</p><h1>Real API unavailable</h1><p>{state.message}</p><p>No simulation data is shown in real API mode.</p></main>
 }

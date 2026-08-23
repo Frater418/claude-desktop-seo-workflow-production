@@ -1,0 +1,311 @@
+{
+  "routes": [
+    {
+      "s": "projekte",
+      "id": "1280x900",
+      "w": 1280,
+      "h": 900,
+      "signature": true,
+      "width": 1280,
+      "height": 900,
+      "overflow": false
+    },
+    {
+      "s": "workflow",
+      "id": "1280x900",
+      "w": 1280,
+      "h": 900,
+      "signature": true,
+      "width": 1280,
+      "height": 900,
+      "overflow": false
+    },
+    {
+      "s": "aufgaben",
+      "id": "1280x900",
+      "w": 1280,
+      "h": 900,
+      "signature": true,
+      "width": 1280,
+      "height": 900,
+      "overflow": false
+    },
+    {
+      "s": "artefakte",
+      "id": "1280x900",
+      "w": 1280,
+      "h": 900,
+      "signature": true,
+      "width": 1280,
+      "height": 900,
+      "overflow": false
+    },
+    {
+      "s": "pruefungen-freigaben",
+      "id": "1280x900",
+      "w": 1280,
+      "h": 900,
+      "signature": true,
+      "width": 1280,
+      "height": 900,
+      "overflow": false
+    },
+    {
+      "s": "uebergabe-export",
+      "id": "1280x900",
+      "w": 1280,
+      "h": 900,
+      "signature": true,
+      "width": 1280,
+      "height": 900,
+      "overflow": false
+    },
+    {
+      "s": "projekte",
+      "id": "768x1024",
+      "w": 768,
+      "h": 1024,
+      "signature": true,
+      "width": 768,
+      "height": 1024,
+      "overflow": false
+    },
+    {
+      "s": "workflow",
+      "id": "768x1024",
+      "w": 768,
+      "h": 1024,
+      "signature": true,
+      "width": 768,
+      "height": 1024,
+      "overflow": false
+    },
+    {
+      "s": "aufgaben",
+      "id": "768x1024",
+      "w": 768,
+      "h": 1024,
+      "signature": true,
+      "width": 768,
+      "height": 1024,
+      "overflow": false
+    },
+    {
+      "s": "artefakte",
+      "id": "768x1024",
+      "w": 768,
+      "h": 1024,
+      "signature": true,
+      "width": 768,
+      "height": 1024,
+      "overflow": false
+    },
+    {
+      "s": "pruefungen-freigaben",
+      "id": "768x1024",
+      "w": 768,
+      "h": 1024,
+      "signature": true,
+      "width": 768,
+      "height": 1024,
+      "overflow": false
+    },
+    {
+      "s": "uebergabe-export",
+      "id": "768x1024",
+      "w": 768,
+      "h": 1024,
+      "signature": true,
+      "width": 768,
+      "height": 1024,
+      "overflow": false
+    },
+    {
+      "s": "projekte",
+      "id": "390x844",
+      "w": 390,
+      "h": 844,
+      "signature": true,
+      "width": 390,
+      "height": 844,
+      "overflow": false
+    },
+    {
+      "s": "workflow",
+      "id": "390x844",
+      "w": 390,
+      "h": 844,
+      "signature": true,
+      "width": 390,
+      "height": 844,
+      "overflow": false
+    },
+    {
+      "s": "aufgaben",
+      "id": "390x844",
+      "w": 390,
+      "h": 844,
+      "signature": true,
+      "width": 390,
+      "height": 844,
+      "overflow": false
+    },
+    {
+      "s": "artefakte",
+      "id": "390x844",
+      "w": 390,
+      "h": 844,
+      "signature": true,
+      "width": 390,
+      "height": 844,
+      "overflow": false
+    },
+    {
+      "s": "pruefungen-freigaben",
+      "id": "390x844",
+      "w": 390,
+      "h": 844,
+      "signature": true,
+      "width": 390,
+      "height": 844,
+      "overflow": false
+    },
+    {
+      "s": "uebergabe-export",
+      "id": "390x844",
+      "w": 390,
+      "h": 844,
+      "signature": true,
+      "width": 390,
+      "height": 844,
+      "overflow": false
+    },
+    {
+      "s": "projekte",
+      "id": "375x812",
+      "w": 375,
+      "h": 812,
+      "signature": true,
+      "width": 375,
+      "height": 812,
+      "overflow": false
+    },
+    {
+      "s": "workflow",
+      "id": "375x812",
+      "w": 375,
+      "h": 812,
+      "signature": true,
+      "width": 375,
+      "height": 812,
+      "overflow": false
+    },
+    {
+      "s": "aufgaben",
+      "id": "375x812",
+      "w": 375,
+      "h": 812,
+      "signature": true,
+      "width": 375,
+      "height": 812,
+      "overflow": false
+    },
+    {
+      "s": "artefakte",
+      "id": "375x812",
+      "w": 375,
+      "h": 812,
+      "signature": true,
+      "width": 375,
+      "height": 812,
+      "overflow": false
+    },
+    {
+      "s": "pruefungen-freigaben",
+      "id": "375x812",
+      "w": 375,
+      "h": 812,
+      "signature": true,
+      "width": 375,
+      "height": 812,
+      "overflow": false
+    },
+    {
+      "s": "uebergabe-export",
+      "id": "375x812",
+      "w": 375,
+      "h": 812,
+      "signature": true,
+      "width": 375,
+      "height": 812,
+      "overflow": false
+    }
+  ],
+  "console": [],
+  "network": [
+    {
+      "url": "http://127.0.0.1:43179/",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:43179/assets/index-BzoqPbDz.css",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:43179/assets/index-CO5IYtuB.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:43179/readyz",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:43179/favicon.svg",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/current",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-project-alpha-0001",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/steps",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/tasks",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/workflow",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/context-packages",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/gates",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/integrations/status",
+      "status": 200
+    }
+  ]
+}

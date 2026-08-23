@@ -7,6 +7,8 @@ from pathlib import Path
 from jsonschema import Draft202012Validator, FormatChecker
 from services.jsonld_validation import JsonLdValidatorAdapterError, validate_local_jsonld_text
 from services.preflight_common import validate_lineage
+from services.step4a_preflight.content_validation import validate_content_semantics
+from services.step4a_preflight.entity_validation import validate_entity_bindings
 
 
 def _root() -> Path:
@@ -30,6 +32,8 @@ def validate_step4a_candidate(bundle: dict[str, object], root: Path | None = Non
     errors = _errors("step-4a-briefing.schema.json", briefing, "ERROR_STEP4A_BRIEFING_INVALID", root)
     errors.extend(_errors("claim-ledger.schema.json", ledger, "ERROR_STEP4A_CLAIM_LEDGER_INVALID", root))
     if isinstance(briefing, dict) and isinstance(ledger, dict):
+        errors.extend(validate_content_semantics(briefing, ledger))
+        errors.extend(validate_entity_bindings(briefing))
         if briefing.get("claim_ledger_artifact_id") != ledger.get("artifact_id"):
             errors.append({"code": "ERROR_STEP4A_CLAIM_LINKAGE_INVALID", "message": "Briefing must reference its claim ledger.", "path": ["briefing", "claim_ledger_artifact_id"]})
         for claim in ledger.get("claims", []):
@@ -45,6 +49,7 @@ def validate_step4a_candidate(bundle: dict[str, object], root: Path | None = Non
             try:
                 validation = validate_local_jsonld_text(
                     f'<script type="application/ld+json">{graph}</script>',
+                    strict_geo=jsonld.get("level") == "enhanced",
                     root=root,
                 )
             except JsonLdValidatorAdapterError as exc:

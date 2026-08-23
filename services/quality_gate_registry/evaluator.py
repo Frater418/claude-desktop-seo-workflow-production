@@ -113,6 +113,13 @@ def evaluate_gate_runs(
         (artifact["artifact_id"], artifact["content_sha256"], artifact.get("run_id"))
         for artifact in supporting_artifacts
     }
+    revision_sources = [*supporting_artifacts]
+    if "artifact_id" in current_artifact:
+        revision_sources.append(current_artifact)
+    artifact_revisions = {
+        (artifact["artifact_id"], artifact["content_sha256"], artifact.get("run_id")): artifact.get("revision")
+        for artifact in revision_sources
+    }
     for gate in resolution["required_gates"]:
         if gate["stage"] == "human_approval":
             human_gates.append(gate)
@@ -132,6 +139,8 @@ def evaluate_gate_runs(
                 record.get("artifact_sha256"),
                 record.get("run_id"),
             )
+            if "artifact_revision" in record and record["artifact_revision"] != artifact_revisions.get(binding):
+                continue
             if gate["binding_scope"] == "current_artifact":
                 if binding != (current_artifact["artifact_id"], current_artifact["content_sha256"], run_id):
                     continue
@@ -165,6 +174,18 @@ def evaluate_gate_runs(
                     "ERROR_REQUIRED_QUALITY_GATE_EVIDENCE",
                     gate,
                     f"Quality-gate run omits required evidence: {', '.join(missing_evidence)}.",
+                )
+            )
+        if (
+            gate["binding_scope"] == "external_evidence"
+            and "provenance_classification" in gate["evidence_required"]
+            and (not isinstance(evidence, dict) or evidence.get("provenance_classification") != "external_report")
+        ):
+            errors.append(
+                _error(
+                    "ERROR_REQUIRED_QUALITY_GATE_PROVENANCE",
+                    gate,
+                    "External evidence requires provenance_classification to be external_report.",
                 )
             )
         if gate["binding_scope"] == "external_evidence" and (

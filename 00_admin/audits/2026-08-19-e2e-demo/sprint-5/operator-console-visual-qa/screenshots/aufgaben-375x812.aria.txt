@@ -1,0 +1,96 @@
+- main:
+  - link "Zum Arbeitsbereich":
+    - /url: "#arbeitsbereich"
+  - complementary:
+    - paragraph: Heartweb Admin Operator
+    - navigation "Hauptnavigation":
+      - link "Projekte":
+        - /url: "#Projekte"
+      - link "Workflow":
+        - /url: "#Workflow"
+      - link "Aufgaben":
+        - /url: "#Aufgaben"
+      - link "Artefakte":
+        - /url: "#Artefakte"
+      - link "Pruefungen und Freigaben":
+        - /url: "#Pruefungen und Freigaben"
+      - link "Uebergabe und Export":
+        - /url: "#Uebergabe und Export"
+  - paragraph: Aktives Projekt
+  - heading "Muster Pflege Berlin" [level=1]
+  - paragraph: Muster Pflege Berlin GmbH
+  - term: Aktiver Schritt
+  - definition: "0"
+  - term: Fortschritt
+  - definition: 1 von 8
+  - term: Blocker
+  - definition: "1"
+  - term: Verantwortung
+  - definition: Admin
+  - term: Naechste Aktion
+  - definition: Kickoff pruefen
+  - button "Projekt anlegen"
+  - paragraph: Aufgaben
+  - heading "Aufgabenwarteschlange" [level=2]
+  - text: Status filtern
+  - combobox "Status filtern":
+    - option "Alle Status" [selected]
+    - option "offen"
+  - text: Verantwortung filtern
+  - combobox "Verantwortung filtern":
+    - option "Alle Verantwortlichen" [selected]
+    - option "Admin"
+  - text: Prioritaet filtern
+  - combobox "Prioritaet filtern":
+    - option "Alle Prioritaeten" [selected]
+    - option "Hoch"
+  - text: Faellig bis
+  - textbox "Faellig bis"
+  - text: Schritt filtern
+  - combobox "Schritt filtern":
+    - option "Alle Schritte" [selected]
+    - option "0"
+  - button "Nach Prioritaet sortieren" [pressed]: "Nach Prioritaet sortieren: hoechste zuerst"
+  - button "Nach Faelligkeit sortieren": "Nach Faelligkeit sortieren: frueheste zuerst"
+  - list "Gefilterte Aufgaben":
+    - listitem:
+      - button "Kickoff pruefen" [pressed]:
+        - strong: Kickoff pruefen
+        - text: Hoch Schritt 0 2026-08-22
+  - heading "Aufgabedetail" [level=2]
+  - heading "Kickoff pruefen" [level=3]
+  - term: Status
+  - definition: offen
+  - term: Prioritaet
+  - definition: Hoch
+  - term: Erforderliche Loesung
+  - definition: Nachweis
+  - term: Abhaengigkeit
+  - definition: Freigabe
+  - term: Verantwortung
+  - definition: Admin
+  - term: Faelligkeit
+  - definition: 2026-08-22
+  - term: Schritt
+  - definition: "0"
+  - complementary "Kontext und Nachweise":
+    - paragraph: Arbeitskontext
+    - heading "Kontext und Nachweise" [level=2]
+    - button "Kontext einklappen" [expanded]
+    - region "Nachweise":
+      - heading "Nachweise" [level=3]
+      - paragraph: Kontext
+      - paragraph: Gebunden
+      - paragraph: Aktueller Pruefbericht nicht verfuegbar.
+    - region "Feststellungen":
+      - heading "Feststellungen" [level=3]
+      - paragraph: Keine Feststellungen.
+    - region "Abhaengigkeiten":
+      - heading "Abhaengigkeiten" [level=3]
+      - list:
+        - listitem: "Abhaengigkeit: Freigabe erforderlich"
+        - listitem: "Abhaengigkeit: Freigabe"
+    - region "Revisionsverlauf":
+      - heading "Revisionsverlauf" [level=3]
+      - paragraph: Keine Artefaktrevision vorhanden.
+    - group: Technische Details

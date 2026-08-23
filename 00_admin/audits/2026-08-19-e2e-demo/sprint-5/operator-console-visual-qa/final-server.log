@@ -1,0 +1,24 @@
+INFO:     Started server process [300705]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:43179 (Press CTRL+C to quit)
+INFO:     127.0.0.1:60640 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60640 - "GET /assets/index-CO5IYtuB.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60644 - "GET /assets/index-BzoqPbDz.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60640 - "GET /readyz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60644 - "GET /favicon.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60644 - "GET /v1/tenants/tenant-visual-qa/projects HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60644 - "GET /v1/tenants/tenant-visual-qa/projects/project-alpha/runs/current HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60644 - "GET /v1/tenants/tenant-visual-qa/projects/project-alpha HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60640 - "GET /v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-project-alpha-0001 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60668 - "GET /v1/tenants/tenant-visual-qa/projects/project-alpha/steps HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60684 - "GET /v1/tenants/tenant-visual-qa/projects/project-alpha/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60652 - "GET /v1/tenants/tenant-visual-qa/projects/project-alpha/workflow HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60694 - "GET /v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60640 - "GET /v1/tenants/tenant-visual-qa/projects/project-alpha/context-packages HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60644 - "GET /v1/tenants/tenant-visual-qa/projects/project-alpha/gates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60668 - "GET /v1/tenants/tenant-visual-qa/projects/project-alpha/integrations/status HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [300705]

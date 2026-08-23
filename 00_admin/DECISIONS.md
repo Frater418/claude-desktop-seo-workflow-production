@@ -80,7 +80,7 @@
 
 ## DEC-0018: Lokaler Core, n8n-Gesamtorchestrierung und Notion-Projektbetrieb
 
-- Status: active
+- Status: superseded
 - Date: 2026-08-19
 - Owner/source: Raphael Rechberger
 - Context: Der gesamte Heartweb-Workflow soll spaeter ueber n8n orchestriert werden. Gleichzeitig muss der fachliche Core zuerst vollstaendig lokal laufen koennen. Jesse nutzt Notion als zentrale Projektoberflaeche fuer Kundendaten, Projekttracking, Aufgabenverteilung und Performance-Zyklen.
@@ -88,7 +88,7 @@
 - Rationale: Die lokale Ausfuehrbarkeit verhindert eine harte Abhaengigkeit von noch nicht abgestimmten Fremdsystemen. Die gleichen Commands, Events und Projektionen koennen spaeter durch echte n8n-Workflows und Notion-Datenbanken transportiert werden, ohne die fachliche Logik neu zu implementieren.
 - Confirmed cadence: Der Performance-Zyklus laeuft an Tag 30, 60 und 90. Notion-Tracking, n8n-Trigger und Step-3b-Anpassungen muessen diese bestaetigte Taktung gemeinsam abbilden.
 - Supersedes: none
-- Superseded by: none
+- Superseded by: DEC-0025
 - Evidence: Nutzerpraezisierung vom 19. August 2026; Meetingnotiz vom 17. August 2026
 - Impacted files/areas: Local Workflow API, Event Store, n8n Simulator, Notion Simulator, Aufgabenverteilung, Performance Tracking, Step 3b, Operator Console, Integrationsmeeting
 
@@ -107,3 +107,94 @@
 - Superseded by: none
 - Evidence: Nutzerklaerung und Architekturabgleich vom 19. August 2026
 - Impacted files/areas: Sprint 4 Context Builder, Runtime Contracts, Operator API, Event Store, n8n Simulator, Notion Simulator, Sprint 5 Operator Console, Revision Center, Run History
+
+## DEC-0020: GEO-V2-Vertragsrestauration wird nach stabilem Sprint 5 verpflichtend ausgefuehrt
+
+- Status: active
+- Date: 2026-08-20
+- Owner/source: Raphael Rechberger
+- Context: Der Abgleich mit Session `20260817_151731_bc9488` und ADR-011 zeigt, dass die GEO-Grundarchitektur erhalten ist, konkrete Step-4a- und Step-4b-Qualitaetsregeln aber nicht vollstaendig in die aktuellen V2-Schemas, Prompts, Validatoren und Renderer uebernommen wurden.
+- Decision: Die aktuelle Sprint-5-/5E-Ausfuehrung wird nicht unterbrochen. Nach ihrem stabilen und unabhaengig verifizierten Abschluss wird der verbindliche Plan `.hermes/plans/2026-08-20-deferred-geo-v2-contract-restoration.md` ausgefuehrt. Die Erweiterung nutzt die bestehenden Workflow-, Transition-, Artifact-, Revision-, Approval-, Release- und Provider-Gateway-Grenzen und baut keine parallele Architektur.
+- Rationale: Der technische Golden Path soll zuerst stabil funktionieren. Die genehmigten GEO-Qualitaetsanforderungen fuer professionelle Copywriter- und Developer-Outputs duerfen zugleich nicht verloren gehen oder nur als Dokumentation bestehen bleiben.
+- Supersedes: none
+- Superseded by: none
+- Evidence: Session `20260817_151731_bc9488`; `docs/07-geo-architecture-specification.md`; `docs/04-entscheidungslog.md`, ADR-011; Repository-Abgleich vom 20. August 2026
+- Impacted files/areas: Step-4a- und Step-4b-Schemas, Prompts, Validatoren, Renderer, Quality Gates, Fixtures, Operator Console, AHD Golden Path
+
+## DEC-0021: Neue Findings werden gesammelt und erst im freigegebenen Integrations-Sprint umgesetzt
+
+- Status: active
+- Date: 2026-08-20
+- Owner/source: Raphael Rechberger
+- Context: Waehrend der laufenden Basisimplementierung entstehen weitere SEO-, GEO-, UI-, Integrations- und Qualitaetsbeobachtungen. Sofortige Einzelkorrekturen wuerden den aktiven Scope wiederholt erweitern und koennten Inkonsistenzen erzeugen.
+- Decision: `00_admin/DEFERRED_INTEGRATION_BACKLOG.md` ist der kanonische Sammelpunkt fuer alle neuen, nicht akut blockierenden Findings und Wuensche. Das Erfassen eines Items autorisiert keine Implementierung. Nach stabiler und unabhaengig verifizierter Basis priorisiert Raphael die Items fuer einen eigenen Integrations-Sprint. Aktive P0-/P1-Defects und bereits verbindliche Basisanforderungen duerfen nicht in den Backlog verschoben werden.
+- Rationale: Die Basis wird zuerst fertig und beweisbar funktionsfaehig. Zusaetzliche Anforderungen gehen nicht verloren und werden spaeter als konsistente Pakete statt als isolierte Patches integriert.
+- Supersedes: none
+- Superseded by: none
+- Evidence: Nutzerentscheidung vom 20. August 2026
+- Impacted files/areas: Projektsteuerung, UI/UX, SEO/GEO Contracts, Integrationen, Quality Gates, spaeterer Integrations-Sprint
+
+## DEC-0022: Branchkonsolidierung erfolgt erst nach dem Final-Gate
+
+- Status: active
+- Date: 2026-08-21
+- Owner/source: Raphael Rechberger
+- Context: `master`, `feature/e2e-operator-workflow-system` und der WIP-Checkpoint bilden eine lineare Historie ohne Divergenz. Browser-QA, Sprint 5E und Final-Audit sind noch offen.
+- Decision: Vor dem vollstaendigen Final-Gate wird nichts nach `master` gemergt. Nach bestandenem Final-Gate wird der finale Arbeitsstand als Nachfolger des WIP-Checkpoints committed, der Feature-Branch auf diesen finalen Commit gebracht und verifiziert. Anschliessend wird `master` per Fast-Forward auf den finalen Feature-Stand gesetzt. WIP- und Feature-Hilfsbranches werden erst nach verifiziertem Remote-SHA und ausdruecklicher Abschlusskontrolle geloescht.
+- Rationale: Die lineare Historie erlaubt eine konfliktfreie Konsolidierung, ohne einen unfertigen Zwischenstand als offiziellen Hauptbranch zu veroeffentlichen oder Sisyphus waehrend der aktiven Arbeit zu stoeren.
+- Supersedes: none
+- Superseded by: none
+- Evidence: Nutzerentscheidung vom 21. August 2026; verifizierter Branchgraph mit `master -> feature -> WIP`
+- Impacted files/areas: GitHub Branchstrategie, Final-Audit, Release Gate, WIP-Checkpoint, Feature-Branch, master
+
+## DEC-0023: Promptqualitaet wird vor dem bestehenden Final-Audit in V2 restauriert
+
+- Status: superseded
+- Date: 2026-08-21
+- Owner/source: Raphael Rechberger
+- Context: Der Read-only-Abgleich der originalen Desktop-Prompts, der master-Prompts und der aktuellen V2-Schemas, Preflights und Renderer zeigt, dass die technische V2-Architektur sicherer ist, aber mehrere outputkritische Anforderungen nicht vollstaendig migriert wurden. Betroffen sind 1B-Praesentation, 1C-Template-Tiefe, Step-2-Metriken und Recherchebreite, die reale Step-2-zu-Step-3-Solverkette, Step-3B-Performance-Semantik sowie die bereits in DIB-001 dokumentierte Step-4A/4B-Qualitaet.
+- Decision: Die laufende Browser-QA und Sprint 5E werden nicht unterbrochen. Nach einem stabilen Sprint-5E-Checkpoint wird zuerst DIB-005 implementiert, danach DIB-006 mit PQ-0 bis PQ-5. Der bereits vorhandene Sprint-5-Final-Audit-Todo wird bis zum Abschluss dieser Pakete zurueckgestellt. Alte Prompts werden nicht komplett zurueckkopiert. Fehlende Anforderungen werden in die bestehenden V2-Schemas, Validatoren, Renderer, Quality Gates und Admin-Oberflaechen integriert.
+- Rationale: Die sichere V2-Architektur bleibt erhalten, waehrend die urspruenglich genehmigte SEO-, GEO-, Conversion-, Copywriter-, Developer- und Praesentationsqualitaet wieder maschinenpruefbar wird. Ein Audit vor dieser Restauration koennte einen technisch validen, aber fachlich zu duennen Workflow faelschlich freigeben.
+- Supersedes: none
+- Superseded by: DEC-0024
+- Evidence: `00_admin/audits/2026-08-21-prompt-quality-preservation/READ_ONLY_PROMPT_PARITY_AUDIT.md`; `.hermes/plans/2026-08-21-prompt-quality-preservation-v2-restoration.md`; Desktop Promptworkflow; Git baselines `a10093b`, `c818ffc`, `5e78679`
+- Impacted files/areas: Sisyphus Root-Todo-Reihenfolge, DIB-001, DIB-005, DIB-006, Output-Schemas, Prompts, Preflights, Renderer, Quality Gates, Admin Review, Final-Audit, AHD Golden Path, Branchkonsolidierung
+
+## DEC-0024: Production-first Cut-Line priorisiert den ersten echten Output
+
+- Status: active
+- Date: 2026-08-21
+- Owner/source: Raphael Rechberger
+- Context: Der lokale Core und die Admin Console sind weit fortgeschritten, waehrend wiederholte Mobile- und Evidence-Schleifen den ersten echten Output unverhaeltnismaessig verzoegern. Raphael muss schnell produktiv arbeiten und reale Kundenartefakte liefern. Live-Notion, Live-n8n, perfekte Mobile-Politur, Step-3B vor realen Tag-30-Daten, Voll-Dokumentation und Repository-Cleanup sind dafuer nicht erforderlich.
+- Decision: Der aktuell laufende Browser-Harness darf einmal abschliessen. Danach sind Desktop und Kernaktionen release-blocking; reine Mobile-Komfort- oder Scrollprobleme werden Post-Release behandelt, solange sie keine Daten korrumpieren, keine erforderliche Reviewaktion unzugaenglich machen und keinen falschen Erfolg erzeugen. Vor dem ersten lokalen Production-Run werden nur Sprint 5E, DIB-005, bounded PQ-0, PQ-1, PQ-2 und PQ-4 sowie ein gezielter Production Release Audit abgeschlossen. PQ-3, PQ-5, Live-Notion, Live-n8n, umfassende Mobile-QA, Voll-Dokumentation, Repository-Hygiene, breite Archetypen- und Praesentationsarbeit gehen in `00_admin/POST_RELEASE_BACKLOG.md`.
+- Rationale: Die erste Releasegrenze muss korrekte, sichere und professionell nutzbare Outputs beweisen, nicht maximale Produktreife in jedem spaeteren Kanal. Reale Nutzung liefert schneller die wertvollste Evidence fuer weitere Verbesserungen.
+- Supersedes: DEC-0023
+- Superseded by: none
+- Evidence: Nutzerentscheidung vom 21. August 2026; `00_admin/POST_RELEASE_BACKLOG.md`; `.hermes/plans/2026-08-21-prompt-quality-preservation-v2-restoration.md`; aktueller Browser-QA-Verlauf
+- Impacted files/areas: Sisyphus Root-Todos, Browser-Gate, Sprint 5E, DIB-005, DIB-006, targeted Production Release audit, AHD Golden Path, Post-Release-Planung, Branch- und Deployment-Gates
+
+## DEC-0025: Notion uebernimmt die Umsetzung nach einmaligem Projekthandoff
+
+- Status: active
+- Date: 2026-08-21
+- Owner/source: Raphael Rechberger
+- Context: Heartweb soll einen manuellen SEO-/GEO-Prozess automatisieren, ein vollstaendiges Kundenkonzept erzeugen und dieses als operatives Projekt mit Aufgaben, Verantwortlichen, Prioritaeten, Terminen und Umsetzungsunterlagen in Notion anlegen. Die spaetere Arbeit von Copywritern, Designern und Entwicklern wird dort durch Jesse und das Team gesteuert. Eine permanente Rueckmeldung einzelner Mitarbeiteraufgaben an den Core war nie Produktziel und wuerde unnoetige Softwarekomplexitaet erzeugen.
+- Decision: Der Core und die Operator Console fuehren Step 0 bis Step 4B bis zur freigegebenen Delivery aus. Sprint 5E erzeugt ein vollstaendiges Notion-Kundenprojekt und trennt Core-interne Produktionstasks von Notion-eigenen Umsetzungsaufgaben. Nach dem Handoff bleiben Status, Kommentare, Verantwortliche, Prioritaeten, Deadlines, Review und Launch der Umsetzungsaufgaben ausschliesslich in Notion. Sie duerfen keinen Core-Run fortsetzen, kein Gate freigeben, keine Revision erzeugen und kein Artefakt veraendern. Der einzige geplante automatisierte Wiedereinstieg ist Step 3B an Tag 30, 60 und 90: n8n verbindet die freigegebene Kernstrategie und den Plan mit verifizierten realen Performance-Daten, der Core erzeugt einen versionierten Anpassungsvorschlag und nach expliziter Strategiefreigabe werden nur zukuenftige Planung und Aufgaben angepasst.
+- Rationale: Heartweb soll Arbeit abnehmen und eine umsetzbare Strategie liefern, nicht die menschliche Projektabwicklung nach dem Handoff als zweites Betriebssystem nachbauen. Notion bleibt Jesses zentrale Steuerungsmatrix. Der Core wird nur dort erneut benoetigt, wo reale Performance die Kernstrategie fachlich neu bewerten soll.
+- Supersedes: DEC-0018
+- Superseded by: none
+- Evidence: Nutzerklaerung vom 21. August 2026; `C:\Users\offic\Desktop\Heartweb\Promptworkflow\0b-Workflow-Uebersicht.md`; `C:\Users\offic\Desktop\Heartweb\Promptworkflow\3b-Performance-Check-Tag30-60-90.md`; `.hermes/plans/2026-08-20_120727-local-delivery-export-notion-handoff.md`; `docs/integrations/notion-operating-model.md`; `docs/integrations/n8n-orchestration-model.md`
+- Impacted files/areas: Sprint 5E, Notion Import Pack, Notion Live Adapter, n8n Workflow, Integration Contracts, internal Operator Tasks, Step 3B, Performance Checkpoints, Project State, Post-Release Backlog
+
+## DEC-0027: Heartweb testet Baseline plus betroffene Delta-Closure und berichtet ueber feste Main Tasks
+
+- Status: active
+- Date: 2026-08-22
+- Owner/source: Raphael Rechberger
+- Context: Wiederholte komplette Suites und breite Multi-Agent-Reviews nach kleinen Fixes verbrauchten Zeit und Modellbudget, waehrend wechselnde Root-Todo-Zaehler keinen stabilen Gesamtfortschritt zeigten.
+- Decision: `standards/testing/PROTOTYPE_TEST_POLICY.md` ist die bindende projektlokale Testautoritaet. Eine gruene Baseline bleibt fuer unveraenderte Bereiche gueltig. Nach einer Aenderung werden nur geaendertes Modul, betroffener Vertrag, Route, Flow, Gate und benannte direkte Abhaengigkeiten geprueft. Eine komplette Repository-Suite braucht neue ausdrueckliche Raphael-Freigabe. Der Gesamtfortschritt zeigt gleichzeitig die kanonische 13-Stufen-Sprint-Roadmap und die 10 festen Production-first-Main-Tasks aus `00_admin/MASTER_TASK_MATRIX.md`; dynamische Root-Todos sind Subtasks.
+- Rationale: Heartweb muss schnell operativ nutzbar werden, ohne Datenintegritaet und nachvollziehbare Evidence aufzugeben. Risikobasierte Delta-Pruefung erhaelt bestehende Evidence und verhindert endlose Test- und Review-Loops.
+- Supersedes: alte generische Full-Suite-, Vollmatrix- und wechselnde Root-Todo-Gesamtzaehler fuer dieses Projekt
+- Superseded by: none
+- Evidence: Raphael-Instruktionen vom 22. August 2026; `standards/testing/PROTOTYPE_TEST_POLICY.md`; `00_admin/MASTER_TASK_MATRIX.md`
+- Impacted files/areas: AGENTS, CLAUDE, Sprint-5- und Sprint-5E-Plaene, Root-Sisyphus-Todos, Cronstatus, Release Audit und Prototype-Matrix

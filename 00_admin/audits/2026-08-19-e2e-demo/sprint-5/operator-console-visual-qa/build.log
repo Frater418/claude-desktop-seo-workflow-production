@@ -1,0 +1,14 @@
+
+> operator-console@0.1.0 build
+> node ./node_modules/typescript/bin/tsc --noEmit && node ./node_modules/vite/bin/vite.js build
+
+vite v8.2.2 building client environment for production...
+transforming...
+✓ 29 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.57 kB │ gzip:  0.34 kB
+dist/assets/index-BzoqPbDz.css   11.64 kB │ gzip:  2.69 kB
+dist/assets/index-CO5IYtuB.js   199.37 kB │ gzip: 59.30 kB
+
+✓ built in 486ms

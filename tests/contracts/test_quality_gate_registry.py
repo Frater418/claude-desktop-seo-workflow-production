@@ -92,6 +92,30 @@ class QualityGateRegistryTests(unittest.TestCase):
                     if tool["mode"] == "required":
                         self.assertEqual("blocking", gate["enforcement"])
 
+    def test_step4a_local_claims_and_schema_gate_contains_only_local_machine_evidence(self):
+        gate = next(gate for gate in self.registry["gates"] if gate["gate_id"] == "qg-step4a-claims-and-schema")
+
+        self.assertEqual("always", gate["applicability"])
+        self.assertEqual("current_artifact", gate["binding_scope"])
+        self.assertEqual(["submit_for_gate"], gate["blocks_operations"])
+        self.assertEqual([{"tool_id": "heartweb-jsonld-validator", "mode": "required"}], gate["tools"])
+        self.assertEqual(["claim_ledger", "validator_levels", "schema_hash", "review_decision"], gate["evidence_required"])
+
+    def test_step4b_staging_gate_requires_immutable_external_evidence_only_for_publish(self):
+        gate = next(gate for gate in self.registry["gates"] if gate["gate_id"] == "qg-step4b-staging-technical")
+
+        self.assertEqual("when_production", gate["applicability"])
+        self.assertEqual("external_evidence", gate["binding_scope"])
+        self.assertEqual(["publish"], gate["blocks_operations"])
+        self.assertEqual(
+            ["staging_url", "crawl_report_sha256", "lighthouse_report_sha256", "axe_report_sha256", "visual_report_sha256", "content_sha256", "staging_evidence_sha256", "provenance_classification", "verified_at"],
+            gate["evidence_required"],
+        )
+        self.assertEqual(
+            ["screaming-frog-cli", "lighthouse", "axe", "browser-visual-regression"],
+            [tool["tool_id"] for tool in gate["tools"]],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

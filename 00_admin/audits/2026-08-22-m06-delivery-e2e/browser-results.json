@@ -1,0 +1,194 @@
+{
+  "route": "Uebergabe und Export",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "fixed_time": "2026-08-22T10:15:30.000Z",
+  "checkpoint_request_body": "{\"delivery_export_result_id\":\"delivery-export-result-99f28508f91a282db3bcc9e000dd8150\",\"delivery_package_id\":\"delivery-package-eb5b530fdb3e45f038676536d1d22517\",\"export_id\":\"delivery-export-aa3335ee5ab249b02303c7abb8074b34\",\"export_request\":{\"created_at\":\"2026-08-22T10:15:30.000Z\",\"delivery_export_request_id\":\"delivery-export-request-66ff1f053918e8c41f3a5f57bea8863c\",\"draft_inclusion_policy\":\"exclude_drafts\",\"idempotency_key\":\"idem-8f79262566f7f176266069cc24898f5a\",\"project_id\":\"project-demo\",\"requested_role_packages\":[\"copywriter\",\"developer\"],\"schema_version\":\"1.0.0\",\"scope\":\"checkpoint\",\"source_snapshot_revision\":11,\"tenant_id\":\"tenant-demo\"},\"notion_import_request\":{\"customer_external_id\":\"customer-delivery-0001\",\"implementation_tasks\":[{\"task_id\":\"task-implementation-0001\",\"assignment_id\":\"assignment-implementation-0001\",\"title\":\"Publish delivery package\",\"status\":\"not_started\",\"comments\":\"\",\"source_assignee\":\"\",\"priority\":\"high\",\"deadline\":\"2026-09-01\",\"role\":\"copywriter\",\"dependencies\":[],\"artifact_relations\":[]}],\"notion_import_manifest_id\":\"notion-import-61d3557d1959a0bd66ef7d1ce9d53154\",\"publication_registry\":{\"publication_registry_record_id\":\"publication-registry-9940e186e04b93d5643fb0544e83a6a1\",\"urls\":[\"https://example.test/publish/delivery\"]}},\"package_revision\":7,\"role_package_requests\":[{\"role\":\"copywriter\",\"role_handoff_manifest_id\":\"role-handoff-b7e688134993e41473c213f9c8d0b17a\"},{\"role\":\"developer\",\"role_handoff_manifest_id\":\"role-handoff-43c4a35d025de3da8ec7c06d8081bf02\"}]}",
+  "retry_request_body": "{\"delivery_export_result_id\":\"delivery-export-result-99f28508f91a282db3bcc9e000dd8150\",\"delivery_package_id\":\"delivery-package-eb5b530fdb3e45f038676536d1d22517\",\"export_id\":\"delivery-export-aa3335ee5ab249b02303c7abb8074b34\",\"export_request\":{\"created_at\":\"2026-08-22T10:15:30.000Z\",\"delivery_export_request_id\":\"delivery-export-request-66ff1f053918e8c41f3a5f57bea8863c\",\"draft_inclusion_policy\":\"exclude_drafts\",\"idempotency_key\":\"idem-8f79262566f7f176266069cc24898f5a\",\"project_id\":\"project-demo\",\"requested_role_packages\":[\"copywriter\",\"developer\"],\"schema_version\":\"1.0.0\",\"scope\":\"checkpoint\",\"source_snapshot_revision\":11,\"tenant_id\":\"tenant-demo\"},\"notion_import_request\":{\"customer_external_id\":\"customer-delivery-0001\",\"implementation_tasks\":[{\"task_id\":\"task-implementation-0001\",\"assignment_id\":\"assignment-implementation-0001\",\"title\":\"Publish delivery package\",\"status\":\"not_started\",\"comments\":\"\",\"source_assignee\":\"\",\"priority\":\"high\",\"deadline\":\"2026-09-01\",\"role\":\"copywriter\",\"dependencies\":[],\"artifact_relations\":[]}],\"notion_import_manifest_id\":\"notion-import-61d3557d1959a0bd66ef7d1ce9d53154\",\"publication_registry\":{\"publication_registry_record_id\":\"publication-registry-9940e186e04b93d5643fb0544e83a6a1\",\"urls\":[\"https://example.test/publish/delivery\"]}},\"package_revision\":7,\"role_package_requests\":[{\"role\":\"copywriter\",\"role_handoff_manifest_id\":\"role-handoff-b7e688134993e41473c213f9c8d0b17a\"},{\"role\":\"developer\",\"role_handoff_manifest_id\":\"role-handoff-43c4a35d025de3da8ec7c06d8081bf02\"}]}",
+  "checkpoint_export_id": "delivery-export-aa3335ee5ab249b02303c7abb8074b34",
+  "create_status": 201,
+  "retry_status": 200,
+  "notion_post_count": 0,
+  "screenshot": "delivery-center-1280x900.png",
+  "checkpoint_download": "checkpoint.zip",
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/index-RiEXEoqu.js"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/index-fc8r02qy.css"
+    },
+    {
+      "method": "GET",
+      "path": "/readyz"
+    },
+    {
+      "method": "GET",
+      "path": "/favicon.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/runs/current"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/runs/run-step-4b-0001"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/workflow"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/steps"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/tasks"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/artifacts"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/gates"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/context-packages"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/integrations/status"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/delivery/preview"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/delivery/preview"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/delivery/exports"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/delivery/exports"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/delivery/exports/delivery-export-aa3335ee5ab249b02303c7abb8074b34"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/delivery/exports/delivery-export-aa3335ee5ab249b02303c7abb8074b34/download"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/delivery/exports"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/tenants/tenant-demo/projects/project-demo/delivery/exports/delivery-export-aa3335ee5ab249b02303c7abb8074b34"
+    }
+  ],
+  "console_errors": [],
+  "failed_requests": [],
+  "steps_projection": {
+    "data": [
+      {
+        "tenant_id": "tenant-demo",
+        "project_id": "project-demo",
+        "run_id": "run-step-0-0001",
+        "step_id": "0",
+        "status": "completed",
+        "blocker": "Keine offenen Schrittblocker",
+        "next_action": "Lieferpaket pruefen"
+      },
+      {
+        "tenant_id": "tenant-demo",
+        "project_id": "project-demo",
+        "run_id": "run-step-1-0001",
+        "step_id": "1",
+        "status": "completed",
+        "blocker": "Keine offenen Schrittblocker",
+        "next_action": "Lieferpaket pruefen"
+      },
+      {
+        "tenant_id": "tenant-demo",
+        "project_id": "project-demo",
+        "run_id": "run-step-1b-0001",
+        "step_id": "1b",
+        "status": "completed",
+        "blocker": "Keine offenen Schrittblocker",
+        "next_action": "Lieferpaket pruefen"
+      },
+      {
+        "tenant_id": "tenant-demo",
+        "project_id": "project-demo",
+        "run_id": "run-step-1c-0001",
+        "step_id": "1c",
+        "status": "completed",
+        "blocker": "Keine offenen Schrittblocker",
+        "next_action": "Lieferpaket pruefen"
+      },
+      {
+        "tenant_id": "tenant-demo",
+        "project_id": "project-demo",
+        "run_id": "run-step-2-0001",
+        "step_id": "2",
+        "status": "completed",
+        "blocker": "Keine offenen Schrittblocker",
+        "next_action": "Lieferpaket pruefen"
+      },
+      {
+        "tenant_id": "tenant-demo",
+        "project_id": "project-demo",
+        "run_id": "run-step-3-0001",
+        "step_id": "3",
+        "status": "completed",
+        "blocker": "Keine offenen Schrittblocker",
+        "next_action": "Lieferpaket pruefen"
+      },
+      {
+        "tenant_id": "tenant-demo",
+        "project_id": "project-demo",
+        "run_id": "run-step-4a-0001",
+        "step_id": "4a",
+        "status": "completed",
+        "blocker": "Keine offenen Schrittblocker",
+        "next_action": "Lieferpaket pruefen"
+      },
+      {
+        "tenant_id": "tenant-demo",
+        "project_id": "project-demo",
+        "run_id": "run-step-4b-0001",
+        "step_id": "4b",
+        "status": "completed",
+        "blocker": "Keine offenen Schrittblocker",
+        "next_action": "Lieferpaket pruefen"
+      }
+    ]
+  },
+  "error": null,
+  "page_text": ""
+}

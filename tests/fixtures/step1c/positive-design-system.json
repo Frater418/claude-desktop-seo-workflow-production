@@ -7,9 +7,10 @@
   "step_id": "1c",
   "revision": 1,
   "source_artifact_ids": ["artifact-architecture-0001"],
-  "evidence_ids": ["evidence-screenshot-0001"],
-  "decision_records": [{"decision_id": "decision-design-0001", "question": "Token provenance", "outcome": "screenshot", "evidence_ids": ["evidence-screenshot-0001"]}],
+  "evidence_ids": ["evidence-screenshot-0001", "evidence-heartweb-brand-0001"],
+  "decision_records": [{"decision_id": "decision-design-0001", "question": "Token provenance", "outcome": "Heartweb local fixture evidence", "evidence_ids": ["evidence-screenshot-0001", "evidence-heartweb-brand-0001"]}],
   "candidate_status": "awaiting_gate",
   "tokens": {"color_primary": "#123456", "color_surface": "#ffffff", "font_body": "Arial", "radius_card": "8px"},
-  "accessibility": {"contrast_evidence_ids": ["evidence-screenshot-0001"], "focus_indicator": "visible"}
+  "accessibility": {"contrast_evidence_ids": ["evidence-screenshot-0001"], "focus_indicator": "visible"},
+  "brand_consistency": {"approved_brand_name": "Heartweb Care", "approved_direction": "Calm local care guidance grounded in fixture evidence.", "evidence_ids": ["evidence-screenshot-0001", "evidence-heartweb-brand-0001"]}
 }

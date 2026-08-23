@@ -1,0 +1,79 @@
+- main:
+  - link "Zum Arbeitsbereich":
+    - /url: "#arbeitsbereich"
+  - complementary:
+    - paragraph: Heartweb Admin Operator
+    - navigation "Hauptnavigation":
+      - link "Projekte":
+        - /url: "#Projekte"
+      - link "Workflow":
+        - /url: "#Workflow"
+      - link "Aufgaben":
+        - /url: "#Aufgaben"
+      - link "Artefakte":
+        - /url: "#Artefakte"
+      - link "Pruefungen und Freigaben":
+        - /url: "#Pruefungen und Freigaben"
+      - link "Uebergabe und Export":
+        - /url: "#Uebergabe und Export"
+  - paragraph: Aktives Projekt
+  - heading "Muster Pflege Berlin" [level=1]
+  - paragraph: Muster Pflege Berlin GmbH
+  - term: Aktiver Schritt
+  - definition: "0"
+  - term: Fortschritt
+  - definition: 1 von 8
+  - term: Blocker
+  - definition: "1"
+  - term: Verantwortung
+  - definition: Admin
+  - term: Naechste Aktion
+  - definition: Kickoff pruefen
+  - button "Projekt anlegen"
+  - paragraph: Workflow
+  - heading "Aktiver Arbeitsschritt" [level=2]
+  - text: pending
+  - list "Initiale Workflow-Schritte":
+    - listitem: "0"
+    - listitem: "1"
+    - listitem: 1b
+    - listitem: 1c
+    - listitem: "2"
+    - listitem: "3"
+    - listitem: 4a
+    - listitem: 4b
+  - paragraph: "3b: noch nicht faellig"
+  - text: Blocker
+  - strong: Freigabe erforderlich
+  - text: Naechste Aktion
+  - strong: Kickoff starten
+  - heading "Maschinenpruefung" [level=3]
+  - paragraph: Aktueller Pruefbericht nicht verfuegbar
+  - region "Naechsten Schritt starten":
+    - paragraph: Verbindliche Aktion
+    - heading "Naechsten Schritt starten" [level=3]
+    - paragraph: Die naechste legale Aktion wird erst nach einer Vorschau verbindlich.
+    - button "Naechsten Schritt vorbereiten"
+  - region "Lokale Integrationen":
+    - paragraph: "Notion: simuliert"
+  - complementary "Kontext und Nachweise":
+    - paragraph: Arbeitskontext
+    - heading "Kontext und Nachweise" [level=2]
+    - button "Kontext einklappen" [expanded]
+    - region "Nachweise":
+      - heading "Nachweise" [level=3]
+      - paragraph: Kontext
+      - paragraph: Gebunden
+      - paragraph: Aktueller Pruefbericht nicht verfuegbar.
+    - region "Feststellungen":
+      - heading "Feststellungen" [level=3]
+      - paragraph: Keine Feststellungen.
+    - region "Abhaengigkeiten":
+      - heading "Abhaengigkeiten" [level=3]
+      - list:
+        - listitem: "Abhaengigkeit: Freigabe erforderlich"
+        - listitem: "Abhaengigkeit: Freigabe"
+    - region "Revisionsverlauf":
+      - heading "Revisionsverlauf" [level=3]
+      - paragraph: Keine Artefaktrevision vorhanden.
+    - group: Technische Details

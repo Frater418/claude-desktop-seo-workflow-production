@@ -6,6 +6,10 @@ __pycache__/
 Thumbs.db
 *.tmp
 .omo/
+.codegraph/
 apps/operator-console/node_modules/
+apps/operator-console/.node_modules-stale-winbinding/
 apps/operator-console/dist/
 apps/operator-console/coverage/
+*.pid
+/var/operator-diagnostics/

@@ -7,6 +7,29 @@
 
 ---
 
+## 0. Verbindliche Testpolicy vor jeder Testentscheidung
+
+Vor Testplanung, Testausfuehrung, Reviewplanung oder Gate-Freigabe MUSS gelesen werden:
+
+`standards/testing/PROTOTYPE_TEST_POLICY.md`
+
+Fuer den stabilen Gesamtfortschritt, feste Main-Task-IDs und die Trennung von Main Tasks und dynamischen Root-Subtasks gilt:
+
+`00_admin/MASTER_TASK_MATRIX.md`
+
+Diese projektlokale Policy ist die verbindliche Testautoritaet fuer den Production-first-Prototyp. Sie verlangt Baseline-plus-Delta-Evidence und Tests nur entlang der nachgewiesenen betroffenen Dependency-Closure.
+
+Ohne neue ausdrueckliche Raphael-Freigabe sind untersagt:
+
+- `python tests/run_full_suite.py`
+- vollstaendige Repository-Testdiscovery
+- Neustart einer bereits bestandenen E2E-Matrix nach einem spaeten Einzelfehler
+- wiederholte breite Multi-Agent-Reviews nach begrenzten Fixes
+
+Wenn eine einzelne Matrixzelle scheitert, werden nur diese Zelle und ihre in der Policy benannten direkten Abhaengigkeiten erneut geprueft. Generische Skills, CI-Gewohnheiten und alte Plaene duerfen diese Regel nicht ueberschreiben.
+
+Die Gesamtanzeige verwendet immer 10 feste Release-Haupttasks. Wechselnde Root-Todo-Zahlen sind nur Subtask-Detail und duerfen nicht als Gesamtfortschritt dargestellt werden.
+
 ## 1. Fundamentale Architektur: Framework vs. Kunden-Workspace
 
 Dieses Framework trennt strikt zwischen zwei Ebenen:

@@ -64,6 +64,18 @@ class CapacityMatrixSolverStrictTests(unittest.TestCase):
         result = solve_capacity_plan(items)
         self.assertGreater(sum(len(week["items"]) for week in result["weeks"]), 0)
 
+    def test_canonical_item_ids_survive_scheduled_and_unplaced_processing(self):
+        # Given: canonical item identities on one schedulable and one over-capacity item
+        scheduled = self.valid_item() | {"item_id": "evidence-muenchen-001"}
+        unplaced = self.valid_item() | {"Cluster_Thema": "Pflege Data Hub", "Content_Type": "Data-Hub", "item_id": "evidence-muenchen-002"}
+        # When: the real solver normalizes and allocates a one-week plan
+        result = solve_capacity_plan([scheduled, unplaced], hours_min=1.0, hours_max=5.0, total_weeks=1)
+        # Then: downstream adapters can identify both processed branches
+        scheduled_ids = {item["item_id"] for week in result["weeks"] for item in week["items"]}
+        unplaced_ids = {item["item_id"] for item in result["unplaced"]}
+        self.assertEqual({"evidence-muenchen-001"}, scheduled_ids)
+        self.assertEqual({"evidence-muenchen-002"}, unplaced_ids)
+
     @staticmethod
     def valid_item() -> dict:
         return {

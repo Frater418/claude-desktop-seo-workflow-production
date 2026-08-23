@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0.0",
+  "audit_date": "2026-08-21",
+  "author": "Raphael Rechberger",
+  "scope": "Complete Heartweb project directory excluding .git, active node_modules, build outputs, caches and virtual environments",
+  "inventory": {
+    "files_scanned": 1023,
+    "bytes_scanned": 40294577,
+    "git_tracked_files": 555,
+    "git_changed_paths": 125,
+    "inaccessible_entries": 0,
+    "exact_duplicate_groups": 1,
+    "potential_duplicate_bytes": 1174811,
+    "suspicious_artifacts": 6,
+    "large_files_at_least_1mb": 5,
+    "confirmed_broken_relative_markdown_links": 0,
+    "typescript_files": 48,
+    "typescript_productively_reachable": 17,
+    "typescript_unreachable_production_candidates": 16
+  },
+  "confirmed_candidates": {
+    "stale_native_binding": {
+      "path": "apps/operator-console/.node_modules-stale-winbinding/",
+      "bytes": 21401600,
+      "action": "ignore now; remove only after stable frontend and browser gate"
+    },
+    "stale_preview_pid": {
+      "path": "00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/operator-api-preview.pid",
+      "bytes": 7,
+      "action": "ignore now; remove after evidence reconciliation"
+    },
+    "duplicate_plan_images": {
+      "sha256": "e821aa1b0400f4571568a364e86cadb36f7286216e637ab4f22058604c469ad2",
+      "bytes_each": 1174811,
+      "paths": [
+        ".hermes/plans/heartweb-notion-n8n-ui-migration.png",
+        ".hermes/plans/heartweb-operations-platform-architecture.png"
+      ],
+      "action": "retain one after intended-label review"
+    },
+    "rejected_demo_frontend": {
+      "entry": "apps/operator-console/src/dev/neutralDemo.ts",
+      "unreachable_source_files": 16,
+      "action": "remove or archive after final TypeScript reference and browser QA"
+    },
+    "legacy_agentseo_contracts": {
+      "paths": [
+        "mcp/tool-contracts/agentseo_keyword_enricher.json",
+        "mcp/tool-contracts/serp_gap_analyzer.json",
+        "mcp/tool-contracts/schema_jsonld_generator.json"
+      ],
+      "action": "mark legacy or archive after final runtime reference sweep"
+    }
+  },
+  "intentional_keep": [
+    "00_admin/audits",
+    "00_admin/checkpoints",
+    "03_research raw evidence",
+    "neutral Step fixtures",
+    "Package 4 runtime and tests",
+    ".omo local continuation state",
+    ".codegraph local cache outside Git"
+  ],
+  "mandatory_before_master": [
+    "DIB-001 GEO V2 restoration decision",
+    "DIB-002 entry document reconciliation",
+    "DIB-003 docs corpus classification",
+    "DIB-004 repository hygiene and legacy cleanup",
+    "CHANGELOG reconciliation",
+    "final browser and delivery evidence",
+    "DEC-0022 branch consolidation"
+  ]
+}

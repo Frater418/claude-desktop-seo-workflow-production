@@ -10,9 +10,11 @@
   "evidence_ids": ["evidence-navigation-0001"],
   "decision_records": [{"decision_id": "decision-architecture-0001", "question": "Navigation placement", "outcome": "approved", "evidence_ids": ["evidence-navigation-0001"]}],
   "candidate_status": "awaiting_gate",
+  "page_type_legend": [{"code": "pillar_page", "label": "Pillar Page", "description": "Primary topic hub"}, {"code": "cluster_page", "label": "Cluster Page", "description": "Supporting detail page"}],
+  "open_confirmations": [],
   "content_decisions": [
-    {"content_id": "pillar-care", "decision": "existing", "url": "/care/", "canonical_url": "https://example.test/care/", "navigation": "primary"},
-    {"content_id": "cluster-care-guide", "decision": "new", "url": "/care/guide/", "canonical_url": "https://example.test/care/guide/", "navigation": "child"}
+    {"content_id": "pillar-care", "decision": "existing", "url": "/care/", "canonical_url": "https://example.test/care/", "navigation": "primary", "page_type": "pillar_page", "display_label": "Care Services", "presentation_status": "confirmed"},
+    {"content_id": "cluster-care-guide", "decision": "new", "url": "/care/guide/", "canonical_url": "https://example.test/care/guide/", "navigation": "child", "page_type": "cluster_page", "display_label": "Care Guide", "parent_content_id": "pillar-care", "presentation_status": "confirmed"}
   ],
   "link_graph": [{"from_content_id": "pillar-care", "to_content_id": "cluster-care-guide", "relationship": "vertical"}]
 }

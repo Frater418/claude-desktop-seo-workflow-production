@@ -1,0 +1,1 @@
+{"delivery_export_request_id":"delivery-export-request-demo-0001","schema_version":"1.0.0","tenant_id":"tenant-demo","project_id":"project-demo","scope":"checkpoint","draft_inclusion_policy":"include_explicit_drafts","idempotency_key":"idem-delivery-demo-0001","created_at":"2026-08-20T10:00:00Z","source_snapshot_revision":3,"requested_role_packages":["copywriter","developer"]}

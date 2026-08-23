@@ -1,0 +1,84 @@
+- main:
+  - link "Zum Arbeitsbereich":
+    - /url: "#arbeitsbereich"
+  - complementary:
+    - paragraph: Heartweb Admin Operator
+    - navigation "Hauptnavigation":
+      - link "Projekte":
+        - /url: "#Projekte"
+      - link "Workflow":
+        - /url: "#Workflow"
+      - link "Aufgaben":
+        - /url: "#Aufgaben"
+      - link "Artefakte":
+        - /url: "#Artefakte"
+      - link "Pruefungen und Freigaben":
+        - /url: "#Pruefungen und Freigaben"
+      - link "Uebergabe und Export":
+        - /url: "#Uebergabe und Export"
+  - paragraph: Aktives Projekt
+  - heading "Muster Pflege Berlin" [level=1]
+  - paragraph: Muster Pflege Berlin GmbH
+  - term: Aktiver Schritt
+  - definition: "0"
+  - term: Fortschritt
+  - definition: 1 von 8
+  - term: Blocker
+  - definition: "1"
+  - term: Verantwortung
+  - definition: Admin
+  - term: Naechste Aktion
+  - definition: Kickoff pruefen
+  - button "Projekt anlegen"
+  - region "Projekt waehlen":
+    - paragraph: Projekte
+    - heading "Projekt waehlen" [level=2]
+    - paragraph: Alle Werte stammen aus der kanonischen Projektliste.
+    - list "Kanonische Projekte":
+      - listitem:
+        - button "Muster Pflege Berlin waehlen":
+          - strong: Muster Pflege Berlin
+          - text: Muster Pflege Berlin GmbH Aktiver Schritt
+          - strong: "0"
+          - text: Fortschritt
+          - strong: 1 von 8
+          - text: Blocker
+          - strong: "1"
+          - text: Verantwortung
+          - strong: Admin
+          - text: Naechste Aktion
+          - strong: Kickoff pruefen
+      - listitem:
+        - button "Muster Handwerk Koeln waehlen":
+          - strong: Muster Handwerk Koeln
+          - text: Muster Handwerk Koeln GmbH Aktiver Schritt
+          - strong: "0"
+          - text: Fortschritt
+          - strong: 1 von 8
+          - text: Blocker
+          - strong: "1"
+          - text: Verantwortung
+          - strong: Admin
+          - text: Naechste Aktion
+          - strong: Kickoff pruefen
+  - complementary "Kontext und Nachweise":
+    - paragraph: Arbeitskontext
+    - heading "Kontext und Nachweise" [level=2]
+    - button "Kontext einklappen" [expanded]
+    - region "Nachweise":
+      - heading "Nachweise" [level=3]
+      - paragraph: Kontext
+      - paragraph: Gebunden
+      - paragraph: Aktueller Pruefbericht nicht verfuegbar.
+    - region "Feststellungen":
+      - heading "Feststellungen" [level=3]
+      - paragraph: Keine Feststellungen.
+    - region "Abhaengigkeiten":
+      - heading "Abhaengigkeiten" [level=3]
+      - list:
+        - listitem: "Abhaengigkeit: Freigabe erforderlich"
+        - listitem: "Abhaengigkeit: Freigabe"
+    - region "Revisionsverlauf":
+      - heading "Revisionsverlauf" [level=3]
+      - paragraph: Keine Artefaktrevision vorhanden.
+    - group: Technische Details

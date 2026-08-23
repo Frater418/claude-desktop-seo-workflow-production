@@ -1,0 +1,67 @@
+- main:
+  - link "Zum Arbeitsbereich":
+    - /url: "#arbeitsbereich"
+  - complementary:
+    - paragraph: Heartweb Admin Operator
+    - navigation "Hauptnavigation":
+      - link "Projekte":
+        - /url: "#Projekte"
+      - link "Workflow":
+        - /url: "#Workflow"
+      - link "Aufgaben":
+        - /url: "#Aufgaben"
+      - link "Artefakte":
+        - /url: "#Artefakte"
+      - link "Pruefungen und Freigaben":
+        - /url: "#Pruefungen und Freigaben"
+      - link "Uebergabe und Export":
+        - /url: "#Uebergabe und Export"
+  - paragraph: Aktives Projekt
+  - heading "Muster Pflege Berlin" [level=1]
+  - paragraph: Muster Pflege Berlin GmbH
+  - term: Aktiver Schritt
+  - definition: "0"
+  - term: Fortschritt
+  - definition: 1 von 8
+  - term: Blocker
+  - definition: "1"
+  - term: Verantwortung
+  - definition: Admin
+  - term: Naechste Aktion
+  - definition: Kickoff pruefen
+  - button "Projekt anlegen"
+  - paragraph: Pruefungen und Freigaben
+  - heading "Entscheidung vorbereiten" [level=2]
+  - heading "Keine exakt gebundene Pruefung" [level=3]
+  - paragraph: Eine Freigabe setzt ein kanonisches Artefakt und einen dazu passenden Pruefnachweis voraus.
+  - paragraph: Aktuelles Artefakt und Pruefnachweis erneut laden oder die Pruefung fuer diese Revision abschliessen.
+  - button "Freigabe vorbereiten" [disabled]
+  - button "Revision anfordern"
+  - button "Eingabe anfordern"
+  - button "Ablehnung vorbereiten"
+  - button "Eskalation vorbereiten"
+  - button "Ausnahme anfragen"
+  - complementary:
+    - heading "Pruefnachweis" [level=3]
+    - paragraph: Freigaben werden erst nach Vorschau, Bestaetigung und kanonischem Readback angezeigt.
+  - complementary "Kontext und Nachweise":
+    - paragraph: Arbeitskontext
+    - heading "Kontext und Nachweise" [level=2]
+    - button "Kontext einklappen" [expanded]
+    - region "Nachweise":
+      - heading "Nachweise" [level=3]
+      - paragraph: Kontext
+      - paragraph: Gebunden
+      - paragraph: Aktueller Pruefbericht nicht verfuegbar.
+    - region "Feststellungen":
+      - heading "Feststellungen" [level=3]
+      - paragraph: Keine Feststellungen.
+    - region "Abhaengigkeiten":
+      - heading "Abhaengigkeiten" [level=3]
+      - list:
+        - listitem: "Abhaengigkeit: Freigabe erforderlich"
+        - listitem: "Abhaengigkeit: Freigabe"
+    - region "Revisionsverlauf":
+      - heading "Revisionsverlauf" [level=3]
+      - paragraph: Keine Artefaktrevision vorhanden.
+    - group: Technische Details

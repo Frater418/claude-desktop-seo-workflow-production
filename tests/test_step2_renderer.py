@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from services.step2_preflight.render import RendererError, render_step2, write_step2
+from services.step2_preflight.render import FIELDNAMES, RendererError, render_step2, write_step2
 from tests.test_preflight_common import _bind_candidate, _predecessor, _project, _provider_records
 
 
@@ -34,7 +34,7 @@ class Step2RendererTests(unittest.TestCase):
         second = render_step2(bundle)
         rows = list(csv.DictReader(io.StringIO(first)))
         self.assertEqual(first, second)
-        self.assertEqual({"evidence_id", "keyword", "provider", "raw_response_sha256", "status"}, set(rows[0]))
+        self.assertEqual(FIELDNAMES, tuple(rows[0]))
         self.assertTrue(rows)
 
     def test_rejects_candidate_only_rendering_before_csv_emission(self) -> None:

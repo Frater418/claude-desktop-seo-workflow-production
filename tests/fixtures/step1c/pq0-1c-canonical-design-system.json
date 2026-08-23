@@ -1,0 +1,35 @@
+{
+  "schema_version": "2.0.0",
+  "artifact_id": "artifact-pillar-design-0001",
+  "run_id": "run-pillar-design-0001",
+  "project_id": "project-pillar-demo",
+  "deployment_id": "dep-pillar-demo",
+  "step_id": "1c",
+  "revision": 1,
+  "source_artifact_ids": ["artifact-architecture-0001"],
+  "evidence_ids": ["evidence-design-screenshot-0001", "evidence-brand-direction-0001", "evidence-design-accessibility-0001"],
+  "decision_records": [
+    {
+      "decision_id": "decision-design-direction-0001",
+      "question": "Which approved direction governs the local pillar template?",
+      "outcome": "The local fixture uses the approved evidence-led outdoor direction.",
+      "evidence_ids": ["evidence-design-screenshot-0001", "evidence-brand-direction-0001"]
+    }
+  ],
+  "candidate_status": "awaiting_gate",
+  "tokens": {
+    "color_primary": "#17324d",
+    "color_surface": "#f4f7f8",
+    "font_body": "Arial",
+    "radius_card": "8px"
+  },
+  "accessibility": {
+    "contrast_evidence_ids": ["evidence-design-accessibility-0001"],
+    "focus_indicator": "visible"
+  },
+  "brand_consistency": {
+    "approved_brand_name": "Northwind Outdoor",
+    "approved_direction": "Evidence-led coastal paddling guidance with calm practical clarity.",
+    "evidence_ids": ["evidence-design-screenshot-0001", "evidence-brand-direction-0001"]
+  }
+}
