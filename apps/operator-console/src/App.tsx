@@ -4,6 +4,7 @@ import { createDiagnosticTraceClient, type DiagnosticTrace } from "./api/diagnos
 import { createOperatorApiClient } from "./api/client"
 import type { CurrentRun } from "./api/readModels"
 import { DiagnosticTraceProvider } from "./app/DiagnosticTraceProvider"
+import { IntakeWorkspace } from "./app/IntakeWorkspace"
 import { OperatorShell } from "./app/OperatorShell"
 import { useOperatorWorkspace } from "./app/useOperatorWorkspace"
 
@@ -97,7 +98,7 @@ function ConfiguredApp({ baseUrl, diagnosticConfig: configuration, tenantId }: C
   const currentRun = state.kind === "ready" ? state.data.currentRun : null
   const diagnosticSession = useDiagnosticSession(configuration, currentRun)
   if (state.kind === "loading") return <main className="api-status"><p className="eyebrow">Heartweb Admin Operator</p><h1>Lokale Arbeitsdaten werden geladen</h1><p>Projekt, Workflow, Aufgaben und Nachweise werden aus der lokalen Operator-API gelesen.</p></main>
-  if (state.kind === "empty") return <main className="api-status"><p className="eyebrow">Heartweb Admin Operator</p><h1>Kein lokales Projekt vorhanden</h1><p>Ein Projekt kann nach dem Verbindungscheck aus einem Markdown-Briefing angelegt werden.</p></main>
+  if (state.kind === "empty") return <main className="api-status"><p className="eyebrow">Heartweb Admin Operator</p><h1>Kein lokales Projekt vorhanden</h1><p>Lege das erste Projekt aus einem vollstaendigen Markdown-Briefing an.</p><IntakeWorkspace api={api} onAccepted={workspace.selectProject} /></main>
   if (state.kind === "error") return <main className="api-status"><p className="eyebrow">Heartweb Admin Operator</p><h1>Lokale Operator-API nicht verfuegbar</h1><p>{state.message}</p><p>Es werden keine Demo-Daten angezeigt.</p></main>
   return <DiagnosticTraceProvider client={diagnosticClient} createCloseRequest={diagnosticSession.createCloseRequest} start={diagnosticSession.start}><OperatorShell api={api} data={state.data} onRefresh={workspace.reload} onIntakeAccepted={workspace.selectProject} projects={workspace.projects} selectedProjectId={workspace.selectedProjectId ?? state.data.projectId} selectProject={workspace.selectProject} /></DiagnosticTraceProvider>
 }

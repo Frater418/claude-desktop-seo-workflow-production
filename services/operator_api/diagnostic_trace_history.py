@@ -98,7 +98,7 @@ class DiagnosticTraceHistory:
         return DiagnosticTraceIndexEntry(**self.pointer(trace, path).model_dump(), closed_at=trace.closed_at, predecessor_trace_id=trace.predecessor_trace_id, last_successful_operation_id=trace.last_successful_operation_id, first_failing_operation_id=trace.first_failing_operation_id)
 
     def pointer(self, trace: DiagnosticTrace, path: Path) -> DiagnosticTracePointer:
-        return DiagnosticTracePointer(trace_id=trace.trace_id, relative_run_path=str(path), tenant_id=trace.tenant_id, project_id=trace.project_id, run_id=trace.run_id, scenario_id=trace.scenario_id, status=trace.status)
+        return DiagnosticTracePointer(trace_id=trace.trace_id, relative_run_path=path.as_posix(), tenant_id=trace.tenant_id, project_id=trace.project_id, run_id=trace.run_id, scenario_id=trace.scenario_id, status=trace.status)
 
     def read(self, path: Path) -> bytes:
         try:

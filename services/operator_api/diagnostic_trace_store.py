@@ -113,7 +113,7 @@ class DiagnosticTraceStore:
                 raise self._error("ERROR_DIAGNOSTIC_TRACE_CONFLICT", "Diagnostic trace close identity was reused with different content.")
             closed = trace.model_copy(update={"status": "closed", "closed_at": closed_at, "close_id": close_id, "last_successful_operation_id": self._history.last_success(trace.operations), "first_failing_operation_id": self._history.first_failure(trace.operations)})
             terminal = DiagnosticTraceCloseRecord(record_type="trace_closed", trace_id=trace_id, close_id=close_id, closed_at=closed_at, last_successful_operation_id=closed.last_successful_operation_id, first_failing_operation_id=closed.first_failing_operation_id)
-            intent = DiagnosticTraceCloseIntent(schema_version="1.0.0", operation="close", trace_id=trace_id, close_id=close_id, closed_at=closed_at, relative_run_path=str(path), terminal_record=terminal, index_entry=self._history.index_entry(closed, path), current_pointer=self._history.pointer(closed, path))
+            intent = DiagnosticTraceCloseIntent(schema_version="1.0.0", operation="close", trace_id=trace_id, close_id=close_id, closed_at=closed_at, relative_run_path=path.as_posix(), terminal_record=terminal, index_entry=self._history.index_entry(closed, path), current_pointer=self._history.pointer(closed, path))
             self._policy.close(run_bytes=self._read(path), index_bytes=self._index_bytes(), terminal_record=self._record_bytes(intent.terminal_record), index_record=self._record_bytes(intent.index_entry))
             self._replace(_PENDING, self._record_bytes(intent))
             self._inject(DiagnosticTraceFailureBoundary.PENDING_CLOSE_INTENT)
@@ -158,7 +158,7 @@ class DiagnosticTraceStore:
         trace = DiagnosticTrace(**start.model_dump(), trace_id=f"trace-{uuid.uuid4().hex}", status="active", predecessor_trace_id=predecessor_trace_id)
         path = _RUNS / f"{DiagnosticTracePolicy.compact(start.created_at)}_{trace.trace_id}.jsonl"
         start_record = DiagnosticTraceStartRecord(record_type="trace_start", trace=trace)
-        intent = DiagnosticTraceCreateIntent(schema_version="1.0.0", operation="create", start=start, relative_run_path=str(path), start_record=start_record, current_pointer=self._history.pointer(trace, path))
+        intent = DiagnosticTraceCreateIntent(schema_version="1.0.0", operation="create", start=start, relative_run_path=path.as_posix(), start_record=start_record, current_pointer=self._history.pointer(trace, path))
         self._policy.create(path_exists=self._storage.exists(path), closed_count=len(self._history.index_entries(_INDEX)), index_bytes=self._index_bytes(), start_record=self._record_bytes(intent.start_record))
         self._replace(_PENDING, self._record_bytes(intent))
         self._inject(DiagnosticTraceFailureBoundary.PENDING_CREATE)

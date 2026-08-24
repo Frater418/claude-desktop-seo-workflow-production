@@ -21,7 +21,7 @@ describe("German API states", () => {
     expect(screen.getByRole("heading", { name: "Lokale Arbeitsdaten werden geladen" })).toBeInTheDocument()
   })
 
-  it("shows a German empty state when the canonical project list is empty", async () => {
+  it("offers the first project intake when the canonical project list is empty", async () => {
     const emptyFetch: typeof fetch = (input) => {
       const url = input.toString()
       if (url.endsWith("/readyz")) return Promise.resolve(jsonResponse({ data: { status: "ready" } }))
@@ -33,6 +33,9 @@ describe("German API states", () => {
     render(<App tenantId="tenant-welle-zwei" />)
 
     expect(await screen.findByRole("heading", { name: "Kein lokales Projekt vorhanden" })).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "Projekt anlegen" })).toBeInTheDocument()
+    expect(screen.getByLabelText("Markdown-Briefing")).toBeInTheDocument()
+    expect(screen.getByLabelText("Markdown-Datei")).toBeInTheDocument()
   })
 
   it("shows a German error state when the local API cannot be read", async () => {

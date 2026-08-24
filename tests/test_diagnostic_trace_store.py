@@ -87,7 +87,7 @@ class DiagnosticTraceStoreTests(unittest.TestCase):
             self.assertEqual(
                 {
                     "trace_id": started.trace_id,
-                    "relative_run_path": str(run_path.relative_to(root)),
+                    "relative_run_path": run_path.relative_to(root).as_posix(),
                     "tenant_id": started.tenant_id,
                     "project_id": started.project_id,
                     "run_id": started.run_id,
@@ -116,7 +116,7 @@ class DiagnosticTraceStoreTests(unittest.TestCase):
             self.assertEqual(
                 {
                     "trace_id": started.trace_id,
-                    "relative_run_path": str(run_path.relative_to(root)),
+                    "relative_run_path": run_path.relative_to(root).as_posix(),
                     "tenant_id": started.tenant_id,
                     "project_id": started.project_id,
                     "run_id": started.run_id,

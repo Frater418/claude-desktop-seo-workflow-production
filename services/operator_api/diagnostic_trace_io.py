@@ -47,7 +47,7 @@ class DiagnosticTraceStorage:
         self.member(relative_path)
         descriptor = -1
         try:
-            descriptor = os.open(path, os.O_WRONLY | os.O_APPEND | os.O_CREAT, 0o600)
+            descriptor = os.open(path, os.O_WRONLY | os.O_APPEND | os.O_CREAT | getattr(os, "O_BINARY", 0), 0o600)
             written = os.write(descriptor, payload)
             if written != len(payload):
                 raise DiagnosticTraceStorageError
