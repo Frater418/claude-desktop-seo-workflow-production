@@ -13,3 +13,6 @@ apps/operator-console/dist/
 apps/operator-console/coverage/
 *.pid
 /var/operator-diagnostics/
+/build/
+/dist/
+/HeartwebOperator.spec

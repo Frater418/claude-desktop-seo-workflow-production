@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 import threading
 import types
@@ -13,16 +14,31 @@ import uvicorn
 from fastapi.staticfiles import StaticFiles
 
 
-ROOT = Path(__file__).resolve().parents[1]
-DIST = ROOT / "apps" / "operator-console" / "dist"
+SOURCE_ROOT = Path(__file__).resolve().parents[1]
+RESOURCE_ROOT = Path(getattr(sys, "_MEIPASS", SOURCE_ROOT))
+DIST = RESOURCE_ROOT / "apps" / "operator-console" / "dist"
 DEFAULT_CUSTOMER_ROOT = Path.home() / "Documents" / "Projekte" / "Heartweb" / "Kunden"
-DEFAULT_DIAGNOSTIC_ROOT = ROOT / "var" / "operator-diagnostics" / "v1"
+DEFAULT_DIAGNOSTIC_ROOT = Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData" / "Local")) / "Heartweb" / "operator-diagnostics" / "v1"
+DEFAULT_SECRET_ENV = DEFAULT_DIAGNOSTIC_ROOT.parents[1] / ".env"
+LOCAL_SECRET_NAMES = frozenset({"DATAFORSEO_LOGIN", "DATAFORSEO_PASSWORD"})
+
+
+def _load_local_secrets(path: Path = DEFAULT_SECRET_ENV) -> None:
+    if not path.is_file():
+        return
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        name, value = line.split("=", 1)
+        if name in LOCAL_SECRET_NAMES and value and name not in os.environ:
+            os.environ[name] = value
 
 
 def _local_mcp_namespace() -> None:
     """Ensure repository MCP modules win over an installed package of the same name."""
     package = types.ModuleType("mcp")
-    package.__path__ = [str(ROOT / "mcp")]
+    package.__path__ = [str(RESOURCE_ROOT / "mcp")]
     sys.modules["mcp"] = package
 
 
@@ -46,19 +62,21 @@ def main() -> int:
     if customer_root.is_symlink() or not customer_root.is_dir():
         print("ERROR_OPERATOR_CUSTOMER_ROOT_INVALID: Der Kundenordner ist nicht sicher nutzbar.", file=sys.stderr)
         return 3
+    DEFAULT_DIAGNOSTIC_ROOT.mkdir(parents=True, exist_ok=True)
+    _load_local_secrets()
 
     _local_mcp_namespace()
-    if str(ROOT) not in sys.path:
-        sys.path.insert(0, str(ROOT))
+    if str(RESOURCE_ROOT) not in sys.path:
+        sys.path.insert(0, str(RESOURCE_ROOT))
 
     from services.operator_api.app import AppConfig, create_app
     from services.operator_api.repository import WorkspaceRegistry
 
     app = create_app(
         registry=WorkspaceRegistry(()),
-        repository_root=ROOT,
+        repository_root=RESOURCE_ROOT,
         config=AppConfig(
-            ROOT,
+            RESOURCE_ROOT,
             provisioning_root=customer_root,
             provisioning_enabled=True,
             execution_mode="real",

@@ -1,7 +1,7 @@
 # Session bootstrap
 
 **Author:** Raphael Rechberger
-**Indexed snapshot:** `b016ce0b020a8360c77d6f6cb486fa28b4761d5a`
+**Indexed snapshot:** `95ddf3dae510268a572a592e48ebaac8431b3522`
 
 ## Mandatory read order
 
@@ -19,7 +19,7 @@ Project State and active Decisions override entry documents, old plans, audit pr
 
 ## Current snapshot warning
 
-This parallel index was generated from WIP commit `b016ce0b020a8360c77d6f6cb486fa28b4761d5a`. Any records listed as `needs_reconciliation` in `00_admin/REPOSITORY_INDEX.md` must not be treated as current authority. All volatile completion facts require one final refresh from the stable Feature commit before integration.
+This parallel index was generated from WIP commit `95ddf3dae510268a572a592e48ebaac8431b3522`. Any records listed as `needs_reconciliation` in `00_admin/REPOSITORY_INDEX.md` must not be treated as current authority. All volatile completion facts require one final refresh from the stable Feature commit before integration.
 
 ## RAG rule
 
