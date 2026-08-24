@@ -45,10 +45,49 @@ def _decision_errors(architecture: dict, approved_content_ids: list[str]) -> lis
     return errors
 
 
+def _presentation_errors(architecture: dict, approved_content_ids: list[str]) -> list[dict]:
+    errors: list[dict] = []
+    approved = set(approved_content_ids)
+    decisions = [item for item in architecture.get("content_decisions", []) if isinstance(item, dict)]
+    decisions_by_id = {item.get("content_id"): item for item in decisions if isinstance(item.get("content_id"), str)}
+    legend = [item for item in architecture.get("page_type_legend", []) if isinstance(item, dict)]
+    legend_codes = [item.get("code") for item in legend]
+    page_types = {item.get("page_type") for item in decisions if isinstance(item.get("page_type"), str)}
+    if len(legend_codes) != len(set(legend_codes)) or set(legend_codes) != page_types:
+        errors.append(_error("ERROR_STEP1B_PAGE_TYPE_LEGEND_INVALID", "Page type legend codes must be unique and cover exactly the page types used by decisions.", ["page_type_legend"]))
+    for index, item in enumerate(decisions):
+        content_id = item.get("content_id")
+        parent_id = item.get("parent_content_id")
+        if item.get("page_type") == "cluster_page" and (
+            not isinstance(parent_id, str)
+            or parent_id == content_id
+            or parent_id not in decisions_by_id
+            or decisions_by_id[parent_id].get("page_type") != "pillar_page"
+        ):
+            errors.append(_error("ERROR_STEP1B_HIERARCHY_INVALID", "Cluster pages must name a distinct approved pillar page parent.", ["content_decisions", index, "parent_content_id"]))
+    confirmation_counts = {content_id: 0 for content_id, item in decisions_by_id.items() if item.get("presentation_status") == "open"}
+    for index, confirmation in enumerate(architecture.get("open_confirmations", [])):
+        if not isinstance(confirmation, dict):
+            continue
+        for content_id in confirmation.get("content_ids", []):
+            if content_id not in approved or content_id not in confirmation_counts:
+                errors.append(_error("ERROR_STEP1B_OPEN_CONFIRMATION_INVALID", "Open confirmations may reference only approved decisions with open presentation status.", ["open_confirmations", index, "content_ids"]))
+                continue
+            confirmation_counts[content_id] += 1
+    if any(count != 1 for count in confirmation_counts.values()):
+        errors.append(_error("ERROR_STEP1B_OPEN_CONFIRMATION_INVALID", "Every open presentation decision must have exactly one open confirmation.", ["open_confirmations"]))
+    return errors
+
+
 def _link_errors(architecture: dict, approved_content_ids: list[str]) -> list[dict]:
     errors: list[dict] = []
     approved = set(approved_content_ids)
     links = architecture.get("link_graph", [])
+    decisions_by_id = {
+        item.get("content_id"): item
+        for item in architecture.get("content_decisions", [])
+        if isinstance(item, dict) and isinstance(item.get("content_id"), str)
+    }
     for index, link in enumerate(links):
         if not isinstance(link, dict) or {link.get("from_content_id"), link.get("to_content_id")} - approved:
             errors.append(_error("ERROR_STEP1B_LINK_GRAPH_INVALID", "Link graph may only connect approved content.", ["link_graph", index]))
@@ -56,15 +95,17 @@ def _link_errors(architecture: dict, approved_content_ids: list[str]) -> list[di
         source = link["from_content_id"]
         target = link["to_content_id"]
         relationship = link["relationship"]
-        if relationship == "vertical" and not (source.startswith("pillar-") and target.startswith("cluster-")):
+        source_type = decisions_by_id.get(source, {}).get("page_type")
+        target_type = decisions_by_id.get(target, {}).get("page_type")
+        if relationship == "vertical" and not (source_type == "pillar_page" and target_type == "cluster_page" and decisions_by_id[target].get("parent_content_id") == source):
             errors.append(_error("ERROR_STEP1B_LINK_GRAPH_INVALID", "Vertical links must lead from a pillar to its cluster.", ["link_graph", index]))
-        if relationship == "horizontal" and not (source.startswith("pillar-") and target.startswith("pillar-") and source != target):
+        if relationship == "horizontal" and not (source_type == "pillar_page" and target_type == "pillar_page" and source != target):
             errors.append(_error("ERROR_STEP1B_LINK_GRAPH_INVALID", "Horizontal links must connect distinct pillars.", ["link_graph", index]))
-    clusters = {identifier for identifier in approved if identifier.startswith("cluster-")}
+    clusters = {identifier for identifier, item in decisions_by_id.items() if identifier in approved and item.get("page_type") == "cluster_page"}
     linked_clusters = {link.get("to_content_id") for link in links if isinstance(link, dict) and link.get("relationship") == "vertical"}
     if not clusters.issubset(linked_clusters):
         errors.append(_error("ERROR_STEP1B_LINK_GRAPH_INVALID", "Every approved cluster needs an inbound vertical link.", ["link_graph"]))
-    pillars = {identifier for identifier in approved if identifier.startswith("pillar-")}
+    pillars = {identifier for identifier, item in decisions_by_id.items() if identifier in approved and item.get("page_type") == "pillar_page"}
     horizontal_pillars = {
         identifier
         for link in links
@@ -82,6 +123,7 @@ def validate_step1b_candidate(architecture: object, approved_content_ids: list[s
     if not isinstance(architecture, dict) or not isinstance(approved_content_ids, list):
         return {"valid": False, "errors": errors or [_error("ERROR_STEP1B_INPUT_INVALID", "Architecture and approved content IDs are required.", [])]}
     errors.extend(_decision_errors(architecture, approved_content_ids))
+    errors.extend(_presentation_errors(architecture, approved_content_ids))
     errors.extend(_link_errors(architecture, approved_content_ids))
     unique = {(item["code"], tuple(str(part) for part in item["path"]), item["message"]): item for item in errors}
     return {"valid": not unique, "errors": [unique[key] for key in sorted(unique)]}

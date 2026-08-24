@@ -25,6 +25,76 @@ def _design_errors(design: object) -> list[dict]:
     return _schema_errors(design, "step-1c-design-system.schema.json", "ERROR_STEP1C_DESIGN_INVALID", ["design"])
 
 
+def _design_binding_errors(design: object) -> list[dict]:
+    if not isinstance(design, dict):
+        return []
+    brand_consistency = design.get("brand_consistency")
+    if not isinstance(brand_consistency, dict):
+        return []
+    declared_evidence = set(design.get("evidence_ids", []))
+    brand_evidence = set(brand_consistency.get("evidence_ids", []))
+    if brand_evidence <= declared_evidence:
+        return []
+    return [_error("ERROR_STEP1C_DESIGN_BRAND_EVIDENCE_INVALID", "Brand consistency evidence must be declared by the design artifact.", ["design", "brand_consistency", "evidence_ids"])]
+
+
+def _content_evidence_errors(template: dict, index: int) -> list[dict]:
+    content = template["content"]
+    declared_evidence = set(template["evidence_ids"])
+    evidence_sources = [
+        (["hero", "primary_cta"], content["hero"]["primary_cta"]),
+        (["editorial"], content["editorial"]),
+        (["heartpiece"], content["heartpiece"]),
+        (["final_cta", "primary_cta"], content["final_cta"]["primary_cta"]),
+    ]
+    evidence_sources.extend((["quick_facts", "facts", fact_index], fact) for fact_index, fact in enumerate(content["quick_facts"]["facts"]))
+    evidence_sources.extend((["process", "steps", step_index], step) for step_index, step in enumerate(content["process"]["steps"]))
+    evidence_sources.extend((["social_proof", "entries", entry_index], entry) for entry_index, entry in enumerate(content["social_proof"]["entries"]))
+    evidence_sources.extend((["faq", "items", item_index], item) for item_index, item in enumerate(content["faq"]["items"]))
+    return [
+        _error("ERROR_STEP1C_TEMPLATE_CONTENT_EVIDENCE_INVALID", "Content evidence must be declared by the template artifact.", ["templates", index, "content", *path, "evidence_ids"])
+        for path, source in evidence_sources
+        if not set(source["evidence_ids"]) <= declared_evidence
+    ]
+
+
+def _root_link_errors(template: dict, index: int) -> list[dict]:
+    links = template["links"]
+    pairs = [(link["target_content_id"], link["relationship"]) for link in links]
+    hrefs = [link["href"] for link in links]
+    if len(pairs) == len(set(pairs)) and len(hrefs) == len(set(hrefs)):
+        return []
+    return [_error("ERROR_STEP1C_TEMPLATE_LINK_REGISTRY_INVALID", "Root links must use unique target relationships and canonical routes.", ["templates", index, "links"])]
+
+
+def _content_link_errors(template: dict, index: int) -> list[dict]:
+    content = template["content"]
+    declared_links = {(link["target_content_id"], link["relationship"]) for link in template["links"]}
+    link_sources = [
+        (["hero", "primary_cta"], content["hero"]["primary_cta"]["target_content_id"], "vertical"),
+        (["final_cta", "primary_cta"], content["final_cta"]["primary_cta"]["target_content_id"], "vertical"),
+    ]
+    link_sources.extend((["grouped_cluster_links", "groups", group_index, "links", link_index], link["target_content_id"], link["relationship"]) for group_index, group in enumerate(content["grouped_cluster_links"]["groups"]) for link_index, link in enumerate(group["links"]))
+    link_sources.extend((["cross_pillar_links", "links", link_index], link["target_content_id"], link["relationship"]) for link_index, link in enumerate(content["cross_pillar_links"]["links"]))
+    errors = [
+        _error("ERROR_STEP1C_TEMPLATE_LINK_REFERENCE_INVALID", "Content links must bind to a declared canonical target and relationship.", ["templates", index, "content", *path, "target_content_id"])
+        for path, target_content_id, relationship in link_sources
+        if (target_content_id, relationship) not in declared_links
+    ]
+    if not content["cross_pillar_links"]["links"] and any(link["relationship"] == "horizontal" for link in template["links"]):
+        errors.append(_error("ERROR_STEP1C_TEMPLATE_LINK_REFERENCE_INVALID", "Cross-pillar links are required when horizontal targets are declared.", ["templates", index, "content", "cross_pillar_links", "links"]))
+    return errors
+
+
+def _faq_binding_errors(template: dict, index: int) -> list[dict]:
+    faq_reference_ids = {reference["reference_id"] for reference in template["jsonld_references"] if reference["type"] == "FAQPage"}
+    return [
+        _error("ERROR_STEP1C_TEMPLATE_JSONLD_BINDING_INVALID", "FAQ items must bind to a declared FAQPage JSON-LD reference.", ["templates", index, "content", "faq", "items", item_index, "jsonld_reference_id"])
+        for item_index, item in enumerate(template["content"]["faq"]["items"])
+        if item["jsonld_reference_id"] not in faq_reference_ids
+    ]
+
+
 def _template_errors(template: object, index: int) -> list[dict]:
     errors = _schema_errors(template, "step-1c-template.schema.json", "ERROR_STEP1C_TEMPLATE_INVALID", ["templates", index])
     if not isinstance(template, dict):
@@ -41,6 +111,12 @@ def _template_errors(template: object, index: int) -> list[dict]:
         errors.append(_error("ERROR_STEP1C_ACCESSIBILITY_INVALID", "Templates require landmarks and a skip link.", ["templates", index, "accessibility"]))
     if not template.get("jsonld_references"):
         errors.append(_error("ERROR_STEP1C_JSONLD_REFERENCE_INVALID", "Templates require evidence-bound JSON-LD references.", ["templates", index, "jsonld_references"]))
+    if errors:
+        return errors
+    errors.extend(_root_link_errors(template, index))
+    errors.extend(_content_evidence_errors(template, index))
+    errors.extend(_content_link_errors(template, index))
+    errors.extend(_faq_binding_errors(template, index))
     return errors
 
 
@@ -62,6 +138,8 @@ def _lineage_errors(design: object, templates: list[object]) -> list[dict]:
 def validate_step1c_candidate(design: object, templates: object) -> dict:
     template_values = templates if isinstance(templates, list) else []
     errors = _design_errors(design)
+    if not errors:
+        errors.extend(_design_binding_errors(design))
     if not isinstance(templates, list) or not templates:
         errors.append(_error("ERROR_STEP1C_INPUT_INVALID", "At least one template is required.", ["templates"]))
     for index, template in enumerate(template_values):

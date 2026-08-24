@@ -11,5 +11,6 @@
   "decision_records": [{"decision_id": "decision-outdoor-design-0001", "question": "Brand token provenance", "outcome": "fixture screenshot and brand evidence", "evidence_ids": ["evidence-outdoor-screenshot-0001", "evidence-outdoor-brand-0001"]}],
   "candidate_status": "awaiting_gate",
   "tokens": {"color_primary": "#d95f02", "color_surface": "#f6f0e5", "font_body": "Verdana", "radius_card": "0px"},
-  "accessibility": {"contrast_evidence_ids": ["evidence-outdoor-screenshot-0001", "evidence-outdoor-brand-0001"], "focus_indicator": "visible"}
+  "accessibility": {"contrast_evidence_ids": ["evidence-outdoor-screenshot-0001", "evidence-outdoor-brand-0001"], "focus_indicator": "visible"},
+  "brand_consistency": {"approved_brand_name": "Coastline Gear", "approved_direction": "Practical showroom guidance for coastal paddlers.", "evidence_ids": ["evidence-outdoor-screenshot-0001", "evidence-outdoor-brand-0001"]}
 }

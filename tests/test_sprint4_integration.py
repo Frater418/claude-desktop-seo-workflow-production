@@ -50,6 +50,9 @@ def _seed_transition_workspace(workspace: Path) -> None:
     _seed_workspace(workspace, TENANT, PROJECT)
     _write(workspace, f"runs/{RUN}.json", {"tenant_id": TENANT, "project_id": PROJECT, "run_id": RUN, "step_id": "0", "gate_id": "GATE-0", "revision": 1, "input_hash": "0" * 64, "status": "pending", "attempt": 1})
     _write(workspace, "steps.json", [{"step_id": "0", "status": "pending"}])
+    supporting = {"artifact_id": "artifact-contract-0001", "tenant_id": TENANT, "project_id": PROJECT, "run_id": "run-contract-0001", "step_id": "0", "revision": 1, "content_sha256": "c" * 64}
+    _write(workspace, "artifacts.json", [supporting])
+    _write(workspace, "gates.json", [{"quality_gate_run_id": "qgr-contract-0001", "quality_gate_id": "qg-domain-contract", "human_gate_id": "GATE-0", "tenant_id": TENANT, "run_id": "run-contract-0001", "step_id": "0", "artifact_id": supporting["artifact_id"], "artifact_sha256": supporting["content_sha256"], "artifact_revision": 1, "registry_version": "1.1.0", "policy_version": "1.1.0", "result": "passed", "evidence": {"schema_id": "runtime", "schema_version": "1.0.0", "artifact_sha256": supporting["content_sha256"], "validator_result": "passed"}, "checked_at": "2026-08-20T00:00:00Z", "checker_version": "test-1.0.0"}])
 
 
 def _forbid_live_io() -> ExitStack:

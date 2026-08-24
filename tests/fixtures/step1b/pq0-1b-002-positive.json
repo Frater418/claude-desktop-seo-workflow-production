@@ -1,0 +1,29 @@
+{
+  "schema_version": "2.0.0",
+  "artifact_id": "artifact-pq0-1b-002",
+  "run_id": "run-pq0-1b-002",
+  "project_id": "project-heartweb-demo",
+  "deployment_id": "dep-heartweb-demo",
+  "step_id": "1b",
+  "revision": 1,
+  "source_artifact_ids": ["artifact-topic-inventory-0001"],
+  "evidence_ids": ["evidence-navigation-0001"],
+  "decision_records": [{"decision_id": "decision-pq0-1b-002", "question": "Redirect presentation", "outcome": "confirmation pending", "evidence_ids": ["evidence-navigation-0001"]}],
+  "candidate_status": "awaiting_gate",
+  "page_type_legend": [
+    {"code": "pillar_page", "label": "Pillar Page", "description": "Primary topic hub"},
+    {"code": "cluster_page", "label": "Cluster Page", "description": "Supporting detail page"}
+  ],
+  "open_confirmations": [
+    {"confirmation_id": "confirmation-care-redirect", "question": "Confirm the legacy care redirect target before release.", "status": "open", "content_ids": ["cluster-care-legacy"]}
+  ],
+  "content_decisions": [
+    {"content_id": "pillar-care", "decision": "existing", "url": "/care/", "canonical_url": "https://example.test/care/", "navigation": "primary", "page_type": "pillar_page", "display_label": "Care Services", "presentation_status": "confirmed"},
+    {"content_id": "cluster-care-guide", "decision": "new", "url": "/care/guide/", "canonical_url": "https://example.test/care/guide/", "navigation": "child", "page_type": "cluster_page", "display_label": "Care Guide", "parent_content_id": "pillar-care", "presentation_status": "confirmed"},
+    {"content_id": "cluster-care-legacy", "decision": "redirect", "url": "/care/legacy/", "canonical_url": "https://example.test/care/legacy/", "navigation": "none", "redirect_to_url": "https://example.test/care/guide/", "page_type": "cluster_page", "display_label": "Legacy Care Guide", "parent_content_id": "pillar-care", "presentation_status": "open"}
+  ],
+  "link_graph": [
+    {"from_content_id": "pillar-care", "to_content_id": "cluster-care-guide", "relationship": "vertical"},
+    {"from_content_id": "pillar-care", "to_content_id": "cluster-care-legacy", "relationship": "vertical"}
+  ]
+}

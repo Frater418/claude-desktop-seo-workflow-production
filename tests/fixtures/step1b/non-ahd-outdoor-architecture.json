@@ -10,10 +10,12 @@
   "evidence_ids": ["evidence-outdoor-navigation-0001"],
   "decision_records": [{"decision_id": "decision-outdoor-architecture-0001", "question": "Product navigation placement", "outcome": "candidate", "evidence_ids": ["evidence-outdoor-navigation-0001"]}],
   "candidate_status": "awaiting_gate",
+  "page_type_legend": [{"code": "pillar_page", "label": "Product Category", "description": "Primary outdoor product family"}, {"code": "cluster_page", "label": "Buying Guide", "description": "Supporting product guidance"}],
+  "open_confirmations": [],
   "content_decisions": [
-    {"content_id": "pillar-kayaks", "decision": "existing", "url": "/kayaks/", "canonical_url": "https://coastline.example/kayaks/", "navigation": "primary"},
-    {"content_id": "pillar-camping", "decision": "new", "url": "/camping/", "canonical_url": "https://coastline.example/camping/", "navigation": "primary"},
-    {"content_id": "cluster-kayak-safety", "decision": "new", "url": "/kayaks/safety-checklist/", "canonical_url": "https://coastline.example/kayaks/safety-checklist/", "navigation": "child"}
+    {"content_id": "pillar-kayaks", "decision": "existing", "url": "/kayaks/", "canonical_url": "https://coastline.example/kayaks/", "navigation": "primary", "page_type": "pillar_page", "display_label": "Kayaks", "presentation_status": "confirmed"},
+    {"content_id": "pillar-camping", "decision": "new", "url": "/camping/", "canonical_url": "https://coastline.example/camping/", "navigation": "primary", "page_type": "pillar_page", "display_label": "Camping", "presentation_status": "confirmed"},
+    {"content_id": "cluster-kayak-safety", "decision": "new", "url": "/kayaks/safety-checklist/", "canonical_url": "https://coastline.example/kayaks/safety-checklist/", "navigation": "child", "page_type": "cluster_page", "display_label": "Kayak Safety Checklist", "parent_content_id": "pillar-kayaks", "presentation_status": "confirmed"}
   ],
   "link_graph": [
     {"from_content_id": "pillar-kayaks", "to_content_id": "cluster-kayak-safety", "relationship": "vertical"},

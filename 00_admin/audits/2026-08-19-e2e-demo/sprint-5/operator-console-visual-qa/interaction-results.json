@@ -1,0 +1,234 @@
+{
+  "scenarios": [
+    {
+      "name": "six-nav-labels-header-project-buttons",
+      "status": "PASS",
+      "detail": "all labels and project switch visible"
+    },
+    {
+      "name": "context-pointer-enter-space",
+      "status": "PASS",
+      "detail": {
+        "a": "false",
+        "b": "true",
+        "c": "false"
+      }
+    },
+    {
+      "name": "workflow-preview-blocked-remediation",
+      "status": "PASS",
+      "detail": "blocked preview displays remediation"
+    },
+    {
+      "name": "all-filters-sorts",
+      "status": "PASS",
+      "detail": "filters and sort used"
+    },
+    {
+      "name": "artifact-controls-and-readback",
+      "status": "PASS",
+      "detail": {
+        "options": 1,
+        "saveVisible": true
+      }
+    },
+    {
+      "name": "gate-evidence-revision-reject-controls",
+      "status": "PASS",
+      "detail": "Zum Arbeitsbereich\n\nHeartweb Admin Operator\n\nProjekte\nWorkflow\nAufgaben\nArtefakte\nPruefungen und Freigaben\nUebergabe und Export\n\nAKTIVES PROJEKT\n\nMuster Pflege Berlin\n\nMuster Pflege Berlin GmbH\n\nAktiver Schritt\n0\nFortschritt\n1 von 8 Schritten\nBlocker\n1\nVerantwortung\nHeartweb Admin\nNaechste Aktion\nKickoff pruefen\nProjekt anlegen\n\nPRUEFUNGEN UND FREIGABEN\n\nEntscheidung vorbereiten\nartifact-project-a"
+    },
+    {
+      "name": "delivery-zero-mutation",
+      "status": "PASS",
+      "detail": "no delivery request"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "network": [
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/current",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/steps",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/workflow",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-qa-project-alpha-0001",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/tasks",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/gates",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/context-packages",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/integrations/status",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-beta/runs/current",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-beta",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-beta/tasks",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-beta/steps",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-beta/artifacts",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-beta/gates",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-beta/runs/run-qa-project-beta-0001",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-beta/workflow",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-beta/context-packages",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-beta/integrations/status",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/current",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/workflow",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/steps",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/tasks",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-qa-project-alpha-0001",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/gates",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/context-packages",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/integrations/status",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/start/preview",
+      "method": "POST"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/releases",
+      "method": "GET"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:43179/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-qa-project-alpha-0001/steps/0/artifact-revisions",
+      "method": "GET"
+    }
+  ]
+}

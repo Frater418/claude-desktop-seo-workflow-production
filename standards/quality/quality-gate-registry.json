@@ -109,11 +109,27 @@
       "binding_scope": "current_artifact",
       "blocks_operations": ["submit_for_gate"],
       "waiver_allowed": false,
-      "tools": [{"tool_id": "heartweb-jsonld-validator", "mode": "required"}, {"tool_id": "screaming-frog-structured-data", "mode": "independent_verification"}, {"tool_id": "google-rich-results-test", "mode": "independent_verification"}],
-      "requirements": ["Every regulated or YMYL claim has approved evidence", "JSON-LD validation levels are reported separately", "External rich-result verification is recorded for production eligibility"],
+      "tools": [{"tool_id": "heartweb-jsonld-validator", "mode": "required"}],
+      "requirements": ["Every regulated or YMYL claim has approved evidence", "JSON-LD validation levels are reported separately"],
       "failure_code": "ERROR_BRIEFING_EVIDENCE_OR_SCHEMA_INVALID",
-      "remediation": "Correct claims, evidence, entity references or structured data and obtain the required reviewer decision before handoff.",
+      "remediation": "Correct local claims, evidence, entity references or structured data and record the required review decision before submitting the briefing.",
       "evidence_required": ["claim_ledger", "validator_levels", "schema_hash", "review_decision"]
+    },
+    {
+      "gate_id": "qg-step4a-external-rich-results",
+      "steps": ["4a"],
+      "stage": "staging",
+      "gate_type": "revision",
+      "enforcement": "blocking",
+      "applicability": "when_production",
+      "binding_scope": "external_evidence",
+      "blocks_operations": ["publish"],
+      "waiver_allowed": false,
+      "tools": [{"tool_id": "screaming-frog-structured-data", "mode": "independent_verification"}, {"tool_id": "google-rich-results-test", "mode": "independent_verification"}],
+      "requirements": ["Screaming Frog and Google Rich Results reports are retained as immutable raw evidence", "Each report binds the verified subject artifact hash and verification timestamp"],
+      "failure_code": "ERROR_STEP4A_EXTERNAL_RICH_RESULTS_INVALID",
+      "remediation": "Run both external structured-data checks against the production artifact, retain their immutable reports and submit their bound evidence before publishing.",
+      "evidence_required": ["screaming_frog_report_sha256", "google_rich_results_report_sha256", "subject_artifact_sha256", "verified_at"]
     },
     {
       "gate_id": "qg-step4b-staging-technical",
@@ -122,14 +138,14 @@
       "gate_type": "revision",
       "enforcement": "blocking",
       "applicability": "when_production",
-      "binding_scope": "current_artifact",
+      "binding_scope": "external_evidence",
       "blocks_operations": ["publish"],
       "waiver_allowed": false,
       "tools": [{"tool_id": "screaming-frog-cli", "mode": "required"}, {"tool_id": "lighthouse", "mode": "required"}, {"tool_id": "axe", "mode": "required"}, {"tool_id": "browser-visual-regression", "mode": "required"}],
-      "requirements": ["No critical crawl, schema, accessibility, consent, form, link or canonical errors", "Approved content hash matches staging", "Responsive visual diffs are within the approved threshold"],
+      "requirements": ["Immutable Screaming Frog, Lighthouse, axe and visual reports are retained with SHA-256 hashes", "The verified Page Spec content hash and staging evidence hash bind the staging URL", "External-report provenance and verification timestamp are recorded before production publishing"],
       "failure_code": "ERROR_STAGING_TECHNICAL_QA_FAILED",
       "remediation": "Correct the staging implementation and rerun every failed technical gate before deployment approval.",
-      "evidence_required": ["staging_url", "crawl_manifest", "lighthouse_report", "axe_report", "visual_diff_report", "content_hash"]
+      "evidence_required": ["staging_url", "crawl_report_sha256", "lighthouse_report_sha256", "axe_report_sha256", "visual_report_sha256", "content_sha256", "staging_evidence_sha256", "provenance_classification", "verified_at"]
     },
     {
       "gate_id": "qg-performance-measurement",

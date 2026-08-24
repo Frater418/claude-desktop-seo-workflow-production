@@ -1,0 +1,5 @@
+{
+  "fixture_label": "simulated-neutral-route",
+  "source_fixture": "tests/fixtures/domain/real-customer-matrix/national-b2b.json",
+  "note": "The complete canonical project fixture is adapted at test load time so every runtime identity remains simulated and internally consistent. This file contains no statuses, approvals, QGRs, or releases."
+}

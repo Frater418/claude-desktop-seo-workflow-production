@@ -1,0 +1,989 @@
+{
+  "harness": "M09 release-critical desktop browser smoke",
+  "fixture": "Synthetic same-origin API fixtures only. No live customer, Notion, n8n, or deployment calls.",
+  "runAt": "2026-08-24T01:26:39.298Z",
+  "dist": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/apps/operator-console/dist",
+  "chrome": "/opt/google/chrome/chrome",
+  "output": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-24-m09-route-matrix/browser",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "checks": [
+    "initial synthetic Alpha project visible",
+    "Projekte: route reset readback",
+    "project selection: Synthetic Beta visible",
+    "project selection: Synthetic Alpha visible",
+    "Workflow: route reset readback",
+    "workflow transition: canonical readback visible",
+    "Artefakte: route reset readback",
+    "artifact load: canonical revision content visible",
+    "Pruefungen und Freigaben: route reset readback",
+    "request-revision: canonical review readback",
+    "Uebergabe und Export: route reset readback",
+    "Delivery preview: checkpoint policy visible",
+    "Delivery form: exactly two supported role inputs",
+    "Delivery preview: no export write",
+    "Delivery create: history visible after canonical readback",
+    "Delivery create: strict fixture stored one export",
+    "Delivery history: created export selected",
+    "Delivery download: ZIP filename observed",
+    "Delivery download: strict fixture served one ZIP",
+    "no console errors",
+    "no unexpected failed requests",
+    "no HTTP error responses",
+    "all browser responses remain same-origin"
+  ],
+  "readbacks": [
+    {
+      "action": "initial project",
+      "detail": "Synthetic Alpha heading visible"
+    },
+    {
+      "action": "project selection",
+      "detail": "Synthetic Beta heading visible"
+    },
+    {
+      "action": "project selection",
+      "detail": "Synthetic Alpha heading visible"
+    },
+    {
+      "action": "workflow transition",
+      "detail": "Readback abgeschlossen."
+    },
+    {
+      "action": "artifact load",
+      "detail": "Canonical revision 17 content visible"
+    },
+    {
+      "action": "review:request-revision",
+      "detail": "Kanonischer Stand aktualisiert"
+    },
+    {
+      "action": "Delivery preview",
+      "detail": "Checkpoint and final policy sections plus Exporthistorie visible"
+    },
+    {
+      "action": "Delivery create",
+      "detail": "Export wurde erstellt und kanonisch gelesen."
+    },
+    {
+      "action": "Delivery history",
+      "detail": "Created export selected from Exporthistorie"
+    },
+    {
+      "action": "Delivery download",
+      "detail": "ZIP filename observed"
+    }
+  ],
+  "capture": {
+    "file": "m09-release-critical-desktop-1280x900.png",
+    "bytes": 126261,
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    }
+  },
+  "consoleErrors": [],
+  "failedRequests": [],
+  "responses": [
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/assets/index-2kJ9F3EG.css"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/assets/index-CSFnj-BZ.js"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/readyz"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/favicon.svg"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts"
+    },
+    {
+      "method": "POST",
+      "status": 201,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/readyz"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/runs/current"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/runs/run-synthetic-beta"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/workflow"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/steps"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/tasks"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/artifacts"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/gates"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/context-packages"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/integrations/status"
+    },
+    {
+      "method": "POST",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces/trace-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/close"
+    },
+    {
+      "method": "POST",
+      "status": 201,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/diagnostic-traces"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/readyz"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status"
+    },
+    {
+      "method": "POST",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/diagnostic-traces/trace-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/close"
+    },
+    {
+      "method": "POST",
+      "status": 201,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces"
+    },
+    {
+      "method": "POST",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/start/preview"
+    },
+    {
+      "method": "POST",
+      "status": 201,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces/trace-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/entries"
+    },
+    {
+      "method": "POST",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/start/confirm"
+    },
+    {
+      "method": "POST",
+      "status": 201,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces/trace-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/entries"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/readyz"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/releases"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha/steps/1b/artifact-revisions"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts/artifact-synthetic-0017/content"
+    },
+    {
+      "method": "POST",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/request-revision/preview"
+    },
+    {
+      "method": "POST",
+      "status": 201,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces/trace-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/entries"
+    },
+    {
+      "method": "POST",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/request-revision/confirm"
+    },
+    {
+      "method": "POST",
+      "status": 201,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces/trace-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/entries"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/readyz"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/delivery/preview?scope=checkpoint"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/delivery/preview?scope=final"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/delivery/exports"
+    },
+    {
+      "method": "POST",
+      "status": 201,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/delivery/exports"
+    },
+    {
+      "method": "POST",
+      "status": 201,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces/trace-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/entries"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/delivery/exports/delivery-export-7b4479fe991387b0dd1c23d85b255056"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/delivery/exports/delivery-export-7b4479fe991387b0dd1c23d85b255056"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/delivery/exports/delivery-export-7b4479fe991387b0dd1c23d85b255056/download"
+    },
+    {
+      "method": "POST",
+      "status": 201,
+      "url": "http://127.0.0.1:36397/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces/trace-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/entries"
+    }
+  ],
+  "requestLog": [
+    {
+      "method": "GET",
+      "pathname": "/",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/assets/index-CSFnj-BZ.js",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/assets/index-2kJ9F3EG.css",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/readyz",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/favicon.svg",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/readyz",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/runs/current",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/runs/run-synthetic-beta",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/workflow",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/steps",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/tasks",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/artifacts",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/gates",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/context-packages",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/integrations/status",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces/trace-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/close",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/diagnostic-traces",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/readyz",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-beta/diagnostic-traces/trace-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/close",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/start/preview",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces/trace-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/entries",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/start/confirm",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces/trace-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/entries",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/readyz",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/releases",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha/steps/1b/artifact-revisions",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts/artifact-synthetic-0017/content",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/request-revision/preview",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces/trace-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/entries",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/request-revision/confirm",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces/trace-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/entries",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/readyz",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/delivery/preview",
+      "search": "?scope=checkpoint"
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/delivery/preview",
+      "search": "?scope=final"
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/delivery/exports",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/delivery/exports",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces/trace-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/entries",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/delivery/exports/delivery-export-7b4479fe991387b0dd1c23d85b255056",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/delivery/exports/delivery-export-7b4479fe991387b0dd1c23d85b255056",
+      "search": ""
+    },
+    {
+      "method": "GET",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/delivery/exports/delivery-export-7b4479fe991387b0dd1c23d85b255056/download",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces/trace-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/entries",
+      "search": ""
+    },
+    {
+      "method": "POST",
+      "pathname": "/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/diagnostic-traces/trace-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/close",
+      "search": ""
+    }
+  ],
+  "error": null
+}

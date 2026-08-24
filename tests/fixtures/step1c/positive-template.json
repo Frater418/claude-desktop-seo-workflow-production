@@ -7,14 +7,26 @@
   "step_id": "1c",
   "revision": 1,
   "source_artifact_ids": ["artifact-architecture-0001", "artifact-design-system-0001"],
-  "evidence_ids": ["evidence-service-area-0001"],
+  "evidence_ids": ["evidence-service-area-0001", "evidence-care-content-0001"],
   "decision_records": [{"decision_id": "decision-template-0001", "question": "Location claim", "outcome": "service_area_only", "evidence_ids": ["evidence-service-area-0001"]}],
   "candidate_status": "awaiting_gate",
   "template_family": "pillar-page",
   "template_id": "template-care-0001",
   "content_id": "pillar-care",
   "location_context": {"claim_type": "service_area", "evidence_ids": ["evidence-service-area-0001"]},
-  "accessibility": {"landmarks": ["main", "nav"], "skip_link": true},
-  "jsonld_references": [{"reference_id": "jsonld-care-0001", "type": "FAQPage", "evidence_ids": ["evidence-service-area-0001"]}],
-  "links": [{"target_content_id": "cluster-care-guide", "relationship": "vertical"}]
+  "accessibility": {"landmarks": ["header", "nav", "main", "footer"], "skip_link": true, "skip_link_label": "Skip to care guidance"},
+  "jsonld_references": [{"reference_id": "jsonld-care-0001", "type": "FAQPage", "evidence_ids": ["evidence-care-content-0001"]}],
+  "links": [{"target_content_id": "cluster-care-guide", "relationship": "vertical", "href": "/care-guide"}],
+  "content": {
+    "hero": {"heading": "Plan care support with clarity", "summary": "A local service-area overview with fixture-grounded preparation guidance.", "primary_cta": {"label": "Open the care guide", "target_content_id": "cluster-care-guide", "evidence_ids": ["evidence-care-content-0001"]}},
+    "quick_facts": {"heading": "Quick facts", "facts": [{"label": "Service model", "value": "Service-area guidance without a physical address claim", "evidence_ids": ["evidence-service-area-0001"]}]},
+    "editorial": {"heading": "Begin with the household need", "paragraphs": ["Record the support question before comparing local service options."], "evidence_ids": ["evidence-care-content-0001"]},
+    "heartpiece": {"heading": "The first-call checklist", "body": "Prepare the household priorities, preferred timing, and documented service-area question.", "evidence_ids": ["evidence-care-content-0001"]},
+    "grouped_cluster_links": {"heading": "Supporting care guidance", "groups": [{"label": "Prepare", "links": [{"label": "Care guide", "target_content_id": "cluster-care-guide", "relationship": "vertical"}]}]},
+    "process": {"heading": "A practical care process", "steps": [{"title": "Describe the need", "description": "Write down the support priorities for the first conversation.", "evidence_ids": ["evidence-care-content-0001"]}]},
+    "social_proof": {"heading": "Evidence record", "entries": [{"quote": "Fixture evidence keeps the local care preparation path traceable.", "attribution": "Heartweb local contract record", "evidence_ids": ["evidence-care-content-0001"]}]},
+    "faq": {"heading": "Frequently asked questions", "items": [{"question": "What should be prepared before a care conversation?", "answer": "Start with the household priorities and the documented service-area question.", "jsonld_reference_id": "jsonld-care-0001", "evidence_ids": ["evidence-care-content-0001"]}]},
+    "cross_pillar_links": {"heading": "Related care guidance", "links": []},
+    "final_cta": {"heading": "Ready to prepare the next step?", "summary": "Use the care guide to document the first conversation.", "primary_cta": {"label": "Read the care guide", "target_content_id": "cluster-care-guide", "evidence_ids": ["evidence-care-content-0001"]}}
+  }
 }

@@ -7,6 +7,9 @@ import hashlib
 import json
 from typing import Mapping, TypeAlias
 
+from .keyword_metrics import normalize_agentseo
+
+
 
 JsonValue: TypeAlias = str | int | float | bool | None | list["JsonValue"] | dict[str, "JsonValue"]
 
@@ -38,8 +41,17 @@ def _raw_response_sha256(response: Mapping[str, JsonValue]) -> str:
     return hashlib.sha256(canonical).hexdigest()
 
 
+def canonical_request_sha256(request: Mapping[str, JsonValue]) -> str:
+    """Return the SHA-256 for the closed provider request preimage."""
+    preimage = {key: value for key, value in request.items() if key != "request_sha256"}
+    canonical = json.dumps(preimage, ensure_ascii=True, separators=(",", ":"), sort_keys=True).encode("utf-8")
+    return hashlib.sha256(canonical).hexdigest()
+
+
 def _violations(request: Mapping[str, JsonValue], response: Mapping[str, JsonValue]) -> tuple[str, ...]:
     violations: list[str] = []
+    if _string(request.get("request_sha256")) != canonical_request_sha256(request):
+        violations.append("request_hash_mismatch")
     for field in ("request_id", "run_id", "project_id", "deployment_id", "provider", "language", "device"):
         if response.get(field) != request.get(field):
             violations.append(f"metadata_mismatch:{field}")
@@ -77,10 +89,19 @@ def validate_exchange(
     violations = _violations(request, response)
     if violations:
         raise ProviderGatewayError(violations)
-    return {
+    raw_hash = _raw_response_sha256(response)
+    result = {
         "provider": response["provider"],
         "request_sha256": request["request_sha256"],
-        "raw_response_sha256": _raw_response_sha256(response),
+        "raw_response_sha256": raw_hash,
         "provider_job_id": response["provider_job_id"],
         "deployment_id": response["deployment_id"],
     }
+    if request.get("operation") != "keyword_metrics":
+        return result
+    if response.get("provider") != "agentseo":
+        raise ProviderGatewayError(("normalization_unsupported_provider",))
+    normalized, normalization_violations = normalize_agentseo(response, _string(request.get("request_sha256")), raw_hash)
+    if normalization_violations:
+        raise ProviderGatewayError(normalization_violations)
+    return {**result, "normalized_keyword_records": normalized}

@@ -6,7 +6,7 @@ import "./styles.css"
 const rootElement = document.getElementById("root")
 
 if (rootElement === null) {
-  throw new Error("Operator Console root element is missing.")
+  throw new Error("Das Root-Element der Operator-Konsole fehlt.")
 }
 
 createRoot(rootElement).render(<StrictMode><App /></StrictMode>)

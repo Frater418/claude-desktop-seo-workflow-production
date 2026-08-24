@@ -14,21 +14,72 @@ class RendererError(ValueError):
     pass
 
 
+FIELDNAMES = (
+    "pillar",
+    "evidence_id",
+    "title",
+    "keyword",
+    "search_volume",
+    "difficulty",
+    "cpc_usd",
+    "category",
+    "content_type",
+    "geo_type",
+    "engine_target",
+    "information_gain",
+    "entity_density",
+    "business_relevance",
+    "mandatory_location_policy",
+    "is_mandatory",
+    "status",
+    "provider",
+    "raw_response_sha256",
+)
+
+
 def _validated(bundle: dict) -> list[dict]:
     result = validate_step2_preflight(bundle)
     if not result["valid"]:
         raise RendererError(json.dumps(result["errors"], ensure_ascii=True, sort_keys=True))
     candidate = bundle["candidate"]
-    return [row for pillar in candidate["pillars"] for row in pillar["rows"] if row["status"] == "verified"]
+    return [
+        {"pillar": pillar["pillar_id"], **row}
+        for pillar in candidate["pillars"]
+        for row in pillar["rows"]
+        if row["status"] == "verified"
+    ]
+
+
+def _project_row(row: dict) -> dict:
+    return {
+        "pillar": row["pillar"],
+        "evidence_id": row["evidence_id"],
+        "title": row["title"],
+        "keyword": row["keyword"],
+        "search_volume": row["search_volume"],
+        "difficulty": row["difficulty"],
+        "cpc_usd": json.dumps(row["cpc_usd"], ensure_ascii=True, separators=(",", ":"), sort_keys=True),
+        "category": row["category"],
+        "content_type": row["content_type"],
+        "geo_type": row["geo_type"],
+        "engine_target": json.dumps(row["engine_target"], ensure_ascii=True, separators=(",", ":"), sort_keys=True),
+        "information_gain": row["information_gain"],
+        "entity_density": row["entity_density"],
+        "business_relevance": row["business_relevance"],
+        "mandatory_location_policy": json.dumps(row["mandatory_location_policy"], ensure_ascii=True, separators=(",", ":"), sort_keys=True),
+        "is_mandatory": str(row["mandatory_location_policy"]["state"] == "required").lower(),
+        "status": row["status"],
+        "provider": row["provider"],
+        "raw_response_sha256": row["raw_response_sha256"],
+    }
 
 
 def render_step2(bundle: dict) -> str:
-    rows = _validated(bundle)
-    fieldnames = sorted({field for row in rows for field in row})
+    rows = [_project_row(row) for row in _validated(bundle)]
     stream = io.StringIO(newline="")
-    writer = csv.DictWriter(stream, fieldnames=fieldnames, lineterminator="\n", extrasaction="raise")
+    writer = csv.DictWriter(stream, fieldnames=FIELDNAMES, lineterminator="\n", extrasaction="raise")
     writer.writeheader()
-    writer.writerows(sorted(rows, key=lambda row: tuple(str(row.get(field, "")) for field in fieldnames)))
+    writer.writerows(sorted(rows, key=lambda row: tuple(str(row[field]) for field in FIELDNAMES)))
     return stream.getvalue()
 
 

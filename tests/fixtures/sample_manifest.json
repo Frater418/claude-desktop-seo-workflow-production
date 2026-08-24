@@ -1,6 +1,17 @@
 {
   "project_id": "simcura-pflegedienst",
   "project_name": "simCura Pflegedienst Frankfurt",
+  "source_binding": {
+    "tenant_id": "tenant-simcura",
+    "project_id": "simcura-pflegedienst",
+    "customer_id": "customer-simcura",
+    "market_id": "de-de-frankfurt",
+    "deployment_id": "dep-simcura-de",
+    "language": "de",
+    "country": "DE",
+    "project_v2_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "intake_source_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
   "author": "Raphael Rechberger",
   "domain": "https://simcura-pflege.de",
   "new_domain_or_staging": null,

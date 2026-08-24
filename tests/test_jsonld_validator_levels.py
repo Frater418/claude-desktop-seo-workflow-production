@@ -57,6 +57,23 @@ class JsonLdValidationLevelTests(unittest.TestCase):
         self.assertEqual("not_assessed", result["levels"]["claim_evidence"])
         self.assertEqual("not_assessed", result["levels"]["google_eligibility"])
 
+    def test_visible_geo_section_types_pass_with_required_properties(self):
+        # Given: graph nodes with visible name, description, data, and list content.
+        payload = {
+            "@context": "https://schema.org",
+            "@graph": [
+                {"@id": "https://example.test/page#definition", "@type": "DefinedTerm", "name": "B2B-Beratung", "description": "Eine strukturierte Erstklaerung."},
+                {"@id": "https://example.test/page#evidence", "@type": "Dataset", "name": "Projektgrundlagen", "description": "Lokal simulierte Pruefhinweise.", "variableMeasured": ["Pruefstatus"]},
+                {"@id": "https://example.test/page#comparison", "@type": "ItemList", "name": "Leistungsoptionen", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Erstklaerung"}]},
+            ],
+        }
+
+        # When: the local JSON-LD validator evaluates the supported GEO nodes.
+        result = validate_text(json.dumps(payload), strict_geo=False)
+
+        # Then: their narrow required-field contracts pass.
+        self.assertTrue(result["valid"], result["issues"])
+
     @staticmethod
     def valid_article() -> dict:
         return {

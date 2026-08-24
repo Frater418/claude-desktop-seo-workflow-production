@@ -12,6 +12,11 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+from fastapi.testclient import TestClient
+
+from services.delivery.record_normalization import DeliveryInventoryError
+from services.operator_api.app import AppConfig, create_app
+from services.operator_api.repository import WorkspaceRegistration, WorkspaceRegistry
 from services.operator_routing.router import (
     CANONICAL_RUNTIME_ERROR_CODES,
     ErrorRoutingPolicyError,
@@ -20,6 +25,7 @@ from services.operator_routing.router import (
     validate_policy,
 )
 from services.transition_service.service import durable_ledger_lock, main as transition_main
+from tests.support.delivery_api import PROJECT, TENANT, delivery_base, delivery_request, seed_workspace
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -207,6 +213,26 @@ class OperatorErrorRoutingTests(unittest.TestCase):
         self.assertEqual("ERROR_TRANSITION_LEDGER_LOCKED", contention_code)
         self.assertEqual("retryable_technical", route.route)
         self.assertEqual("workflow_maintainer", route.owner_type)
+
+    def test_delivery_inventory_errors_from_each_composition_seam_are_stable_422_responses(self) -> None:
+        seams = (
+            ("inventory", "collect_inventory", "DELIVERY_SOURCE_RECORD_MALFORMED"),
+            ("role", "build_role_package", "ROLE_PACKAGE_EMPTY"),
+            ("notion", "build_notion_import_pack", "NOTION_RELATION_DANGLING"),
+            ("archive", "build_archive", "DELIVERY_ARCHIVE_EMPTY"),
+            ("semantic", "validate_delivery_contracts", "DELIVERY_PACKAGE_SCOPE_INVALID"),
+        )
+        for seam, target, code in seams:
+            with self.subTest(seam=seam), tempfile.TemporaryDirectory() as temporary:
+                workspace = Path(temporary)
+                seed_workspace(workspace)
+                registry = WorkspaceRegistry((WorkspaceRegistration(TENANT, PROJECT, workspace),))
+                client = TestClient(create_app(registry, ROOT, AppConfig(ROOT)), raise_server_exceptions=False)
+                with patch(f"services.operator_api.delivery_composer.{target}", side_effect=DeliveryInventoryError(code, "stable semantic failure")):
+                    response = client.post(f"{delivery_base()}/exports", json=delivery_request())
+
+                self.assertEqual(422, response.status_code)
+                self.assertEqual(code, response.json()["code"])
 
 
 if __name__ == "__main__":

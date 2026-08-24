@@ -145,6 +145,77 @@ class QualityGateRegistryEvaluatorTests(unittest.TestCase):
         self.assertTrue(result["valid"])
         self.assertEqual("GATE-1", result["human_gate_definitions"][0]["human_gate_id"])
 
+    def test_step4a_submit_resolves_only_local_claims_and_schema_gate(self):
+        result = resolve_required_gates(self.registry, "4a", "submit_for_gate", self.context)
+
+        self.assertTrue(result["valid"])
+        self.assertIn("qg-step4a-claims-and-schema", result["required_gate_ids"])
+        self.assertNotIn("qg-step4a-external-rich-results", result["required_gate_ids"])
+
+    def test_step4a_publish_without_production_does_not_require_external_rich_results(self):
+        result = resolve_required_gates(self.registry, "4a", "publish", self.context)
+
+        self.assertTrue(result["valid"])
+        self.assertNotIn("qg-step4a-external-rich-results", result["required_gate_ids"])
+
+    def test_step4a_production_publish_requires_only_external_rich_results_gate(self):
+        context = dict(self.context, production=True)
+
+        result = resolve_required_gates(self.registry, "4a", "publish", context)
+
+        self.assertTrue(result["valid"])
+        self.assertEqual(["qg-step4a-external-rich-results"], result["required_gate_ids"])
+
+    def test_step4b_submit_does_not_resolve_staging_production_gate(self):
+        result = resolve_required_gates(self.registry, "4b", "submit_for_gate", self.context)
+
+        self.assertTrue(result["valid"])
+        self.assertNotIn("qg-step4b-staging-technical", result["required_gate_ids"])
+
+    def test_step4b_publish_without_production_excludes_staging_gate(self):
+        result = resolve_required_gates(self.registry, "4b", "publish", self.context)
+
+        self.assertTrue(result["valid"])
+        self.assertNotIn("qg-step4b-staging-technical", result["required_gate_ids"])
+
+    def test_step4b_production_publish_requires_only_staging_gate(self):
+        result = resolve_required_gates(self.registry, "4b", "publish", dict(self.context, production=True))
+
+        self.assertTrue(result["valid"])
+        machine_gate_ids = [gate["gate_id"] for gate in result["required_gates"] if gate["stage"] != "human_approval"]
+        self.assertEqual(["qg-step4b-staging-technical"], machine_gate_ids)
+
+    def _step4b_record(self, provenance_classification: str) -> tuple[dict, dict]:
+        artifact = {"artifact_id": "artifact-step4b-0001", "content_sha256": "d" * 64, "run_id": "run-step4b-0001"}
+        evidence = {
+            "staging_url": "https://staging.example.test/page",
+            "crawl_report_sha256": "a" * 64,
+            "lighthouse_report_sha256": "b" * 64,
+            "axe_report_sha256": "c" * 64,
+            "visual_report_sha256": "d" * 64,
+            "content_sha256": artifact["content_sha256"],
+            "staging_evidence_sha256": "e" * 64,
+            "provenance_classification": provenance_classification,
+            "verified_at": "2026-08-23T12:00:00Z",
+            "raw_evidence_artifact_sha256": artifact["content_sha256"],
+        }
+        return artifact, {"quality_gate_id": "qg-step4b-staging-technical", "tenant_id": "tenant-heartweb", "run_id": artifact["run_id"], "step_id": "4b", "human_gate_id": "GATE-4B", "artifact_id": artifact["artifact_id"], "artifact_sha256": artifact["content_sha256"], "registry_version": "1.1.0", "result": "passed", "evidence": evidence}
+
+    def test_step4b_production_publish_rejects_local_simulated_evidence(self):
+        artifact, record = self._step4b_record("local_simulated")
+
+        result = evaluate_gate_runs(self.registry, "4b", "publish", dict(self.context, production=True), "tenant-heartweb", artifact["run_id"], "GATE-4B", artifact, [], [record])
+
+        self.assertFalse(result["valid"])
+        self.assertIn("ERROR_REQUIRED_QUALITY_GATE_PROVENANCE", {error["code"] for error in result["errors"]})
+
+    def test_step4b_production_publish_accepts_external_report_for_normal_validation(self):
+        artifact, record = self._step4b_record("external_report")
+
+        result = evaluate_gate_runs(self.registry, "4b", "publish", dict(self.context, production=True), "tenant-heartweb", artifact["run_id"], "GATE-4B", artifact, [], [record])
+
+        self.assertTrue(result["valid"], result["errors"])
+
 
 if __name__ == "__main__":
     unittest.main()

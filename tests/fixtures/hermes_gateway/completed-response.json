@@ -1,0 +1,16 @@
+{
+  "object": "run",
+  "run_id": "run_sanitized_001",
+  "status": "completed",
+  "updated_at": 1787486401,
+  "created_at": 1787486400,
+  "session_id": "session_sanitized_001",
+  "model": "gpt-5.6-sol",
+  "last_event": "run.completed",
+  "output": "{\"marker\":\"sanitized-neutral\"}",
+  "usage": {
+    "input_tokens": 12,
+    "output_tokens": 8,
+    "total_tokens": 20
+  }
+}

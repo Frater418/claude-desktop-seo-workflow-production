@@ -5,6 +5,33 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) 
 
 ---
 
+## [Unreleased] - Sprint 5 and Sprint 5E in progress
+
+### Verified or implemented on the feature/WIP line
+
+- V2 domain, workflow, transition, artifact, evidence, approval, release and runtime contracts.
+- Local Operator API, append-only event store, Notion/n8n simulators, OpenAPI and generated TypeScript contracts.
+- Package 4 intake, provisioning, Context/LLM runtime, immutable artifact revisions, diff, recovery, typed Admin actions and neutral Step-0-through-Step-4b lifecycle.
+- German single-admin Operator Console with project, workflow, task, intake, artifact, revision and review workspaces.
+- Automated frontend matrix reported at 74 tests with a clean production build before the real browser gate.
+- WIP GitHub checkpoint `7c844ba1aa2bf938b34d854578e6bfc0cda6a9a0` on `wip/sprint5-operator-console-2026-08-21-0809`.
+
+### Still open
+
+- Fresh real-browser QA evidence after Chrome installation in the OMO container.
+- Sprint 5E Delivery contracts, deterministic ZIPs, Delivery API and Delivery Center.
+- Real AHD Golden Path with live providers and human quality review.
+- Live Notion/n8n integration and real task/person mapping.
+- Deferred GEO V2 restoration, documentation reconciliation, repository hygiene and final branch consolidation.
+- Independent final audit and `master` release gate.
+
+### Documentation and hygiene
+
+- Canonical repository audit: `00_admin/audits/2026-08-21-repository-hygiene/REPOSITORY_HYGIENE_AND_AUTHORITY_AUDIT.md`.
+- Deferred integration backlog: `00_admin/DEFERRED_INTEGRATION_BACKLOG.md`.
+
+---
+
 ## [1.4.0] - 2026-08-17
 
 ### Generative Engine Optimization (GEO), RAG Evidence Containers, Schema.org Graph & Validator CLI

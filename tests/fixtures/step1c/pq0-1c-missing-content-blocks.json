@@ -1,0 +1,15 @@
+{
+  "fixture_group": "PQ0-1C-001, PQ0-1C-002, PQ0-1C-005 through PQ0-1C-012",
+  "missing_content_blocks": [
+    {"requirement_id": "PQ0-1C-001", "block": "hero"},
+    {"requirement_id": "PQ0-1C-002", "block": "quick_facts"},
+    {"requirement_id": "PQ0-1C-005", "block": "editorial"},
+    {"requirement_id": "PQ0-1C-006", "block": "heartpiece"},
+    {"requirement_id": "PQ0-1C-007", "block": "grouped_cluster_links"},
+    {"requirement_id": "PQ0-1C-008", "block": "process"},
+    {"requirement_id": "PQ0-1C-009", "block": "social_proof"},
+    {"requirement_id": "PQ0-1C-010", "block": "faq"},
+    {"requirement_id": "PQ0-1C-011", "block": "cross_pillar_links"},
+    {"requirement_id": "PQ0-1C-012", "block": "final_cta"}
+  ]
+}

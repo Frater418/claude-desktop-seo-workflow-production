@@ -226,6 +226,15 @@ def solve_capacity_plan(items: list, hours_min=10.0, hours_max=15.0, total_weeks
                 item_index=item_index,
                 field="content_type",
             )
+
+        item_id = item.get("item_id")
+        if "item_id" in item and (not isinstance(item_id, str) or not item_id.strip()):
+            raise CapacityValidationError(
+                "ERROR_SOLVER_ITEM_ID_INVALID",
+                f"Item #{item_index} field 'item_id' must be a nonempty string.",
+                item_index=item_index,
+                field="item_id",
+            )
         
         info_gain = float(item.get("Information_Gain_Score", item.get("information_gain", item.get("info_gain", 0))) or 0)
         entity_density = float(item.get("Entity_Density_Score", item.get("entity_density", 0)) or 0)
@@ -243,7 +252,7 @@ def solve_capacity_plan(items: list, hours_min=10.0, hours_max=15.0, total_weeks
         score = calculate_score(sv, kd, cat, c_type, is_mand, info_gain, entity_density)
         effort = EFFORT_WEIGHTS[c_type]
         
-        processed.append({
+        processed_item = {
             "pillar": pillar,
             "title": title,
             "keyword": keyword,
@@ -257,7 +266,10 @@ def solve_capacity_plan(items: list, hours_min=10.0, hours_max=15.0, total_weeks
             "score": score,
             "effort_hours": effort,
             "word_count": 1500 if "blog" in c_type.lower() or "ratgeber" in c_type.lower() else (800 if "landing" in c_type.lower() else 2500)
-        })
+        }
+        if item_id is not None:
+            processed_item["item_id"] = item_id
+        processed.append(processed_item)
 
     mand_items = sorted([i for i in processed if i["is_mandatory"]], key=lambda x: x["score"], reverse=True)
     other_items = sorted([i for i in processed if not i["is_mandatory"]], key=lambda x: x["score"], reverse=True)

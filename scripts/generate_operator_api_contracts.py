@@ -21,6 +21,7 @@ from services.operator_api.repository import WorkspaceRegistration, WorkspaceReg
 JsonValue: TypeAlias = str | int | float | bool | None | list["JsonValue"] | dict[str, "JsonValue"]
 SNAPSHOT_RELATIVE = Path("standards/api/operator-api.openapi.json")
 TYPES_RELATIVE = Path("apps/operator-console/src/generated/api-types.ts")
+PROMPT_REGISTRY_RELATIVE = Path("standards/runtime/official-prompt-registry.json")
 HTTP_METHODS = frozenset({"delete", "get", "head", "options", "patch", "post", "put", "trace"})
 
 
@@ -85,6 +86,8 @@ def _primitive_type(schema_type: JsonValue, schema: dict[str, JsonValue]) -> str
         return f"readonly ({_schema_type(items) if items is not None else 'unknown'})[]"
     if schema_type == "object":
         return _object_type(schema)
+    if schema_type == "string" and schema.get("format") == "binary":
+        return "Blob"
     primitives = {"boolean": "boolean", "integer": "number", "number": "number", "null": "null", "string": "string"}
     if isinstance(schema_type, str) and schema_type in primitives:
         return primitives[schema_type]
@@ -124,6 +127,49 @@ def _response_type(response: JsonValue) -> str:
     return _union([_schema_type(_mapping(media).get("schema", {})) for _, media in sorted(content.items())])
 
 
+def _response_headers_type(response: JsonValue) -> str | None:
+    headers = _mapping(response).get("headers")
+    if not isinstance(headers, dict) or not headers:
+        return None
+    return "{ " + " ".join(
+        f"readonly {_literal(name)}: {_schema_type(_mapping(header).get('schema', {}))};"
+        for name, header in sorted(headers.items())
+    ) + " }"
+
+
+def _operation_response_headers_type(operation: dict[str, JsonValue]) -> str | None:
+    headers = [
+        (str(status), _response_headers_type(response))
+        for status, response in sorted(_mapping(operation.get("responses", {})).items())
+    ]
+    present = [(status, header) for status, header in headers if header is not None]
+    if not present:
+        return None
+    return "{ " + " ".join(
+        f"readonly {_literal(status)}: {header};" for status, header in present
+    ) + " }"
+
+
+def _parameters_type(operation: dict[str, JsonValue]) -> str:
+    parameters = operation.get("parameters", [])
+    if not isinstance(parameters, list):
+        raise ContractGenerationError("OpenAPI operation parameters must be an array.")
+    grouped: dict[str, list[str]] = {}
+    for parameter in parameters:
+        value = _mapping(parameter)
+        name = value.get("name")
+        location = value.get("in")
+        if not isinstance(name, str) or not isinstance(location, str):
+            raise ContractGenerationError("OpenAPI parameter must have a name and location.")
+        schema = _mapping(value.get("schema", {}))
+        optional = "" if value.get("required") is True else "?"
+        grouped.setdefault(location, []).append(f"readonly {_literal(name)}{optional}: {_schema_type(schema)};")
+    return "{ " + " ".join(
+        f"readonly {location}: {{ {' '.join(sorted(members))} }};"
+        for location, members in sorted(grouped.items())
+    ) + " }"
+
+
 def _operation_map(document: dict[str, JsonValue]) -> list[str]:
     paths = _mapping(document.get("paths", {}))
     operations: list[tuple[str, str, str, dict[str, JsonValue]]] = []
@@ -143,12 +189,18 @@ def _operation_map(document: dict[str, JsonValue]) -> list[str]:
         *[
             "  readonly " + _literal(operation_id) + ": { "
             + f"readonly method: {_literal(method)}; readonly path: {_literal(path)}; "
-            + f"readonly request: {_request_type(operation)}; readonly responses: {{ "
+            + f"readonly parameters: {_parameters_type(operation)}; readonly request: {_request_type(operation)}; readonly responses: {{ "
             + " ".join(
                 f"readonly {_literal(str(status))}: {_response_type(response)};"
                 for status, response in sorted(_mapping(operation.get("responses", {})).items())
             )
-            + " }; };"
+            + " };"
+            + (
+                f" readonly responseHeaders: {_operation_response_headers_type(operation)};"
+                if _operation_response_headers_type(operation) is not None
+                else ""
+            )
+            + " };"
             for operation_id, method, path, operation in sorted(operations)
         ],
         "};",
@@ -180,6 +232,33 @@ def generate_artifacts(root: Path) -> tuple[str, str]:
     return snapshot, _typescript(snapshot)
 
 
+def generate_prompt_registry(root: Path) -> str:
+    """Return the prompt registry with prompt and output-contract hashes refreshed from source bytes."""
+    registry = _mapping(json.loads((root / PROMPT_REGISTRY_RELATIVE).read_text(encoding="utf-8")))
+    entries = registry.get("entries")
+    if not isinstance(entries, list):
+        raise ContractGenerationError("Prompt registry entries are unavailable.")
+    for entry in entries:
+        mapping = _mapping(entry)
+        prompt_path = mapping.get("prompt_path")
+        if not isinstance(prompt_path, str) or not prompt_path:
+            raise ContractGenerationError("Prompt registry prompt path is unavailable.")
+        try:
+            mapping["prompt_sha256"] = hashlib.sha256((root / prompt_path).read_bytes()).hexdigest()
+        except OSError as error:
+            raise ContractGenerationError("Prompt registry prompt path is unavailable.") from error
+        contracts = _mapping(entry).get("output_contracts")
+        if not isinstance(contracts, list):
+            raise ContractGenerationError("Prompt registry output contracts are unavailable.")
+        for contract in contracts:
+            mapping = _mapping(contract)
+            path = mapping.get("contract_path")
+            if not isinstance(path, str):
+                raise ContractGenerationError("Prompt registry output contract path is unavailable.")
+            mapping["contract_sha256"] = hashlib.sha256((root / path).read_bytes()).hexdigest()
+    return _canonical_json(registry)
+
+
 def _write_artifacts(root: Path, snapshot: str, types: str) -> None:
     for relative, content in ((SNAPSHOT_RELATIVE, snapshot), (TYPES_RELATIVE, types)):
         target = root / relative
@@ -192,10 +271,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--check", action="store_true")
     arguments = parser.parse_args(argv)
     snapshot, types = generate_artifacts(ROOT)
+    registry = generate_prompt_registry(ROOT)
     if arguments.check:
         stale = [
             str(relative)
-            for relative, content in ((SNAPSHOT_RELATIVE, snapshot), (TYPES_RELATIVE, types))
+            for relative, content in ((SNAPSHOT_RELATIVE, snapshot), (TYPES_RELATIVE, types), (PROMPT_REGISTRY_RELATIVE, registry))
             if not (ROOT / relative).is_file() or (ROOT / relative).read_text(encoding="utf-8") != content
         ]
         if stale:
@@ -203,6 +283,7 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         return 0
     _write_artifacts(ROOT, snapshot, types)
+    (ROOT / PROMPT_REGISTRY_RELATIVE).write_text(registry, encoding="utf-8", newline="\n")
     return 0
 
 

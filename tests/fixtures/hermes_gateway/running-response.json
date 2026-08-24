@@ -1,0 +1,9 @@
+{
+  "object": "hermes.run",
+  "run_id": "run_sanitized_001",
+  "status": "running",
+  "created_at": 1787486400,
+  "updated_at": 1787486401,
+  "session_id": "session_sanitized_001",
+  "model": "gpt-5.6-sol"
+}

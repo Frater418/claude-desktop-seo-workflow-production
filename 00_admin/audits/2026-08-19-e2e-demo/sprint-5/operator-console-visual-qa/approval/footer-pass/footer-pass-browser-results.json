@@ -1,0 +1,1801 @@
+{
+  "runAt": "2026-08-21T22:37:41.104Z",
+  "base": "http://127.0.0.1:43185",
+  "captures": [
+    {
+      "file": "captures/state-rest.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "bytes": 3896
+    },
+    {
+      "file": "captures/state-hover.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "bytes": 4001
+    },
+    {
+      "file": "captures/state-focus.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "bytes": 4005
+    },
+    {
+      "file": "captures/state-active.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "bytes": 4005
+    },
+    {
+      "file": "captures/state-awaiting-confirmation.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "bytes": 141825
+    },
+    {
+      "file": "captures/state-task-selected-mobile.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 58308
+    },
+    {
+      "file": "captures/state-context-collapsed.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 63026
+    },
+    {
+      "file": "captures/state-context-expanded.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 64857
+    },
+    {
+      "file": "captures/footer-projekte-1280x900.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "bytes": 156582
+    },
+    {
+      "file": "captures/footer-projekte-768x1024.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "bytes": 79591
+    },
+    {
+      "file": "captures/footer-projekte-390x844.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 61840
+    },
+    {
+      "file": "captures/footer-projekte-375x812.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "bytes": 60614
+    },
+    {
+      "file": "captures/footer-workflow-1280x900.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "bytes": 125720
+    },
+    {
+      "file": "captures/footer-workflow-768x1024.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "bytes": 82669
+    },
+    {
+      "file": "captures/footer-workflow-390x844.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 61871
+    },
+    {
+      "file": "captures/footer-workflow-375x812.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "bytes": 60385
+    },
+    {
+      "file": "captures/footer-aufgaben-1280x900.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "bytes": 138674
+    },
+    {
+      "file": "captures/footer-aufgaben-768x1024.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "bytes": 79873
+    },
+    {
+      "file": "captures/footer-aufgaben-390x844.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 61887
+    },
+    {
+      "file": "captures/footer-aufgaben-375x812.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "bytes": 60673
+    },
+    {
+      "file": "captures/footer-artefakte-1280x900.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "bytes": 94823
+    },
+    {
+      "file": "captures/footer-artefakte-768x1024.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "bytes": 79579
+    },
+    {
+      "file": "captures/footer-artefakte-390x844.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 61884
+    },
+    {
+      "file": "captures/footer-artefakte-375x812.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "bytes": 60656
+    },
+    {
+      "file": "captures/footer-pruefungen-und-freigaben-1280x900.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "bytes": 147935
+    },
+    {
+      "file": "captures/footer-pruefungen-und-freigaben-768x1024.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "bytes": 86973
+    },
+    {
+      "file": "captures/footer-pruefungen-und-freigaben-390x844.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 59927
+    },
+    {
+      "file": "captures/footer-pruefungen-und-freigaben-375x812.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "bytes": 55598
+    },
+    {
+      "file": "captures/footer-uebergabe-und-export-1280x900.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "bytes": 110548
+    },
+    {
+      "file": "captures/footer-uebergabe-und-export-768x1024.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "bytes": 80047
+    },
+    {
+      "file": "captures/footer-uebergabe-und-export-390x844.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 62375
+    },
+    {
+      "file": "captures/footer-uebergabe-und-export-375x812.png",
+      "fullPage": false,
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "bytes": 61445
+    },
+    {
+      "file": "captures/footer-lower-projekte-390x844.png",
+      "fullPage": true,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 63528
+    },
+    {
+      "file": "captures/footer-lower-projekte-375x812.png",
+      "fullPage": true,
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "bytes": 61997
+    },
+    {
+      "file": "captures/footer-lower-workflow-390x844.png",
+      "fullPage": true,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 59805
+    },
+    {
+      "file": "captures/footer-lower-workflow-375x812.png",
+      "fullPage": true,
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "bytes": 57599
+    },
+    {
+      "file": "captures/footer-lower-aufgaben-390x844.png",
+      "fullPage": true,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 59712
+    },
+    {
+      "file": "captures/footer-lower-aufgaben-375x812.png",
+      "fullPage": true,
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "bytes": 57654
+    },
+    {
+      "file": "captures/footer-lower-artefakte-390x844.png",
+      "fullPage": true,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 58253
+    },
+    {
+      "file": "captures/footer-lower-artefakte-375x812.png",
+      "fullPage": true,
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "bytes": 55948
+    },
+    {
+      "file": "captures/footer-lower-pruefungen-und-freigaben-390x844.png",
+      "fullPage": true,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 56287
+    },
+    {
+      "file": "captures/footer-lower-pruefungen-und-freigaben-375x812.png",
+      "fullPage": true,
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "bytes": 56639
+    },
+    {
+      "file": "captures/footer-lower-uebergabe-und-export-390x844.png",
+      "fullPage": true,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 58803
+    },
+    {
+      "file": "captures/footer-lower-uebergabe-und-export-375x812.png",
+      "fullPage": true,
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "bytes": 56834
+    }
+  ],
+  "checks": [
+    "strict server rejects unexpected paths",
+    "favicon delivery is configured",
+    "Workflow: route scrollTop is zero synchronously",
+    "Workflow route: scrollTop is zero after requestAnimationFrame",
+    "Workflow: route scrollTop remains zero after settled content",
+    "Workflow: route scrollTop is zero synchronously",
+    "Workflow route: scrollTop is zero after requestAnimationFrame",
+    "Workflow: route scrollTop remains zero after settled content",
+    "Aufgaben: route scrollTop is zero synchronously",
+    "Aufgaben route: scrollTop is zero after requestAnimationFrame",
+    "Aufgaben: route scrollTop remains zero after settled content",
+    "task status is canonical open and localized Offen",
+    "Artefakte: route scrollTop is zero synchronously",
+    "Artefakte route: scrollTop is zero after requestAnimationFrame",
+    "Artefakte: route scrollTop remains zero after settled content",
+    "Pruefungen und Freigaben: route scrollTop is zero synchronously",
+    "Pruefungen und Freigaben route: scrollTop is zero after requestAnimationFrame",
+    "Pruefungen und Freigaben: route scrollTop remains zero after settled content",
+    "approve: confirm disappeared and selector enabled",
+    "reject: confirm disappeared and selector enabled",
+    "request-revision: confirm disappeared and selector enabled",
+    "request-input: confirm disappeared and selector enabled",
+    "escalate: confirm disappeared and selector enabled",
+    "request-waiver: confirm disappeared and selector enabled",
+    "intake setup produces nonzero workspace scroll",
+    "Projekte: route scrollTop is zero synchronously",
+    "Projekte route: scrollTop is zero after requestAnimationFrame",
+    "Projekte: route scrollTop remains zero after settled content",
+    "workspace-frame computed overflow-anchor is none at narrow width",
+    "Projekte: route scrollTop is zero synchronously",
+    "Projekte route: scrollTop is zero after requestAnimationFrame",
+    "Projekte: route scrollTop remains zero after settled content",
+    "projekte 1280: bounded shell, no document overflow, normal footer",
+    "Projekte: route scrollTop is zero synchronously",
+    "Projekte route: scrollTop is zero after requestAnimationFrame",
+    "Projekte: route scrollTop remains zero after settled content",
+    "projekte 768: bounded shell, no document overflow, normal footer",
+    "Projekte: route scrollTop is zero synchronously",
+    "Projekte route: scrollTop is zero after requestAnimationFrame",
+    "Projekte: route scrollTop remains zero after settled content",
+    "projekte 390: bounded shell, no document overflow, normal footer",
+    "Projekte: route scrollTop is zero synchronously",
+    "Projekte route: scrollTop is zero after requestAnimationFrame",
+    "Projekte: route scrollTop remains zero after settled content",
+    "projekte 375: bounded shell, no document overflow, normal footer",
+    "Workflow: route scrollTop is zero synchronously",
+    "Workflow route: scrollTop is zero after requestAnimationFrame",
+    "Workflow: route scrollTop remains zero after settled content",
+    "workflow 1280: bounded shell, no document overflow, normal footer",
+    "Workflow: route scrollTop is zero synchronously",
+    "Workflow route: scrollTop is zero after requestAnimationFrame",
+    "Workflow: route scrollTop remains zero after settled content",
+    "workflow 768: bounded shell, no document overflow, normal footer",
+    "Workflow: route scrollTop is zero synchronously",
+    "Workflow route: scrollTop is zero after requestAnimationFrame",
+    "Workflow: route scrollTop remains zero after settled content",
+    "workflow 390: bounded shell, no document overflow, normal footer",
+    "Workflow: route scrollTop is zero synchronously",
+    "Workflow route: scrollTop is zero after requestAnimationFrame",
+    "Workflow: route scrollTop remains zero after settled content",
+    "workflow 375: bounded shell, no document overflow, normal footer",
+    "Aufgaben: route scrollTop is zero synchronously",
+    "Aufgaben route: scrollTop is zero after requestAnimationFrame",
+    "Aufgaben: route scrollTop remains zero after settled content",
+    "aufgaben 1280: bounded shell, no document overflow, normal footer",
+    "Aufgaben: route scrollTop is zero synchronously",
+    "Aufgaben route: scrollTop is zero after requestAnimationFrame",
+    "Aufgaben: route scrollTop remains zero after settled content",
+    "aufgaben 768: bounded shell, no document overflow, normal footer",
+    "Aufgaben: route scrollTop is zero synchronously",
+    "Aufgaben route: scrollTop is zero after requestAnimationFrame",
+    "Aufgaben: route scrollTop remains zero after settled content",
+    "aufgaben 390: bounded shell, no document overflow, normal footer",
+    "Aufgaben: route scrollTop is zero synchronously",
+    "Aufgaben route: scrollTop is zero after requestAnimationFrame",
+    "Aufgaben: route scrollTop remains zero after settled content",
+    "aufgaben 375: bounded shell, no document overflow, normal footer",
+    "Artefakte: route scrollTop is zero synchronously",
+    "Artefakte route: scrollTop is zero after requestAnimationFrame",
+    "Artefakte: route scrollTop remains zero after settled content",
+    "artefakte 1280: bounded shell, no document overflow, normal footer",
+    "Artefakte: route scrollTop is zero synchronously",
+    "Artefakte route: scrollTop is zero after requestAnimationFrame",
+    "Artefakte: route scrollTop remains zero after settled content",
+    "artefakte 768: bounded shell, no document overflow, normal footer",
+    "Artefakte: route scrollTop is zero synchronously",
+    "Artefakte route: scrollTop is zero after requestAnimationFrame",
+    "Artefakte: route scrollTop remains zero after settled content",
+    "artefakte 390: bounded shell, no document overflow, normal footer",
+    "Artefakte: route scrollTop is zero synchronously",
+    "Artefakte route: scrollTop is zero after requestAnimationFrame",
+    "Artefakte: route scrollTop remains zero after settled content",
+    "artefakte 375: bounded shell, no document overflow, normal footer",
+    "Pruefungen und Freigaben: route scrollTop is zero synchronously",
+    "Pruefungen und Freigaben route: scrollTop is zero after requestAnimationFrame",
+    "Pruefungen und Freigaben: route scrollTop remains zero after settled content",
+    "pruefungen-und-freigaben 1280: bounded shell, no document overflow, normal footer",
+    "Pruefungen und Freigaben: route scrollTop is zero synchronously",
+    "Pruefungen und Freigaben route: scrollTop is zero after requestAnimationFrame",
+    "Pruefungen und Freigaben: route scrollTop remains zero after settled content",
+    "pruefungen-und-freigaben 768: bounded shell, no document overflow, normal footer",
+    "Pruefungen und Freigaben: route scrollTop is zero synchronously",
+    "Pruefungen und Freigaben route: scrollTop is zero after requestAnimationFrame",
+    "Pruefungen und Freigaben: route scrollTop remains zero after settled content",
+    "pruefungen-und-freigaben 390: bounded shell, no document overflow, normal footer",
+    "Pruefungen und Freigaben: route scrollTop is zero synchronously",
+    "Pruefungen und Freigaben route: scrollTop is zero after requestAnimationFrame",
+    "Pruefungen und Freigaben: route scrollTop remains zero after settled content",
+    "pruefungen-und-freigaben 375: bounded shell, no document overflow, normal footer",
+    "Uebergabe und Export: route scrollTop is zero synchronously",
+    "Uebergabe und Export route: scrollTop is zero after requestAnimationFrame",
+    "Uebergabe und Export: route scrollTop remains zero after settled content",
+    "uebergabe-und-export 1280: bounded shell, no document overflow, normal footer",
+    "Uebergabe und Export: route scrollTop is zero synchronously",
+    "Uebergabe und Export route: scrollTop is zero after requestAnimationFrame",
+    "Uebergabe und Export: route scrollTop remains zero after settled content",
+    "uebergabe-und-export 768: bounded shell, no document overflow, normal footer",
+    "Uebergabe und Export: route scrollTop is zero synchronously",
+    "Uebergabe und Export route: scrollTop is zero after requestAnimationFrame",
+    "Uebergabe und Export: route scrollTop remains zero after settled content",
+    "uebergabe-und-export 390: bounded shell, no document overflow, normal footer",
+    "Uebergabe und Export: route scrollTop is zero synchronously",
+    "Uebergabe und Export route: scrollTop is zero after requestAnimationFrame",
+    "Uebergabe und Export: route scrollTop remains zero after settled content",
+    "uebergabe-und-export 375: bounded shell, no document overflow, normal footer",
+    "Projekte: route scrollTop is zero synchronously",
+    "Projekte route: scrollTop is zero after requestAnimationFrame",
+    "Projekte: route scrollTop remains zero after settled content",
+    "projekte 390: context bottom reachable above footer",
+    "Projects workspace remains scrolled before 375 Workflow transition",
+    "Workflow: route scrollTop is zero synchronously",
+    "Workflow route: scrollTop is zero after requestAnimationFrame",
+    "Workflow: route scrollTop remains zero after settled content",
+    "Projekte: route scrollTop is zero synchronously",
+    "Projekte route: scrollTop is zero after requestAnimationFrame",
+    "Projekte: route scrollTop remains zero after settled content",
+    "projekte 375: context bottom reachable above footer",
+    "Workflow: route scrollTop is zero synchronously",
+    "Workflow route: scrollTop is zero after requestAnimationFrame",
+    "Workflow: route scrollTop remains zero after settled content",
+    "workflow 390: context bottom reachable above footer",
+    "Workflow: route scrollTop is zero synchronously",
+    "Workflow route: scrollTop is zero after requestAnimationFrame",
+    "Workflow: route scrollTop remains zero after settled content",
+    "workflow 375: context bottom reachable above footer",
+    "Aufgaben: route scrollTop is zero synchronously",
+    "Aufgaben route: scrollTop is zero after requestAnimationFrame",
+    "Aufgaben: route scrollTop remains zero after settled content",
+    "aufgaben 390: context bottom reachable above footer",
+    "Aufgaben: route scrollTop is zero synchronously",
+    "Aufgaben route: scrollTop is zero after requestAnimationFrame",
+    "Aufgaben: route scrollTop remains zero after settled content",
+    "aufgaben 375: context bottom reachable above footer",
+    "Artefakte: route scrollTop is zero synchronously",
+    "Artefakte route: scrollTop is zero after requestAnimationFrame",
+    "Artefakte: route scrollTop remains zero after settled content",
+    "artefakte 390: context bottom reachable above footer",
+    "Artefakte: route scrollTop is zero synchronously",
+    "Artefakte route: scrollTop is zero after requestAnimationFrame",
+    "Artefakte: route scrollTop remains zero after settled content",
+    "artefakte 375: context bottom reachable above footer",
+    "Pruefungen und Freigaben: route scrollTop is zero synchronously",
+    "Pruefungen und Freigaben route: scrollTop is zero after requestAnimationFrame",
+    "Pruefungen und Freigaben: route scrollTop remains zero after settled content",
+    "pruefungen-und-freigaben 390: context bottom reachable above footer",
+    "Pruefungen und Freigaben: route scrollTop is zero synchronously",
+    "Pruefungen und Freigaben route: scrollTop is zero after requestAnimationFrame",
+    "Pruefungen und Freigaben: route scrollTop remains zero after settled content",
+    "pruefungen-und-freigaben 375: context bottom reachable above footer",
+    "Uebergabe und Export: route scrollTop is zero synchronously",
+    "Uebergabe und Export route: scrollTop is zero after requestAnimationFrame",
+    "Uebergabe und Export: route scrollTop remains zero after settled content",
+    "uebergabe-und-export 390: context bottom reachable above footer",
+    "Uebergabe und Export: route scrollTop is zero synchronously",
+    "Uebergabe und Export route: scrollTop is zero after requestAnimationFrame",
+    "Uebergabe und Export: route scrollTop remains zero after settled content",
+    "uebergabe-und-export 375: context bottom reachable above footer",
+    "no console errors",
+    "no failed requests"
+  ],
+  "consoleErrors": [],
+  "failedRequests": [],
+  "requests": [
+    {
+      "url": "http://127.0.0.1:43185/",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/assets/index-De_VkyUt.css",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/assets/index--hfCXAcW.js",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/favicon.svg",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/start/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/start/confirm",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/assets/index-De_VkyUt.css",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/assets/index--hfCXAcW.js",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/favicon.svg",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/start/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/start/confirm",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/releases",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha/steps/1b/artifact-revisions",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts/artifact-synthetic-0017/content",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha/steps/1b/artifact-revisions",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifact-revisions/compare",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts/artifact-synthetic-0018/validate",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/approve/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/approve/confirm",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/reject/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/reject/confirm",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/request-revision/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/request-revision/confirm",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/request-input/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/request-input/confirm",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/escalate/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/escalate/confirm",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/request-waiver/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/actions/request-waiver/confirm",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/runs/run-synthetic-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/intake/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/intake/accept",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43185/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-intake/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-intake",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-intake/runs/run-synthetic-intake",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-intake/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-intake/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-intake/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-intake/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-intake/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-intake/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43185/v1/tenants/tenant-browser-qa/projects/project-synthetic-intake/integrations/status",
+      "status": 200,
+      "method": "GET"
+    }
+  ],
+  "scrollStabilization": [
+    {
+      "label": "Workflow route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Workflow route",
+      "scrollTop": 0,
+      "overflowAnchor": "auto"
+    },
+    {
+      "label": "Workflow route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Workflow route",
+      "scrollTop": 0,
+      "overflowAnchor": "auto"
+    },
+    {
+      "label": "Aufgaben route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Aufgaben route",
+      "scrollTop": 0,
+      "overflowAnchor": "auto"
+    },
+    {
+      "label": "Artefakte route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Artefakte route",
+      "scrollTop": 0,
+      "overflowAnchor": "auto"
+    },
+    {
+      "label": "Pruefungen und Freigaben route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Pruefungen und Freigaben route",
+      "scrollTop": 0,
+      "overflowAnchor": "auto"
+    },
+    {
+      "label": "Projekte route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Projekte route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Projekte route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Projekte route",
+      "scrollTop": 0,
+      "overflowAnchor": "auto"
+    },
+    {
+      "label": "Projekte route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Projekte route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Projekte route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Projekte route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Projekte route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Projekte route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Workflow route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Workflow route",
+      "scrollTop": 0,
+      "overflowAnchor": "auto"
+    },
+    {
+      "label": "Workflow route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Workflow route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Workflow route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Workflow route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Workflow route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Workflow route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Aufgaben route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Aufgaben route",
+      "scrollTop": 0,
+      "overflowAnchor": "auto"
+    },
+    {
+      "label": "Aufgaben route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Aufgaben route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Aufgaben route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Aufgaben route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Aufgaben route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Aufgaben route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Artefakte route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Artefakte route",
+      "scrollTop": 0,
+      "overflowAnchor": "auto"
+    },
+    {
+      "label": "Artefakte route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Artefakte route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Artefakte route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Artefakte route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Artefakte route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Artefakte route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Pruefungen und Freigaben route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Pruefungen und Freigaben route",
+      "scrollTop": 0,
+      "overflowAnchor": "auto"
+    },
+    {
+      "label": "Pruefungen und Freigaben route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Pruefungen und Freigaben route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Pruefungen und Freigaben route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Pruefungen und Freigaben route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Pruefungen und Freigaben route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Pruefungen und Freigaben route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Uebergabe und Export route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Uebergabe und Export route",
+      "scrollTop": 0,
+      "overflowAnchor": "auto"
+    },
+    {
+      "label": "Uebergabe und Export route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Uebergabe und Export route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Uebergabe und Export route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Uebergabe und Export route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Uebergabe und Export route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Uebergabe und Export route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Projekte route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Projekte route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Workflow route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Workflow route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Projekte route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Projekte route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Workflow route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Workflow route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Workflow route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Workflow route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Aufgaben route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Aufgaben route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Aufgaben route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Aufgaben route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Artefakte route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Artefakte route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Artefakte route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Artefakte route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Pruefungen und Freigaben route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Pruefungen und Freigaben route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Pruefungen und Freigaben route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Pruefungen und Freigaben route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Uebergabe und Export route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Uebergabe und Export route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    },
+    {
+      "label": "Uebergabe und Export route synchronous",
+      "scrollTop": 0
+    },
+    {
+      "label": "Uebergabe und Export route",
+      "scrollTop": 0,
+      "overflowAnchor": "none"
+    }
+  ]
+}

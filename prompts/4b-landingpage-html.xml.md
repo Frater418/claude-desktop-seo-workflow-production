@@ -1,39 +1,47 @@
-# SCHRITT 4b: Page Specification und Staging Evidence
+# SCHRITT 4b: Typed Page Spec und Staging Evidence
 
 ```xml
 <prompt_metadata>
   <step>4b</step>
-  <name>Page Specification und Staging Evidence</name>
+  <name>Typed Page Spec und Staging Evidence</name>
   <author>Raphael Rechberger</author>
   <version>2.0.0</version>
   <previous_step>released Step 4a briefing artifact</previous_step>
 </prompt_metadata>
 
 <system_role>
-  Du erstellst ausschliesslich Step-4b-Kandidaten nach den geschlossenen Draft-2020-12-Vertraegen.
-  Lies Project V2, den released Step-4a-Vorgaenger, `step-4b-page-spec.schema.json` und `staging-evidence.schema.json`.
-  HTML ist eine auslieferbare View des Page-Spec-Kandidaten. Erzeuge keine Deployments und fuehre keine QA-Tools aus.
+  Du erstellst ausschliesslich zwei registrierte JSON-Kandidaten fuer Step 4b: den kanonischen Typed Page Spec nach `step-4b-page-spec.schema.json` und die unterstuetzende Staging Evidence nach `staging-evidence.schema.json`.
+  Lies Project V2, den released Step-4a-Vorgaenger und beide geschlossenen Draft-2020-12-Vertraege. Der Typed Page Spec ist kanonisch. Standalone HTML und JSON-LD-Rendering sind ausschliesslich validierte Projektionen daraus.
+  Erzeuge kein freies HTML, kein `html`-Feld, keine dritte Ausgabe und keine behauptete Tool-Ausfuehrung.
 </system_role>
 
 <instructions>
-  <step number="1">Binde Projekt, Deployment, Revision, source_artifact_ids, evidence_ids, decision_records und Content-Hash an den released Briefing-Vorgaenger.</step>
-  <step number="2">Definiere HTML, Meta, Canonical, einen tatsächlichen JSON-LD-Graphen mit canonical graph_hash, Formulare, Consent und Tracking-Slots im Page Spec.</step>
-  <step number="3">Bei `service_area` sind physische Adressbehauptungen verboten, sofern Project V2 keine physische Location belegt. Binde Accessibility, Responsive und Sibling Links ein. Jede data:-URL und unsicheres Markup ist verboten.</step>
-  <step number="4">Berechne content_sha256 aus dem kanonischen Page-Spec-Payload ohne content_sha256 und referenziere ausschliesslich vorhandene Crawl-, Lighthouse-, axe- und Visual-Evidence mit diesem Staging-Hash. Rufe keine Tools auf.</step>
-  <step number="5">Sende ausschliesslich einen `submit_for_gate`-Kandidaten an den Transition Service mit `candidate_status: awaiting_gate`.</step>
+  <step number="1">Erzeuge den Page Spec mit genau diesen Top-Level-Feldern: `schema_version: 2.0.0`, `artifact_id`, `run_id`, `project_id`, `deployment_id`, `step_id: 4b`, `revision`, `source_artifact_ids`, `evidence_ids`, `decision_records`, `candidate_status: awaiting_gate`, `language`, `locale`, `sections`, `meta`, `canonical_url`, `jsonld`, `content_sha256`, `ctas`, `forms`, `consent`, `tracking_slots`, `service_area`, `conversion`, `accessibility`, `responsive` und `sibling_links`.</step>
+  <step number="2">Binde beide Kandidaten an denselben Project-V2-Kontext und den released Step-4a-Vorgaenger. Ihre gemeinsamen Identity-, Lineage-, Evidence-, Decision- und Awaiting-Gate-Felder sind `schema_version`, `artifact_id`, `run_id`, `project_id`, `deployment_id`, `step_id`, `revision`, `source_artifact_ids`, `evidence_ids`, `decision_records` und `candidate_status`. Verwende gueltige, eindeutige IDs und nur vorhandene Evidence- und Source-Artifact-IDs.</step>
+  <step number="3">Fuehre im Page Spec genau neun Sections mit eindeutigen `section_id` und genau einer Rolle je Eintrag: `hero`, `direct_answer`, `definition`, `evidence`, `comparison`, `service_area`, `faq`, `conversion`, `related_links`. Jede Section hat nur `section_id`, `heading`, `schema_node_id`, `component_classes`, `role` und ihre fuer die Rolle erlaubten Inhalte sowie, falls erforderlich, `microdata`. Jede `schema_node_id` ist eine absolute HTTP(S)-URL, eindeutig und exakt einmal als `@id` in `jsonld.graph.@graph` vorhanden. Der Graph enthaelt neben diesen neun Nodes genau einen zusaetzlichen Page- oder Entity-Root-Node.</step>
+  <step number="4">Setze die typed Role-Inhalte exakt: `hero.content` hat `summary` und `primary_cta_id`; `direct_answer.content` hat `paragraphs`; `definition.content` hat `paragraphs`; `evidence.content` hat `paragraphs`, `evidence_ids` und entweder `data_points` mit `label` und `value` oder `table` mit `columns` und `rows`; `comparison.content` hat `table` mit `columns`, `rows` und `component_classes`; `service_area.content.service_area_reference` ist `top_level`; `faq.content.items` hat `question` und `answer`; `conversion.content` hat `cta_ids` und `form_ids`; `related_links.content` hat `sibling_link_ids`.</step>
+  <step number="5">Verwende nur die zugelassenen Component Classes: `definition-block`, `evidence-container`, `comparison-table-wrapper`, `comparison-table`, `speakable-section`, `badge-datahub`. `definition` braucht `definition-block`, `evidence` braucht `evidence-container`, und `comparison` braucht `comparison-table-wrapper`; dessen Tabelle braucht zusaetzlich `comparison-table`. Definition, Evidence und Comparison enthalten sichtbare Microdata: `itemtype` ist eine Schema.org-HTTPS-URL und stimmt terminal exakt mit dem `@type` ihres gleich-IDigen JSON-LD-Nodes ueberein. Verwende dafuer `DefinedTerm`, `Dataset` und `ItemList`. Definition verwendet `heading_itemprop: name` und `body_itemprop: description`. Evidence verwendet diese beiden Felder und `content_itemprop: additionalProperty` oder `citation`. Comparison verwendet `heading_itemprop: name` und `table_itemprop: itemListElement`.</step>
+  <step number="6">Setze `meta.title`, `meta.description`, eine absolute `canonical_url` und `jsonld` mit `level`, `graph` mit `@context` und `@graph` sowie `graph_hash`. Die JSON-LD-Projection entspricht exakt allen sichtbaren Sections durch die eindeutigen Section-Node-IDs. Definition-Nodes liefern `name` und `description`, Dataset-Nodes liefern `name`, `description` und sichtbare `variableMeasured`, ItemList-Nodes liefern `name` und sichtbare `itemListElement`. Keine nicht zugeordneten Nodes ausser dem einen Root-Node.</step>
+  <step number="7">Modelliere Conversion vollstaendig: jede CTA hat `cta_id`, `label`, `form_id`; jedes Form hat `form_id`, `consent_required: true`; `consent` hat `policy_id`, `required: true`; mindestens ein nicht-ausfuehrbarer Tracking Slot hat `slot_id`, `consent_category` und bleibt eine consent-gebundene Platzhalterdeklaration ohne Script, externe URL oder Event-Code; `conversion` hat `primary_cta_id`, `final_cta_section_id`, `trust_signals` mit `trust_signal_id`, `label`, `evidence_ids` sowie `contact_options` mit `contact_option_id`, `cta_id`; jeder Sibling Link hat `link_id`, `label`, `url`, wobei `label` ein sichtbarer nichtleerer Linktext ist. Alle CTA-, Form- und Sibling-Link-IDs sind eindeutig und alle Referenzen aus Hero, Conversion und Related Links loesen auf.</step>
+  <step number="8">Setze `service_area` sicher: bei `mode: service_area` mindestens eine `service_area_ids` und keine `physical_location_ids`; bei `mode: physical_location` mindestens eine `physical_location_ids`. Jede Adresse oder physische Location-Behauptung leitet sich ausschliesslich aus Project V2 ab, niemals aus freien Candidate-Claims. Binde `accessibility.axe_evidence_id` und `responsive.visual_evidence_id` an vorhandene Evidence.</step>
+  <step number="9">Berechne `jsonld.graph_hash` als SHA-256 der kanonischen Graph-JSON-Bytes mit sortierten Keys und kompakten Separatoren. Berechne `page_spec.content_sha256` als SHA-256 des kanonischen Page-Spec-Payloads, der nur sein eigenes `content_sha256` ausschliesst. Der Page-Hash bindet den Staging-Kandidaten und jeden Check.</step>
+  <step number="10">Erzeuge die Staging Evidence mit genau diesen Top-Level-Feldern: `schema_version: 2.0.0`, `artifact_id`, `run_id`, `project_id`, `deployment_id`, `step_id: 4b`, `revision`, `source_artifact_ids`, `evidence_ids`, `decision_records`, `candidate_status: awaiting_gate`, `content_sha256`, `staging_sha256`, `checks`. Sie hat genau vier eindeutige Evidence-IDs und genau vier Checks, je einmal mit `tool: crawl`, `lighthouse`, `axe`, `visual`. Jeder Check hat genau `tool`, `evidence_id`, `report_sha256`, `content_sha256`, `provenance`; `provenance` hat genau `classification: local_simulated` und einen nichtleeren `source`. Kein `status`, kein Pass/Fail, keine Live-Staging-, externe Ausfuehrungs- oder Produktionsbehauptung. Berechne `staging_sha256` als SHA-256 der kanonischen Staging-Evidence, die nur ihr eigenes `staging_sha256` ausschliesst.</step>
 </instructions>
 
+<renderer_contract>
+  Der Core Renderer darf erst aus dem validierten Typed Page Spec deterministisches, escaped, standalone und barrierearmes HTML ableiten: eingebettetes Binding-CSS, genau ein sicheres JSON-LD-Script, keine externen Abhaengigkeiten und kein ausfuehrbares Markup. HTML und JSON-LD bleiben Projektionen, nicht eigenstaendige Kandidaten.
+</renderer_contract>
+
 <validation_rules>
-  <rule>Kein Human Approval, kein `completed`, kein Folgeschritt, keine Legacy-Manifest-Mutation, kein Provider-Aufruf und kein Deployment.</rule>
-  <rule>Staging Evidence referenziert Crawl, Lighthouse, axe und Visual Evidence. Sie ist kein Aufruf dieser Tools.</rule>
-  <rule id="operator_error">ERROR_STEP4B_PREFLIGHT_FAILED: Korrigiere den geschlossenen Kandidaten, die Sicherheitsregeln oder Evidence-Referenzen und reiche nur `awaiting_gate` erneut ein.</rule>
+  <rule>Der Page Spec und die Staging Evidence bleiben `awaiting_gate`. Dieser Prompt fuehrt keine Tools, Provider, Google, Screaming Frog, Lighthouse, axe oder Browser aus.</rule>
+  <rule>Dieser Prompt mutiert keinen Zustand und erstellt keine Approval-, Release-, Publish-, Transition- oder Successor-Aktion.</rule>
+  <rule>Kein Human Approval, kein Deployment, kein Live Call, kein Legacy-Manifest und keine freie Markup-Ausgabe.</rule>
+  <rule id="operator_error">ERROR_STEP4B_PREFLIGHT_FAILED: Korrigiere ausschliesslich die zwei geschlossenen Kandidaten, ihre Bindungen oder ihre Evidence-Referenzen. Behaupte keine Ausfuehrung und fuehre keine Folgeaktion aus.</rule>
 </validation_rules>
 
-  <output_format>
-  <artifact>Page Spec JSON nach `step-4b-page-spec.schema.json`, abgeleitete View: `v2/outputs/step4b/pages/{artifact_id}.v1.html`</artifact>
-  <artifact>Staging Evidence JSON nach `staging-evidence.schema.json`</artifact>
-  <transition>Transition Service: submit_for_gate, awaiting_gate</transition>
-  </output_format>
-  <v2_output_contract>Canonical JSON 2.0.0 uses a released predecessor and yields only derived views. The awaiting_gate candidate is submitted to the external Human Gate.</v2_output_contract>
-  <prohibitions><rule>Do not mutate the legacy-manifest, start a Folgeschritt, or call a provider direkt.</rule></prohibitions>
+<output_format>
+  <document>Registered primary JSON document: Typed Page Spec nach `step-4b-page-spec.schema.json`.</document>
+  <document>Registered supporting JSON document: Staging Evidence nach `staging-evidence.schema.json`.</document>
+  <checklist>Pruefe vor Ausgabe: genau zwei JSON-Dokumente, keine freien Felder, neun eindeutige Rollen und IDs, vollstaendige Referenzen, Graph- und Content-Hashes, vier lokale Simulations-Checks und `awaiting_gate`.</checklist>
+</output_format>
 ```

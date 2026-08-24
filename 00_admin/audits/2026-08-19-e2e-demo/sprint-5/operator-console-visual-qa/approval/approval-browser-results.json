@@ -1,0 +1,1863 @@
+{
+  "started": "2026-08-21T15:23:25.212Z",
+  "build": {
+    "tenant": "tenant-visual-qa",
+    "apiBase": "same-origin"
+  },
+  "captures": [
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-projekte-1280x900.png",
+      "route": "Projekte",
+      "viewport": {
+        "id": "1280x900",
+        "width": 1280,
+        "height": 900
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 1280,
+        "height": 900,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:27.068Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-workflow-1280x900.png",
+      "route": "Workflow",
+      "viewport": {
+        "id": "1280x900",
+        "width": 1280,
+        "height": 900
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 1280,
+        "height": 900,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:27.188Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-aufgaben-1280x900.png",
+      "route": "Aufgaben",
+      "viewport": {
+        "id": "1280x900",
+        "width": 1280,
+        "height": 900
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 1280,
+        "height": 900,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:27.358Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-artefakte-1280x900.png",
+      "route": "Artefakte",
+      "viewport": {
+        "id": "1280x900",
+        "width": 1280,
+        "height": 900
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 1280,
+        "height": 900,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:27.484Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-pruefungen-und-freigaben-1280x900.png",
+      "route": "Pruefungen und Freigaben",
+      "viewport": {
+        "id": "1280x900",
+        "width": 1280,
+        "height": 900
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 1280,
+        "height": 900,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:27.615Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-uebergabe-und-export-1280x900.png",
+      "route": "Uebergabe und Export",
+      "viewport": {
+        "id": "1280x900",
+        "width": 1280,
+        "height": 900
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 1280,
+        "height": 900,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:27.732Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-projekte-768x1024.png",
+      "route": "Projekte",
+      "viewport": {
+        "id": "768x1024",
+        "width": 768,
+        "height": 1024
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 768,
+        "height": 1024,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:27.870Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-workflow-768x1024.png",
+      "route": "Workflow",
+      "viewport": {
+        "id": "768x1024",
+        "width": 768,
+        "height": 1024
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 768,
+        "height": 1024,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:27.979Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-aufgaben-768x1024.png",
+      "route": "Aufgaben",
+      "viewport": {
+        "id": "768x1024",
+        "width": 768,
+        "height": 1024
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 768,
+        "height": 1024,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:28.100Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-artefakte-768x1024.png",
+      "route": "Artefakte",
+      "viewport": {
+        "id": "768x1024",
+        "width": 768,
+        "height": 1024
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 768,
+        "height": 1024,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:28.194Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-pruefungen-und-freigaben-768x1024.png",
+      "route": "Pruefungen und Freigaben",
+      "viewport": {
+        "id": "768x1024",
+        "width": 768,
+        "height": 1024
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 768,
+        "height": 1024,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:28.290Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-uebergabe-und-export-768x1024.png",
+      "route": "Uebergabe und Export",
+      "viewport": {
+        "id": "768x1024",
+        "width": 768,
+        "height": 1024
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 768,
+        "height": 1024,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:28.392Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-projekte-390x844.png",
+      "route": "Projekte",
+      "viewport": {
+        "id": "390x844",
+        "width": 390,
+        "height": 844
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 390,
+        "height": 844,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:28.480Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-workflow-390x844.png",
+      "route": "Workflow",
+      "viewport": {
+        "id": "390x844",
+        "width": 390,
+        "height": 844
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 390,
+        "height": 844,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:28.546Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-aufgaben-390x844.png",
+      "route": "Aufgaben",
+      "viewport": {
+        "id": "390x844",
+        "width": 390,
+        "height": 844
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 390,
+        "height": 844,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:28.631Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-artefakte-390x844.png",
+      "route": "Artefakte",
+      "viewport": {
+        "id": "390x844",
+        "width": 390,
+        "height": 844
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 390,
+        "height": 844,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:28.713Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-pruefungen-und-freigaben-390x844.png",
+      "route": "Pruefungen und Freigaben",
+      "viewport": {
+        "id": "390x844",
+        "width": 390,
+        "height": 844
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 390,
+        "height": 844,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:28.780Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-uebergabe-und-export-390x844.png",
+      "route": "Uebergabe und Export",
+      "viewport": {
+        "id": "390x844",
+        "width": 390,
+        "height": 844
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 390,
+        "height": 844,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:28.848Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-projekte-375x812.png",
+      "route": "Projekte",
+      "viewport": {
+        "id": "375x812",
+        "width": 375,
+        "height": 812
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 375,
+        "height": 812,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 375,
+        "clientWidth": 375,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:28.949Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-workflow-375x812.png",
+      "route": "Workflow",
+      "viewport": {
+        "id": "375x812",
+        "width": 375,
+        "height": 812
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 375,
+        "height": 812,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 375,
+        "clientWidth": 375,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:29.027Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-aufgaben-375x812.png",
+      "route": "Aufgaben",
+      "viewport": {
+        "id": "375x812",
+        "width": 375,
+        "height": 812
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 375,
+        "height": 812,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 375,
+        "clientWidth": 375,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:29.113Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-artefakte-375x812.png",
+      "route": "Artefakte",
+      "viewport": {
+        "id": "375x812",
+        "width": 375,
+        "height": 812
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 375,
+        "height": 812,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 375,
+        "clientWidth": 375,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:29.206Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-pruefungen-und-freigaben-375x812.png",
+      "route": "Pruefungen und Freigaben",
+      "viewport": {
+        "id": "375x812",
+        "width": 375,
+        "height": 812
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 375,
+        "height": 812,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 375,
+        "clientWidth": 375,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:29.315Z"
+    },
+    {
+      "path": "/workspace/hermes-active/Heartweb-Claude-Desktop-SEO-Workflow/00_admin/audits/2026-08-19-e2e-demo/sprint-5/operator-console-visual-qa/approval/approval-uebergabe-und-export-375x812.png",
+      "route": "Uebergabe und Export",
+      "viewport": {
+        "id": "375x812",
+        "width": 375,
+        "height": 812
+      },
+      "signature": true,
+      "dimensions": {
+        "width": 375,
+        "height": 812,
+        "nonempty": true
+      },
+      "overflow": {
+        "scrollWidth": 375,
+        "clientWidth": 375,
+        "labels": [
+          "Projekte",
+          "Workflow",
+          "Aufgaben",
+          "Artefakte",
+          "Pruefungen und Freigaben",
+          "Uebergabe und Export"
+        ],
+        "collapsed": true
+      },
+      "capturedAt": "2026-08-21T15:23:29.379Z"
+    }
+  ],
+  "interactions": [
+    {
+      "name": "project-step-blocker-next-action",
+      "status": "PASS",
+      "detail": "Pflegedienst Alpha, step 1b, blocker and next action rendered"
+    },
+    {
+      "name": "focus-visible-tab-order",
+      "status": "PASS",
+      "detail": [
+        "A:Zum Arbeitsbereich",
+        "A:Projekte",
+        "A:Workflow",
+        "A:Aufgaben",
+        "A:Artefakte",
+        "A:Pruefungen und Freigaben",
+        "A:Uebergabe und Export",
+        "BUTTON:Projekt anlegen",
+        "BUTTON:Pflegedienst AlphaAlpha Pflege GmbHAktiver Schri"
+      ]
+    },
+    {
+      "name": "project-switch",
+      "status": "PASS",
+      "detail": "Switched from Alpha to Beta and rendered canonical header"
+    },
+    {
+      "name": "released-artifact-lock",
+      "status": "PASS",
+      "detail": "Beta artifact is read-only with remediation"
+    },
+    {
+      "name": "workflow-preview-confirm",
+      "status": "PASS",
+      "detail": "Start preview and canonical confirmation succeeded"
+    },
+    {
+      "name": "all-five-task-filters",
+      "status": "PASS",
+      "detail": "Status, owner, priority, deadline, and step filters each changed visible task state"
+    },
+    {
+      "name": "artifact-edit-save-readback-compare-validate",
+      "status": "FAIL",
+      "detail": "Textarea rendered # Themenstruktur\n\nNeue kanonische Revision but save request sent # Themenstruktur\n\nKanonischer Ausgangstext# Themenstruktur\n\nNeue kanonische Revision"
+    },
+    {
+      "name": "exact-gate-evidence",
+      "status": "PASS",
+      "detail": "Exact artifact hash and revision gate evidence rendered"
+    },
+    {
+      "name": "stale-confirmation",
+      "status": "PASS",
+      "detail": "Controlled HTTP 409 clears stale approval preview and instructs reprieve"
+    },
+    {
+      "name": "approve-readback",
+      "status": "PASS",
+      "detail": "Re-previewed approval confirms after stale recovery"
+    },
+    {
+      "name": "request-revision-and-reject",
+      "status": "PASS",
+      "detail": "Both typed review action flows previewed, confirmed, and read back"
+    },
+    {
+      "name": "blocked-remediation",
+      "status": "PASS",
+      "detail": "Blocked waiver preview displays server remediation"
+    },
+    {
+      "name": "intake-correction-repreview-accept-step-zero",
+      "status": "PASS",
+      "detail": "Changed intake invalidated preview, accepted re-preview, and loaded Step 0 project"
+    },
+    {
+      "name": "context-pointer-enter-space",
+      "status": "PASS",
+      "detail": "Pointer, Enter, and Space toggle context with collapsed content removed"
+    },
+    {
+      "name": "delivery-zero-mutations",
+      "status": "PASS",
+      "detail": "Delivery route remains an explicit no-mutation contract gate"
+    },
+    {
+      "name": "authoritative-request-bodies",
+      "status": "FAIL",
+      "detail": "Artifact save request did not contain the edited textarea value"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+    }
+  ],
+  "network": [
+    {
+      "url": "http://127.0.0.1:43180/",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/assets/index-BzoqPbDz.css",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/assets/index-CO5IYtuB.js",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/favicon.svg",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-alpha-0001",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/releases",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-alpha-0001/steps/1b/artifact-revisions",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/releases",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-alpha-0001/steps/1b/artifact-revisions",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/releases",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-alpha-0001/steps/1b/artifact-revisions",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/releases",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-alpha-0001/steps/1b/artifact-revisions",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-beta/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-beta",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-beta/runs/run-beta-0001",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-beta/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-beta/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-beta/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-beta/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-beta/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-beta/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-beta/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-beta/releases",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-beta/runs/run-beta-0001/steps/2/artifact-revisions",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-alpha-0001",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/start/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/start/confirm",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-alpha-0001",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/releases",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-alpha-0001/steps/1b/artifact-revisions",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts/artifact-project-alpha-17/content",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-alpha-0001/steps/1b/artifact-revisions",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/artifact-revisions/compare",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts/artifact-project-alpha-18/validate",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/approve/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/approve/confirm",
+      "status": 409,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-alpha-0001",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/approve/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/approve/confirm",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-alpha-0001",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/request-revision/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/request-revision/confirm",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-alpha-0001",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/reject/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/reject/confirm",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/runs/run-alpha-0001",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/integrations/status",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/request-waiver/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/intake/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/intake/preview",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/intake/accept",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:43180/readyz",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-intake/runs/current",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-intake",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-intake/runs/run-intake-0001",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-intake/workflow",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-intake/steps",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-intake/tasks",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-intake/artifacts",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-intake/gates",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-intake/context-packages",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-intake/integrations/status",
+      "status": 200,
+      "method": "GET"
+    }
+  ],
+  "requests": [
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/start/preview",
+      "method": "POST",
+      "body": {
+        "action": "start",
+        "tenant_id": "tenant-visual-qa",
+        "project_id": "project-alpha",
+        "run_id": "run-alpha-0001",
+        "step_id": "1b",
+        "expected_revision": 17
+      }
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/start/confirm",
+      "method": "POST",
+      "body": {
+        "confirmed": true,
+        "idempotency_key": "idem-7a29e3ae-c392-4a1e-ab25-442d1f8302e5",
+        "intent": {
+          "action": "start",
+          "tenant_id": "tenant-visual-qa",
+          "project_id": "project-alpha",
+          "run_id": "run-alpha-0001",
+          "step_id": "1b",
+          "expected_revision": 17
+        },
+        "preview_hash": "start-preview"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts",
+      "method": "POST",
+      "body": {
+        "bundle": {},
+        "expected_parent_revision": 17,
+        "gate_context": {
+          "evidence_by_gate": {}
+        },
+        "idempotency_key": "artifact-revision-1787325810084",
+        "primary_document": "# Themenstruktur\n\nKanonischer Ausgangstext# Themenstruktur\n\nNeue kanonische Revision",
+        "run_id": "run-alpha-0001"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/artifact-revisions/compare",
+      "method": "POST",
+      "body": {
+        "left_artifact_id": "artifact-project-alpha-17",
+        "right_artifact_id": "artifact-project-alpha-18"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/artifacts/artifact-project-alpha-18/validate",
+      "method": "POST",
+      "body": {
+        "content_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "revision": 18
+      }
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/approve/preview",
+      "method": "POST",
+      "body": {
+        "action": "approve",
+        "tenant_id": "tenant-visual-qa",
+        "project_id": "project-alpha",
+        "run_id": "run-alpha-0001",
+        "step_id": "1b",
+        "expected_revision": 17
+      }
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/approve/confirm",
+      "method": "POST",
+      "body": {
+        "confirmed": true,
+        "idempotency_key": "idem-c57c694f-4062-4c6c-a0fb-083a83ff0da8",
+        "intent": {
+          "action": "approve",
+          "tenant_id": "tenant-visual-qa",
+          "project_id": "project-alpha",
+          "run_id": "run-alpha-0001",
+          "step_id": "1b",
+          "expected_revision": 17
+        },
+        "preview_hash": "approve-preview"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/approve/preview",
+      "method": "POST",
+      "body": {
+        "action": "approve",
+        "tenant_id": "tenant-visual-qa",
+        "project_id": "project-alpha",
+        "run_id": "run-alpha-0001",
+        "step_id": "1b",
+        "expected_revision": 17
+      }
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/approve/confirm",
+      "method": "POST",
+      "body": {
+        "confirmed": true,
+        "idempotency_key": "idem-7a4b57b8-1937-412d-b764-3278af3154f9",
+        "intent": {
+          "action": "approve",
+          "tenant_id": "tenant-visual-qa",
+          "project_id": "project-alpha",
+          "run_id": "run-alpha-0001",
+          "step_id": "1b",
+          "expected_revision": 17
+        },
+        "preview_hash": "approve-preview"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/request-revision/preview",
+      "method": "POST",
+      "body": {
+        "action": "request-revision",
+        "tenant_id": "tenant-visual-qa",
+        "project_id": "project-alpha",
+        "run_id": "run-alpha-0001",
+        "step_id": "1b",
+        "expected_revision": 17,
+        "payload": {
+          "reason": "Kanonische Begruendung",
+          "instructions": "Kanonische Anweisung",
+          "affected_sections": [
+            "Einleitung"
+          ],
+          "immutable_constraints": [
+            "Marke"
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/request-revision/confirm",
+      "method": "POST",
+      "body": {
+        "confirmed": true,
+        "idempotency_key": "idem-fb1c9acf-a594-404a-a4ac-575dc71db9cc",
+        "intent": {
+          "action": "request-revision",
+          "tenant_id": "tenant-visual-qa",
+          "project_id": "project-alpha",
+          "run_id": "run-alpha-0001",
+          "step_id": "1b",
+          "expected_revision": 17,
+          "payload": {
+            "reason": "Kanonische Begruendung",
+            "instructions": "Kanonische Anweisung",
+            "affected_sections": [
+              "Einleitung"
+            ],
+            "immutable_constraints": [
+              "Marke"
+            ]
+          }
+        },
+        "preview_hash": "request-revision-preview"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/reject/preview",
+      "method": "POST",
+      "body": {
+        "action": "reject",
+        "tenant_id": "tenant-visual-qa",
+        "project_id": "project-alpha",
+        "run_id": "run-alpha-0001",
+        "step_id": "1b",
+        "expected_revision": 17,
+        "payload": {
+          "reason": "Kanonische Begruendung",
+          "instructions": "Kanonische Anweisung",
+          "affected_sections": [
+            "Einleitung"
+          ],
+          "immutable_constraints": [
+            "Marke"
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/reject/confirm",
+      "method": "POST",
+      "body": {
+        "confirmed": true,
+        "idempotency_key": "idem-a2b23d49-1007-4daf-af91-8d9149c69620",
+        "intent": {
+          "action": "reject",
+          "tenant_id": "tenant-visual-qa",
+          "project_id": "project-alpha",
+          "run_id": "run-alpha-0001",
+          "step_id": "1b",
+          "expected_revision": 17,
+          "payload": {
+            "reason": "Kanonische Begruendung",
+            "instructions": "Kanonische Anweisung",
+            "affected_sections": [
+              "Einleitung"
+            ],
+            "immutable_constraints": [
+              "Marke"
+            ]
+          }
+        },
+        "preview_hash": "reject-preview"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/projects/project-alpha/actions/request-waiver/preview",
+      "method": "POST",
+      "body": {
+        "action": "request-waiver",
+        "tenant_id": "tenant-visual-qa",
+        "project_id": "project-alpha",
+        "run_id": "run-alpha-0001",
+        "step_id": "1b",
+        "expected_revision": 17,
+        "payload": {
+          "reason": "Blockierte Ausnahme",
+          "instructions": "Gate pruefen"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/intake/preview",
+      "method": "POST",
+      "body": {
+        "markdown": "# Aufnahme\n\nPflegedienst Aufnahme"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/intake/preview",
+      "method": "POST",
+      "body": {
+        "markdown": "# Aufnahme korrigiert\n\nPflegedienst Aufnahme"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:43180/v1/tenants/tenant-visual-qa/intake/accept",
+      "method": "POST",
+      "body": {
+        "confirmed": true,
+        "markdown": "# Aufnahme korrigiert\n\nPflegedienst Aufnahme",
+        "preview_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "reviewed": {
+          "title": "Pflegedienst Aufnahme",
+          "tenant_id": "tenant-visual-qa",
+          "project_id": "project-intake",
+          "project_name": "Pflegedienst Aufnahme",
+          "project_v2": {
+            "version": 2
+          }
+        }
+      }
+    }
+  ],
+  "accessibility": [],
+  "stateFrames": [
+    "approval-state-primary-hover.png",
+    "approval-state-primary-focus.png",
+    "approval-state-primary-active.png"
+  ],
+  "authoritativeRequestBodies": {
+    "actionPreview": {
+      "action": "approve",
+      "tenant_id": "tenant-visual-qa",
+      "project_id": "project-alpha",
+      "run_id": "run-alpha-0001",
+      "step_id": "1b",
+      "expected_revision": 17
+    },
+    "actionConfirm": {
+      "confirmed": true,
+      "idempotency_key": "idem-c57c694f-4062-4c6c-a0fb-083a83ff0da8",
+      "intent": {
+        "action": "approve",
+        "tenant_id": "tenant-visual-qa",
+        "project_id": "project-alpha",
+        "run_id": "run-alpha-0001",
+        "step_id": "1b",
+        "expected_revision": 17
+      },
+      "preview_hash": "approve-preview"
+    },
+    "artifactSave": {
+      "bundle": {},
+      "expected_parent_revision": 17,
+      "gate_context": {
+        "evidence_by_gate": {}
+      },
+      "idempotency_key": "artifact-revision-1787325810084",
+      "primary_document": "# Themenstruktur\n\nKanonischer Ausgangstext# Themenstruktur\n\nNeue kanonische Revision",
+      "run_id": "run-alpha-0001"
+    },
+    "intakeAccept": {
+      "confirmed": true,
+      "markdown": "# Aufnahme korrigiert\n\nPflegedienst Aufnahme",
+      "preview_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "reviewed": {
+        "title": "Pflegedienst Aufnahme",
+        "tenant_id": "tenant-visual-qa",
+        "project_id": "project-intake",
+        "project_name": "Pflegedienst Aufnahme",
+        "project_v2": {
+          "version": 2
+        }
+      }
+    },
+    "waiverPreview": {
+      "action": "request-waiver",
+      "tenant_id": "tenant-visual-qa",
+      "project_id": "project-alpha",
+      "run_id": "run-alpha-0001",
+      "step_id": "1b",
+      "expected_revision": 17,
+      "payload": {
+        "reason": "Blockierte Ausnahme",
+        "instructions": "Gate pruefen"
+      }
+    },
+    "artifactBodyMatches": false
+  },
+  "consoleClassification": {
+    "expectedControlledStale409": [
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+      }
+    ],
+    "unexpected": []
+  },
+  "finished": "2026-08-21T15:23:31.784Z"
+}

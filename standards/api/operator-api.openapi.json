@@ -1,6 +1,638 @@
 {
   "components": {
     "schemas": {
+      "ActionBlocker": {
+        "additionalProperties": false,
+        "description": "A canonical lifecycle or schema blocker with a direct remediation.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "remediation": {
+            "title": "Remediation",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "remediation"
+        ],
+        "title": "ActionBlocker",
+        "type": "object"
+      },
+      "ActionConfirmRequest": {
+        "additionalProperties": false,
+        "description": "Explicit confirmation bound to one action intent and preview.",
+        "properties": {
+          "confirmed": {
+            "const": true,
+            "title": "Confirmed",
+            "type": "boolean"
+          },
+          "idempotency_key": {
+            "pattern": "^idem-[a-z0-9][a-z0-9-]{7,127}$",
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "intent": {
+            "$ref": "#/components/schemas/ActionIntent"
+          },
+          "preview_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Preview Hash",
+            "type": "string"
+          }
+        },
+        "required": [
+          "intent",
+          "preview_hash",
+          "idempotency_key",
+          "confirmed"
+        ],
+        "title": "ActionConfirmRequest",
+        "type": "object"
+      },
+      "ActionConfirmResult": {
+        "additionalProperties": false,
+        "description": "Accepted or replayed action with server-loaded canonical projections.",
+        "properties": {
+          "canonical": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "title": "Canonical",
+            "type": "object"
+          },
+          "preview_hash": {
+            "title": "Preview Hash",
+            "type": "string"
+          },
+          "readback_urls": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Readback Urls",
+            "type": "array"
+          },
+          "replay": {
+            "title": "Replay",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "replay",
+          "preview_hash",
+          "readback_urls",
+          "canonical"
+        ],
+        "title": "ActionConfirmResult",
+        "type": "object"
+      },
+      "ActionIntent": {
+        "additionalProperties": false,
+        "description": "The only client-supplied expression of a public admin action.",
+        "properties": {
+          "action": {
+            "enum": [
+              "start",
+              "submit-for-gate",
+              "approve",
+              "reject",
+              "request-revision",
+              "request-input",
+              "escalate",
+              "request-waiver",
+              "resolve",
+              "complete"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/ActionPayload",
+            "default": {
+              "affected_sections": [
+                "Canonical operator review"
+              ],
+              "immutable_constraints": [
+                "Preserve the canonical run identity."
+              ],
+              "impacts": [
+                "The current workflow step remains blocked."
+              ],
+              "instructions": "Apply the canonical action.",
+              "options": [
+                "Proceed",
+                "Escalate"
+              ],
+              "reason": "Operator action is required."
+            }
+          },
+          "project_id": {
+            "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "run_id": {
+            "pattern": "^run-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "step_id": {
+            "pattern": "^(0|1|1b|1c|2|3|3b|4a|4b)$",
+            "title": "Step Id",
+            "type": "string"
+          },
+          "tenant_id": {
+            "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Tenant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "tenant_id",
+          "project_id",
+          "run_id",
+          "step_id",
+          "expected_revision"
+        ],
+        "title": "ActionIntent",
+        "type": "object"
+      },
+      "ActionPayload": {
+        "additionalProperties": false,
+        "description": "Closed operator-authored details from which the server derives records.",
+        "properties": {
+          "affected_sections": {
+            "default": [
+              "Canonical operator review"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "Affected Sections",
+            "type": "array"
+          },
+          "immutable_constraints": {
+            "default": [
+              "Preserve the canonical run identity."
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "Immutable Constraints",
+            "type": "array"
+          },
+          "impacts": {
+            "default": [
+              "The current workflow step remains blocked."
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "Impacts",
+            "type": "array"
+          },
+          "instructions": {
+            "default": "Apply the canonical action.",
+            "minLength": 1,
+            "title": "Instructions",
+            "type": "string"
+          },
+          "options": {
+            "default": [
+              "Proceed",
+              "Escalate"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "Options",
+            "type": "array"
+          },
+          "reason": {
+            "default": "Operator action is required.",
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          },
+          "source_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Id"
+          },
+          "source_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "operator_task",
+                  "blocker",
+                  "revision_request",
+                  "workflow_defect",
+                  "escalation"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Type"
+          }
+        },
+        "title": "ActionPayload",
+        "type": "object"
+      },
+      "ActionPreview": {
+        "additionalProperties": false,
+        "description": "Read-only canonical consequences for an action intent.",
+        "properties": {
+          "allowed": {
+            "title": "Allowed",
+            "type": "boolean"
+          },
+          "blockers": {
+            "items": {
+              "$ref": "#/components/schemas/ActionBlocker"
+            },
+            "title": "Blockers",
+            "type": "array"
+          },
+          "consequence": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "title": "Consequence",
+            "type": "object"
+          },
+          "intent": {
+            "$ref": "#/components/schemas/ActionIntent"
+          },
+          "preview_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Preview Hash",
+            "type": "string"
+          }
+        },
+        "required": [
+          "intent",
+          "allowed",
+          "blockers",
+          "consequence",
+          "preview_hash"
+        ],
+        "title": "ActionPreview",
+        "type": "object"
+      },
+      "ArtifactCandidateSaveRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "bundle": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "title": "Bundle",
+            "type": "object"
+          },
+          "expected_parent_revision": {
+            "minimum": 1.0,
+            "title": "Expected Parent Revision",
+            "type": "integer"
+          },
+          "gate_context": {
+            "$ref": "#/components/schemas/GateContext"
+          },
+          "idempotency_key": {
+            "minLength": 1,
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "primary_document": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "title": "Primary Document",
+            "type": "object"
+          },
+          "run_id": {
+            "pattern": "^run-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "supporting_documents": {
+            "default": [],
+            "items": {
+              "additionalProperties": {
+                "$ref": "#/components/schemas/JsonValue"
+              },
+              "type": "object"
+            },
+            "title": "Supporting Documents",
+            "type": "array"
+          }
+        },
+        "required": [
+          "run_id",
+          "expected_parent_revision",
+          "idempotency_key",
+          "primary_document",
+          "bundle",
+          "gate_context"
+        ],
+        "title": "ArtifactCandidateSaveRequest",
+        "type": "object"
+      },
+      "ArtifactContentResponse": {
+        "additionalProperties": false,
+        "description": "Exact immutable artifact bytes encoded for JSON transport.",
+        "properties": {
+          "artifact": {
+            "$ref": "#/components/schemas/ArtifactRecord"
+          },
+          "content_base64": {
+            "title": "Content Base64",
+            "type": "string"
+          }
+        },
+        "required": [
+          "artifact",
+          "content_base64"
+        ],
+        "title": "ArtifactContentResponse",
+        "type": "object"
+      },
+      "ArtifactDiffRequest": {
+        "additionalProperties": false,
+        "description": "Two canonical artifact identities selected for a read-only comparison.",
+        "properties": {
+          "left_artifact_id": {
+            "pattern": "^artifact-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Left Artifact Id",
+            "type": "string"
+          },
+          "right_artifact_id": {
+            "pattern": "^artifact-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Right Artifact Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "left_artifact_id",
+          "right_artifact_id"
+        ],
+        "title": "ArtifactDiffRequest",
+        "type": "object"
+      },
+      "ArtifactDiffResponse": {
+        "additionalProperties": false,
+        "description": "Deterministic unified text diff between two immutable artifacts.",
+        "properties": {
+          "left_artifact": {
+            "$ref": "#/components/schemas/ArtifactRecord"
+          },
+          "right_artifact": {
+            "$ref": "#/components/schemas/ArtifactRecord"
+          },
+          "unified_diff": {
+            "title": "Unified Diff",
+            "type": "string"
+          }
+        },
+        "required": [
+          "left_artifact",
+          "right_artifact",
+          "unified_diff"
+        ],
+        "title": "ArtifactDiffResponse",
+        "type": "object"
+      },
+      "ArtifactPreflightResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_id": {
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "content_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Content Sha256",
+            "type": "string"
+          },
+          "derived_views": {
+            "items": {
+              "$ref": "#/components/schemas/DerivedView"
+            },
+            "title": "Derived Views",
+            "type": "array"
+          },
+          "quality_gate_runs": {
+            "items": {
+              "additionalProperties": {
+                "$ref": "#/components/schemas/JsonValue"
+              },
+              "type": "object"
+            },
+            "title": "Quality Gate Runs",
+            "type": "array"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "step_id": {
+            "enum": [
+              "4a",
+              "4b"
+            ],
+            "title": "Step Id",
+            "type": "string"
+          },
+          "valid": {
+            "const": true,
+            "default": true,
+            "title": "Valid",
+            "type": "boolean"
+          },
+          "validation_mode": {
+            "const": "step_preflight",
+            "default": "step_preflight",
+            "title": "Validation Mode",
+            "type": "string"
+          }
+        },
+        "required": [
+          "artifact_id",
+          "revision",
+          "content_sha256",
+          "step_id",
+          "quality_gate_runs",
+          "derived_views"
+        ],
+        "title": "ArtifactPreflightResponse",
+        "type": "object"
+      },
+      "ArtifactRecord": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_id": {
+            "pattern": "^artifact-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "content_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Content Sha256",
+            "type": "string"
+          },
+          "contract_version": {
+            "default": "1.0.0",
+            "title": "Contract Version",
+            "type": "string"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "input_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Input Hash",
+            "type": "string"
+          },
+          "parent_artifact_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Parent Artifact Ids",
+            "type": "array"
+          },
+          "producer_version": {
+            "default": "provider-output-set",
+            "title": "Producer Version",
+            "type": "string"
+          },
+          "project_id": {
+            "title": "Project Id",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "run_id": {
+            "title": "Run Id",
+            "type": "string"
+          },
+          "step_id": {
+            "title": "Step Id",
+            "type": "string"
+          },
+          "storage_key": {
+            "title": "Storage Key",
+            "type": "string"
+          },
+          "tenant_id": {
+            "title": "Tenant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "artifact_id",
+          "tenant_id",
+          "project_id",
+          "run_id",
+          "step_id",
+          "revision",
+          "input_hash",
+          "content_sha256",
+          "storage_key",
+          "created_at"
+        ],
+        "title": "ArtifactRecord",
+        "type": "object"
+      },
+      "ArtifactRevisionListResponse": {
+        "additionalProperties": false,
+        "description": "Closed canonical revision list for one run-step identity.",
+        "properties": {
+          "artifacts": {
+            "items": {
+              "$ref": "#/components/schemas/ArtifactRecord"
+            },
+            "title": "Artifacts",
+            "type": "array"
+          }
+        },
+        "required": [
+          "artifacts"
+        ],
+        "title": "ArtifactRevisionListResponse",
+        "type": "object"
+      },
+      "ArtifactValidationRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "bundle": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "title": "Bundle",
+            "type": "object"
+          },
+          "content_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Content Sha256",
+            "type": "string"
+          },
+          "gate_context": {
+            "$ref": "#/components/schemas/GateContext"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "supporting_documents": {
+            "items": {
+              "additionalProperties": {
+                "$ref": "#/components/schemas/JsonValue"
+              },
+              "type": "object"
+            },
+            "title": "Supporting Documents",
+            "type": "array"
+          }
+        },
+        "required": [
+          "revision",
+          "content_sha256",
+          "supporting_documents",
+          "bundle",
+          "gate_context"
+        ],
+        "title": "ArtifactValidationRequest",
+        "type": "object"
+      },
       "CommandRequest": {
         "additionalProperties": false,
         "description": "Closed transport shape for a single versioned command.",
@@ -13,7 +645,9 @@
               "create-defect",
               "escalate",
               "request-waiver",
+              "submit-for-gate",
               "approve",
+              "complete",
               "reject",
               "resolve",
               "resume"
@@ -134,6 +768,10 @@
             "title": "Event",
             "type": "object"
           },
+          "readback_url": {
+            "title": "Readback Url",
+            "type": "string"
+          },
           "replay": {
             "title": "Replay",
             "type": "boolean"
@@ -157,9 +795,58 @@
           "command_id",
           "correlation_id",
           "replay",
-          "event"
+          "event",
+          "readback_url"
         ],
         "title": "CommandResult",
+        "type": "object"
+      },
+      "CurrentRunResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "project_id": {
+            "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "run_id": {
+            "pattern": "^run-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "step_id": {
+            "enum": [
+              "0",
+              "1",
+              "1b",
+              "1c",
+              "2",
+              "3",
+              "4a",
+              "4b"
+            ],
+            "title": "Step Id",
+            "type": "string"
+          },
+          "tenant_id": {
+            "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Tenant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tenant_id",
+          "project_id",
+          "run_id",
+          "step_id",
+          "expected_revision"
+        ],
+        "title": "CurrentRunResponse",
         "type": "object"
       },
       "DataEnvelope": {
@@ -176,6 +863,1525 @@
         "title": "DataEnvelope",
         "type": "object"
       },
+      "DeliveryCreateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "delivery_export_result_id": {
+            "pattern": "^delivery-export-result-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Delivery Export Result Id",
+            "type": "string"
+          },
+          "delivery_package_id": {
+            "pattern": "^delivery-package-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Delivery Package Id",
+            "type": "string"
+          },
+          "export_id": {
+            "pattern": "^delivery-export-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Export Id",
+            "type": "string"
+          },
+          "export_request": {
+            "$ref": "#/components/schemas/DeliveryExportRequest"
+          },
+          "notion_import_request": {
+            "$ref": "#/components/schemas/DeliveryNotionRequest"
+          },
+          "package_revision": {
+            "minimum": 1.0,
+            "title": "Package Revision",
+            "type": "integer"
+          },
+          "role_package_requests": {
+            "items": {
+              "$ref": "#/components/schemas/DeliveryRolePackageRequest"
+            },
+            "minItems": 1,
+            "title": "Role Package Requests",
+            "type": "array"
+          }
+        },
+        "required": [
+          "export_request",
+          "export_id",
+          "delivery_package_id",
+          "delivery_export_result_id",
+          "package_revision",
+          "role_package_requests",
+          "notion_import_request"
+        ],
+        "title": "DeliveryCreateRequest",
+        "type": "object"
+      },
+      "DeliveryDeliverableResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_id": {
+            "pattern": "^artifact-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "content_sha256": {
+            "anyOf": [
+              {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Sha256"
+          },
+          "deliverable_id": {
+            "enum": [
+              "strategy",
+              "architecture",
+              "design",
+              "keyword-research",
+              "roadmap",
+              "copywriter-handoff",
+              "developer-handoff"
+            ],
+            "title": "Deliverable Id",
+            "type": "string"
+          },
+          "output_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Path"
+          },
+          "release_status": {
+            "$ref": "#/components/schemas/DeliveryReleaseStatus"
+          },
+          "role": {
+            "$ref": "#/components/schemas/DeliveryRole"
+          },
+          "step_id": {
+            "enum": [
+              "1",
+              "1b",
+              "1c",
+              "2",
+              "3",
+              "4a",
+              "4b"
+            ],
+            "title": "Step Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "deliverable_id",
+          "artifact_id",
+          "step_id",
+          "role",
+          "release_status",
+          "output_path",
+          "content_sha256"
+        ],
+        "title": "DeliveryDeliverableResponse",
+        "type": "object"
+      },
+      "DeliveryDraftPolicy": {
+        "enum": [
+          "exclude_drafts",
+          "include_explicit_drafts"
+        ],
+        "title": "DeliveryDraftPolicy",
+        "type": "string"
+      },
+      "DeliveryExportHistoryResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/DeliveryExportResult"
+            },
+            "title": "Data",
+            "type": "array"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "DeliveryExportHistoryResponse",
+        "type": "object"
+      },
+      "DeliveryExportRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Created At",
+            "type": "string"
+          },
+          "delivery_export_request_id": {
+            "pattern": "^delivery-export-request-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Delivery Export Request Id",
+            "type": "string"
+          },
+          "draft_inclusion_policy": {
+            "$ref": "#/components/schemas/DeliveryDraftPolicy"
+          },
+          "idempotency_key": {
+            "pattern": "^idem-[a-z0-9][a-z0-9-]{7,127}$",
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "project_id": {
+            "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "requested_role_packages": {
+            "items": {
+              "$ref": "#/components/schemas/DeliveryRole"
+            },
+            "minItems": 1,
+            "title": "Requested Role Packages",
+            "type": "array"
+          },
+          "schema_version": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/DeliveryScope"
+          },
+          "source_snapshot_revision": {
+            "minimum": 1.0,
+            "title": "Source Snapshot Revision",
+            "type": "integer"
+          },
+          "tenant_id": {
+            "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Tenant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "delivery_export_request_id",
+          "schema_version",
+          "tenant_id",
+          "project_id",
+          "scope",
+          "draft_inclusion_policy",
+          "idempotency_key",
+          "created_at",
+          "source_snapshot_revision",
+          "requested_role_packages"
+        ],
+        "title": "DeliveryExportRequest",
+        "type": "object"
+      },
+      "DeliveryExportResult": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Created At",
+            "type": "string"
+          },
+          "delivery_export_request_id": {
+            "pattern": "^delivery-export-request-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Delivery Export Request Id",
+            "type": "string"
+          },
+          "delivery_export_result_id": {
+            "pattern": "^delivery-export-result-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Delivery Export Result Id",
+            "type": "string"
+          },
+          "delivery_manifest": {
+            "$ref": "#/components/schemas/DeliveryManifestReference"
+          },
+          "delivery_package_id": {
+            "pattern": "^delivery-package-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Delivery Package Id",
+            "type": "string"
+          },
+          "export_id": {
+            "pattern": "^delivery-export-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Export Id",
+            "type": "string"
+          },
+          "export_path": {
+            "title": "Export Path",
+            "type": "string"
+          },
+          "notion_import_manifest": {
+            "$ref": "#/components/schemas/DeliveryManifestReference"
+          },
+          "package_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Package Sha256",
+            "type": "string"
+          },
+          "project_id": {
+            "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "replay_state": {
+            "enum": [
+              "created",
+              "replayed"
+            ],
+            "title": "Replay State",
+            "type": "string"
+          },
+          "role_handoff_manifests": {
+            "items": {
+              "$ref": "#/components/schemas/DeliveryManifestReference"
+            },
+            "minItems": 1,
+            "title": "Role Handoff Manifests",
+            "type": "array"
+          },
+          "schema_version": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "source_snapshot_revision": {
+            "minimum": 1.0,
+            "title": "Source Snapshot Revision",
+            "type": "integer"
+          },
+          "tenant_id": {
+            "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Tenant Id",
+            "type": "string"
+          },
+          "zip_path": {
+            "title": "Zip Path",
+            "type": "string"
+          },
+          "zip_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Zip Sha256",
+            "type": "string"
+          },
+          "zip_size_bytes": {
+            "minimum": 1.0,
+            "title": "Zip Size Bytes",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "delivery_export_result_id",
+          "schema_version",
+          "tenant_id",
+          "project_id",
+          "delivery_export_request_id",
+          "export_id",
+          "delivery_package_id",
+          "source_snapshot_revision",
+          "replay_state",
+          "export_path",
+          "zip_path",
+          "package_sha256",
+          "zip_sha256",
+          "zip_size_bytes",
+          "delivery_manifest",
+          "role_handoff_manifests",
+          "notion_import_manifest",
+          "created_at"
+        ],
+        "title": "DeliveryExportResult",
+        "type": "object"
+      },
+      "DeliveryImplementationTask": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_relations": {
+            "items": {
+              "pattern": "^artifact-[a-z0-9][a-z0-9-]{7,63}$",
+              "type": "string"
+            },
+            "title": "Artifact Relations",
+            "type": "array"
+          },
+          "assignment_id": {
+            "pattern": "^assignment-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Assignment Id",
+            "type": "string"
+          },
+          "comments": {
+            "title": "Comments",
+            "type": "string"
+          },
+          "deadline": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "title": "Deadline",
+            "type": "string"
+          },
+          "dependencies": {
+            "items": {
+              "pattern": "^task-[a-z0-9][a-z0-9-]{7,63}$",
+              "type": "string"
+            },
+            "title": "Dependencies",
+            "type": "array"
+          },
+          "notion_user_id": {
+            "anyOf": [
+              {
+                "pattern": "^notion-user-[a-z0-9][a-z0-9-]{7,63}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notion User Id"
+          },
+          "priority": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Priority",
+            "type": "string"
+          },
+          "role": {
+            "$ref": "#/components/schemas/DeliveryRole"
+          },
+          "source_assignee": {
+            "title": "Source Assignee",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "not_started",
+              "in_progress",
+              "blocked",
+              "done"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "task_id": {
+            "pattern": "^task-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Task Id",
+            "type": "string"
+          },
+          "title": {
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "assignment_id",
+          "title",
+          "status",
+          "comments",
+          "source_assignee",
+          "priority",
+          "deadline",
+          "role",
+          "dependencies",
+          "artifact_relations"
+        ],
+        "title": "DeliveryImplementationTask",
+        "type": "object"
+      },
+      "DeliveryManifestReference": {
+        "additionalProperties": false,
+        "properties": {
+          "content_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Content Sha256",
+            "type": "string"
+          },
+          "manifest_id": {
+            "pattern": "^(?:role-handoff|notion-import|delivery-package)-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Manifest Id",
+            "type": "string"
+          },
+          "relative_path": {
+            "title": "Relative Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "manifest_id",
+          "relative_path",
+          "content_sha256"
+        ],
+        "title": "DeliveryManifestReference",
+        "type": "object"
+      },
+      "DeliveryNotionManifestReference": {
+        "additionalProperties": false,
+        "properties": {
+          "manifest_path": {
+            "title": "Manifest Path",
+            "type": "string"
+          },
+          "manifest_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Manifest Sha256",
+            "type": "string"
+          },
+          "notion_import_manifest_id": {
+            "pattern": "^notion-import-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Notion Import Manifest Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "notion_import_manifest_id",
+          "manifest_path",
+          "manifest_sha256"
+        ],
+        "title": "DeliveryNotionManifestReference",
+        "type": "object"
+      },
+      "DeliveryNotionRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "customer_external_id": {
+            "pattern": "^customer-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Customer External Id",
+            "type": "string"
+          },
+          "implementation_tasks": {
+            "items": {
+              "$ref": "#/components/schemas/DeliveryImplementationTask"
+            },
+            "minItems": 1,
+            "title": "Implementation Tasks",
+            "type": "array"
+          },
+          "notion_import_manifest_id": {
+            "pattern": "^notion-import-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Notion Import Manifest Id",
+            "type": "string"
+          },
+          "publication_registry": {
+            "$ref": "#/components/schemas/DeliveryPublicationRegistry"
+          }
+        },
+        "required": [
+          "notion_import_manifest_id",
+          "customer_external_id",
+          "implementation_tasks",
+          "publication_registry"
+        ],
+        "title": "DeliveryNotionRequest",
+        "type": "object"
+      },
+      "DeliveryPackageDeliverable": {
+        "additionalProperties": false,
+        "properties": {
+          "deliverable_id": {
+            "enum": [
+              "strategy",
+              "architecture",
+              "design",
+              "keyword-research",
+              "roadmap",
+              "copywriter-handoff",
+              "developer-handoff"
+            ],
+            "title": "Deliverable Id",
+            "type": "string"
+          },
+          "package_path": {
+            "title": "Package Path",
+            "type": "string"
+          },
+          "release_status": {
+            "$ref": "#/components/schemas/DeliveryReleaseStatus"
+          },
+          "source_record_id": {
+            "pattern": "^artifact-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Source Record Id",
+            "type": "string"
+          },
+          "source_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source Sha256",
+            "type": "string"
+          }
+        },
+        "required": [
+          "deliverable_id",
+          "source_record_id",
+          "source_sha256",
+          "package_path",
+          "release_status"
+        ],
+        "title": "DeliveryPackageDeliverable",
+        "type": "object"
+      },
+      "DeliveryPackageRecord": {
+        "additionalProperties": false,
+        "properties": {
+          "checksums_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checksums Path"
+          },
+          "created_at": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Created At",
+            "type": "string"
+          },
+          "delivery_package_id": {
+            "pattern": "^delivery-package-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Delivery Package Id",
+            "type": "string"
+          },
+          "derived_status": {
+            "enum": [
+              "prepared",
+              "archived"
+            ],
+            "title": "Derived Status",
+            "type": "string"
+          },
+          "export_id": {
+            "pattern": "^delivery-export-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Export Id",
+            "type": "string"
+          },
+          "export_manifest_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Export Manifest Path"
+          },
+          "missing_deliverables": {
+            "items": {
+              "enum": [
+                "strategy",
+                "architecture",
+                "design",
+                "keyword-research",
+                "roadmap",
+                "copywriter-handoff",
+                "developer-handoff"
+              ],
+              "type": "string"
+            },
+            "title": "Missing Deliverables",
+            "type": "array"
+          },
+          "notion_import_manifest": {
+            "$ref": "#/components/schemas/DeliveryNotionManifestReference"
+          },
+          "package_paths": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Package Paths",
+            "type": "array"
+          },
+          "package_revision": {
+            "minimum": 1.0,
+            "title": "Package Revision",
+            "type": "integer"
+          },
+          "package_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Package Sha256",
+            "type": "string"
+          },
+          "project_id": {
+            "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "quality_summary": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryQualitySummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "required_deliverables": {
+            "items": {
+              "$ref": "#/components/schemas/DeliveryPackageDeliverable"
+            },
+            "minItems": 1,
+            "title": "Required Deliverables",
+            "type": "array"
+          },
+          "role_packages": {
+            "items": {
+              "$ref": "#/components/schemas/DeliveryRolePackageReference"
+            },
+            "minItems": 1,
+            "title": "Role Packages",
+            "type": "array"
+          },
+          "schema_version": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/DeliveryScope"
+          },
+          "source_records": {
+            "items": {
+              "$ref": "#/components/schemas/DeliverySourceRecord"
+            },
+            "minItems": 1,
+            "title": "Source Records",
+            "type": "array"
+          },
+          "source_snapshot_revision": {
+            "minimum": 1.0,
+            "title": "Source Snapshot Revision",
+            "type": "integer"
+          },
+          "task_assignment_manifest_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Task Assignment Manifest Path"
+          },
+          "tenant_id": {
+            "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Tenant Id",
+            "type": "string"
+          },
+          "zip_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Zip Sha256",
+            "type": "string"
+          }
+        },
+        "required": [
+          "delivery_package_id",
+          "schema_version",
+          "tenant_id",
+          "project_id",
+          "export_id",
+          "scope",
+          "source_snapshot_revision",
+          "source_records",
+          "required_deliverables",
+          "missing_deliverables",
+          "package_paths",
+          "package_sha256",
+          "zip_sha256",
+          "role_packages",
+          "notion_import_manifest",
+          "created_at",
+          "package_revision",
+          "derived_status"
+        ],
+        "title": "DeliveryPackageRecord",
+        "type": "object"
+      },
+      "DeliveryPolicyErrorResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "DeliveryPolicyErrorResponse",
+        "type": "object"
+      },
+      "DeliveryPreviewResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/DeliveryPolicyErrorResponse"
+            },
+            "title": "Errors",
+            "type": "array"
+          },
+          "missing_deliverable_ids": {
+            "items": {
+              "enum": [
+                "strategy",
+                "architecture",
+                "design",
+                "keyword-research",
+                "roadmap",
+                "copywriter-handoff",
+                "developer-handoff"
+              ],
+              "type": "string"
+            },
+            "title": "Missing Deliverable Ids",
+            "type": "array"
+          },
+          "policy_eligible": {
+            "title": "Policy Eligible",
+            "type": "boolean"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/DeliveryScope"
+          },
+          "selected_deliverables": {
+            "items": {
+              "$ref": "#/components/schemas/DeliveryDeliverableResponse"
+            },
+            "title": "Selected Deliverables",
+            "type": "array"
+          }
+        },
+        "required": [
+          "scope",
+          "policy_eligible",
+          "missing_deliverable_ids",
+          "errors",
+          "selected_deliverables"
+        ],
+        "title": "DeliveryPreviewResponse",
+        "type": "object"
+      },
+      "DeliveryPublicationRegistry": {
+        "additionalProperties": false,
+        "properties": {
+          "publication_registry_record_id": {
+            "pattern": "^publication-registry-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Publication Registry Record Id",
+            "type": "string"
+          },
+          "urls": {
+            "items": {
+              "pattern": "^https://",
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Urls",
+            "type": "array"
+          }
+        },
+        "required": [
+          "publication_registry_record_id",
+          "urls"
+        ],
+        "title": "DeliveryPublicationRegistry",
+        "type": "object"
+      },
+      "DeliveryQualitySummary": {
+        "additionalProperties": false,
+        "properties": {
+          "content_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Content Sha256",
+            "type": "string"
+          },
+          "summary_path": {
+            "title": "Summary Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "summary_path",
+          "content_sha256"
+        ],
+        "title": "DeliveryQualitySummary",
+        "type": "object"
+      },
+      "DeliveryReleaseStatus": {
+        "enum": [
+          "released",
+          "draft"
+        ],
+        "title": "DeliveryReleaseStatus",
+        "type": "string"
+      },
+      "DeliveryRole": {
+        "enum": [
+          "copywriter",
+          "developer",
+          "project_management",
+          "reviewer"
+        ],
+        "title": "DeliveryRole",
+        "type": "string"
+      },
+      "DeliveryRolePackageReference": {
+        "additionalProperties": false,
+        "properties": {
+          "manifest_path": {
+            "title": "Manifest Path",
+            "type": "string"
+          },
+          "manifest_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Manifest Sha256",
+            "type": "string"
+          },
+          "role": {
+            "$ref": "#/components/schemas/DeliveryRole"
+          },
+          "role_handoff_manifest_id": {
+            "pattern": "^role-handoff-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Role Handoff Manifest Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "role",
+          "role_handoff_manifest_id",
+          "manifest_path",
+          "manifest_sha256"
+        ],
+        "title": "DeliveryRolePackageReference",
+        "type": "object"
+      },
+      "DeliveryRolePackageRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "$ref": "#/components/schemas/DeliveryRole"
+          },
+          "role_handoff_manifest_id": {
+            "pattern": "^role-handoff-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Role Handoff Manifest Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "role",
+          "role_handoff_manifest_id"
+        ],
+        "title": "DeliveryRolePackageRequest",
+        "type": "object"
+      },
+      "DeliveryScope": {
+        "enum": [
+          "checkpoint",
+          "final"
+        ],
+        "title": "DeliveryScope",
+        "type": "string"
+      },
+      "DeliverySourceRecord": {
+        "additionalProperties": false,
+        "properties": {
+          "project_id": {
+            "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "source_kind": {
+            "enum": [
+              "project",
+              "workflow",
+              "run",
+              "artifact",
+              "release",
+              "task",
+              "assignment",
+              "review",
+              "approval",
+              "blocker",
+              "report"
+            ],
+            "title": "Source Kind",
+            "type": "string"
+          },
+          "source_record_id": {
+            "pattern": "^(?:project|run|artifact|release|task|assignment|review|approval|blocker|report)-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Source Record Id",
+            "type": "string"
+          },
+          "source_revision": {
+            "minimum": 1.0,
+            "title": "Source Revision",
+            "type": "integer"
+          },
+          "source_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source Sha256",
+            "type": "string"
+          },
+          "tenant_id": {
+            "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Tenant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tenant_id",
+          "project_id",
+          "source_kind",
+          "source_record_id",
+          "source_revision",
+          "source_sha256"
+        ],
+        "title": "DeliverySourceRecord",
+        "type": "object"
+      },
+      "DerivedView": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_id": {
+            "pattern": "^artifact-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[a-z0-9][a-z0-9.-]{0,127}$",
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "artifact_id",
+          "name",
+          "content"
+        ],
+        "title": "DerivedView",
+        "type": "object"
+      },
+      "DiagnosticTraceCloseRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "close_id": {
+            "pattern": "^[a-z][a-z0-9-]{2,127}$",
+            "title": "Close Id",
+            "type": "string"
+          },
+          "closed_at": {
+            "title": "Closed At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "close_id",
+          "closed_at"
+        ],
+        "title": "DiagnosticTraceCloseRequest",
+        "type": "object"
+      },
+      "DiagnosticTraceCloseResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "close_id": {
+            "title": "Close Id",
+            "type": "string"
+          },
+          "closed_at": {
+            "title": "Closed At",
+            "type": "string"
+          },
+          "first_failing_operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Failing Operation Id"
+          },
+          "last_successful_operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Successful Operation Id"
+          },
+          "replay": {
+            "title": "Replay",
+            "type": "boolean"
+          },
+          "status": {
+            "const": "closed",
+            "title": "Status",
+            "type": "string"
+          },
+          "trace_id": {
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "trace_id",
+          "status",
+          "close_id",
+          "closed_at",
+          "last_successful_operation_id",
+          "first_failing_operation_id",
+          "replay"
+        ],
+        "title": "DiagnosticTraceCloseResponse",
+        "type": "object"
+      },
+      "DiagnosticTraceEntryResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "operation_id": {
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "replay": {
+            "title": "Replay",
+            "type": "boolean"
+          },
+          "sequence": {
+            "title": "Sequence",
+            "type": "integer"
+          },
+          "trace_id": {
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "trace_id",
+          "operation_id",
+          "sequence",
+          "replay"
+        ],
+        "title": "DiagnosticTraceEntryResponse",
+        "type": "object"
+      },
+      "DiagnosticTraceOperation": {
+        "additionalProperties": false,
+        "description": "One bounded observable operation in a diagnostic trace.",
+        "properties": {
+          "action": {
+            "pattern": "^[a-z][a-z0-9_-]{2,127}$",
+            "title": "Action",
+            "type": "string"
+          },
+          "api_method": {
+            "enum": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ],
+            "title": "Api Method",
+            "type": "string"
+          },
+          "api_status": {
+            "maximum": 599.0,
+            "minimum": 100.0,
+            "title": "Api Status",
+            "type": "integer"
+          },
+          "disabled_actions": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 32,
+            "title": "Disabled Actions",
+            "type": "array"
+          },
+          "error_code": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Z][A-Z0-9_]{2,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Code"
+          },
+          "evidence_references": {
+            "items": {
+              "$ref": "#/components/schemas/TraceEvidenceReference"
+            },
+            "title": "Evidence References",
+            "type": "array"
+          },
+          "expected_actions": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 32,
+            "title": "Expected Actions",
+            "type": "array"
+          },
+          "occurred_at": {
+            "title": "Occurred At",
+            "type": "string"
+          },
+          "operation_id": {
+            "pattern": "^[a-z][a-z0-9-]{2,127}$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "remediation": {
+            "anyOf": [
+              {
+                "pattern": "^[a-z][a-z0-9-]{2,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remediation"
+          },
+          "rendered_actions": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 32,
+            "title": "Rendered Actions",
+            "type": "array"
+          },
+          "route": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Route",
+            "type": "string"
+          },
+          "sequence": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sequence"
+          }
+        },
+        "required": [
+          "operation_id",
+          "occurred_at",
+          "action",
+          "route",
+          "api_method",
+          "api_status",
+          "expected_actions",
+          "rendered_actions",
+          "disabled_actions",
+          "evidence_references"
+        ],
+        "title": "DiagnosticTraceOperation",
+        "type": "object"
+      },
+      "DiagnosticTraceStart": {
+        "additionalProperties": false,
+        "description": "The immutable request used to open a local diagnostic trace.",
+        "properties": {
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "project_id": {
+            "pattern": "^[a-z][a-z0-9-]{2,127}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "run_id": {
+            "pattern": "^[a-z][a-z0-9-]{2,127}$",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "scenario_id": {
+            "pattern": "^[a-z][a-z0-9-]{2,127}$",
+            "title": "Scenario Id",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "automated",
+              "manual"
+            ],
+            "title": "Source",
+            "type": "string"
+          },
+          "tenant_id": {
+            "pattern": "^[a-z][a-z0-9-]{2,127}$",
+            "title": "Tenant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schema_version",
+          "tenant_id",
+          "project_id",
+          "run_id",
+          "scenario_id",
+          "source",
+          "created_at"
+        ],
+        "title": "DiagnosticTraceStart",
+        "type": "object"
+      },
+      "DiagnosticTraceStartResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "project_id": {
+            "title": "Project Id",
+            "type": "string"
+          },
+          "replay": {
+            "title": "Replay",
+            "type": "boolean"
+          },
+          "run_id": {
+            "title": "Run Id",
+            "type": "string"
+          },
+          "scenario_id": {
+            "title": "Scenario Id",
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "automated",
+              "manual"
+            ],
+            "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "const": "active",
+            "title": "Status",
+            "type": "string"
+          },
+          "tenant_id": {
+            "title": "Tenant Id",
+            "type": "string"
+          },
+          "trace_id": {
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "trace_id",
+          "tenant_id",
+          "project_id",
+          "run_id",
+          "scenario_id",
+          "source",
+          "created_at",
+          "status",
+          "replay"
+        ],
+        "title": "DiagnosticTraceStartResponse",
+        "type": "object"
+      },
+      "ErrorEnvelope": {
+        "additionalProperties": false,
+        "description": "Path-free public rendering of a routed local failure.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ErrorEnvelope",
+        "type": "object"
+      },
+      "GateContext": {
+        "additionalProperties": false,
+        "properties": {
+          "available_tools": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Available Tools",
+            "type": "array"
+          },
+          "configured_tools": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Configured Tools",
+            "type": "array"
+          },
+          "evidence_by_gate": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
+              },
+              "type": "object"
+            },
+            "title": "Evidence By Gate",
+            "type": "object"
+          },
+          "evidence_documents": {
+            "items": {
+              "$ref": "#/components/schemas/GateEvidenceDocument"
+            },
+            "title": "Evidence Documents",
+            "type": "array"
+          },
+          "not_applicable_decisions": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "$ref": "#/components/schemas/JsonValue"
+              },
+              "type": "object"
+            },
+            "title": "Not Applicable Decisions",
+            "type": "object"
+          },
+          "production": {
+            "default": false,
+            "title": "Production",
+            "type": "boolean"
+          },
+          "site_status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "existing_site",
+                  "non_existing_site"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Site Status"
+          }
+        },
+        "required": [
+          "evidence_by_gate"
+        ],
+        "title": "GateContext",
+        "type": "object"
+      },
+      "GateEvidenceDocument": {
+        "additionalProperties": false,
+        "properties": {
+          "classification": {
+            "enum": [
+              "local_validation",
+              "local_simulated",
+              "external_report"
+            ],
+            "title": "Classification",
+            "type": "string"
+          },
+          "evidence_id": {
+            "pattern": "^evidence-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Evidence Id",
+            "type": "string"
+          },
+          "report_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Report Sha256",
+            "type": "string"
+          },
+          "source": {
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Source",
+            "type": "string"
+          },
+          "subject_content_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Subject Content Sha256",
+            "type": "string"
+          },
+          "tool": {
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Tool",
+            "type": "string"
+          }
+        },
+        "required": [
+          "evidence_id",
+          "tool",
+          "report_sha256",
+          "subject_content_sha256",
+          "classification",
+          "source"
+        ],
+        "title": "GateEvidenceDocument",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -189,7 +2395,154 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "IntakeAcceptanceRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "confirmed": {
+            "title": "Confirmed",
+            "type": "boolean"
+          },
+          "markdown": {
+            "minLength": 1,
+            "title": "Markdown",
+            "type": "string"
+          },
+          "preview_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Preview Hash",
+            "type": "string"
+          },
+          "reviewed": {
+            "$ref": "#/components/schemas/ReviewedIntake"
+          },
+          "source_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source Sha256",
+            "type": "string"
+          }
+        },
+        "required": [
+          "markdown",
+          "source_sha256",
+          "reviewed",
+          "preview_hash",
+          "confirmed"
+        ],
+        "title": "IntakeAcceptanceRequest",
+        "type": "object"
+      },
+      "IntakePreviewRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "markdown": {
+            "minLength": 1,
+            "title": "Markdown",
+            "type": "string"
+          }
+        },
+        "required": [
+          "markdown"
+        ],
+        "title": "IntakePreviewRequest",
+        "type": "object"
+      },
       "JsonValue": {},
+      "ReviewedIntake": {
+        "additionalProperties": false,
+        "properties": {
+          "project_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Id"
+          },
+          "project_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Name"
+          },
+          "project_v2": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/JsonValue"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project V2"
+          },
+          "tenant_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tenant Id"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "ReviewedIntake",
+        "type": "object"
+      },
+      "TraceEvidenceReference": {
+        "additionalProperties": false,
+        "description": "A safe pointer to a retained diagnostic artifact.",
+        "properties": {
+          "kind": {
+            "enum": [
+              "screenshot",
+              "artifact",
+              "transition",
+              "event",
+              "readback",
+              "browser_console",
+              "network_failure"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "relative_path": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Relative Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "relative_path"
+        ],
+        "title": "TraceEvidenceReference",
+        "type": "object"
+      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -272,6 +2625,104 @@
           }
         },
         "summary": "Readyz"
+      }
+    },
+    "/v1/tenants/{tenant_id}/intake/accept": {
+      "post": {
+        "operationId": "acceptMarkdownIntake",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntakeAcceptanceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Intake Accept"
+      }
+    },
+    "/v1/tenants/{tenant_id}/intake/preview": {
+      "post": {
+        "operationId": "previewMarkdownIntake",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntakePreviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Intake Preview"
       }
     },
     "/v1/tenants/{tenant_id}/projects": {
@@ -361,6 +2812,140 @@
         "summary": "Get Project"
       }
     },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/actions/{verb}/confirm": {
+      "post": {
+        "operationId": "confirmAdminAction",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "verb",
+            "required": true,
+            "schema": {
+              "title": "Verb",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActionConfirmRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionConfirmResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Action Confirm"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/actions/{verb}/preview": {
+      "post": {
+        "operationId": "previewAdminAction",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "verb",
+            "required": true,
+            "schema": {
+              "title": "Verb",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActionIntent"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionPreview"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Action Preview"
+      }
+    },
     "/v1/tenants/{tenant_id}/projects/{project_id}/adjustment-proposals": {
       "get": {
         "operationId": "listAdjustmentProposals",
@@ -409,6 +2994,112 @@
         "summary": "Handler"
       }
     },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/approvals": {
+      "get": {
+        "operationId": "listApprovals",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Handler"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/artifact-revisions/compare": {
+      "post": {
+        "operationId": "compareArtifactRevisions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArtifactDiffRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtifactDiffResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Artifact Diff"
+      }
+    },
     "/v1/tenants/{tenant_id}/projects/{project_id}/artifacts": {
       "get": {
         "operationId": "listArtifacts",
@@ -455,6 +3146,243 @@
           }
         },
         "summary": "Handler"
+      },
+      "post": {
+        "operationId": "saveArtifactRevision",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArtifactCandidateSaveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Artifact Save"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/artifacts/{artifact_id}": {
+      "get": {
+        "operationId": "getArtifactRevision",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "artifact_id",
+            "required": true,
+            "schema": {
+              "title": "Artifact Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtifactContentResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Artifact Content"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/artifacts/{artifact_id}/content": {
+      "get": {
+        "operationId": "getArtifactRevisionContent",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "artifact_id",
+            "required": true,
+            "schema": {
+              "title": "Artifact Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtifactContentResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Artifact Content"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/artifacts/{artifact_id}/validate": {
+      "post": {
+        "operationId": "validateArtifactRevision",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "artifact_id",
+            "required": true,
+            "schema": {
+              "title": "Artifact Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArtifactValidationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtifactPreflightResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Artifact Validate"
       }
     },
     "/v1/tenants/{tenant_id}/projects/{project_id}/assignments": {
@@ -507,6 +3435,7 @@
     },
     "/v1/tenants/{tenant_id}/projects/{project_id}/commands/{verb}": {
       "post": {
+        "deprecated": true,
         "operationId": "submitOperatorCommand",
         "parameters": [
           {
@@ -620,6 +3549,737 @@
         "summary": "Handler"
       }
     },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/delivery/exports": {
+      "get": {
+        "operationId": "listDeliveryExports",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryExportHistoryResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "List Exports"
+      },
+      "post": {
+        "operationId": "createDeliveryExport",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliveryCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryExportResult"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryExportResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Create"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/delivery/exports/{export_id}": {
+      "get": {
+        "operationId": "getDeliveryExport",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "export_id",
+            "required": true,
+            "schema": {
+              "pattern": "^delivery-export-[a-z0-9][a-z0-9-]{7,63}$",
+              "title": "Export Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryPackageRecord"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Get Export"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/delivery/exports/{export_id}/download": {
+      "get": {
+        "operationId": "downloadDeliveryExport",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "export_id",
+            "required": true,
+            "schema": {
+              "pattern": "^delivery-export-[a-z0-9][a-z0-9-]{7,63}$",
+              "title": "Export Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Successful Response",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Download"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/delivery/preview": {
+      "get": {
+        "operationId": "previewDelivery",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "scope",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/DeliveryScope"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryPreviewResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Preview"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/diagnostic-traces": {
+      "post": {
+        "operationId": "createDiagnosticTrace",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiagnosticTraceStart"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiagnosticTraceStartResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiagnosticTraceStartResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          },
+          "507": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Insufficient Storage"
+          }
+        },
+        "summary": "Create"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/diagnostic-traces/{trace_id}/close": {
+      "post": {
+        "operationId": "closeDiagnosticTrace",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "trace_id",
+            "required": true,
+            "schema": {
+              "title": "Trace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiagnosticTraceCloseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiagnosticTraceCloseResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          },
+          "507": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Insufficient Storage"
+          }
+        },
+        "summary": "Close"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/diagnostic-traces/{trace_id}/entries": {
+      "post": {
+        "operationId": "appendDiagnosticTraceEntry",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "trace_id",
+            "required": true,
+            "schema": {
+              "title": "Trace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiagnosticTraceOperation"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiagnosticTraceEntryResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiagnosticTraceEntryResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          },
+          "507": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Insufficient Storage"
+          }
+        },
+        "summary": "Append"
+      }
+    },
     "/v1/tenants/{tenant_id}/projects/{project_id}/gates": {
       "get": {
         "operationId": "listGates",
@@ -666,6 +4326,54 @@
           }
         },
         "summary": "Handler"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/intake": {
+      "get": {
+        "operationId": "getMarkdownIntake",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Intake"
       }
     },
     "/v1/tenants/{tenant_id}/projects/{project_id}/integrations/status": {
@@ -812,6 +4520,72 @@
         "summary": "Handler"
       }
     },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/operator-records/{record_type}/{record_id}": {
+      "get": {
+        "operationId": "getOperatorRecord",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "record_type",
+            "required": true,
+            "schema": {
+              "title": "Record Type",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "record_id",
+            "required": true,
+            "schema": {
+              "title": "Record Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Operator Record"
+      }
+    },
     "/v1/tenants/{tenant_id}/projects/{project_id}/performance-checkpoints": {
       "get": {
         "operationId": "listPerformanceCheckpoints",
@@ -858,6 +4632,102 @@
           }
         },
         "summary": "Handler"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/releases": {
+      "get": {
+        "operationId": "listReleases",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Releases"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/runs/current": {
+      "get": {
+        "operationId": "getCurrentRun",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentRunResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Current Run"
       }
     },
     "/v1/tenants/{tenant_id}/projects/{project_id}/runs/{run_id}": {
@@ -972,6 +4842,72 @@
           }
         },
         "summary": "Run History"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/runs/{run_id}/steps/{step_id}/artifact-revisions": {
+      "get": {
+        "operationId": "listArtifactRevisions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "step_id",
+            "required": true,
+            "schema": {
+              "title": "Step Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtifactRevisionListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Artifact Revisions"
       }
     },
     "/v1/tenants/{tenant_id}/projects/{project_id}/steps": {

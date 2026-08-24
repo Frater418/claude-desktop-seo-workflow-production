@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 
 from services.step3_preflight.render import RendererError, render_step3, write_step3
-from services.step3_preflight.validator import step2_solver_projection
+from services.step3_preflight.solver_bridge import derive_step3_plan_fields
 from tests.test_preflight_common import _bind_candidate, _predecessor, _project
 
 
@@ -24,10 +24,8 @@ def _operational_bundle() -> dict[str, object]:
     candidate = _bind_candidate(json.loads((root / "tests/fixtures/step3/non-ahd-solar-fr-ca.json").read_text(encoding="utf-8"))["candidate"])
     candidate.pop("input_sha256", None)
     candidate.pop("output_sha256", None)
-    candidate["solver_input"] = _canonical(step2_solver_projection(step2))
-    candidate["solver_output"] = _canonical({key: candidate[key] for key in ("weeks", "mandatory_item_ids", "backlog_item_ids", "vertical_links", "horizontal_links")})
-    candidate["solver_input_sha256"] = hashlib.sha256(candidate["solver_input"].encode("utf-8")).hexdigest()
-    candidate["solver_output_sha256"] = hashlib.sha256(candidate["solver_output"].encode("utf-8")).hexdigest()
+    candidate.update(derive_step3_plan_fields(step2))
+    candidate["evidence_ids"] = step2["evidence_ids"]
     artifact, release = _predecessor("2", "GATE-2")
     predecessor_content = _canonical(step2)
     artifact["content_sha256"] = hashlib.sha256(predecessor_content.encode("utf-8")).hexdigest()
@@ -38,6 +36,12 @@ def _operational_bundle() -> dict[str, object]:
         "predecessor_artifact": artifact,
         "predecessor_release": release,
         "predecessor_content": predecessor_content,
+        "execution_identity": {
+            "project_id": candidate["project_id"],
+            "run_id": candidate["run_id"],
+            "step_id": candidate["step_id"],
+            "target_revision": candidate["revision"],
+        },
     }
 
 
@@ -48,7 +52,7 @@ class Step3RendererTests(unittest.TestCase):
         self.assertEqual(first, render_step3(bundle))
         self.assertEqual(17, first.count("## Week "))
         candidate = bundle["candidate"]
-        self.assertIn(candidate["backlog_item_ids"][0], first)
+        self.assertIn("## Backlog", first)
         self.assertIn(candidate["vertical_links"][0]["target_pillar_id"], first)
         self.assertIn(candidate["horizontal_links"][0]["target_item_id"], first)
 

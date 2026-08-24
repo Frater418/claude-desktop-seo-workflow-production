@@ -6,7 +6,6 @@ from typing import Mapping, Sequence, TypeAlias
 
 from jsonschema import Draft202012Validator, FormatChecker
 
-
 JsonScalar: TypeAlias = str | int | float | bool | None
 JsonValue: TypeAlias = JsonScalar | Mapping[str, "JsonValue"] | Sequence["JsonValue"]
 WORKFLOW_STEPS = frozenset(("0", "1", "1b", "1c", "2", "3", "3b", "4a", "4b"))

@@ -108,6 +108,7 @@ class TransitionServiceTests(unittest.TestCase):
             "step_id": "1",
             "artifact_id": artifact["artifact_id"],
             "artifact_sha256": artifact["content_sha256"],
+            "artifact_revision": artifact["revision"],
             "registry_version": "1.1.0",
             "policy_version": "1.1.0",
             "result": "passed",
@@ -171,11 +172,28 @@ class TransitionServiceTests(unittest.TestCase):
         self.assertEqual("awaiting_gate", result["run"]["status"])
         self.assertEqual("a" * 64, result["run"]["output_hash"])
 
+    def test_start_requires_applicable_start_gates(self):
+        run = dict(self.run, status="pending")
+
+        result = self._process(self._command("start", run), run, gate_runs=[])
+
+        self.assertFalse(result["ok"])
+        self.assertIn("ERR_GATE_REQUIRED", {error["code"] for error in result["errors"]})
+
     def test_missing_machine_gate_blocks_without_mutation(self):
         command = self._command("submit_for_gate")
         result = self._process(command, self.run, gate_runs=[self.gate_runs[0]])
         self.assertFalse(result["ok"])
         self.assertEqual("in_progress", result["run"]["status"])
+        self.assertIn("ERR_GATE_REQUIRED", {error["code"] for error in result["errors"]})
+
+    def test_submit_for_gate_rejects_machine_qgr_for_an_older_artifact_revision(self):
+        stale = copy.deepcopy(self.gate_runs)
+        stale[0]["artifact_revision"] = 0
+
+        result = self._process(self._command("submit_for_gate"), self.run, gate_runs=stale)
+
+        self.assertFalse(result["ok"])
         self.assertIn("ERR_GATE_REQUIRED", {error["code"] for error in result["errors"]})
 
     def test_approve_validates_external_approval_and_emits_human_qgr(self):
@@ -184,6 +202,9 @@ class TransitionServiceTests(unittest.TestCase):
         self.assertTrue(result["ok"], result["errors"])
         self.assertEqual("approved", result["run"]["status"])
         self.assertEqual("qg-gate1-artifact-approval", result["human_quality_gate_run"]["quality_gate_id"])
+        self.assertEqual(1, result["human_quality_gate_run"]["artifact_revision"])
+        self.assertEqual("1.1.0", result["human_quality_gate_run"]["registry_version"])
+        self.assertEqual(self.approval["approval_id"], result["human_quality_gate_run"]["evidence"]["approval_id"])
 
     def test_expired_or_changed_approval_blocks(self):
         run = dict(self.run, status="awaiting_gate", output_hash="a" * 64)

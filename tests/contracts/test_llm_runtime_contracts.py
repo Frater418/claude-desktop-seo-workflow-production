@@ -188,6 +188,22 @@ class LlmRuntimeContractTests(unittest.TestCase):
                 self.assert_invalid_variant("llm-run-request", "positive-request-fresh.json", lambda value, mode=mode: value.update(run_mode=mode, dispatch_policy={"execution": "fresh", "technical_session_reuse": "cache_hint"}))
         self.assert_invalid_variant("llm-run-request", "positive-request-cache-hint-retry.json", lambda value: value["technical_session_cache_hint"].update(raw_session_handle="forbidden"))
 
+    def test_hermes_model_identifiers_are_accepted_by_runtime_contracts(self) -> None:
+        profile = load_json(FIXTURE_DIR / "positive-worker-profile.json")
+        profile["provider_capability_ref"] = {"provider_id": "provider-hermes", "provider_kind": "gateway", "capability_id": "capability-hermes-runs"}
+        profile["model_policy"] = {"allowed_model_ids": ["gpt-5.6-sol"], "default_model_id": "gpt-5.6-sol"}
+        request = load_json(FIXTURE_DIR / "positive-request-fresh.json")
+        request["provider_id"] = "provider-hermes"
+        request["model_id"] = "gpt-5.6-sol"
+        result = load_json(FIXTURE_DIR / "positive-result-success.json")
+        result["provider_id"] = "provider-hermes"
+        result["model_id"] = "gpt-5.6-sol"
+        result["provider_run_id"] = "hermes-run-0001"
+
+        self.assertEqual([], list(self.validators["worker-profile"].iter_errors(profile)))
+        self.assertEqual([], list(self.validators["llm-run-request"].iter_errors(request)))
+        self.assertEqual([], list(self.validators["llm-run-result"].iter_errors(result)))
+
     def test_results_enforce_success_and_failure_conditionals(self) -> None:
         self.assert_invalid_variant("llm-run-result", "positive-result-success.json", lambda value: value.pop("output"))
         self.assert_invalid_variant("llm-run-result", "positive-result-success.json", lambda value: value.update(error={"error_class": "provider", "message": "forbidden", "retry_class": "retryable", "occurred_at": "2026-08-20T00:00:02Z"}))

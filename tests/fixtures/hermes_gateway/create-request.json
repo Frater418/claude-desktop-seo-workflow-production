@@ -1,0 +1,5 @@
+{
+  "input": "Sanitized neutral input.",
+  "instructions": "Return only the requested neutral result.",
+  "session_id": "session_sanitized_001"
+}

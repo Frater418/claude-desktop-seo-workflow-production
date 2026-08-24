@@ -28,13 +28,40 @@
     "entities",
     "workstreams",
     "missing_accesses",
-    "gate_0"
+    "gate_0",
+    "source_binding"
   ],
   "properties": {
     "project_id": {
       "type": "string",
       "pattern": "^[a-z0-9-]+$",
       "description": "Eindeutiger Projekt-Identifier im Kebab-Case."
+    },
+    "source_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tenant_id",
+        "project_id",
+        "customer_id",
+        "market_id",
+        "deployment_id",
+        "language",
+        "country",
+        "project_v2_sha256",
+        "intake_source_sha256"
+      ],
+      "properties": {
+        "tenant_id": {"type": "string", "minLength": 1},
+        "project_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "customer_id": {"type": "string", "minLength": 1},
+        "market_id": {"type": "string", "minLength": 1},
+        "deployment_id": {"type": "string", "minLength": 1},
+        "language": {"type": "string", "minLength": 1},
+        "country": {"type": "string", "enum": ["DE", "AT", "CH"]},
+        "project_v2_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "intake_source_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
     },
     "project_name": {
       "type": "string",

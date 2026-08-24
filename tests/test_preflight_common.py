@@ -9,9 +9,11 @@ from pathlib import Path
 from jsonschema import Draft202012Validator
 
 from services.preflight_common.boundary import validate_lineage
+from services.provider_gateway.core import canonical_request_sha256
 from services.step1b_preflight.validator import validate_step1b_preflight
 from services.step1c_preflight.validator import validate_step1c_preflight
 from services.step2_preflight.validator import validate_step2_preflight
+from services.step3_preflight.solver_bridge import derive_step3_plan_fields
 from services.step3_preflight.validator import validate_step3_preflight
 from services.step3b_preflight.validator import validate_step3b_preflight
 from services.step4a_preflight.validator import validate_step4a_preflight
@@ -74,11 +76,11 @@ def _provider_records(candidate: dict[str, object]) -> list[dict[str, object]]:
     records: list[dict[str, object]] = []
     for pillar in candidate["pillars"]:
         for index, row in enumerate(pillar["rows"], start=1):
-            request = {"schema_version": "2.0.0", "request_id": f"request-provider-{index:04d}", "run_id": candidate["run_id"], "project_id": candidate["project_id"], "deployment_id": candidate["deployment_id"], "revision": 1, "source_artifact_ids": ["artifact-predecessor-0001"], "evidence_ids": [row["evidence_id"]], "decision_records": [{"decision_id": f"decision-provider-{index:04d}", "outcome": "research", "evidence_ids": [row["evidence_id"]]}], "candidate_status": "candidate", "provider": row["provider"], "operation": "keyword_metrics", "idempotency_key": f"provider-{index:04d}-key", "request_sha256": "d" * 64, "geo": candidate["geo"], "language": candidate["language"], "device": "mobile", "cost": {"currency": "USD", "maximum": 1}, "gateway_route": "provider_gateway"}
-            response = {"schema_version": "2.0.0", "response_id": f"response-provider-{index:04d}", "request_id": request["request_id"], "run_id": candidate["run_id"], "project_id": candidate["project_id"], "deployment_id": candidate["deployment_id"], "revision": 1, "source_artifact_ids": ["artifact-predecessor-0001"], "evidence_ids": [row["evidence_id"]], "decision_records": [{"decision_id": f"decision-provider-{index:04d}", "outcome": "research", "evidence_ids": [row["evidence_id"]]}], "candidate_status": "candidate", "provider": row["provider"], "provider_job_id": f"job-provider-{index:04d}", "status": "completed", "geo": candidate["geo"], "language": candidate["language"], "device": "mobile", "cost": {"currency": "USD", "actual": 0.5}, "raw_response": {"keyword": row["keyword"]}, "raw_response_sha256": row["raw_response_sha256"]}
-            raw_response_sha256 = hashlib.sha256(
-                json.dumps(response["raw_response"], ensure_ascii=True, separators=(",", ":"), sort_keys=True).encode("utf-8")
-            ).hexdigest()
+            raw_response = {"keyword_metrics": [{"keyword": row["keyword"], "search_volume": row["search_volume"], "difficulty": row["difficulty"]}]}
+            raw_response_sha256 = hashlib.sha256(json.dumps(raw_response, ensure_ascii=True, separators=(",", ":"), sort_keys=True).encode("utf-8")).hexdigest()
+            request = {"schema_version": "2.0.0", "request_id": f"request-provider-{index:04d}", "run_id": candidate["run_id"], "project_id": candidate["project_id"], "deployment_id": candidate["deployment_id"], "revision": 1, "source_artifact_ids": candidate["source_artifact_ids"], "evidence_ids": [row["evidence_id"]], "decision_records": [{"decision_id": f"decision-provider-{index:04d}", "outcome": "research", "evidence_ids": [row["evidence_id"]]}], "candidate_status": "candidate", "provider": row["provider"], "operation": "keyword_metrics", "idempotency_key": f"provider-{index:04d}-key", "geo": candidate["geo"], "language": candidate["language"], "device": "mobile", "cost": {"currency": "USD", "maximum": 1}, "gateway_route": "provider_gateway"}
+            request["request_sha256"] = canonical_request_sha256(request)
+            response = {"schema_version": "2.0.0", "response_id": f"response-provider-{index:04d}", "request_id": request["request_id"], "run_id": candidate["run_id"], "project_id": candidate["project_id"], "deployment_id": candidate["deployment_id"], "revision": 1, "source_artifact_ids": candidate["source_artifact_ids"], "evidence_ids": [row["evidence_id"]], "decision_records": [{"decision_id": f"decision-provider-{index:04d}", "outcome": "research", "evidence_ids": [row["evidence_id"]]}], "candidate_status": "candidate", "provider": row["provider"], "provider_job_id": f"job-provider-{index:04d}", "status": "completed", "geo": candidate["geo"], "language": candidate["language"], "device": "mobile", "cost": {"currency": "USD", "actual": 0.5}, "raw_response": raw_response, "raw_response_sha256": raw_response_sha256}
             row["raw_response_sha256"] = raw_response_sha256
             response["raw_response_sha256"] = raw_response_sha256
             records.append({"evidence_id": row["evidence_id"], "request": request, "response": response})
@@ -104,11 +106,18 @@ class PreflightCommonTests(unittest.TestCase):
 
     def test_operational_preflights_reject_omitted_predecessor_records(self) -> None:
         # Given: direct calls with no predecessor artifact or release record.
+        from tests.test_step2_renderer import _operational_bundle as step2_bundle
+        from tests.test_step3_renderer import _operational_bundle as step3_bundle
+
+        step2_without_release = step2_bundle()
+        step2_without_release.pop("predecessor_release")
+        step3_without_release = step3_bundle()
+        step3_without_release.pop("predecessor_release")
         cases = (
             ("1b", lambda: validate_step1b_preflight({}, [])),
             ("1c", lambda: validate_step1c_preflight({}, [])),
-            ("2", lambda: validate_step2_preflight({})),
-            ("3", lambda: validate_step3_preflight({})),
+            ("2", lambda: validate_step2_preflight(step2_without_release)),
+            ("3", lambda: validate_step3_preflight(step3_without_release)),
             ("3b", lambda: validate_step3b_preflight({})),
             ("4a", lambda: validate_step4a_preflight({})),
             ("4b", lambda: validate_step4b_preflight({})),
@@ -154,23 +163,10 @@ class PreflightCommonTests(unittest.TestCase):
         provider_records = _provider_records(step2)
         step3_fixture = _fixture("tests/fixtures/step3/non-ahd-solar-fr-ca.json")
         step3 = _bind_candidate(copy.deepcopy(step3_fixture["candidate"]))
-        solver_input = json.dumps({"rows": [{"evidence_id": row["evidence_id"], "keyword": row["keyword"], "pillar_id": pillar["pillar_id"], "provider": row["provider"], "raw_response_sha256": row["raw_response_sha256"]} for pillar in step2["pillars"] for row in pillar["rows"]]}, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
-        solver_output = json.dumps(
-            {key: step3[key] for key in ("weeks", "mandatory_item_ids", "backlog_item_ids", "vertical_links", "horizontal_links")},
-            ensure_ascii=False,
-            separators=(",", ":"),
-            sort_keys=True,
-        )
-        step3.update(
-            {
-                "solver_input": solver_input,
-                "solver_output": solver_output,
-                "solver_input_sha256": hashlib.sha256(solver_input.encode("utf-8")).hexdigest(),
-                "solver_output_sha256": hashlib.sha256(solver_output.encode("utf-8")).hexdigest(),
-            }
-        )
         step3.pop("input_sha256", None)
         step3.pop("output_sha256", None)
+        step3.update(derive_step3_plan_fields(step2))
+        step3["evidence_ids"] = step2["evidence_ids"]
         schema = _fixture("standards/outputs/step-3-plan.schema.json")
         self.assertEqual([], [error.message for error in Draft202012Validator(schema).iter_errors(step3)])
         step3b_bundle = copy.deepcopy(_fixture("tests/fixtures/step3b/non-ahd-product-bundle.json"))
@@ -208,7 +204,7 @@ class PreflightCommonTests(unittest.TestCase):
             ("1b", "1", "GATE-1", {"candidate": architecture, "approved_content_ids": [item["content_id"] for item in architecture["content_decisions"]]}, lambda bundle: validate_step1b_preflight(bundle)),
             ("1c", "1b", "GATE-1B", {"design": design, "templates": [template]}, lambda bundle: validate_step1c_preflight(bundle)),
             ("2", "1c", "GATE-1C", {"candidate": step2}, validate_step2_preflight),
-            ("3", "2", "GATE-2", {"candidate": step3}, validate_step3_preflight),
+            ("3", "2", "GATE-2", {"candidate": step3, "execution_identity": {"project_id": step3["project_id"], "run_id": step3["run_id"], "step_id": step3["step_id"], "target_revision": step3["revision"]}}, validate_step3_preflight),
             ("3b", "3", "GATE-3", step3b_bundle, validate_step3b_preflight),
             ("4a", "3", "GATE-3", step4a_bundle, validate_step4a_preflight),
             ("4b", "4a", "GATE-4A", step4b_bundle, validate_step4b_preflight),
