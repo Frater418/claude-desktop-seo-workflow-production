@@ -1,5 +1,7 @@
 # 05. Human-in-the-Loop und Quality Gates
 
+> **Lifecycle: historical.** Aktuelle Gate- und Approval-Autoritaet: `standards/quality/`, Transition Service, `docs/00-current-production-architecture.md` und aktive Decisions.
+
 **Projekt:** Modernisierung des Claude Desktop SEO-Workflows  
 **Autor:** Raphael Rechberger  
 **Version:** 1.1.0  

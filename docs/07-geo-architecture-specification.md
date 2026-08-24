@@ -1,5 +1,7 @@
 # 07. GEO-Architektur-Spezifikation: Generative Engine Optimization 2026
 
+> **Lifecycle: current strategy with active restoration.** Diese Datei bleibt fachliche GEO-Quelle. Ausfuehrbare V2-Qualitaet wird ueber DIB-001 und bounded PQ-4 in Schemas, Prompts, Validatoren, Renderer und Gates uebertragen.
+
 **Projekt:** Heartweb Claude Desktop SEO-Workflow Framework  
 **Dokument-ID:** SPEC-GEO-2026-v1.4  
 **Autor & Architektur:** Raphael Rechberger  

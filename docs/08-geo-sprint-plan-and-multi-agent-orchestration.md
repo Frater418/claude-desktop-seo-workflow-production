@@ -1,5 +1,7 @@
 # 08. GEO-Sprint-Plan & Multi-Agent Coding-Team Orchestrierung
 
+> **Lifecycle: superseded.** Aktuelle Ausfuehrungsfolge: `00_admin/PROJECT_STATE.md`, DEC-0024 und `.hermes/plans/INDEX.md`. OMO bleibt Entwicklungswerkzeug und ist keine Produktkomponente.
+
 **Projekt:** Heartweb Claude Desktop SEO-Workflow Framework  
 **Dokument-ID:** PLAN-GEO-SPRINTS-v1.4  
 **Autor & Architektur:** Raphael Rechberger  

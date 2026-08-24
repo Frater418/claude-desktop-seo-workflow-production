@@ -1,5 +1,7 @@
 # Foundation Gates and Step 1 Readiness Implementation Brief
 
+> **Lifecycle: superseded and completed evidence.** Aktuelle Projekt- und Gate-Autoritaet: `00_admin/PROJECT_STATE.md`, `00_admin/DECISIONS.md`, `standards/quality/` und die aktiven Plaene.
+
 - Autor: Raphael Rechberger
 - Datum: 19. August 2026
 - Status: In Umsetzung

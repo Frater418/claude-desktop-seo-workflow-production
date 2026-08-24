@@ -12,6 +12,8 @@ workspace: "Heartweb-Claude-Desktop-SEO-Workflow"
 
 # Heartweb: Migration von Claude Desktop zu Notion, n8n und eigener UI
 
+> **Lifecycle: superseded.** DEC-0025 ersetzt jede Annahme einer laufenden Rueckmeldung von Notion-Mitarbeiteraufgaben an den Core. Aktuelle Integrationsautoritaet: `docs/integrations/notion-operating-model.md` und `docs/integrations/n8n-orchestration-model.md`.
+
 **Praesentationsgrafik:** `.hermes/plans/heartweb-notion-n8n-ui-migration.png`
 
 **Desktop-Kopien:**

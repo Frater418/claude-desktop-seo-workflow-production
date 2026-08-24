@@ -1,5 +1,7 @@
 # Betriebshandbuch: Claude Desktop SEO Workflow
 
+> **Lifecycle: historical.** Dieses Handbuch beschreibt die alte Claude-Desktop-Bedienung. Aktuelle Bedienoberflaeche ist die deutsche Single-Admin Console. Aktuelle Architektur und Session-Reihenfolge: `docs/00-current-production-architecture.md` und `00_admin/SESSION_BOOTSTRAP.md`.
+
 **Projekt:** Modernisierung des Claude Desktop SEO-Workflows  
 **Autor & Architektur:** Raphael Rechberger  
 **Zielgruppe:** Jesse Jensen, Raphael Rechberger & Heartweb Projekt-Teams  

@@ -1,5 +1,7 @@
 # 02. Research und Technische Spezifikation
 
+> **Lifecycle: historical.** Dieses Dokument ist eine fruehe technische Quelle. Aktuelle Runtime- und Contract-Autoritaet: `docs/00-current-production-architecture.md`, `standards/` und die aktiven Plaene in `.hermes/plans/INDEX.md`.
+
 **Projekt:** Modernisierung des Claude Desktop SEO-Workflows  
 **Datum:** 16. August 2026, Stand aktualisiert 17. August 2026  
 **Status:** Spezifikation fertiggestellt und im Live-Test verifiziert (Strikte Error-Handling & Quality-Gate-Architektur)  
