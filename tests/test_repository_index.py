@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.build_repository_index import GENERATED_PATHS, ONBOARDING_SOURCE_PATHS, _git_commit, generate_outputs
+from scripts.build_repository_index import GENERATED_PATHS, ONBOARDING_SOURCE_PATHS, _canonical_document_bytes, _git_commit, generate_outputs
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = ROOT / "00_admin/repository-index/DOCUMENT_REGISTRY.json"
@@ -72,7 +72,7 @@ class RepositoryIndexTests(unittest.TestCase):
         for entry in entries:
             path = ROOT / entry["path"]
             self.assertTrue(path.is_file(), entry["path"])
-            data = path.read_bytes()
+            data = _canonical_document_bytes(entry["path"], path.read_bytes())
             self.assertEqual(entry["size_bytes"], len(data))
             self.assertEqual(entry["content_sha256"], hashlib.sha256(data).hexdigest())
             self.assertNotIn("\\", entry["path"])
@@ -126,6 +126,10 @@ class RepositoryIndexTests(unittest.TestCase):
         self.assertIn("*.ps1 text eol=crlf", attributes)
         for binary in ("*.png binary", "*.pdf binary", "*.zip binary"):
             self.assertIn(binary, attributes)
+        self.assertEqual(b"alpha\nbeta\n", _canonical_document_bytes("example.md", b"alpha\r\nbeta\r\n"))
+        self.assertEqual(b"alpha\nbeta\n", _canonical_document_bytes("example.md", b"alpha\nbeta\n"))
+        binary_bytes = b"\x89PNG\r\n\x1a\n"
+        self.assertEqual(binary_bytes, _canonical_document_bytes("example.png", binary_bytes))
 
     def test_no_sensitive_or_customer_paths_are_indexed(self) -> None:
         for entry in _registry()["entries"]:

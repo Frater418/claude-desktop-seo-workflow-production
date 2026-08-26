@@ -28,6 +28,10 @@ ONBOARDING_SOURCE_PATHS = (
     ".hermes/plans/2026-08-25_225654-repository-master-consolidation-and-onboarding.md",
 )
 INITIAL_ROUTE_STEPS = ("0", "1", "1b", "1c", "2", "3", "4a", "4b")
+CANONICAL_TEXT_SUFFIXES = {
+    ".cjs", ".css", ".csv", ".html", ".js", ".json", ".jsonl", ".md", ".mjs",
+    ".py", ".sh", ".svg", ".toml", ".ts", ".tsx", ".txt", ".xml", ".yaml", ".yml",
+}
 GENERATED_PATHS = {
     "00_admin/ONBOARDING_REFERENCE.md",
     "00_admin/repository-index/DOCUMENT_REGISTRY.json",
@@ -129,6 +133,12 @@ def _sanitize(value: str) -> str:
     value = value.translate(DASH_TRANSLATION)
     value = re.sub(r"\s+", " ", value).strip()
     return value
+
+
+def _canonical_document_bytes(path: str | Path, data: bytes) -> bytes:
+    if Path(path).suffix.casefold() not in CANONICAL_TEXT_SUFFIXES:
+        return data
+    return data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
 
 
 def _extract_title(path: Path, data: bytes) -> str:
@@ -274,7 +284,7 @@ def collect_entries(root: Path, policy: dict[str, Any], overrides: dict[str, Any
 
     entries: list[dict[str, Any]] = []
     for relative, candidate in sorted(paths.items()):
-        data = candidate.read_bytes()
+        data = _canonical_document_bytes(relative, candidate.read_bytes())
         title = _extract_title(candidate, data)
         base = _base_rule(relative, policy["auto_rules"])
         base.update(
@@ -380,7 +390,7 @@ def _onboarding_reference(
             "active_plan",
         }:
             raise ValueError(f"ERROR_ONBOARDING_SOURCE_NOT_CURRENT: {relative}")
-        data = (root / relative).read_bytes()
+        data = _canonical_document_bytes(relative, (root / relative).read_bytes())
         if hashlib.sha256(data).hexdigest() != entry["content_sha256"]:
             raise ValueError(f"ERROR_ONBOARDING_SOURCE_HASH: {relative}")
         sources.append(entry)
@@ -489,13 +499,13 @@ def _onboarding_reference(
             "",
             "## 8. Complete onboarding-critical source blocks",
             "",
-            "Each block below contains the complete canonical source text with trailing line whitespace normalized for Git safety. The heading SHA-256 is calculated from the unchanged raw source file.",
+            "Each block below contains the complete canonical source text with LF line endings and trailing line whitespace normalized for Git safety. The heading SHA-256 is calculated from these canonical text bytes; binary document bytes remain unchanged.",
             "",
         ]
     )
     for entry in sources:
         relative = entry["path"]
-        raw_text = (root / relative).read_bytes().decode("utf-8")
+        raw_text = _canonical_document_bytes(relative, (root / relative).read_bytes()).decode("utf-8")
         text = "\n".join(line.rstrip(" \t") for line in raw_text.splitlines())
         fence = _source_fence(text)
         lines.extend(
