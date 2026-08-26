@@ -164,3 +164,178 @@ class ActionConfirmResult(BaseModel):
     preview_hash: str
     readback_urls: tuple[str, ...]
     canonical: dict[str, JsonValue]
+
+
+class ProductionIntent(BaseModel):
+    """One operator-authorized real production run for the current workflow step."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    tenant_id: str = Field(pattern=r"^tenant-[a-z0-9][a-z0-9-]{2,63}$")
+    project_id: str = Field(pattern=r"^project-[a-z0-9][a-z0-9-]{2,63}$")
+    run_id: str = Field(pattern=r"^run-[a-z0-9][a-z0-9-]{7,63}$")
+    step_id: Literal["0", "1", "1b", "1c", "2", "3", "4a", "4b"]
+    expected_revision: int = Field(ge=1)
+
+
+class ProductionPreview(BaseModel):
+    """Read-only production readiness and consequences before the real model call."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    intent: ProductionIntent
+    allowed: bool
+    blockers: tuple[ActionBlocker, ...]
+    consequence: dict[str, JsonValue]
+    preview_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
+
+
+class ProductionConfirmRequest(BaseModel):
+    """Explicit confirmation bound to one production preview."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    intent: ProductionIntent
+    preview_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
+    idempotency_key: str = Field(pattern=r"^idem-[a-z0-9][a-z0-9-]{7,127}$")
+    confirmed: Literal[True]
+
+
+class ProductionConfirmResult(BaseModel):
+    """Durable readback for a running, waiting, failed or completed production execution."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    replay: bool
+    execution_id: str = Field(pattern=r"^production-execution-[a-f0-9]{32}$")
+    status: Literal[
+        "prepared",
+        "running",
+        "interaction_required",
+        "approval_required",
+        "denied",
+        "completed",
+        "failed",
+    ]
+    preview_hash: str
+    readback_urls: tuple[str, ...]
+    canonical: dict[str, JsonValue]
+
+
+class ToolInteractionDecisionRequest(BaseModel):
+    """Exact operator decision for one immutable Heartweb tool authorization."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    approved: bool
+    expected_request_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    reason: str = Field(min_length=1, max_length=2000)
+
+
+class ProductionTechnicalRetryRequest(BaseModel):
+    """Idempotent technical retry of one failed, side-effect-free execution."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    idempotency_key: str = Field(pattern=r"^idem-[a-z0-9][a-z0-9-]{7,127}$")
+    expected_execution_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    reason: str = Field(min_length=1, max_length=2000)
+
+
+class ProductionSteeredRerunRequest(BaseModel):
+    """Versioned fachlicher rerun bound to one rejected artifact revision."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    idempotency_key: str = Field(pattern=r"^idem-[a-z0-9][a-z0-9-]{7,127}$")
+    expected_execution_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    expected_artifact_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    expected_artifact_revision: int = Field(ge=1)
+    findings: tuple[str, ...] = Field(min_length=1, max_length=100)
+    affected_sections: tuple[str, ...] = Field(min_length=1, max_length=100)
+    immutable_constraints: tuple[str, ...] = Field(min_length=1, max_length=100)
+    instruction: str = Field(min_length=1, max_length=12000)
+    confirmed: Literal[True]
+
+
+class PlanningCapacityPreviewRequest(BaseModel):
+    """Operator-provided weekly planning capacity for an accepted project."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    min_hours_per_week: float = Field(ge=0, le=168)
+    max_hours_per_week: float = Field(ge=0, le=168)
+
+
+class PlanningCapacityConfirmRequest(BaseModel):
+    """Hash-bound confirmation of one planning-capacity preview."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    preview_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
+    idempotency_key: str = Field(pattern=r"^idem-[a-z0-9][a-z0-9-]{7,127}$")
+    confirmed: Literal[True]
+
+
+class ProjectDeletionPreviewData(BaseModel):
+    """Read-only, hash-bound impact preview for one managed project."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    tenant_id: str
+    project_id: str
+    project_name: str
+    customer_name: str
+    current_step: str
+    file_count: int = Field(ge=0)
+    total_bytes: int = Field(ge=0)
+    run_count: int = Field(ge=0)
+    artifact_count: int = Field(ge=0)
+    release_count: int = Field(ge=0)
+    active_run_ids: tuple[str, ...]
+    active_execution_ids: tuple[str, ...]
+    allowed: bool
+    blockers: tuple[ActionBlocker, ...]
+    preview_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
+    workspace_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    previewed_at: str
+
+
+class ProjectDeletionConfirmRequest(BaseModel):
+    """Explicit final confirmation of one unchanged deletion preview."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    preview_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
+    idempotency_key: str = Field(pattern=r"^idem-[a-z0-9][a-z0-9-]{7,127}$")
+    confirmed: Literal[True]
+    confirmation_text: Literal["LOESCHEN"]
+
+
+class ProjectDeletionResultData(BaseModel):
+    """Verified terminal result of one project deletion."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    tenant_id: str
+    project_id: str
+    project_name: str
+    deletion_id: str = Field(pattern=r"^project-deletion-[a-f0-9]{24}$")
+    deleted_at: str
+    deleted: Literal[True]
+    replay: bool
+    deleted_file_count: int = Field(ge=0)
+    deleted_total_bytes: int = Field(ge=0)
+    readback_urls: tuple[str, ...]
+
+
+class ProjectDeletionPreviewEnvelope(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    data: ProjectDeletionPreviewData
+
+
+class ProjectDeletionResultEnvelope(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    data: ProjectDeletionResultData

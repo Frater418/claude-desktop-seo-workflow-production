@@ -26,7 +26,7 @@ SCHEMA_NAMES = (
     "llm-run-result",
 )
 PROMPTS = {
-    "0": "0-kickoff.xml.md",
+    "0": "0-kickoff-v1.10.0.xml.md",
     "1": "1-pillar-identifikation.xml.md",
     "1b": "1b-seitenarchitektur.xml.md",
     "1c": "1c-pillar-template.xml.md",
@@ -37,7 +37,7 @@ PROMPTS = {
     "4b": "4b-landingpage-html.xml.md",
 }
 OUTPUTS = {
-    "0": (("standards/manifest.schema.json", "https://heartweb.example/schema/manifest.schema.json", "1.0.0"),),
+    "0": (("standards/manifest-v2.schema.json", "https://heartweb.example/schema/manifest-v2.schema.json", "2.0.0"),),
     "1": (("standards/outputs/step-1-topic-inventory.schema.json", "https://heartweb.example/schema/outputs/step-1-topic-inventory.schema.json", "2.0.0"),),
     "1b": (("standards/outputs/step-1b-architecture.schema.json", "https://heartweb.example/schema/outputs/step-1b-architecture.schema.json", "2.0.0"),),
     "1c": (("standards/outputs/step-1c-design-system.schema.json", "https://heartweb.example/schema/outputs/step-1c-design-system.schema.json", "2.0.0"), ("standards/outputs/step-1c-template.schema.json", "https://heartweb.example/schema/outputs/step-1c-template.schema.json", "2.0.0")),

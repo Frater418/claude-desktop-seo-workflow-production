@@ -28,6 +28,9 @@
     button, input { font: inherit; }
     button { color: inherit; }
     .shell { max-width: 1720px; margin: 0 auto; padding: 24px; }
+    .lifecycle { margin-bottom: 16px; padding: 14px 16px; border: 1px solid var(--amber); background: #201a10; color: #f2dfb3; }
+    .lifecycle strong { display: block; margin-bottom: 4px; color: var(--amber); }
+    .lifecycle a { color: var(--cyan); }
     .hero { display: grid; grid-template-columns: minmax(0,1fr) minmax(280px,380px); gap: 24px; align-items: end; padding: 26px; border: 1px solid var(--line); background: rgba(16,27,37,.94); box-shadow: var(--shadow); }
     .eyebrow { margin: 0 0 7px; color: var(--cyan); font-weight: 800; font-size: .73rem; text-transform: uppercase; letter-spacing: .12em; }
     h1 { margin: 0; font-size: clamp(1.75rem,3vw,3.25rem); letter-spacing: -.035em; line-height: 1.05; }
@@ -134,6 +137,10 @@
 </head>
 <body>
   <main class="shell">
+    <div class="lifecycle" role="note">
+      <strong>Lifecycle: historical Sprint-5 workflow map</strong>
+      Diese Karte bleibt als visuelle Evidence erhalten und ist keine aktuelle Betriebs- oder Statusautoritaet. Aktuell gelten <a href="00-current-production-architecture.md">Production Architecture</a>, <a href="../00_admin/PROJECT_STATE.md">Project State</a> und <a href="../00_admin/DECISIONS.md">Decisions</a>.
+    </div>
     <header class="hero">
       <div>
         <p class="eyebrow">Heartweb Admin Workflow</p>

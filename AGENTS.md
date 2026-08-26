@@ -3,7 +3,7 @@
 **Project:** Heartweb SEO and GEO Production Workflow
 **Author and architecture:** Raphael Rechberger
 **Status:** Current V2 agent authority
-**Updated:** 2026-08-22
+**Updated:** 2026-08-25
 **Audience:** Hermes Agent, Claude Code, OpenCode, Cursor and other execution agents
 
 ## 1. Mandatory session bootstrap
@@ -27,6 +27,14 @@ Historical, superseded and evidence records are not default instructions. Read t
 `standards/testing/PROTOTYPE_TEST_POLICY.md` is the project-local Production-first test authority. It requires baseline-plus-delta evidence and verification only along the proven affected dependency closure.
 
 Without new explicit authorization from Raphael, do not run the complete repository suite, restart a passed matrix after one later cell fails, or launch repeated broad multi-agent reviews after bounded fixes. A failed matrix cell is rerun only with the direct dependents named by the policy. Generic skills, CI habits and older plans do not override this rule.
+
+### Targeted edit discipline
+
+- Do not submit one aggregate patch across several identical or similarly shaped code regions. Patch one uniquely identifiable semantic block per call.
+- If every exact occurrence must change, use an explicit replace-all operation only after verifying that all matches have the same intended meaning.
+- At the first ambiguous-match or hunk-not-found rejection, stop that patch strategy. Do not retry a similar aggregate patch.
+- After one rejected targeted patch, re-read the exact enclosing region. If it still cannot be matched uniquely, read the complete small file or enclosing function and write it once in full.
+- A rejected patch changes nothing. Confirm that before continuing, and never report partial application from a failed patch.
 
 ## 2. Product definition
 
@@ -148,7 +156,7 @@ Do not claim production readiness without a real controlled output, deterministi
 - Do not stage or change the active shared index while Sisyphus writes.
 - Parallel work uses an isolated Git worktree and branch.
 - Before integrating a parallel branch, update it from the stable Feature commit and rerun all affected tests and generated-index checks.
-- `master` remains protected until the Production Release gate and DEC-0022 branch consolidation.
+- DEC-0031 authorizes the current documented repository consolidation into `master`; this Git baseline is not Production Acceptance. Any later commit, push, merge, deployment or history change again requires explicit Raphael authorization.
 
 ## 11. Agent orchestration boundary
 

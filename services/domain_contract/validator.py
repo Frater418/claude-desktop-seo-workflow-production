@@ -21,6 +21,7 @@ DOMAIN_SCHEMA_NAMES = (
     "entity-domain-gbp.schema.json",
     "risk-compliance.schema.json",
     "market-registry.schema.json",
+    "provider-location-registry.schema.json",
 )
 
 
@@ -64,7 +65,7 @@ def _load_json(path: Path) -> dict:
         ) from exc
 
 
-def _contracts(root: Path) -> tuple[Draft202012Validator, dict[str, dict]]:
+def _contracts(root: Path) -> tuple[Draft202012Validator, dict[str, dict], dict[str, dict]]:
     domain_dir = root / "standards" / "domain"
     schemas = {name: _load_json(domain_dir / name) for name in DOMAIN_SCHEMA_NAMES}
     registry = Registry()
@@ -77,7 +78,9 @@ def _contracts(root: Path) -> tuple[Draft202012Validator, dict[str, dict]]:
     )
     market_registry = _load_json(domain_dir / "market-registry.json")
     market_by_id = {market["market_id"]: market for market in market_registry["markets"]}
-    return validator, market_by_id
+    provider_registry = _load_json(domain_dir / "provider-location-registry.json")
+    provider_by_target_id = {target["target_id"]: target for target in provider_registry["targets"]}
+    return validator, market_by_id, provider_by_target_id
 
 
 def _schema_error(error) -> dict:
@@ -99,8 +102,71 @@ def _schema_error(error) -> dict:
     }
 
 
-def _semantic_errors(project: dict, market_by_id: dict[str, dict]) -> list[dict]:
+def _uses_deployment_bound_provider_targets(project: dict) -> bool:
+    try:
+        version = tuple(int(part) for part in str(project.get("schema_version", "0.0.0")).split("."))
+    except ValueError:
+        return False
+    return version >= (1, 2, 0)
+
+
+def _uses_confirmed_planning_capacity(project: dict) -> bool:
+    try:
+        version = tuple(int(part) for part in str(project.get("schema_version", "0.0.0")).split("."))
+    except ValueError:
+        return False
+    return version >= (1, 3, 0)
+
+
+def _provider_verification(target: dict) -> dict:
+    return {
+        "status": target["status"],
+        "provider_id": target["provider_id"],
+        "target_id": target["target_id"],
+        "target_type": target["target_type"],
+        "location_name": target["location_name"],
+        "provider_location_code": target["location_code"],
+        "verified_at": target["verified_at"],
+        "verification_source": target["verification_source"],
+    }
+
+
+def _semantic_errors(
+    project: dict,
+    market_by_id: dict[str, dict],
+    provider_by_target_id: dict[str, dict],
+) -> list[dict]:
     errors: list[dict] = []
+    if _uses_confirmed_planning_capacity(project):
+        capacity = project.get("planning_capacity")
+        if not isinstance(capacity, dict):
+            errors.append(
+                {
+                    "code": "ERROR_DOMAIN_PLANNING_CAPACITY_UNCONFIRMED",
+                    "message": "Project V2 has no confirmed weekly planning capacity.",
+                    "path": ["planning_capacity"],
+                    "remediation": "Confirm the minimum and maximum weekly hours in intake or through the Operator Console.",
+                }
+            )
+        else:
+            minimum = capacity.get("min")
+            maximum = capacity.get("max")
+            if (
+                not isinstance(minimum, (int, float))
+                or isinstance(minimum, bool)
+                or not isinstance(maximum, (int, float))
+                or isinstance(maximum, bool)
+                or maximum < minimum
+                or capacity.get("provisional") is not False
+            ):
+                errors.append(
+                    {
+                        "code": "ERROR_DOMAIN_PLANNING_CAPACITY_INVALID",
+                        "message": "Project V2 weekly planning capacity is invalid or provisional.",
+                        "path": ["planning_capacity"],
+                        "remediation": "Confirm a non-provisional range with max greater than or equal to min.",
+                    }
+                )
     entities = project["entity_domain_gbp"]
     brand_id = entities["brand"]["brand_id"]
     domains = {item["domain_id"] for item in entities["domains"]}
@@ -130,15 +196,67 @@ def _semantic_errors(project: dict, market_by_id: dict[str, dict]) -> list[dict]
                         "remediation": "Correct the deployment or registry through an approved versioned market update.",
                     }
                 )
-        if deployment["provider_location_verification"] != registered["provider_location_verification"]:
-            errors.append(
-                {
-                    "code": "ERROR_DOMAIN_PROVIDER_VERIFICATION_MISMATCH",
-                    "message": "Deployment provider verification does not match the market registry.",
-                    "path": base_path + ["provider_location_verification"],
-                    "remediation": "Use the registry verification object without inventing provider codes.",
-                }
-            )
+        verification = deployment["provider_location_verification"]
+        if not _uses_deployment_bound_provider_targets(project):
+            if verification != registered["provider_location_verification"]:
+                errors.append(
+                    {
+                        "code": "ERROR_DOMAIN_PROVIDER_VERIFICATION_MISMATCH",
+                        "message": "Legacy deployment provider verification does not match the market registry.",
+                        "path": base_path + ["provider_location_verification"],
+                        "remediation": "Migrate the project to schema 1.2 and bind a verified provider target per deployment.",
+                    }
+                )
+        else:
+            target_id = verification.get("target_id")
+            target = provider_by_target_id.get(target_id)
+            if target is None:
+                errors.append(
+                    {
+                        "code": "ERROR_DOMAIN_PROVIDER_TARGET_UNKNOWN",
+                        "message": f"Unknown provider target_id: {target_id}",
+                        "path": base_path + ["provider_location_verification", "target_id"],
+                        "remediation": "Select an exact target_id from the versioned provider-location registry.",
+                    }
+                )
+            else:
+                if verification != _provider_verification(target):
+                    errors.append(
+                        {
+                            "code": "ERROR_DOMAIN_PROVIDER_VERIFICATION_MISMATCH",
+                            "message": "Deployment provider verification does not match its exact provider target.",
+                            "path": base_path + ["provider_location_verification"],
+                            "remediation": "Copy the complete verified target binding from the provider-location registry.",
+                        }
+                    )
+                if target["country_code"] != deployment["country_code"] or deployment["language"] not in target["languages"]:
+                    errors.append(
+                        {
+                            "code": "ERROR_DOMAIN_PROVIDER_TARGET_GEO_MISMATCH",
+                            "message": "Provider target country or language does not match the deployment.",
+                            "path": base_path + ["provider_location_verification", "target_id"],
+                            "remediation": "Choose a provider target that matches the deployment country and language.",
+                        }
+                    )
+                local_models = {"local", "regional", "programmatic_local"}
+                if deployment["seo_operating_model"] in local_models and target["target_type"] == "country":
+                    errors.append(
+                        {
+                            "code": "ERROR_DOMAIN_PROVIDER_TARGET_SCOPE_MISMATCH",
+                            "message": "A local or regional deployment cannot use a country-only provider target.",
+                            "path": base_path + ["provider_location_verification", "target_type"],
+                            "remediation": "Bind a verified region, city or postal-code target from the briefing scope.",
+                        }
+                    )
+            if deployment["market_phase"] == "active" and verification.get("status") != "verified":
+                errors.append(
+                    {
+                        "code": "ERROR_DOMAIN_PROVIDER_LOCATION_UNVERIFIED",
+                        "message": "An active deployment requires a verified provider target before Step 0.",
+                        "path": base_path + ["provider_location_verification", "status"],
+                        "remediation": "Verify the exact provider target or keep the deployment planned until verification exists.",
+                    }
+                )
         if deployment["brand_id"] != brand_id:
             errors.append(
                 {
@@ -191,9 +309,9 @@ def _semantic_errors(project: dict, market_by_id: dict[str, dict]) -> list[dict]
 
 def validate_project(project: dict, root: Path | None = None) -> dict:
     root = root or _repo_root()
-    validator, market_by_id = _contracts(root)
+    validator, market_by_id, provider_by_target_id = _contracts(root)
     schema_errors = [_schema_error(error) for error in sorted(validator.iter_errors(project), key=lambda item: list(item.absolute_path))]
-    semantic_errors = [] if schema_errors else _semantic_errors(project, market_by_id)
+    semantic_errors = [] if schema_errors else _semantic_errors(project, market_by_id, provider_by_target_id)
     errors = schema_errors + semantic_errors
     return {
         "valid": not errors,

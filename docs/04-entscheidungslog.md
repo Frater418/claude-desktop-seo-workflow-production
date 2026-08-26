@@ -4,7 +4,7 @@
 
 **Projekt:** Modernisierung des Claude Desktop SEO-Workflows  
 **Autor:** Raphael Rechberger  
-**Status:** Aktiv  
+**Status at capture:** Aktiv; current lifecycle superseded
 **Letzte Aktualisierung:** 17. August 2026  
 
 ---

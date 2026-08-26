@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -24,6 +25,7 @@ from services.step4a_preflight import validate_step4a_preflight
 from services.step4a_preflight.render import render_step4a
 from services.step4b_preflight import validate_step4b_preflight
 from services.step4b_preflight.render import render_step4b
+from services.transition_service import process_transition
 
 from .artifact_revision_types import ArtifactRecord, build_artifact_record
 from .gate_context import GateContext
@@ -44,8 +46,10 @@ class StepValidationError(RuntimeError):
 @dataclass(frozen=True, slots=True)
 class StepValidationResult:
     artifact_records: tuple[ArtifactRecord, ...]
+    supporting_artifacts: tuple[tuple[ArtifactRecord, bytes], ...]
     quality_gate_runs: tuple[dict[str, JsonValue], ...]
     derived_views: Mapping[str, str]
+    next_run: dict[str, JsonValue]
 
 
 @dataclass(frozen=True, slots=True)
@@ -53,6 +57,7 @@ class StepValidationService:
     root: Path
     prompt_registry: Mapping[str, JsonValue]
     quality_gate_registry: Mapping[str, JsonValue]
+    workflow_graph: Mapping[str, JsonValue]
 
     @classmethod
     def from_root(cls, root: Path) -> StepValidationService:
@@ -60,6 +65,7 @@ class StepValidationService:
             root=root,
             prompt_registry=_load_json(root / "standards/runtime/official-prompt-registry.json"),
             quality_gate_registry=_load_json(root / "standards/quality/quality-gate-registry.json"),
+            workflow_graph=_load_json(root / "standards/workflow/workflow-graph.json"),
         )
 
     def validate(
@@ -85,15 +91,26 @@ class StepValidationService:
                 validate_step0_cross_binding(output, documents[0], specialized_bundle)
             except Step0CrossBindingError as exc:
                 raise StepValidationError("ERROR_STEP0_CROSS_BINDING_INVALID", str(exc)) from exc
-        self._validate_specialized(output.step_id, specialized_bundle)
+        if output.step_id != "1":
+            self._validate_specialized(output.step_id, specialized_bundle)
         parents = _canonical_parents(output.step_id, specialized_bundle)
         records = tuple(build_artifact_record(item, package_input_hash, parents) for item in output_set.outputs)
+        supporting = _supporting_artifacts(output.step_id, specialized_bundle)
+        gate_artifacts = (
+            {"qg-step1-crawl-snapshot": supporting[0][0]}
+            if output.step_id == "1" and supporting
+            else {}
+        )
+        qgrs = self._machine_qgrs(output.step_id, records[0], gate_context, gate_artifacts)
+        if output.step_id == "1":
+            _bind_step1_runtime_projection(specialized_bundle, output, records, qgrs)
+            self._validate_specialized(output.step_id, specialized_bundle)
         views = _render(output.step_id, specialized_bundle)
-        qgrs = self._machine_qgrs(output.step_id, records[0], gate_context)
+        next_run = self._next_run(output_set, specialized_bundle, records, supporting, qgrs, gate_context)
         qgr_schema = _load_json(self.root / "standards/runtime/quality-gate-run.schema.json")
         if any(list(Draft202012Validator(qgr_schema, format_checker=FormatChecker()).iter_errors(qgr)) for qgr in qgrs):
             raise StepValidationError("ERROR_QUALITY_GATE_RUN_SCHEMA_INVALID", "Generated machine quality-gate run violates its runtime contract.")
-        return StepValidationResult(records, qgrs, views)
+        return StepValidationResult(records, supporting, qgrs, views, next_run)
 
     def validate_output_contracts(self, output_set: ProviderOutputSet) -> tuple[dict[str, JsonValue], ...]:
         entry = _entry_for_step(self.prompt_registry, output_set.primary.step_id)
@@ -121,6 +138,87 @@ class StepValidationService:
             documents.append(candidate)
         return tuple(documents)
 
+    def _next_run(
+        self,
+        output_set: ProviderOutputSet,
+        bundle: Mapping[str, JsonValue],
+        records: tuple[ArtifactRecord, ...],
+        supporting: tuple[tuple[ArtifactRecord, bytes], ...],
+        qgrs: tuple[dict[str, JsonValue], ...],
+        gate_context: GateContext,
+    ) -> dict[str, JsonValue]:
+        output = output_set.primary
+        current_run = bundle.get("current_run")
+        if not isinstance(current_run, dict):
+            raise StepValidationError(
+                "ERROR_PRODUCTION_STATE_INVALID",
+                "A canonical in-progress Core run is required for submission.",
+            )
+        predecessor = bundle.get("predecessor_release") if output.step_id != "0" else None
+        if output.step_id != "0" and not isinstance(predecessor, dict):
+            raise StepValidationError(
+                "ERROR_CONTEXT_PREDECESSOR_INVALID",
+                "A released predecessor is required for initial-route submission.",
+            )
+        from_step = "0" if output.step_id == "0" else str(predecessor["step_id"])
+        command = {
+            "command_id": f"command-submit-{output.content_sha256[:24]}",
+            "tenant_id": output.tenant_id,
+            "project_id": output.project_id,
+            "run_id": output.run_id,
+            "expected_revision": current_run["revision"],
+            "idempotency_key": f"idem-submit-{output.content_sha256[:24]}",
+            "operation": "submit_for_gate",
+            "from_step_id": from_step,
+            "to_step_id": output.step_id,
+            "input_hash": current_run["input_hash"],
+            "output_hash": records[0].content_sha256,
+            "requested_at": records[0].created_at,
+            "artifacts": [
+                {
+                    "artifact_id": record.artifact_id,
+                    "revision": record.revision,
+                    "content_sha256": record.content_sha256,
+                }
+                for record in records
+            ],
+            "quality_gates": [
+                {
+                    "quality_gate_run_id": qgr["quality_gate_run_id"],
+                    "result": qgr["result"],
+                    "artifact_id": qgr["artifact_id"],
+                    "artifact_sha256": qgr["artifact_sha256"],
+                }
+                for qgr in qgrs
+            ],
+        }
+        result = process_transition(
+            command=command,
+            run=current_run,
+            current_artifact=records[0].model_dump(mode="json"),
+            supporting_artifacts=[record.model_dump(mode="json") for record, _ in supporting],
+            quality_gate_runs=list(qgrs),
+            approval=None,
+            predecessor_release=predecessor if isinstance(predecessor, dict) else None,
+            context=gate_context.model_dump(mode="json"),
+            registry=dict(self.quality_gate_registry),
+            graph=dict(self.workflow_graph),
+        )
+        if not result["ok"]:
+            first = result["errors"][0]
+            raise StepValidationError(str(first["code"]), str(first["message"]))
+        next_run = result["run"]
+        if (
+            not isinstance(next_run, dict)
+            or next_run.get("status") != "awaiting_gate"
+            or next_run.get("revision") != output.target_revision
+        ):
+            raise StepValidationError(
+                "ERROR_PRODUCTION_STATE_INVALID",
+                "Transition Service returned an invalid awaiting-gate run projection.",
+            )
+        return next_run
+
     def _validate_specialized(self, step_id: str, bundle: Mapping[str, JsonValue]) -> None:
         result = _validator(step_id, bundle, self.root)
         if not bool(result.get("valid")):
@@ -131,6 +229,7 @@ class StepValidationService:
         step_id: str,
         artifact: ArtifactRecord,
         gate_context: Mapping[str, JsonValue],
+        artifact_overrides: Mapping[str, ArtifactRecord],
     ) -> tuple[dict[str, JsonValue], ...]:
         context = gate_context.model_dump(mode="json")
         resolution = resolve_required_gates(dict(self.quality_gate_registry), step_id, "submit_for_gate", context)
@@ -150,14 +249,15 @@ class StepValidationService:
             allowed_evidence = set(gate["evidence_required"]) | ({"raw_evidence_artifact_sha256"} if gate.get("binding_scope") == "external_evidence" else set())
             if evidence is None or set(evidence) != allowed_evidence:
                 raise StepValidationError("ERROR_QUALITY_GATE_EVIDENCE_INVALID", "Required gate evidence is missing or unknown.")
+            gate_artifact = artifact_overrides.get(gate["gate_id"], artifact)
             records.append({
-                "quality_gate_run_id": f"qgr-{step_id.replace('b', 'b').replace('a', 'a')}-{gate['gate_id'][3:]}-{artifact.content_sha256[:8]}",
+                "quality_gate_run_id": f"qgr-{step_id.replace('b', 'b').replace('a', 'a')}-{gate['gate_id'][3:]}-{gate_artifact.content_sha256[:8]}",
                 "quality_gate_id": gate["gate_id"], "human_gate_id": _human_gate(step_id),
-                "tenant_id": artifact.tenant_id, "run_id": artifact.run_id, "step_id": step_id,
-                "artifact_id": artifact.artifact_id, "artifact_sha256": artifact.content_sha256, "artifact_revision": artifact.revision,
+                "tenant_id": gate_artifact.tenant_id, "run_id": gate_artifact.run_id, "step_id": step_id,
+                "artifact_id": gate_artifact.artifact_id, "artifact_sha256": gate_artifact.content_sha256, "artifact_revision": gate_artifact.revision,
                 "registry_version": self.quality_gate_registry["schema_version"], "policy_version": "1.0.0",
                 "result": "passed", "evidence": evidence, "findings": [],
-                "checked_at": artifact.created_at, "checker_version": "step-validation-service-1.0.0",
+                "checked_at": gate_artifact.created_at, "checker_version": "step-validation-service-1.0.0",
             })
         return tuple(records)
 
@@ -227,6 +327,48 @@ def _bind_document(bound: dict[str, JsonValue], key: str, document: dict[str, Js
     bound[key] = document
 
 
+def _supporting_artifacts(
+    step_id: str,
+    bundle: Mapping[str, JsonValue],
+) -> tuple[tuple[ArtifactRecord, bytes], ...]:
+    if step_id != "1":
+        return ()
+    artifact_values = bundle.get("crawl_artifacts")
+    evidence_values = bundle.get("agent_evidence_records")
+    if not isinstance(artifact_values, list) or not isinstance(evidence_values, list):
+        raise StepValidationError(
+            "ERROR_CRAWL_EVIDENCE_MISSING",
+            "Step 1 requires crawl supporting artifact and immutable Agent Evidence records.",
+        )
+    supporting: list[tuple[ArtifactRecord, bytes]] = []
+    for value in artifact_values:
+        if not isinstance(value, dict):
+            raise StepValidationError("ERROR_CRAWL_EVIDENCE_INVALID", "Crawl supporting artifact is invalid.")
+        artifact = ArtifactRecord.model_validate(value)
+        matches = [
+            evidence
+            for evidence in evidence_values
+            if isinstance(evidence, dict)
+            and evidence.get("content_sha256") == artifact.content_sha256
+            and isinstance(evidence.get("result"), dict)
+        ]
+        if len(matches) != 1:
+            raise StepValidationError(
+                "ERROR_CRAWL_EVIDENCE_INVALID",
+                "Crawl supporting artifact must bind exactly one Agent Evidence result.",
+            )
+        content = (
+            json.dumps(matches[0]["result"], ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n"
+        ).encode("utf-8")
+        if hashlib.sha256(content).hexdigest() != artifact.content_sha256:
+            raise StepValidationError(
+                "ERROR_CRAWL_EVIDENCE_HASH_MISMATCH",
+                "Crawl supporting artifact bytes do not match the immutable Evidence hash.",
+            )
+        supporting.append((artifact, content))
+    return tuple(supporting)
+
+
 def _render(step_id: str, bundle: Mapping[str, JsonValue]) -> Mapping[str, str]:
     match step_id:
         case "0": return {}
@@ -245,9 +387,105 @@ def _human_gate(step_id: str) -> str:
 
 
 def _canonical_parents(step_id: str, bundle: Mapping[str, JsonValue]) -> tuple[str, ...]:
+    prior = bundle.get("prior_revision_artifacts")
+    prior_artifacts = prior if isinstance(prior, list) else []
+    prior_ids = tuple(
+        str(artifact["artifact_id"])
+        for artifact in prior_artifacts
+        if isinstance(artifact, dict)
+        and isinstance(artifact.get("artifact_id"), str)
+    )
     if step_id == "0":
-        return ()
+        return prior_ids
     artifact = bundle.get("source_artifact") if step_id == "1" else bundle.get("predecessor_artifact")
     if not isinstance(artifact, dict) or not isinstance(artifact.get("artifact_id"), str):
         raise StepValidationError("ERROR_CONTEXT_SOURCE_INVALID", "Initial-route step requires a canonical predecessor artifact.")
-    return (artifact["artifact_id"],)
+    return tuple(dict.fromkeys((*prior_ids, artifact["artifact_id"])))
+
+
+def _bind_step1_runtime_projection(
+    bundle: dict[str, JsonValue],
+    output: object,
+    records: tuple[ArtifactRecord, ...],
+    qgrs: tuple[dict[str, JsonValue], ...],
+) -> None:
+    run = bundle.get("run")
+    if not isinstance(run, dict):
+        raise StepValidationError(
+            "ERROR_CONTEXT_SOURCE_INVALID",
+            "Step 1 requires a projected awaiting-gate run record.",
+        )
+    primary = records[0]
+    predecessor = bundle.get("predecessor_release")
+    if not isinstance(predecessor, dict):
+        raise StepValidationError(
+            "ERROR_CONTEXT_SOURCE_INVALID",
+            "Step 1 requires the released Gate 0 predecessor projection.",
+        )
+    artifact_records = [record.model_dump(mode="json") for record in records]
+    gate_records = [dict(record) for record in qgrs]
+    predecessor_gates = bundle.get("quality_gates")
+    if not isinstance(predecessor_gates, list):
+        raise StepValidationError(
+            "ERROR_CONTEXT_SOURCE_INVALID",
+            "Step 1 requires the released Gate 0 quality-gate record.",
+        )
+    domain_gate = next(
+        (record for record in gate_records if record.get("quality_gate_id") == "qg-domain-contract"),
+        None,
+    )
+    if not isinstance(domain_gate, dict):
+        raise StepValidationError(
+            "ERROR_QUALITY_GATE_BINDING_INVALID",
+            "Step 1 requires a current domain-contract quality gate.",
+        )
+    bundle["artifact"] = artifact_records[0]
+    bundle["quality_gates"] = [*predecessor_gates, *gate_records]
+    bundle["transition"] = {
+        "command_id": f"command-submit-gate-{primary.content_sha256[:16]}",
+        "tenant_id": primary.tenant_id,
+        "project_id": primary.project_id,
+        "run_id": primary.run_id,
+        "expected_revision": primary.revision,
+        "idempotency_key": f"idem-submit-gate-{primary.content_sha256[:16]}",
+        "operation": "submit_for_gate",
+        "from_step_id": "0",
+        "to_step_id": "1",
+        "input_hash": run["input_hash"],
+        "output_hash": primary.content_sha256,
+        "requested_at": primary.created_at,
+        "predecessor_release": {
+            key: predecessor[key]
+            for key in (
+                "step_id",
+                "gate_id",
+                "status",
+                "artifact_id",
+                "artifact_sha256",
+                "artifact_revision",
+            )
+        },
+        "quality_gate": {
+            "quality_gate_run_id": domain_gate["quality_gate_run_id"],
+            "result": domain_gate["result"],
+            "artifact_id": domain_gate["artifact_id"],
+            "artifact_sha256": domain_gate["artifact_sha256"],
+        },
+        "artifacts": [
+            {
+                "artifact_id": record.artifact_id,
+                "revision": record.revision,
+                "content_sha256": record.content_sha256,
+            }
+            for record in records
+        ],
+        "quality_gates": [
+            {
+                "quality_gate_run_id": record["quality_gate_run_id"],
+                "result": record["result"],
+                "artifact_id": record["artifact_id"],
+                "artifact_sha256": record["artifact_sha256"],
+            }
+            for record in gate_records
+        ],
+    }

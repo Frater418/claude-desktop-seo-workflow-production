@@ -2447,6 +2447,580 @@
         "type": "object"
       },
       "JsonValue": {},
+      "PlanningCapacityConfirmRequest": {
+        "additionalProperties": false,
+        "description": "Hash-bound confirmation of one planning-capacity preview.",
+        "properties": {
+          "confirmed": {
+            "const": true,
+            "title": "Confirmed",
+            "type": "boolean"
+          },
+          "idempotency_key": {
+            "pattern": "^idem-[a-z0-9][a-z0-9-]{7,127}$",
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "preview_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Preview Hash",
+            "type": "string"
+          }
+        },
+        "required": [
+          "preview_hash",
+          "idempotency_key",
+          "confirmed"
+        ],
+        "title": "PlanningCapacityConfirmRequest",
+        "type": "object"
+      },
+      "PlanningCapacityPreviewRequest": {
+        "additionalProperties": false,
+        "description": "Operator-provided weekly planning capacity for an accepted project.",
+        "properties": {
+          "max_hours_per_week": {
+            "maximum": 168.0,
+            "minimum": 0.0,
+            "title": "Max Hours Per Week",
+            "type": "number"
+          },
+          "min_hours_per_week": {
+            "maximum": 168.0,
+            "minimum": 0.0,
+            "title": "Min Hours Per Week",
+            "type": "number"
+          }
+        },
+        "required": [
+          "min_hours_per_week",
+          "max_hours_per_week"
+        ],
+        "title": "PlanningCapacityPreviewRequest",
+        "type": "object"
+      },
+      "ProductionConfirmRequest": {
+        "additionalProperties": false,
+        "description": "Explicit confirmation bound to one production preview.",
+        "properties": {
+          "confirmed": {
+            "const": true,
+            "title": "Confirmed",
+            "type": "boolean"
+          },
+          "idempotency_key": {
+            "pattern": "^idem-[a-z0-9][a-z0-9-]{7,127}$",
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "intent": {
+            "$ref": "#/components/schemas/ProductionIntent"
+          },
+          "preview_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Preview Hash",
+            "type": "string"
+          }
+        },
+        "required": [
+          "intent",
+          "preview_hash",
+          "idempotency_key",
+          "confirmed"
+        ],
+        "title": "ProductionConfirmRequest",
+        "type": "object"
+      },
+      "ProductionConfirmResult": {
+        "additionalProperties": false,
+        "description": "Durable readback for a running, waiting, failed or completed production execution.",
+        "properties": {
+          "canonical": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "title": "Canonical",
+            "type": "object"
+          },
+          "execution_id": {
+            "pattern": "^production-execution-[a-f0-9]{32}$",
+            "title": "Execution Id",
+            "type": "string"
+          },
+          "preview_hash": {
+            "title": "Preview Hash",
+            "type": "string"
+          },
+          "readback_urls": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Readback Urls",
+            "type": "array"
+          },
+          "replay": {
+            "title": "Replay",
+            "type": "boolean"
+          },
+          "status": {
+            "enum": [
+              "prepared",
+              "running",
+              "interaction_required",
+              "approval_required",
+              "denied",
+              "completed",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "replay",
+          "execution_id",
+          "status",
+          "preview_hash",
+          "readback_urls",
+          "canonical"
+        ],
+        "title": "ProductionConfirmResult",
+        "type": "object"
+      },
+      "ProductionIntent": {
+        "additionalProperties": false,
+        "description": "One operator-authorized real production run for the current workflow step.",
+        "properties": {
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "project_id": {
+            "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "run_id": {
+            "pattern": "^run-[a-z0-9][a-z0-9-]{7,63}$",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "step_id": {
+            "enum": [
+              "0",
+              "1",
+              "1b",
+              "1c",
+              "2",
+              "3",
+              "4a",
+              "4b"
+            ],
+            "title": "Step Id",
+            "type": "string"
+          },
+          "tenant_id": {
+            "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$",
+            "title": "Tenant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tenant_id",
+          "project_id",
+          "run_id",
+          "step_id",
+          "expected_revision"
+        ],
+        "title": "ProductionIntent",
+        "type": "object"
+      },
+      "ProductionPreview": {
+        "additionalProperties": false,
+        "description": "Read-only production readiness and consequences before the real model call.",
+        "properties": {
+          "allowed": {
+            "title": "Allowed",
+            "type": "boolean"
+          },
+          "blockers": {
+            "items": {
+              "$ref": "#/components/schemas/ActionBlocker"
+            },
+            "title": "Blockers",
+            "type": "array"
+          },
+          "consequence": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "title": "Consequence",
+            "type": "object"
+          },
+          "intent": {
+            "$ref": "#/components/schemas/ProductionIntent"
+          },
+          "preview_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Preview Hash",
+            "type": "string"
+          }
+        },
+        "required": [
+          "intent",
+          "allowed",
+          "blockers",
+          "consequence",
+          "preview_hash"
+        ],
+        "title": "ProductionPreview",
+        "type": "object"
+      },
+      "ProductionSteeredRerunRequest": {
+        "additionalProperties": false,
+        "description": "Versioned fachlicher rerun bound to one rejected artifact revision.",
+        "properties": {
+          "affected_sections": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "minItems": 1,
+            "title": "Affected Sections",
+            "type": "array"
+          },
+          "confirmed": {
+            "const": true,
+            "title": "Confirmed",
+            "type": "boolean"
+          },
+          "expected_artifact_revision": {
+            "minimum": 1.0,
+            "title": "Expected Artifact Revision",
+            "type": "integer"
+          },
+          "expected_artifact_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Expected Artifact Sha256",
+            "type": "string"
+          },
+          "expected_execution_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Expected Execution Sha256",
+            "type": "string"
+          },
+          "findings": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "minItems": 1,
+            "title": "Findings",
+            "type": "array"
+          },
+          "idempotency_key": {
+            "pattern": "^idem-[a-z0-9][a-z0-9-]{7,127}$",
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "immutable_constraints": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "minItems": 1,
+            "title": "Immutable Constraints",
+            "type": "array"
+          },
+          "instruction": {
+            "maxLength": 12000,
+            "minLength": 1,
+            "title": "Instruction",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotency_key",
+          "expected_execution_sha256",
+          "expected_artifact_sha256",
+          "expected_artifact_revision",
+          "findings",
+          "affected_sections",
+          "immutable_constraints",
+          "instruction",
+          "confirmed"
+        ],
+        "title": "ProductionSteeredRerunRequest",
+        "type": "object"
+      },
+      "ProductionTechnicalRetryRequest": {
+        "additionalProperties": false,
+        "description": "Idempotent technical retry of one failed, side-effect-free execution.",
+        "properties": {
+          "expected_execution_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Expected Execution Sha256",
+            "type": "string"
+          },
+          "idempotency_key": {
+            "pattern": "^idem-[a-z0-9][a-z0-9-]{7,127}$",
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "reason": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotency_key",
+          "expected_execution_sha256",
+          "reason"
+        ],
+        "title": "ProductionTechnicalRetryRequest",
+        "type": "object"
+      },
+      "ProjectDeletionConfirmRequest": {
+        "additionalProperties": false,
+        "description": "Explicit final confirmation of one unchanged deletion preview.",
+        "properties": {
+          "confirmation_text": {
+            "const": "LOESCHEN",
+            "title": "Confirmation Text",
+            "type": "string"
+          },
+          "confirmed": {
+            "const": true,
+            "title": "Confirmed",
+            "type": "boolean"
+          },
+          "idempotency_key": {
+            "pattern": "^idem-[a-z0-9][a-z0-9-]{7,127}$",
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "preview_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Preview Hash",
+            "type": "string"
+          }
+        },
+        "required": [
+          "preview_hash",
+          "idempotency_key",
+          "confirmed",
+          "confirmation_text"
+        ],
+        "title": "ProjectDeletionConfirmRequest",
+        "type": "object"
+      },
+      "ProjectDeletionPreviewData": {
+        "additionalProperties": false,
+        "description": "Read-only, hash-bound impact preview for one managed project.",
+        "properties": {
+          "active_execution_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Active Execution Ids",
+            "type": "array"
+          },
+          "active_run_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Active Run Ids",
+            "type": "array"
+          },
+          "allowed": {
+            "title": "Allowed",
+            "type": "boolean"
+          },
+          "artifact_count": {
+            "minimum": 0.0,
+            "title": "Artifact Count",
+            "type": "integer"
+          },
+          "blockers": {
+            "items": {
+              "$ref": "#/components/schemas/ActionBlocker"
+            },
+            "title": "Blockers",
+            "type": "array"
+          },
+          "current_step": {
+            "title": "Current Step",
+            "type": "string"
+          },
+          "customer_name": {
+            "title": "Customer Name",
+            "type": "string"
+          },
+          "file_count": {
+            "minimum": 0.0,
+            "title": "File Count",
+            "type": "integer"
+          },
+          "preview_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Preview Hash",
+            "type": "string"
+          },
+          "previewed_at": {
+            "title": "Previewed At",
+            "type": "string"
+          },
+          "project_id": {
+            "title": "Project Id",
+            "type": "string"
+          },
+          "project_name": {
+            "title": "Project Name",
+            "type": "string"
+          },
+          "release_count": {
+            "minimum": 0.0,
+            "title": "Release Count",
+            "type": "integer"
+          },
+          "run_count": {
+            "minimum": 0.0,
+            "title": "Run Count",
+            "type": "integer"
+          },
+          "tenant_id": {
+            "title": "Tenant Id",
+            "type": "string"
+          },
+          "total_bytes": {
+            "minimum": 0.0,
+            "title": "Total Bytes",
+            "type": "integer"
+          },
+          "workspace_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Workspace Sha256",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tenant_id",
+          "project_id",
+          "project_name",
+          "customer_name",
+          "current_step",
+          "file_count",
+          "total_bytes",
+          "run_count",
+          "artifact_count",
+          "release_count",
+          "active_run_ids",
+          "active_execution_ids",
+          "allowed",
+          "blockers",
+          "preview_hash",
+          "workspace_sha256",
+          "previewed_at"
+        ],
+        "title": "ProjectDeletionPreviewData",
+        "type": "object"
+      },
+      "ProjectDeletionPreviewEnvelope": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ProjectDeletionPreviewData"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "ProjectDeletionPreviewEnvelope",
+        "type": "object"
+      },
+      "ProjectDeletionResultData": {
+        "additionalProperties": false,
+        "description": "Verified terminal result of one project deletion.",
+        "properties": {
+          "deleted": {
+            "const": true,
+            "title": "Deleted",
+            "type": "boolean"
+          },
+          "deleted_at": {
+            "title": "Deleted At",
+            "type": "string"
+          },
+          "deleted_file_count": {
+            "minimum": 0.0,
+            "title": "Deleted File Count",
+            "type": "integer"
+          },
+          "deleted_total_bytes": {
+            "minimum": 0.0,
+            "title": "Deleted Total Bytes",
+            "type": "integer"
+          },
+          "deletion_id": {
+            "pattern": "^project-deletion-[a-f0-9]{24}$",
+            "title": "Deletion Id",
+            "type": "string"
+          },
+          "project_id": {
+            "title": "Project Id",
+            "type": "string"
+          },
+          "project_name": {
+            "title": "Project Name",
+            "type": "string"
+          },
+          "readback_urls": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Readback Urls",
+            "type": "array"
+          },
+          "replay": {
+            "title": "Replay",
+            "type": "boolean"
+          },
+          "tenant_id": {
+            "title": "Tenant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tenant_id",
+          "project_id",
+          "project_name",
+          "deletion_id",
+          "deleted_at",
+          "deleted",
+          "replay",
+          "deleted_file_count",
+          "deleted_total_bytes",
+          "readback_urls"
+        ],
+        "title": "ProjectDeletionResultData",
+        "type": "object"
+      },
+      "ProjectDeletionResultEnvelope": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ProjectDeletionResultData"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "ProjectDeletionResultEnvelope",
+        "type": "object"
+      },
       "ReviewedIntake": {
         "additionalProperties": false,
         "properties": {
@@ -2510,6 +3084,34 @@
           }
         },
         "title": "ReviewedIntake",
+        "type": "object"
+      },
+      "ToolInteractionDecisionRequest": {
+        "additionalProperties": false,
+        "description": "Exact operator decision for one immutable Heartweb tool authorization.",
+        "properties": {
+          "approved": {
+            "title": "Approved",
+            "type": "boolean"
+          },
+          "expected_request_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Expected Request Sha256",
+            "type": "string"
+          },
+          "reason": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "approved",
+          "expected_request_sha256",
+          "reason"
+        ],
+        "title": "ToolInteractionDecisionRequest",
         "type": "object"
       },
       "TraceEvidenceReference": {
@@ -3549,6 +4151,112 @@
         "summary": "Handler"
       }
     },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/deletion/confirm": {
+      "post": {
+        "operationId": "confirmProjectDeletion",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDeletionConfirmRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDeletionResultEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Confirm Project Deletion"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/deletion/preview": {
+      "post": {
+        "operationId": "previewProjectDeletion",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDeletionPreviewEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Preview Project Deletion"
+      }
+    },
     "/v1/tenants/{tenant_id}/projects/{project_id}/delivery/exports": {
       "get": {
         "operationId": "listDeliveryExports",
@@ -4328,6 +5036,122 @@
         "summary": "Handler"
       }
     },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/inputs/planning-capacity/confirm": {
+      "post": {
+        "operationId": "confirmPlanningCapacity",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanningCapacityConfirmRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Planning Capacity Confirm"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/inputs/planning-capacity/preview": {
+      "post": {
+        "operationId": "previewPlanningCapacity",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanningCapacityPreviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Planning Capacity Preview"
+      }
+    },
     "/v1/tenants/{tenant_id}/projects/{project_id}/intake": {
       "get": {
         "operationId": "getMarkdownIntake",
@@ -4634,6 +5458,503 @@
         "summary": "Handler"
       }
     },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/production/confirm": {
+      "post": {
+        "operationId": "confirmProductionRun",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductionConfirmRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductionConfirmResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Confirm Production Run"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/production/executions/{execution_id}": {
+      "get": {
+        "operationId": "getProductionExecution",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "execution_id",
+            "required": true,
+            "schema": {
+              "title": "Execution Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductionConfirmResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Production Execution"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/production/executions/{execution_id}/interactions": {
+      "get": {
+        "operationId": "listProductionInteractions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "execution_id",
+            "required": true,
+            "schema": {
+              "title": "Execution Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataEnvelope"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Production Interactions"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/production/executions/{execution_id}/interactions/{interaction_id}/decision": {
+      "post": {
+        "operationId": "decideProductionInteraction",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "execution_id",
+            "required": true,
+            "schema": {
+              "title": "Execution Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "interaction_id",
+            "required": true,
+            "schema": {
+              "title": "Interaction Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToolInteractionDecisionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductionConfirmResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Decide Production Interaction"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/production/executions/{execution_id}/refresh": {
+      "post": {
+        "operationId": "refreshProductionExecution",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "execution_id",
+            "required": true,
+            "schema": {
+              "title": "Execution Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductionConfirmResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Refresh Production Execution"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/production/executions/{execution_id}/steered-rerun": {
+      "post": {
+        "operationId": "rerunProductionExecutionWithSteering",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "execution_id",
+            "required": true,
+            "schema": {
+              "title": "Execution Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductionSteeredRerunRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductionConfirmResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Rerun Production Execution With Steering"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/production/executions/{execution_id}/technical-retry": {
+      "post": {
+        "operationId": "retryProductionExecutionTechnically",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "execution_id",
+            "required": true,
+            "schema": {
+              "title": "Execution Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductionTechnicalRetryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductionConfirmResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Retry Production Execution Technically"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/production/preview": {
+      "post": {
+        "operationId": "previewProductionRun",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductionIntent"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductionPreview"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Preview Production Run"
+      }
+    },
     "/v1/tenants/{tenant_id}/projects/{project_id}/releases": {
       "get": {
         "operationId": "listReleases",
@@ -4842,6 +6163,120 @@
           }
         },
         "summary": "Run History"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/runs/{run_id}/production/execution": {
+      "get": {
+        "operationId": "getActiveProductionExecution",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductionConfirmResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Active Production Execution"
+      }
+    },
+    "/v1/tenants/{tenant_id}/projects/{project_id}/runs/{run_id}/production/latest-execution": {
+      "get": {
+        "operationId": "getLatestProductionExecution",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductionConfirmResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Latest Production Execution"
       }
     },
     "/v1/tenants/{tenant_id}/projects/{project_id}/runs/{run_id}/steps/{step_id}/artifact-revisions": {

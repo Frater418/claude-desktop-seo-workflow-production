@@ -101,6 +101,14 @@ def _pillar_result(bundle: Mapping[str, JsonValue], candidate: Mapping[str, Json
     pillars = candidate["pillars"]
     approved_value = bundle.get("approved_pillar_ids")
     approved = approved_value if isinstance(approved_value, list) else [pillar["pillar_id"] for pillar in pillars]
+    candidate_ids = [pillar["pillar_id"] for pillar in pillars]
+    if len(set(approved)) != len(approved) or set(candidate_ids) != set(approved):
+        return _error(
+            "ERROR_STEP2_APPROVED_PILLAR_MISMATCH",
+            "Candidate pillars must exactly match the released approved pillar inventory.",
+            ["candidate", "pillars"],
+            "Remove unknown pillars and add every released approved pillar exactly once.",
+        )
     verified_by_pillar = Counter(
         pillar["pillar_id"]
         for pillar in pillars
@@ -148,6 +156,14 @@ def validate_step2_candidate(bundle: Mapping[str, JsonValue]) -> dict[str, JsonV
 
 
 def validate_step2_preflight(bundle: Mapping[str, JsonValue]) -> dict[str, JsonValue]:
+    approved = bundle.get("approved_pillar_ids")
+    if not isinstance(approved, list) or not approved or any(not isinstance(pillar_id, str) or not pillar_id for pillar_id in approved):
+        return _error(
+            "ERROR_STEP2_APPROVED_PILLARS_MISSING",
+            "Step 2 requires the approved pillar IDs from the released Step 1 inventory.",
+            ["approved_pillar_ids"],
+            "Bind the released Step 1 topic inventory before validating the production candidate.",
+        )
     result = validate_step2_candidate(bundle)
     if not result["valid"]:
         return result

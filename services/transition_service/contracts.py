@@ -11,7 +11,8 @@ STATE_RULES = {
     "start": ({"pending"}, "in_progress"), "submit_for_gate": ({"in_progress"}, "awaiting_gate"),
     "post_publication": ({"in_progress"}, "awaiting_gate"), "approve": ({"awaiting_gate"}, "approved"),
     "complete": ({"approved"}, "completed"), "publish": ({"approved"}, "completed"),
-    "retry": ({"failed"}, "in_progress"), "supersede": ({"pending", "in_progress", "awaiting_gate", "approved", "failed"}, "superseded"),
+    "retry": ({"failed"}, "in_progress"), "revise": ({"awaiting_gate"}, "in_progress"),
+    "supersede": ({"pending", "in_progress", "awaiting_gate", "approved", "failed"}, "superseded"),
 }
 RETRY_CLASS = {"ERR_TRANSITION_NOT_ALLOWED": "manual", "ERR_STALE_REVISION": "never", "ERR_APPROVAL_STALE": "manual", "ERR_ARTIFACT_REQUIRED": "manual", "ERR_GATE_REQUIRED": "manual", "ERR_TENANT_ISOLATION": "never", "ERR_IDEMPOTENCY_CONFLICT": "never", "ERR_RETRY_EXHAUSTED": "manual"}
 

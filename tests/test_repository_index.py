@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.build_repository_index import GENERATED_PATHS, generate_outputs
+from scripts.build_repository_index import GENERATED_PATHS, ONBOARDING_SOURCE_PATHS, generate_outputs
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = ROOT / "00_admin/repository-index/DOCUMENT_REGISTRY.json"
@@ -17,6 +17,23 @@ REGISTRY_PATH = ROOT / "00_admin/repository-index/DOCUMENT_REGISTRY.json"
 
 def _registry() -> dict:
     return json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+
+
+def _markdown_links_outside_fences(text: str) -> list[str]:
+    links: list[str] = []
+    fence_length: int | None = None
+    for line in text.splitlines():
+        match = re.match(r"\s*(`{3,})", line)
+        if match is not None:
+            marker_length = len(match.group(1))
+            if fence_length is None:
+                fence_length = marker_length
+            elif marker_length >= fence_length:
+                fence_length = None
+            continue
+        if fence_length is None:
+            links.extend(re.findall(r"\[[^\]]+\]\(([^)]+)\)", line))
+    return links
 
 
 class RepositoryIndexTests(unittest.TestCase):
@@ -56,8 +73,11 @@ class RepositoryIndexTests(unittest.TestCase):
         self.assertEqual(by_path["00_admin/DECISIONS.md"]["lifecycle"], "current_authority")
         self.assertEqual(
             by_path[".hermes/plans/2026-08-22-repository-authority-rag-index.md"]["lifecycle"],
-            "active_plan",
+            "superseded",
         )
+        consolidation = by_path[".hermes/plans/2026-08-25_225654-repository-master-consolidation-and-onboarding.md"]
+        self.assertEqual(consolidation["lifecycle"], "active_plan")
+        self.assertTrue(consolidation["default_retrieval"])
         for entry_document in ("AGENTS.md", "CLAUDE.md", "README.md"):
             self.assertEqual(by_path[entry_document]["lifecycle"], "current_authority")
             self.assertTrue(by_path[entry_document]["default_retrieval"])
@@ -110,7 +130,7 @@ class RepositoryIndexTests(unittest.TestCase):
                 continue
             source = ROOT / relative
             text = source.read_text(encoding="utf-8")
-            for target in re.findall(r"\[[^\]]+\]\(([^)]+)\)", text):
+            for target in _markdown_links_outside_fences(text):
                 if target.startswith(("http://", "https://", "#")):
                     continue
                 target_path = target.split("#", 1)[0]
@@ -120,14 +140,50 @@ class RepositoryIndexTests(unittest.TestCase):
 
     def test_session_bootstrap_has_binding_read_order(self) -> None:
         text = (ROOT / "00_admin/SESSION_BOOTSTRAP.md").read_text(encoding="utf-8")
+        onboarding_pos = text.index("00_admin/ONBOARDING_REFERENCE.md")
         project_pos = text.index("00_admin/PROJECT_STATE.md")
         decisions_pos = text.index("00_admin/DECISIONS.md")
         index_pos = text.index("00_admin/REPOSITORY_INDEX.md")
         plans_pos = text.index(".hermes/plans/INDEX.md")
+        self.assertLess(onboarding_pos, project_pos)
         self.assertLess(project_pos, decisions_pos)
         self.assertLess(decisions_pos, index_pos)
         self.assertLess(index_pos, plans_pos)
         self.assertIn("semantic retriever", text.casefold())
+
+    def test_onboarding_reference_covers_sources_prompts_agents_and_inventory(self) -> None:
+        text = (ROOT / "00_admin/ONBOARDING_REFERENCE.md").read_text(encoding="utf-8")
+        entries = _registry()["entries"]
+        by_path = {entry["path"]: entry for entry in entries}
+        self.assertGreaterEqual(len(entries), 327)
+        self.assertIn(f"**Inventory records:** {len(entries)}", text)
+
+        for relative in ONBOARDING_SOURCE_PATHS:
+            entry = by_path[relative]
+            heading = f"### Source: [`{relative}`](../{relative})"
+            start = text.index(heading)
+            end = text.find("\n### Source:", start + len(heading))
+            block = text[start:] if end < 0 else text[start:end]
+            self.assertIn(entry["content_sha256"], block)
+            self.assertIn((ROOT / relative).read_text(encoding="utf-8").rstrip(), block)
+
+        prompt_entries = [entry for entry in entries if entry["area"] == "prompts"]
+        prompt_catalog = text.split("## 9. Complete prompt catalog", 1)[1].split("## 10. Active workflow prompt registry", 1)[0]
+        self.assertEqual(len(prompt_entries), 15)
+        self.assertEqual(prompt_catalog.count("`active_registry`"), 9)
+        self.assertEqual(prompt_catalog.count("`active_intake`"), 1)
+        self.assertEqual(prompt_catalog.count("`superseded_alias`"), 2)
+        self.assertEqual(prompt_catalog.count("`historical_version`"), 3)
+        for entry in prompt_entries:
+            self.assertEqual(prompt_catalog.count(f"](../{entry['path']})"), 1)
+
+        agent_catalog = text.split("## 11. Initial-route Step agents", 1)[1].split("## 12. Evolution rules", 1)[0]
+        for step in ("0", "1", "1b", "1c", "2", "3", "4a", "4b"):
+            self.assertIn(f"| `{step}` |", agent_catalog)
+
+        inventory = text.split("## 15. Complete registry inventory", 1)[1].split("## 16. Branch and fresh-clone continuation", 1)[0]
+        for entry in entries:
+            self.assertEqual(inventory.count(f"| [`{entry['path']}`](../{entry['path']}) |"), 1, entry["path"])
 
     def test_jsonl_matches_registry_order_and_content(self) -> None:
         registry_entries = _registry()["entries"]

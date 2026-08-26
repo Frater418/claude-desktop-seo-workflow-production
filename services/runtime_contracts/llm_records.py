@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+import json
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Mapping, Sequence, TypeAlias
@@ -217,11 +219,59 @@ def _result_errors(document: Mapping[str, JsonValue]) -> list[ValidationError]:
         errors.append(_error("LLM_RUNTIME_RESULT_INVALID", "/token_usage/total_tokens", "total tokens must equal input plus output"))
     if tokens.get("cached_input_tokens", 0) > tokens["input_tokens"]:
         errors.append(_error("LLM_RUNTIME_RESULT_INVALID", "/token_usage/cached_input_tokens", "cached input cannot exceed input tokens"))
-    if document["status"] == "succeeded" and document["output"]["revision"] != document["target_revision"]:
-        errors.append(_error("LLM_RUNTIME_RESULT_INVALID", "/output/revision", "output revision must equal target revision"))
+    if document["status"] == "succeeded":
+        multi_output = document["schema_version"] in {"1.1.0", "1.2.0"}
+        outputs = document.get("outputs") if multi_output else (document["output"],)
+        for index, output in enumerate(outputs):
+            path = f"/outputs/{index}" if multi_output else "/output"
+            if output["revision"] != document["target_revision"]:
+                errors.append(_error("LLM_RUNTIME_RESULT_INVALID", f"{path}/revision", "output revision must equal target revision"))
+        if multi_output:
+            contract_ids = [output.get("contract_id") for output in outputs]
+            logical_refs = [output["logical_ref"] for output in outputs]
+            if any(not contract_id for contract_id in contract_ids) or len(contract_ids) != len(set(contract_ids)):
+                errors.append(_error("LLM_RUNTIME_RESULT_INVALID", "/outputs", "multi-output results require unique contract IDs"))
+            if len(logical_refs) != len(set(logical_refs)):
+                errors.append(_error("LLM_RUNTIME_RESULT_INVALID", "/outputs", "multi-output logical references must be unique"))
+        if document["schema_version"] == "1.2.0":
+            evidence_keys = {_evidence_key(reference) for reference in document["evidence_refs"]}
+            calls = document["observed_tool_calls"]
+            call_ids = [call["call_id"] for call in calls]
+            if len(call_ids) != len(set(call_ids)):
+                errors.append(_error("LLM_RUNTIME_RESULT_INVALID", "/observed_tool_calls", "observed tool call IDs must be unique"))
+            for call_index, call in enumerate(calls):
+                for reference_index, reference in enumerate(call["evidence_refs"]):
+                    if _evidence_key(reference) not in evidence_keys:
+                        errors.append(_error("LLM_RUNTIME_RESULT_INVALID", f"/observed_tool_calls/{call_index}/evidence_refs/{reference_index}", "tool call Evidence must resolve in the verified run Evidence set"))
+            delegations = document["observed_delegations"]
+            subagent_ids = [delegation["subagent_id"] for delegation in delegations]
+            if len(subagent_ids) != len(set(subagent_ids)):
+                errors.append(_error("LLM_RUNTIME_RESULT_INVALID", "/observed_delegations", "observed subagent IDs must be unique"))
+            sequences: list[int] = []
+            for event_index, event in enumerate(document["lifecycle_events"]):
+                path = f"/lifecycle_events/{event_index}"
+                sequences.append(event["sequence"])
+                try:
+                    payload = json.loads(event["event_json"])
+                except json.JSONDecodeError:
+                    errors.append(_error("LLM_RUNTIME_RESULT_INVALID", f"{path}/event_json", "lifecycle event must contain valid JSON"))
+                    continue
+                canonical = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+                if canonical != event["event_json"]:
+                    errors.append(_error("LLM_RUNTIME_RESULT_INVALID", f"{path}/event_json", "lifecycle event JSON must use canonical bytes"))
+                if not isinstance(payload, dict) or payload.get("event") != event["event"]:
+                    errors.append(_error("LLM_RUNTIME_RESULT_INVALID", f"{path}/event", "lifecycle event type must match its stored JSON"))
+                if hashlib.sha256(event["event_json"].encode("utf-8")).hexdigest() != event["event_sha256"]:
+                    errors.append(_error("LLM_RUNTIME_RESULT_INVALID", f"{path}/event_sha256", "lifecycle event hash must match its canonical JSON"))
+            if sequences != sorted(set(sequences)):
+                errors.append(_error("LLM_RUNTIME_RESULT_INVALID", "/lifecycle_events", "lifecycle event sequence numbers must be unique and ascending"))
     if _timestamp(document["started_at"]) > _timestamp(document["finished_at"]):
         errors.append(_error("LLM_RUNTIME_RESULT_INVALID", "/finished_at", "finished time must not precede start time"))
     return errors
+
+
+def _evidence_key(reference: Mapping[str, JsonValue]) -> tuple[JsonValue, ...]:
+    return tuple(reference[field] for field in ("evidence_id", "operation_id", "logical_ref", "content_sha256"))
 
 
 def _timestamp(value: JsonValue) -> datetime:

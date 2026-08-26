@@ -67,10 +67,10 @@ describe("WorkflowWorkspace actions", () => {
 
     render(<WorkflowWorkspace data={data(actionClient, reload)} />)
 
-    expect(screen.queryByRole("button", { name: "Start verbindlich bestaetigen" })).toBeNull()
-    fireEvent.click(screen.getByRole("button", { name: "Naechsten Schritt vorbereiten" }))
+    expect(screen.queryByRole("button", { name: "Nächsten Schritt anlegen" })).toBeNull()
+    fireEvent.click(screen.getByRole("button", { name: "Folgeschritt prüfen" }))
     await screen.findByText("Der Nachfolger wird kanonisch gestartet.")
-    fireEvent.click(screen.getByRole("button", { name: "Start verbindlich bestaetigen" }))
+    fireEvent.click(screen.getByRole("button", { name: "Nächsten Schritt anlegen" }))
     await waitFor(() => expect(reload).toHaveBeenCalledOnce())
 
     const expectedIntent: ActionIntent = { action: "start", tenant_id: "tenant-eindeutig", project_id: "project-eindeutig", run_id: "run-vorgaenger-20260821", step_id: "1b", expected_revision: 17 }
@@ -84,10 +84,10 @@ describe("WorkflowWorkspace actions", () => {
     const confirmAdminAction = vi.fn(async (): Promise<ActionConfirmResult> => confirmation())
 
     render(<WorkflowWorkspace data={data({ previewAdminAction, confirmAdminAction }, async (): Promise<void> => undefined)} />)
-    fireEvent.click(screen.getByRole("button", { name: "Naechsten Schritt vorbereiten" }))
+    fireEvent.click(screen.getByRole("button", { name: "Folgeschritt prüfen" }))
 
     expect(await screen.findByText("Maschinenpruefung abschliessen und erneut versuchen.")).toBeInTheDocument()
-    expect(screen.queryByRole("button", { name: "Start verbindlich bestaetigen" })).toBeNull()
+    expect(screen.queryByRole("button", { name: "Nächsten Schritt anlegen" })).toBeNull()
     expect(confirmAdminAction).not.toHaveBeenCalled()
   })
 
@@ -97,14 +97,14 @@ describe("WorkflowWorkspace actions", () => {
     const reload = vi.fn(async (): Promise<void> => undefined)
 
     render(<WorkflowWorkspace data={data({ previewAdminAction, confirmAdminAction }, reload)} />)
-    fireEvent.click(screen.getByRole("button", { name: "Naechsten Schritt vorbereiten" }))
-    await screen.findByRole("button", { name: "Start verbindlich bestaetigen" })
-    fireEvent.click(screen.getByRole("button", { name: "Start verbindlich bestaetigen" }))
+    fireEvent.click(screen.getByRole("button", { name: "Folgeschritt prüfen" }))
+    await screen.findByRole("button", { name: "Nächsten Schritt anlegen" })
+    fireEvent.click(screen.getByRole("button", { name: "Nächsten Schritt anlegen" }))
 
     expect(await screen.findByText("Kanonischer Stand wurde aktualisiert. Bitte Vorschau erneut erstellen.")).toBeInTheDocument()
-    expect(screen.queryByRole("button", { name: "Start verbindlich bestaetigen" })).toBeNull()
-    fireEvent.click(screen.getByRole("button", { name: "Naechsten Schritt vorbereiten" }))
-    await screen.findByRole("button", { name: "Start verbindlich bestaetigen" })
+    expect(screen.queryByRole("button", { name: "Nächsten Schritt anlegen" })).toBeNull()
+    fireEvent.click(screen.getByRole("button", { name: "Folgeschritt prüfen" }))
+    await screen.findByRole("button", { name: "Nächsten Schritt anlegen" })
     expect(previewAdminAction).toHaveBeenCalledTimes(2)
     expect(confirmAdminAction).toHaveBeenCalledTimes(1)
   })
@@ -116,9 +116,9 @@ describe("WorkflowWorkspace actions", () => {
     const reload = vi.fn(() => reloadGate.promise)
 
     render(<WorkflowWorkspace data={data({ previewAdminAction, confirmAdminAction }, reload)} />)
-    fireEvent.click(screen.getByRole("button", { name: "Naechsten Schritt vorbereiten" }))
-    await screen.findByRole("button", { name: "Start verbindlich bestaetigen" })
-    fireEvent.click(screen.getByRole("button", { name: "Start verbindlich bestaetigen" }))
+    fireEvent.click(screen.getByRole("button", { name: "Folgeschritt prüfen" }))
+    await screen.findByRole("button", { name: "Nächsten Schritt anlegen" })
+    fireEvent.click(screen.getByRole("button", { name: "Nächsten Schritt anlegen" }))
 
     expect(await screen.findByText("Kanonischer Stand wird geladen.")).toBeInTheDocument()
     expect(screen.queryByText("Kanonische Wiederholung bestaetigt.")).toBeNull()

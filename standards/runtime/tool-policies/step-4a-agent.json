@@ -1,0 +1,58 @@
+{
+  "tool_policy_id": "tool-policy-step-4a-agent",
+  "schema_version": "1.0.0",
+  "policy_version": "1.4.0",
+  "policy_sha256": "bccc68ca85ba4ab3d73a6a99813ae99fadb0562c2cabfabedf01a7f3d1acb29a",
+  "step_id": "4a",
+  "allowed_gateway_operations": [
+    {
+      "operation_id": "request_serp_briefing_evidence",
+      "tool_name": "mcp__heartweb__request_serp_briefing_evidence",
+      "phase": "production",
+      "side_effect": "external_read",
+      "provider_id": "provider-agentseo",
+      "confirmation_scope": "exact_request",
+      "cost_mode": "provider_credits_unreported",
+      "max_calls": 2,
+      "max_items": 1,
+      "timeout_seconds": 600,
+      "evidence_required": true,
+      "input_contract_id": "heartweb.serp-briefing-request.v1",
+      "output_contract_id": "heartweb.serp-briefing-evidence.v1"
+    },
+    {
+      "operation_id": "validate_jsonld",
+      "tool_name": "mcp__heartweb__validate_jsonld",
+      "phase": "validation",
+      "side_effect": "local_evidence_write",
+      "confirmation_scope": "none",
+      "cost_mode": "none",
+      "max_calls": 3,
+      "timeout_seconds": 60,
+      "evidence_required": true,
+      "input_contract_id": "heartweb.jsonld-validation-request.v1",
+      "output_contract_id": "heartweb.jsonld-validation-evidence.v1"
+    }
+  ],
+  "required_gateway_operations": [
+    "request_serp_briefing_evidence",
+    "validate_jsonld"
+  ],
+  "delegation_policy": {
+    "delegation_policy_id": "delegation-policy-step-4a-v1",
+    "allowed": true,
+    "max_workers": 2,
+    "max_depth": 1,
+    "max_rounds": 1,
+    "allowed_purposes": [
+      "research",
+      "synthesis",
+      "domain_review"
+    ],
+    "external_side_effects_allowed": false
+  },
+  "direct_provider_calls_allowed": false,
+  "failure_mode": "fail_closed",
+  "enabled": true,
+  "created_at": "2026-08-25T14:29:06Z"
+}

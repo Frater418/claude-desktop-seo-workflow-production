@@ -2,7 +2,7 @@
 
 **Author:** Raphael Rechberger
 **Status:** Current integration authority
-**Updated:** 2026-08-22
+**Updated:** 2026-08-26
 **Decision:** DEC-0025
 
 ## Product purpose

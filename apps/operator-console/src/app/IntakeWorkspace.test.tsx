@@ -43,8 +43,15 @@ function fixture(previews: readonly object[]): Fixture {
 
 async function previewMarkdown(markdown: string): Promise<void> {
   fireEvent.change(screen.getByLabelText("Markdown-Briefing"), { target: { value: markdown } })
-  fireEvent.click(screen.getByRole("button", { name: "Vorschau erstellen" }))
-  await screen.findByText("Vorschau der Projektaufnahme")
+  fireEvent.click(screen.getByRole("button", { name: "Project V2 erstellen" }))
+  await screen.findByRole("heading", { name: "Project V2 prüfen" })
+}
+
+async function confirmDraft(): Promise<void> {
+  fireEvent.click(screen.getByRole("button", { name: "Vollständigen Project-V2-Entwurf öffnen" }))
+  await screen.findByRole("dialog", { name: "Project V2 prüfen" })
+  fireEvent.click(screen.getByRole("button", { name: "Schließen" }))
+  fireEvent.click(screen.getByRole("checkbox", { name: "Ich habe den vollständigen Project-V2-Entwurf geprüft." }))
 }
 
 describe("IntakeWorkspace", () => {
@@ -61,10 +68,10 @@ describe("IntakeWorkspace", () => {
     expect(screen.getByText("tenant-eindeutig")).toBeInTheDocument()
     expect(screen.getByText("projekt-neu")).toBeInTheDocument()
     expect(screen.getByText("Pflegedienst Alpha")).toBeInTheDocument()
-    expect(screen.getByText("Project V2 vorhanden")).toBeInTheDocument()
-    expect(screen.getByText("Annahme moeglich")).toBeInTheDocument()
+    expect(screen.getByText("Schema-validierter Entwurf vorhanden")).toBeInTheDocument()
+    expect(screen.getByText("Entwurf vollständig")).toBeInTheDocument()
     expect(screen.getByText("Keine fehlenden Angaben.")).toBeInTheDocument()
-    expect(screen.getByLabelText("Projektname pruefen")).toHaveAttribute("readonly")
+    expect(screen.getByRole("button", { name: "Vollständigen Project-V2-Entwurf öffnen" })).toBeEnabled()
   })
 
   it("lists all server-reported missing fields and blocks an ineligible acceptance", async () => {
@@ -78,8 +85,9 @@ describe("IntakeWorkspace", () => {
 
     // Then: every missing canonical field is visible and acceptance is disabled.
     for (const field of ["title", "tenant_id", "project_id", "project_name", "project_v2"]) expect(screen.getByText(field)).toBeInTheDocument()
-    expect(screen.getByText("Annahme nicht moeglich")).toBeInTheDocument()
-    expect(screen.getByRole("button", { name: "Intake verbindlich annehmen" })).toBeDisabled()
+    expect(screen.getByText("Angaben fehlen")).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "Projektanlage noch gesperrt" })).toBeInTheDocument()
+    expect(screen.queryByRole("button", { name: "Projekt anlegen und Schritt 0 öffnen" })).toBeNull()
   })
 
   it("invalidates a stale preview and sends the exact latest server review and hashes", async () => {
@@ -92,10 +100,11 @@ describe("IntakeWorkspace", () => {
 
     // When: the source changes and the operator creates a fresh preview before accepting.
     fireEvent.change(screen.getByLabelText("Markdown-Briefing"), { target: { value: "# Zweite Quelle" } })
-    expect(screen.getByRole("button", { name: "Intake verbindlich annehmen" })).toBeDisabled()
-    fireEvent.click(screen.getByRole("button", { name: "Vorschau erstellen" }))
+    expect(screen.getByRole("button", { name: "Projekt anlegen und Schritt 0 öffnen" })).toBeDisabled()
+    fireEvent.click(screen.getByRole("button", { name: "Project V2 erstellen" }))
     await screen.findByText("Pflege Beta aufnehmen")
-    fireEvent.click(screen.getByRole("button", { name: "Intake verbindlich annehmen" }))
+    await confirmDraft()
+    fireEvent.click(screen.getByRole("button", { name: "Projekt anlegen und Schritt 0 öffnen" }))
 
     // Then: acceptance binds only the latest source, review, and hash values.
     await waitFor(() => expect(onAccepted).toHaveBeenCalledWith("projekt-neu"))
@@ -110,13 +119,14 @@ describe("IntakeWorkspace", () => {
     await previewMarkdown("# Pflege Alpha aufnehmen")
 
     // When: the operator accepts the reviewed source.
-    fireEvent.click(screen.getByRole("button", { name: "Intake verbindlich annehmen" }))
+    await confirmDraft()
+    fireEvent.click(screen.getByRole("button", { name: "Projekt anlegen und Schritt 0 öffnen" }))
 
     // Then: no readiness claim appears before the canonical Step 0 reload completes.
-    expect(await screen.findByText("Kanonischer Stand wird geladen.")).toBeInTheDocument()
-    expect(screen.queryByText("Schritt 0 bereit")).toBeNull()
+    expect(await screen.findByText("Der Kundenordner wird angelegt und Schritt 0 wird geladen.")).toBeInTheDocument()
+    expect(screen.queryByText("Projekt angelegt. Schritt 0 ist bereit.")).toBeNull()
     reload.resolve(stepZero)
-    expect(await screen.findByText("Schritt 0 bereit")).toBeInTheDocument()
+    expect(await screen.findByText("Projekt angelegt. Schritt 0 ist bereit.")).toBeInTheDocument()
   })
 
   it("withholds readiness when the canonical project run is not Step 0", async () => {
@@ -127,11 +137,12 @@ describe("IntakeWorkspace", () => {
     await previewMarkdown("# Pflege Alpha aufnehmen")
 
     // When: the accepted project reload completes.
-    fireEvent.click(screen.getByRole("button", { name: "Intake verbindlich annehmen" }))
+    await confirmDraft()
+    fireEvent.click(screen.getByRole("button", { name: "Projekt anlegen und Schritt 0 öffnen" }))
 
     // Then: only the canonical-step remediation is presented.
-    expect(await screen.findByText("Der kanonische Projektlauf ist nicht in Schritt 0.")).toBeInTheDocument()
-    expect(screen.queryByText("Schritt 0 bereit")).toBeNull()
+    expect(await screen.findByText("Das Projekt wurde angelegt, aber der kanonische Projektlauf ist nicht in Schritt 0.")).toBeInTheDocument()
+    expect(screen.queryByText("Projekt angelegt. Schritt 0 ist bereit.")).toBeNull()
   })
 
   it("shows a canonical reload failure without reporting readiness", async () => {
@@ -141,11 +152,12 @@ describe("IntakeWorkspace", () => {
     await previewMarkdown("# Pflege Alpha aufnehmen")
 
     // When: the operator accepts the reviewed source.
-    fireEvent.click(screen.getByRole("button", { name: "Intake verbindlich annehmen" }))
+    await confirmDraft()
+    fireEvent.click(screen.getByRole("button", { name: "Projekt anlegen und Schritt 0 öffnen" }))
 
     // Then: readiness stays absent and acceptance remains disabled.
     expect(await screen.findByText("Kanonischer Readback fehlgeschlagen.")).toBeInTheDocument()
-    expect(screen.queryByText("Schritt 0 bereit")).toBeNull()
-    expect(screen.getByRole("button", { name: "Intake verbindlich annehmen" })).toBeDisabled()
+    expect(screen.queryByText("Projekt angelegt. Schritt 0 ist bereit.")).toBeNull()
+    expect(screen.getByRole("button", { name: "Projekt anlegen und Schritt 0 öffnen" })).toBeDisabled()
   })
 })

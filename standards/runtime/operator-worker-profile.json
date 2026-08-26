@@ -1,0 +1,43 @@
+{
+  "worker_profile_id": "worker-profile-heartweb-operator",
+  "schema_version": "1.0.0",
+  "profile_version": "1.0.0",
+  "profile_sha256": "66e19e4aee30799f1d77d854368750c65d7f91de9c05eda349ec9e1fdad87645",
+  "display_name": "Heartweb Operator Runtime",
+  "execution_kind": "llm",
+  "provider_capability_ref": {
+    "provider_id": "provider-hermes",
+    "provider_kind": "gateway",
+    "capability_id": "capability-hermes-runs"
+  },
+  "model_policy": {
+    "allowed_model_ids": [
+      "gpt-5.6-sol"
+    ],
+    "default_model_id": "gpt-5.6-sol"
+  },
+  "allowed_steps": [
+    "0",
+    "1",
+    "1b",
+    "1c",
+    "2",
+    "3",
+    "3b",
+    "4a",
+    "4b"
+  ],
+  "tool_policy": {
+    "tool_policy_id": "tool-policy-heartweb-operator",
+    "policy_version": "1.0.0",
+    "policy_sha256": "4d8a5cfe3239530a58b3568c494b52efd49574842aa84dc74c8512d6973739f7",
+    "allowed_operations": [
+      "read_context",
+      "write_candidate_output",
+      "request_gateway_operation"
+    ],
+    "direct_provider_calls_allowed": false
+  },
+  "enabled": true,
+  "created_at": "2026-08-24T00:00:00Z"
+}

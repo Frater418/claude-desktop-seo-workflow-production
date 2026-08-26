@@ -163,6 +163,18 @@ class Step2Pq0_2DeltaTests(unittest.TestCase):
         # Then: request, response, job, provider, and raw-hash provenance remain bound
         self.assertTrue(result["valid"])
 
+    def test_preflight_rejects_candidate_without_released_approved_pillar_inventory(self) -> None:
+        # Given: a provider-bound candidate with no authoritative released Step-1 pillar list
+        bundle = pq0_2_operational_bundle()
+        bundle.pop("approved_pillar_ids", None)
+
+        # When: operational preflight evaluates pillar completeness
+        result = validate_step2_preflight(bundle)
+
+        # Then: candidate self-declaration cannot replace released predecessor authority
+        self.assertFalse(result["valid"])
+        self.assertEqual("ERROR_STEP2_APPROVED_PILLARS_MISSING", result["errors"][0]["code"])
+
     def test_rejects_reused_provider_exchange_across_distinct_evidence_ids(self) -> None:
         # Given: two evidence wrappers that reuse one request, response, job, and raw exchange
         bundle = pq0_2_operational_bundle()
@@ -185,6 +197,7 @@ class Step2Pq0_2DeltaTests(unittest.TestCase):
             row["evidence_id"] = f"evidence-pq2-secondary-{number:04d}"
             row["keyword"] = f"{row['keyword']} secondary"
         bundle["candidate"]["pillars"].append(secondary_pillar)
+        bundle["approved_pillar_ids"].append(secondary_pillar["pillar_id"])
         bundle["candidate"]["evidence_ids"] = [
             row["evidence_id"]
             for pillar in bundle["candidate"]["pillars"]

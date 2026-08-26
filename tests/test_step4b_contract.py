@@ -44,6 +44,23 @@ class Step4BContractTests(unittest.TestCase):
         # Then: the generic candidate is accepted without a market-specific rule.
         self.assertTrue(result["valid"], result["errors"])
 
+    def test_rejects_page_accessibility_and_visual_ids_not_bound_to_staging_checks(self) -> None:
+        bundle = load_fixture("non-ahd-product-bundle.json")
+        cases = (
+            ("accessibility", "axe_evidence_id"),
+            ("responsive", "visual_evidence_id"),
+        )
+        for section, field in cases:
+            with self.subTest(field=field):
+                changed = deepcopy(bundle)
+                changed["page_spec"][section][field] = "evidence-unbound-0001"
+                bind_hashes(changed)
+
+                result = validate_step4b_candidate(changed)
+
+                self.assertFalse(result["valid"])
+                self.assertIn("ERROR_STEP4B_STAGING_PAGE_EVIDENCE_MISMATCH", {error["code"] for error in result["errors"]})
+
     def test_pq0_4b_001_accepts_closed_sections_and_rejects_legacy_html(self) -> None:
         # Given: a self-contained local baseline with every approved semantic section.
         bundle = load_fixture("pq0-4b-001-positive.json")

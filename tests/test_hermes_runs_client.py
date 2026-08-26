@@ -46,6 +46,14 @@ def config() -> HermesRunsConfig:
 
 
 class HermesRunsClientTests(unittest.TestCase):
+    def setUp(self) -> None:
+        event_stream = patch.object(HermesRunsClient, "_event_stream", return_value=())
+        event_stream.start()
+        self.addCleanup(event_stream.stop)
+        best_effort_stop = patch.object(HermesRunsClient, "_best_effort_stop")
+        best_effort_stop.start()
+        self.addCleanup(best_effort_stop.stop)
+
     def test_execute_posts_exact_request_and_returns_completed_observation(self) -> None:
         create_request = load_fixture("create-request.json")
         started_response = load_fixture("started-response.json")
@@ -87,6 +95,28 @@ class HermesRunsClientTests(unittest.TestCase):
             [call_entry.args[0].full_url for call_entry in opened.call_args_list[1:]],
         )
         slept.assert_called_once_with(0.25)
+
+    def test_execute_accepts_running_lifecycle_event(self) -> None:
+        started_response = load_fixture("started-response.json")
+        running_response = load_fixture("running-response.json")
+        running_response["last_event"] = "tool.completed"
+        completed_response = load_fixture("completed-response.json")
+
+        with (
+            patch(
+                "services.operator_api.hermes_runs_client.urlopen",
+                side_effect=[FakeResponse(started_response), FakeResponse(running_response), FakeResponse(completed_response)],
+            ),
+            patch("services.operator_api.hermes_runs_client.monotonic", side_effect=[0.0, 0.0]),
+            patch("services.operator_api.hermes_runs_client.sleep"),
+        ):
+            result = HermesRunsClient(config()).execute(
+                input_text="input",
+                instructions="instructions",
+                session_id=SESSION_ID,
+            )
+
+        self.assertEqual("run.completed", result.last_event)
 
     def test_execute_rejects_invalid_completed_response_without_leaking_output(self) -> None:
         started_response = load_fixture("started-response.json")
@@ -199,6 +229,7 @@ class HermesRunsClientTests(unittest.TestCase):
             ("run_id", "run_sanitized_other"),
             ("session_id", "session_sanitized_other"),
             ("model", "gpt-5.6-other"),
+            ("last_event", ""),
             ("created_at", "1787486400"),
             ("updated_at", -1),
             ("unexpected", True),

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import hashlib
 import tempfile
 import unittest
 from pathlib import Path
@@ -10,6 +9,7 @@ from fastapi.testclient import TestClient
 
 from services.operator_api.app import AppConfig, create_app
 from services.operator_api.repository import WorkspaceRegistration, WorkspaceRegistry
+from tests.test_step0_cross_binding import accepted_intake, neutral_manifest, project
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,12 +30,10 @@ def write(workspace: Path, name: str, value: object) -> None:
 
 
 def seed(workspace: Path) -> None:
-    project_v2 = json.loads((ROOT / "tests/fixtures/domain/real-customer-matrix/national-b2b.json").read_text(encoding="utf-8"))
-    project_v2["project_id"] = PROJECT
-    project_v2["tenant"]["tenant_id"] = TENANT
+    project_v2 = project()
     write(workspace, "project.json", {"tenant_id": TENANT, "project_id": PROJECT})
     write(workspace, "project-v2.json", project_v2)
-    write(workspace, "intake.json", {"tenant_id": TENANT, "project_id": PROJECT, "source_sha256": "68cf4c5938b8e44ba95650155ba8706b55627fe8017fbbb7d9ea1fb524b82526", "reviewed": {"project_name": "National B2B", "project_v2": project_v2}})
+    write(workspace, "intake.json", {"tenant_id": TENANT, "project_id": PROJECT, **accepted_intake()})
     write(workspace, "logical-session.json", {"tenant_id": TENANT, "project_id": PROJECT})
     write(workspace, "workflow.json", {"tenant_id": TENANT, "project_id": PROJECT})
     write(workspace, f"runs/{RUN}.json", {"tenant_id": TENANT, "project_id": PROJECT, "run_id": RUN, "step_id": "0", "gate_id": "GATE-0", "revision": 1, "input_hash": "0" * 64, "status": "pending", "attempt": 1, "created_at": "2026-08-20T00:00:00Z"})
@@ -43,16 +41,15 @@ def seed(workspace: Path) -> None:
         write(workspace, f"{collection}.json", [])
 
 
-def save_candidate(client: TestClient, base: str, *, key: str = "idem-artifact-save-0001") -> None:
-    document = json.loads((ROOT / "tests/fixtures/operator/neutral-step0-manifest.json").read_text(encoding="utf-8"))
-    content = json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
-    project = json.loads((ROOT / "tests/fixtures/domain/real-customer-matrix/national-b2b.json").read_text(encoding="utf-8"))
-    project["project_id"] = PROJECT
-    project["tenant"]["tenant_id"] = TENANT
+def save_candidate(client: TestClient, base: str, workspace: Path, *, key: str = "idem-artifact-save-0001") -> None:
+    run = json.loads((workspace / f"v2/operator/runs/{RUN}.json").read_text(encoding="utf-8"))
+    if run["status"] == "pending":
+        run["status"] = "in_progress"
+        write(workspace, f"runs/{RUN}.json", run)
     response = client.post(f"{base}/artifacts", json={
         "run_id": RUN, "expected_parent_revision": 1, "idempotency_key": key,
-        "primary_document": document, "supporting_documents": (), "bundle": {"project": project},
-        "gate_context": {"site_status": "non_existing_site", "configured_tools": [], "available_tools": [], "not_applicable_decisions": {}, "evidence_by_gate": {"qg-domain-contract": {"schema_id": "https://heartweb.example/schema/manifest.schema.json", "schema_version": "1.0.0", "artifact_sha256": hashlib.sha256(content).hexdigest(), "validator_result": "simulated:fixture-validated"}}},
+        "primary_document": neutral_manifest(), "supporting_documents": (), "bundle": {},
+        "gate_context": {"evidence_by_gate": {}},
     })
     assert response.status_code == 200, response.text
 
@@ -76,15 +73,29 @@ class ActionFacadeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             workspace = Path(temporary)
             seed(workspace)
+            write(workspace, f"runs/{RUN}.json", {"tenant_id": TENANT, "project_id": PROJECT, "run_id": RUN, "step_id": "0", "gate_id": "GATE-0", "revision": 1, "input_hash": "a" * 64, "status": "in_progress", "attempt": 1, "created_at": "2026-08-20T00:00:00Z"})
             client = self.client(workspace)
             base = f"/v1/tenants/{TENANT}/projects/{PROJECT}"
             ghost = client.post(f"{base}/artifacts", json={"run_id": "run-ghost-0001"})
             self.assertEqual(422, ghost.status_code)
-            save_candidate(client, base)
+            save_candidate(client, base, workspace)
             before = client.get(f"{base}/artifacts").json()["data"]
-            save_candidate(client, base)
+            save_candidate(client, base, workspace)
             after = client.get(f"{base}/artifacts").json()["data"]
             self.assertEqual(before, after)
+            conflicting = neutral_manifest()
+            conflicting["target_audience"] = "A different but schema-valid audience synthesis"
+            conflict = client.post(f"{base}/artifacts", json={
+                "run_id": RUN,
+                "expected_parent_revision": 1,
+                "idempotency_key": "idem-artifact-save-0001",
+                "primary_document": conflicting,
+                "supporting_documents": (),
+                "bundle": {},
+                "gate_context": {"evidence_by_gate": {}},
+            })
+            self.assertEqual(409, conflict.status_code)
+            self.assertEqual("ERR_IDEMPOTENCY_CONFLICT", conflict.json()["code"])
 
     def client(self, workspace: Path) -> TestClient:
         return TestClient(create_app(WorkspaceRegistry((WorkspaceRegistration(TENANT, PROJECT, workspace),)), ROOT))
@@ -164,7 +175,7 @@ class ActionFacadeTests(unittest.TestCase):
             seed(workspace)
             client = self.client(workspace)
             base = f"/v1/tenants/{TENANT}/projects/{PROJECT}"
-            save_candidate(client, base)
+            save_candidate(client, base, workspace)
 
             for index, verb in enumerate(("reject", "request-revision", "request-input", "escalate", "request-waiver")):
                 with self.subTest(verb=verb):
@@ -180,7 +191,7 @@ class ActionFacadeTests(unittest.TestCase):
             seed(workspace)
             client = self.client(workspace)
             base = f"/v1/tenants/{TENANT}/projects/{PROJECT}"
-            save_candidate(client, base)
+            save_candidate(client, base, workspace)
             reviewed = intent("resolve", payload={"source_type": "blocker", "source_id": "blocker-missing-0001"})
 
             preview = client.post(self.route("resolve", "preview"), json=reviewed)
@@ -202,7 +213,7 @@ class ActionFacadeTests(unittest.TestCase):
             registry = WorkspaceRegistry((WorkspaceRegistration(TENANT, PROJECT, workspace),))
             client = TestClient(create_app(registry, ROOT, AppConfig(ROOT, clock=clock)))
             base = f"/v1/tenants/{TENANT}/projects/{PROJECT}"
-            save_candidate(client, base)
+            save_candidate(client, base, workspace)
             reviewed = intent("request-input")
             preview = client.post(self.route("request-input", "preview"), json=reviewed).json()
             clock.value = "2026-08-20T01:00:00Z"
@@ -219,7 +230,7 @@ class ActionFacadeTests(unittest.TestCase):
             client = self.client(workspace)
             reviewed = intent("request-input")
             preview = client.post(self.route("request-input", "preview"), json=reviewed).json()
-            save_candidate(client, f"/v1/tenants/{TENANT}/projects/{PROJECT}")
+            save_candidate(client, f"/v1/tenants/{TENANT}/projects/{PROJECT}", workspace)
             stale = client.post(self.route("request-input", "confirm"), json={"intent": reviewed, "preview_hash": preview["preview_hash"], "idempotency_key": "idem-action-stale-0001", "confirmed": True})
             self.assertEqual(409, stale.status_code)
             self.assertEqual("ERR_STALE_REVISION", stale.json()["code"])

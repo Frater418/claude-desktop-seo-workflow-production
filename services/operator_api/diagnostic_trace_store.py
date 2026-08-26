@@ -151,7 +151,7 @@ class DiagnosticTraceStore:
         if self._storage.exists(_CURRENT):
             current = self._history.current(_CURRENT)
             if current.status == "active":
-                if (current.schema_version, current.tenant_id, current.project_id, current.run_id, current.scenario_id, current.source, current.created_at) == (start.schema_version, start.tenant_id, start.project_id, start.run_id, start.scenario_id, start.source, start.created_at):
+                if (current.schema_version, current.tenant_id, current.project_id, current.run_id, current.scenario_id, current.source) == (start.schema_version, start.tenant_id, start.project_id, start.run_id, start.scenario_id, start.source):
                     self.replay = True
                     return current
                 raise self._error("ERROR_DIAGNOSTIC_TRACE_CONFLICT", "An active diagnostic trace already exists.")

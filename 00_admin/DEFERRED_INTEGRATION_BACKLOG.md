@@ -32,7 +32,7 @@ Examples of active scope that must not be demoted to this backlog:
 - artifact content readback, editing, revisions, comparison, validation, approval, rejection, and rerun
 - deterministic delivery packages and exports
 - final task-based browser QA and completion audit
-- final mandatory Notion production integration and assignment workflow when the stable target databases and mappings are available
+- deterministic manual Notion import and complete task matrix for the first local release; live one-way project creation remains PR-003 and does not block M10
 
 ## Activation Gate
 
@@ -99,16 +99,17 @@ Backlog implementation starts only when all of the following are true:
 
 | ID | Category | Title | Priority | Status | Activation | Detail |
 |---|---|---|---|---|---|---|
-| DIB-001 | SEO_GEO_QUALITY | Restore approved GEO requirements to V2 Step 4a and 4b contracts | P1 | approved_for_integration | Pre-release after Sprint 5E and DIB-005 | `.hermes/plans/2026-08-20-deferred-geo-v2-contract-restoration.md` |
-| DIB-002 | DOCUMENTATION | Reconcile AGENTS, CLAUDE and README with the V2 runtime and product architecture | P2 | triaged | Post-release, before public repository handoff or master merge | `AGENTS.md`, `CLAUDE.md`, `README.md` |
-| DIB-003 | DOCUMENTATION | Classify and reconcile the complete docs corpus | P2 | triaged | Post-release | `docs/` |
+| DIB-001 | SEO_GEO_QUALITY | Restore approved GEO requirements to V2 Step 4a and 4b contracts | P1 | verification | Local contract and renderer restoration complete; real output proof remains in M10 | `.hermes/plans/2026-08-20-deferred-geo-v2-contract-restoration.md` |
+| DIB-002 | DOCUMENTATION | Reconcile AGENTS, CLAUDE and README with the V2 runtime and product architecture | P2 | verified | Entry documents align with active V2 and DEC-0031 authority | `AGENTS.md`, `CLAUDE.md`, `README.md` |
+| DIB-003 | DOCUMENTATION | Classify and reconcile the complete docs corpus | P2 | verified | All 18 registry entries classified and documentation QA passed | `docs/` |
 | DIB-004 | REPOSITORY_HYGIENE | Execute repository hygiene and legacy cleanup from the full tree audit | P2 | triaged | Post-release at a stable checkpoint | `00_admin/audits/2026-08-21-repository-hygiene/` |
-| DIB-005 | OBSERVABILITY_DIAGNOSTICS | Add a shared local diagnostic trace and timestamped run history | P2 | approved_for_integration | After Sprint 5E, before the Sprint-5 final smoke test and audit | Automated and manual tests, Operator Console, API, transitions, events, direct Hermes and Sisyphus read access |
-| DIB-006 | PROMPT_OUTPUT_QUALITY | Restore only release-critical Promptworkflow quality before first production | P1 | approved_for_integration | After DIB-005, before targeted Production Release audit | `.hermes/plans/2026-08-21-prompt-quality-preservation-v2-restoration.md` |
+| DIB-005 | OBSERVABILITY_DIAGNOSTICS | Add a shared local diagnostic trace and timestamped run history | P2 | verified | Implemented and evidenced under M07 | `00_admin/audits/2026-08-22-m07-diagnostic-trace/` |
+| DIB-006 | PROMPT_OUTPUT_QUALITY | Restore only release-critical Promptworkflow quality before first production | P1 | verification | Local PQ-0, PQ-1, PQ-2 and PQ-4 closure complete; real-output proof remains in M10 | `.hermes/plans/2026-08-21-prompt-quality-preservation-v2-restoration.md` |
+| DIB-007 | SECURITY_RELIABILITY | Make local Operator Console process ownership and shutdown unambiguous | P3 | captured | Post-consolidation lifecycle hardening unless it blocks M10 | `scripts/start_operator_console.py`, local PID record and Windows launcher behavior |
 
 ## DIB-001: Restore approved GEO requirements to V2 Step 4a and 4b contracts
 
-- **Status:** `approved_for_integration`
+- **Status:** `verification`
 - **Priority:** `P1`
 - **Category:** `SEO_GEO_QUALITY`
 - **Captured:** 2026-08-20
@@ -117,41 +118,44 @@ Backlog implementation starts only when all of the following are true:
 - **Required outcome:** Restore the Hero Direct Answer, Semantic Triples, Evidence Containers, evidence-bearing data points, definitive-language guidance, enhanced entity bindings, semantic sections, GEO markup, and related admin review functions without replacing the current workflow architecture.
 - **Detailed plan:** `.hermes/plans/2026-08-20-deferred-geo-v2-contract-restoration.md`
 - **Dependencies:** Stable base workflow, stable admin interface, stable artifact review and revision surfaces.
-- **Acceptance:** Defined in the detailed plan and requires a real AHD quality proof.
+- **Current evidence:** Local typed contracts, validators, renderers, gates and Console review were restored under M08 PQ-4. The item remains in `verification` until a real M10 output proves the professional Copywriter and Developer result.
+- **Acceptance:** Defined in the detailed plan and requires a real controlled-project quality proof.
 
 ## DIB-002: Reconcile AGENTS, CLAUDE and README with the V2 runtime and product architecture
 
-- **Status:** `triaged`
+- **Status:** `verified`
 - **Priority:** `P2`
 - **Category:** `DOCUMENTATION`
 - **Captured:** 2026-08-21
 - **Source:** Raphael observation and repository verification on 2026-08-21
-- **Current behavior:** `PROJECT_STATE.md`, `DECISIONS.md`, implementation plans, contracts, and audit reports carry the current work. `AGENTS.md`, `CLAUDE.md`, and `README.md` still describe the pre-V2 Claude Desktop prompt framework.
-- **Problem:** The three entry documents omit or contradict the current Project V2, Transition Service, Provider Gateway, Operator API, single-admin Console, artifact revision, Delivery, Notion/n8n, and fail-closed architecture. `AGENTS.md` and `CLAUDE.md` still name Solver v1.2.0 and claim the JSON-LD validator lacks a CLI. `README.md` still presents direct AgentSEO as the primary path and calls the old system production-ready without representing the current implementation and open gates.
+- **Current behavior:** AGENTS, CLAUDE, README, CHANGELOG, current architecture and generated onboarding reflect the V2 runtime and active DEC-0031 authority. The superseded DEC-0022 merge-timing sentence was replaced through the protected-file consent gate.
+- **Problem:** Resolved. Entry documents no longer preserve an active pre-V2 or superseded merge-timing claim.
 - **Expected outcome:** Update all three documents from verified repository facts, preserve stable global rules, separate current implementation from planned or simulated capability, add accurate navigation, and remove obsolete commands or architectural claims.
 - **Affected workflow steps:** Repository onboarding, every agent session, product presentation, final handoff, branch consolidation.
 - **Affected files or services:** `AGENTS.md`, `CLAUDE.md`, `README.md`, linked project-state, decision, architecture, integration, UI, and delivery documents.
-- **Dependencies:** Stable Sprint 5 and Sprint 5E completion evidence, final API and UI surface, final Notion/n8n scope statement.
+- **Dependencies:** Promoted into the DEC-0031 master consolidation from the stable M09 and current M10 implementation state.
 - **Risks and conflicts:** Updating too early can create repeated churn. Waiting beyond the Final-Gate would publish misleading agent instructions and public documentation.
 - **Acceptance criteria:** Current architecture and commands are factually correct; implemented, simulated, planned, and deferred capabilities are distinguished; all primary links resolve; no obsolete v1.2 or no-CLI claims remain; documentation review passes before `master` fast-forward.
+- **Resolution Evidence:** Protected AGENTS edit approved by Raphael on 2026-08-26; `00_admin/ONBOARDING_REFERENCE.md`; `python -m unittest tests.test_repository_index`; `hermes verify --json`.
 - **Supersedes:** none
 - **Superseded by:** none
 
 ## DIB-003: Classify and reconcile the complete docs corpus
 
-- **Status:** `triaged`
+- **Status:** `verified`
 - **Priority:** `P2`
 - **Category:** `DOCUMENTATION`
 - **Captured:** 2026-08-21
 - **Source:** Raphael observation and complete `docs/` inventory on 2026-08-21
-- **Current behavior:** The folder mixes historical baseline documents, superseded sprint plans, strategic GEO sources, current integration authority documents, old Claude Desktop operating instructions, old client-facing memos, PDFs, and a new uncommitted workflow map without explicit lifecycle labels.
+- **Current behavior:** All 18 registered `docs/` records are explicitly classified. Current authorities were reconciled, historical and superseded Markdown files have visible lifecycle labels, the historical HTML map has a visible banner, and the two Evidence PDFs remain immutable and opt-in.
 - **Problem:** Several files still claim direct AgentSEO operation, Solver v1.2, a missing JSON-LD CLI, seven prose gates, manual Claude Desktop prompt execution, manifest status authority, direct Notion MCP writes, or full production readiness. These claims conflict with the current V2 Core, Provider Gateway, Transition Service, machine/human gate registry, single-admin Console, Delivery plan, and open completion gates.
 - **Expected outcome:** Classify every file as current authority, current strategy, historical baseline, superseded plan, external handoff, or generated artifact. Update current documents, add explicit supersession headers to historical sources, regenerate or archive stale PDFs, preserve evidence history, and create one accurate cross-linked docs index.
 - **Affected workflow steps:** Repository onboarding, external review, Jesse presentation, operator training, Copywriter and Developer handoff, final release.
-- **Affected files or services:** All 16 files currently under `docs/`, plus README navigation and canonical state/decision links.
-- **Dependencies:** Stable final runtime, UI, Delivery, Notion/n8n scope, DIB-001 GEO restoration decision, and final branch state.
+- **Affected files or services:** All 18 registered `docs/` sources, README navigation, generated lifecycle indexes and canonical state/decision links.
+- **Dependencies:** Promoted into the DEC-0031 master consolidation; current runtime, Delivery and integration boundaries are defined by active Decisions and the Production Architecture.
 - **Risks and conflicts:** Deleting historical evidence would damage traceability. Leaving old files unlabeled would mislead agents, auditors, Jesse, and future operators.
 - **Acceptance criteria:** Every docs file has an explicit lifecycle classification; current operational claims match tested behavior; superseded plans are clearly labeled and excluded from current setup instructions; PDFs match their canonical source or are archived; all links resolve; documentation QA passes before `master` fast-forward.
+- **Resolution Evidence:** `00_admin/audits/2026-08-26-repository-consolidation/DOCUMENT_LIFECYCLE_RECONCILIATION.md`; `00_admin/ONBOARDING_REFERENCE.md`; `python -m unittest tests.test_repository_index` with 16 of 16 tests passing.
 - **Supersedes:** none
 - **Superseded by:** none
 
@@ -175,7 +179,7 @@ Backlog implementation starts only when all of the following are true:
 
 ## DIB-005: Add a shared local diagnostic trace and timestamped run history
 
-- **Status:** `approved_for_integration`
+- **Status:** `verified`
 - **Priority:** `P2`
 - **Category:** `OBSERVABILITY_DIAGNOSTICS`
 - **Captured:** 2026-08-21
@@ -200,17 +204,19 @@ Backlog implementation starts only when all of the following are true:
   7. One success, one validation failure, one stale-confirmation conflict, one missing-action mismatch, one server error, one QA-harness error, and one regression between two timestamped runs are reconstructable from the retained traces.
   8. No secrets, unrestricted customer documents, cross-tenant data, hidden reasoning, or external telemetry are recorded.
   9. The implementation remains small, uses existing evidence seams, and keeps the affected diagnostic dependency closure plus applicable prototype-matrix cells green under `standards/testing/PROTOTYPE_TEST_POLICY.md`.
+- **Verification evidence:** M07 implementation and real browser/persistence evidence under `00_admin/audits/2026-08-22-m07-diagnostic-trace/`; current trace root `var/operator-diagnostics/v1/` remains gitignored and directly readable.
 - **Supersedes:** none
 - **Superseded by:** none
 
 ## DIB-006: Preserve original Promptworkflow output quality in V2 contracts
 
-- **Status:** `approved_for_integration`
+- **Status:** `verification`
 - **Priority:** `P1`
 - **Category:** `PROMPT_OUTPUT_QUALITY`
 - **Captured:** 2026-08-21
 - **Source:** Raphael approval following `00_admin/audits/2026-08-21-prompt-quality-preservation/READ_ONLY_PROMPT_PARITY_AUDIT.md`
-- **Current behavior:** The V2 migration strongly improves Domain, State, Evidence, Provider, Revision, Gate, and Transition integrity. Prompt 0 and Prompt 1 preserve or strengthen their original output intent. Step 1B presentation, Step 1C template depth, Step 2 metric and research breadth, the real Step-2-to-Step-3 solver bridge, Step 3B performance semantics, and Step 4A/4B Copywriter and Developer quality are incomplete compared with the original Desktop Promptworkflow and master prompt baseline.
+- **Behavior at capture:** The V2 migration improved Domain, State, Evidence, Provider, Revision, Gate, and Transition integrity, while several output-critical requirements were incomplete compared with the original Desktop Promptworkflow and master prompt baseline.
+- **Current evidence:** PQ-0, PQ-1, PQ-2 and PQ-4 were restored and accepted in their local M08 scope. Typed fields, fixtures, validators, renderers, the Step-2-to-Step-3 solver seam and Console review are present. The item remains in `verification` because real provider-backed Step-2 quality, the complete M10 output chain and professional human review are not yet proven.
 - **Problem:** The existing final audit could validate a technically safe but output-thin workflow. The final Heartweb product must preserve the original editorial, SEO, GEO, conversion, planning, presentation, and handoff requirements while keeping the current V2 architecture.
 - **Required outcome:** Execute only the release-critical scope from `.hermes/plans/2026-08-21-prompt-quality-preservation-v2-restoration.md`: bounded PQ-0, PQ-1, PQ-2, and PQ-4. Map each original requirement needed for the first production route to one current authority, restore missing typed fields and behavior through existing schemas, validators, renderers, Quality Gates and Admin surfaces, prove the real Step-2-to-Step-3 solver path, and complete DIB-001 for Step 4A and Step 4B. PQ-3 and PQ-5 are post-release.
 - **Required sequence:** Do not interrupt the current Browser-QA run or Sprint 5E. After a stable controller-verified Sprint-5E checkpoint, implement DIB-005, then bounded PQ-0, PQ-1, PQ-2, and PQ-4. Run a targeted Production Release audit immediately afterward.
@@ -226,6 +232,22 @@ Backlog implementation starts only when all of the following are true:
   6. No existing V2 Domain, State, Provider, Evidence, Revision, Approval, Transition or tenant-isolation invariant regresses.
   7. A targeted Desktop and core-action Production Release audit passes with deterministic Delivery and no open P0/P1.
   8. Step 3B semantics and the full real-output parity audit are recorded in `00_admin/POST_RELEASE_BACKLOG.md` and do not block the first controlled production output.
+- **Supersedes:** none
+- **Superseded by:** none
+
+## DIB-007: Make local Operator Console process ownership and shutdown unambiguous
+
+- **Status:** `captured`
+- **Priority:** `P3`
+- **Category:** `SECURITY_RELIABILITY`
+- **Captured:** 2026-08-26
+- **Source:** Repository-freeze operation on Windows. Closing the browser did not itself prove that the locally started Console and Gateway processes had stopped. A stale PID record remained after the process was already absent.
+- **Current behavior:** `scripts/start_operator_console.py` starts a persistent local service and records process metadata outside the repository. Browser-window closure is not the service shutdown authority. The existing fail-closed cleanup correctly refused to remove an unproven PID record until PID and listener absence were verified.
+- **Problem:** The lifecycle is technically recoverable but not sufficiently obvious to the single operator. A stale record can look like project corruption even though it contains no project state.
+- **Expected outcome:** Provide one explicit start, status and stop path that verifies the process tree and bound ports, removes only proven-stale metadata and reports a structured result. The browser should not be presented as the process owner unless the launcher is deliberately changed to make it one.
+- **Non-goals:** Do not couple canonical workflow state to local PIDs, autostart the Hermes Gateway, kill unrelated Python processes, or hide shutdown failures.
+- **Acceptance criteria:** Start creates one authoritative record; status distinguishes running, stopped and stale; stop terminates only the recorded process tree; stale cleanup requires process and listener absence; repeated stop is idempotent; Windows launcher tests and a real local smoke pass.
+- **Activation:** Post-consolidation lifecycle hardening. Promote into M10 only if the launcher prevents the required operator run.
 - **Supersedes:** none
 - **Superseded by:** none
 
@@ -284,6 +306,8 @@ When the activation gate is reached:
 
 | Date | Change | Source |
 |---|---|---|
+| 2026-08-26 | DIB-002 and DIB-003 promoted into DEC-0031 master consolidation; DIB-005 verified; DIB-001 and DIB-006 moved to real-output verification | DEC-0031 and current Project State |
+| 2026-08-26 | DIB-007 captured for unambiguous Windows Console process ownership and shutdown | Repository-freeze runtime observation |
 | 2026-08-21 | Production-first Cut-Line: DIB-001 and release-critical DIB-006 stay pre-release; Step 3B, real-output parity, integrations, mobile polish, docs and cleanup moved post-release | Raphael decision, DEC-0024 |
 | 2026-08-21 | DIB-006 approved for full Promptworkflow quality preservation before the existing final audit | Raphael approval and read-only parity audit |
 | 2026-08-21 | DIB-005 approved for a shared directly readable diagnostic trace and timestamped history in automated and manual smoke tests | Raphael request and clarifications |

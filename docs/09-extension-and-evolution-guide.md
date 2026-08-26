@@ -2,7 +2,7 @@
 
 **Author:** Raphael Rechberger
 **Status:** Current extension authority
-**Updated:** 2026-08-22
+**Updated:** 2026-08-26
 
 ## 1. Goal
 
@@ -173,6 +173,7 @@ A semantic change must update:
 - README when user-visible architecture or capability changes
 - current architecture or integration documents
 - authority overrides and generated registry
+- `00_admin/ONBOARDING_REFERENCE.md` only through the deterministic repository-index generator
 
 Then run:
 

@@ -5,8 +5,11 @@ Autor: Raphael Rechberger
 """
 
 import copy
+import io
 import sys
 import unittest
+import urllib.error
+from unittest.mock import patch
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -14,11 +17,14 @@ sys.path.insert(0, str(REPO_ROOT))
 
 from services.agentseo_gateway.core import (  # noqa: E402
     AgentSEOAdapterError,
+    AgentSEOClient,
     build_keyword_metrics_payload,
     build_serp_analysis_payload,
     load_location_target,
+    load_provider_target,
     normalize_agentseo_result,
 )
+from services.operator_routing.router import load_policy, route_error  # noqa: E402
 
 
 class AgentSEOLocationGuardTests(unittest.TestCase):
@@ -154,6 +160,75 @@ class AgentSEOLocationGuardTests(unittest.TestCase):
             )
 
         self.assertEqual(caught.exception.code, "ERROR_LOCATION_UNKNOWN")
+
+    def test_provider_target_loads_by_exact_target_id(self):
+        target = load_provider_target(
+            target_id="agentseo-de-country",
+            path=REPO_ROOT / "standards" / "domain" / "provider-location-registry.json",
+        )
+
+        self.assertEqual("agentseo-de-country", target["target_id"])
+        self.assertEqual("agentseo", target["provider_id"])
+        self.assertEqual("country", target["target_type"])
+        self.assertEqual("DE", target["country"])
+        self.assertEqual("Germany", target["location_name"])
+        self.assertEqual(2276, target["location_code"])
+        self.assertEqual(["de"], target["languages"])
+
+    def test_unverified_provider_target_fails_before_provider_request(self):
+        with self.assertRaises(AgentSEOAdapterError) as caught:
+            load_provider_target(
+                target_id="agentseo-at-country",
+                path=REPO_ROOT / "standards" / "domain" / "provider-location-registry.json",
+            )
+
+        self.assertEqual("ERROR_LOCATION_UNVERIFIED", caught.exception.code)
+
+    def test_http_payment_required_is_exposed_as_insufficient_provider_funds(self):
+        client = AgentSEOClient(api_key="test-key")
+        response = io.BytesIO(b'{"code":"insufficient_funds","message":"Not enough credits"}')
+        http_error = urllib.error.HTTPError(
+            "https://provider.invalid/test",
+            402,
+            "Payment Required",
+            {},
+            response,
+        )
+
+        with patch("urllib.request.urlopen", side_effect=http_error):
+            with self.assertRaises(AgentSEOAdapterError) as caught:
+                client._request_json("GET", "/test")
+
+        self.assertEqual("ERROR_PROVIDER_INSUFFICIENT_FUNDS", caught.exception.code)
+        self.assertIn("insufficient funds", caught.exception.message)
+
+    def test_http_rate_limit_without_quota_signal_remains_retryable_rate_limit(self):
+        client = AgentSEOClient(api_key="test-key")
+        response = io.BytesIO(b'{"message":"Too many requests"}')
+        http_error = urllib.error.HTTPError(
+            "https://provider.invalid/test",
+            429,
+            "Too Many Requests",
+            {},
+            response,
+        )
+
+        with patch("urllib.request.urlopen", side_effect=http_error):
+            with self.assertRaises(AgentSEOAdapterError) as caught:
+                client._request_json("GET", "/test")
+
+        self.assertEqual("ERROR_PROVIDER_RATE_LIMITED", caught.exception.code)
+
+    def test_provider_budget_failures_have_explicit_operator_routes(self):
+        policy = load_policy(REPO_ROOT)
+
+        insufficient = route_error("ERROR_PROVIDER_INSUFFICIENT_FUNDS", policy)
+        quota = route_error("ERROR_PROVIDER_QUOTA_EXCEEDED", policy)
+        rate_limit = route_error("ERROR_PROVIDER_RATE_LIMITED", policy)
+
+        self.assertEqual(("missing_input", "operator"), (insufficient.route, insufficient.owner_type))
+        self.assertEqual(("missing_input", "operator"), (quota.route, quota.owner_type))
+        self.assertEqual(("retryable_technical", "workflow_maintainer"), (rate_limit.route, rate_limit.owner_type))
 
 
 if __name__ == "__main__":

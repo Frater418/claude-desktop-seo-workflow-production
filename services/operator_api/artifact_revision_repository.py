@@ -93,10 +93,12 @@ class ArtifactRevisionRepository:
             if transaction.quality_gate_runs:
                 gates = self._project.quality_gate_runs(transaction.tenant_id, transaction.project_id)
                 self._project._write(transaction.tenant_id, transaction.project_id, "gates.json", _append_records(gates, list(transaction.quality_gate_runs), "quality_gate_run_id"))
-            run = self._project.run(transaction.tenant_id, transaction.project_id, transaction.run_id)
-            run["revision"] = transaction.target_revision
-            self._project.write_run(transaction.tenant_id, transaction.project_id, run)
-            self._project._write(transaction.tenant_id, transaction.project_id, self._idempotency_path(transaction), {"payload_sha256": transaction.payload_sha256, "records": records, "quality_gate_runs": list(transaction.quality_gate_runs), "derived_views": [view.model_dump(mode="json") for view in transaction.derived_views]})
+            self._project.write_run(
+                transaction.tenant_id,
+                transaction.project_id,
+                dict(transaction.next_run),
+            )
+            self._project._write(transaction.tenant_id, transaction.project_id, self._idempotency_path(transaction), {"payload_sha256": transaction.payload_sha256, "records": records, "quality_gate_runs": list(transaction.quality_gate_runs), "derived_views": [view.model_dump(mode="json") for view in transaction.derived_views], "next_run": transaction.next_run})
             try:
                 self._remove_if_present(transaction)
             except OSError:
@@ -156,7 +158,19 @@ class ArtifactRevisionRepository:
         if not isinstance(contents, list) or not all(isinstance(content, str) for content in contents):
             raise RepositoryError("ERROR_ARTIFACT_PERSISTENCE", "Artifact recovery content is malformed.")
         try:
-            return ArtifactTransaction.model_validate({key: value for key, value in payload.items() if key != "before"} | {"contents": tuple(base64.b64decode(content, validate=True) for content in contents)})
+            transaction = {key: value for key, value in payload.items() if key != "before"}
+            if "next_run" not in transaction:
+                before = payload.get("before")
+                records = transaction.get("records")
+                if not isinstance(before, dict) or not isinstance(before.get("run"), dict) or not isinstance(records, list) or not records:
+                    raise ValueError("legacy sidecar lacks next-run reconstruction data")
+                next_run = dict(before["run"])
+                next_run["status"] = "awaiting_gate"
+                next_run["revision"] = transaction["target_revision"]
+                next_run["output_hash"] = records[0]["content_sha256"]
+                transaction["next_run"] = next_run
+            transaction["contents"] = tuple(base64.b64decode(content, validate=True) for content in contents)
+            return ArtifactTransaction.model_validate(transaction)
         except (ValueError, TypeError) as exc:
             raise RepositoryError("ERROR_ARTIFACT_PERSISTENCE", "Artifact recovery record is malformed.") from exc
 

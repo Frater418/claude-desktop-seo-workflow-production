@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
-import { cleanup, render, screen } from "@testing-library/react"
+import { cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { App } from "./App"
 
 function jsonResponse(payload: unknown): Response {
@@ -32,8 +32,10 @@ describe("German API states", () => {
 
     render(<App tenantId="tenant-welle-zwei" />)
 
-    expect(await screen.findByRole("heading", { name: "Kein lokales Projekt vorhanden" })).toBeInTheDocument()
-    expect(screen.getByRole("heading", { name: "Projekt anlegen" })).toBeInTheDocument()
+    expect(await screen.findByRole("heading", { name: "Projektübersicht" })).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "Das erste Projekt wartet auf sein Briefing" })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole("button", { name: "Erstes Projekt anlegen" }))
+    expect(screen.getByRole("heading", { name: "Briefing in Project V2 umwandeln" })).toBeInTheDocument()
     expect(screen.getByLabelText("Markdown-Briefing")).toBeInTheDocument()
     expect(screen.getByLabelText("Markdown-Datei")).toBeInTheDocument()
   })
@@ -44,7 +46,7 @@ describe("German API states", () => {
 
     render(<App tenantId="tenant-welle-zwei" />)
 
-    expect(await screen.findByRole("heading", { name: "Lokale Operator-API nicht verfuegbar" })).toBeInTheDocument()
-    expect(screen.getByText("Es werden keine Demo-Daten angezeigt.")).toBeInTheDocument()
+    expect(await screen.findByRole("heading", { name: "Projekt konnte nicht geladen werden" })).toBeInTheDocument()
+    expect(screen.getByText("Es werden keine Demo-Daten angezeigt und keine Projektdaten verändert.")).toBeInTheDocument()
   })
 })

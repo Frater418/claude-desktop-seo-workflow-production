@@ -89,6 +89,14 @@ describe("OperatorApiClient read boundary", () => {
     await expect(client.listProjects(new AbortController().signal)).rejects.toBeInstanceOf(OperatorReadModelError)
   })
 
+  it("reports a non-JSON HTTP failure as an HTTP error instead of blaming invalid JSON", async () => {
+    const fetch = vi.fn(() => Promise.resolve(new Response("Internal Server Error", { status: 500, headers: { "Content-Type": "text/plain" } })))
+    vi.stubGlobal("fetch", fetch)
+    const client = createOperatorApiClient({ baseUrl: "", tenantId: "tenant-welle-zwei" })
+
+    await expect(client.listProjects(new AbortController().signal)).rejects.toMatchObject({ kind: "http", status: 500, message: "Die lokale Operator-API ist mit HTTP 500 fehlgeschlagen und hat keine lesbare Fehlerantwort geliefert." })
+  })
+
   it("rejects a current run whose project identity differs from the requested project", async () => {
     const fetch = vi.fn(() => Promise.resolve(json({ tenant_id: "tenant-welle-zwei", project_id: "projekt-fremd", run_id: "lauf-20260821-a", step_id: "1b", expected_revision: 17 })))
     vi.stubGlobal("fetch", fetch)

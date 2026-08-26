@@ -1,0 +1,42 @@
+{
+  "tool_policy_id": "tool-policy-step-1c-agent",
+  "schema_version": "1.0.0",
+  "policy_version": "1.1.0",
+  "policy_sha256": "37099f2e19ea33ab911381d5dba2b8dc1d916b51283fde7ff5c38345d4eeaa8f",
+  "step_id": "1c",
+  "allowed_gateway_operations": [
+    {
+      "operation_id": "read_design_evidence",
+      "tool_name": "mcp__heartweb__read_design_evidence",
+      "phase": "preflight",
+      "side_effect": "read_only",
+      "confirmation_scope": "none",
+      "cost_mode": "none",
+      "max_calls": 4,
+      "timeout_seconds": 60,
+      "evidence_required": true,
+      "input_contract_id": "heartweb.design-evidence-request.v1",
+      "output_contract_id": "heartweb.design-evidence.v1"
+    }
+  ],
+  "required_gateway_operations": [
+    "read_design_evidence"
+  ],
+  "delegation_policy": {
+    "delegation_policy_id": "delegation-policy-step-1c-v1",
+    "allowed": true,
+    "max_workers": 2,
+    "max_depth": 1,
+    "max_rounds": 1,
+    "allowed_purposes": [
+      "processing",
+      "synthesis",
+      "domain_review"
+    ],
+    "external_side_effects_allowed": false
+  },
+  "direct_provider_calls_allowed": false,
+  "failure_mode": "fail_closed",
+  "enabled": true,
+  "created_at": "2026-08-24T23:39:00Z"
+}

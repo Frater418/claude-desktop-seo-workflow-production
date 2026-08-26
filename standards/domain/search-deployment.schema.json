@@ -20,7 +20,12 @@
     "market_phase": {"type": "string", "enum": ["active", "planned", "discovery", "paused"]},
     "deployment_role": {"type": "string", "enum": ["primary", "satellite", "expansion", "campaign"]},
     "seo_operating_model": {"type": "string", "enum": ["local", "regional", "national", "international", "programmatic_local", "digital"]},
-    "provider_location_verification": {"$ref": "market-registry.schema.json#/$defs/providerLocationVerification"},
+    "provider_location_verification": {
+      "oneOf": [
+        {"$ref": "market-registry.schema.json#/$defs/providerLocationVerification"},
+        {"$ref": "provider-location-registry.schema.json#/$defs/providerLocationVerification"}
+      ]
+    },
     "search_engines": {"type": "array", "minItems": 1, "items": {"type": "string", "enum": ["google_classic", "google_ai_overviews", "local_maps", "bing", "perplexity", "chatgpt_search"]}}
   }
 }

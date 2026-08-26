@@ -13,110 +13,107 @@ async function renderConsole(): Promise<ReturnType<typeof createOperatorApiFixtu
   const fixture = createOperatorApiFixture()
   vi.stubGlobal("fetch", fixture.fetch)
   render(<App tenantId="tenant-welle-zwei" />)
+  fireEvent.click(await screen.findByRole("button", { name: "Pflegedienst Alpha öffnen" }))
   await screen.findByRole("heading", { name: "Pflegedienst Alpha" })
   return fixture
-}
-
-function activateDisclosure(toggle: HTMLElement, key: "Enter" | " "): void {
-  toggle.focus()
-  fireEvent.keyDown(toggle, { key })
-  fireEvent.keyUp(toggle, { key })
-  fireEvent.click(toggle)
 }
 
 describe("Heartweb Admin Operator Console", () => {
   it("loads the canonical project into the German work shell without demo fallback", async () => {
     await renderConsole()
 
-    const navigation = screen.getByRole("navigation", { name: "Hauptnavigation" })
-    expect(within(navigation).getByRole("link", { name: "Projekte" })).toBeInTheDocument()
-    expect(within(navigation).getByRole("link", { name: "Uebergabe und Export" })).toBeInTheDocument()
-    expect(within(screen.getByRole("banner")).getByText("Aktiver Schritt")).toBeInTheDocument()
-    expect(screen.getByRole("button", { name: "Pflegedienst Alpha waehlen" })).toHaveAttribute("aria-current", "true")
-    expect(within(screen.getByRole("banner")).getByText("Informationsarchitektur pruefen")).toBeInTheDocument()
-    expect(within(screen.getByRole("region", { name: "Projekt waehlen" })).getByText("Informationsarchitektur pruefen")).toBeInTheDocument()
+    const projectNavigation = screen.getByRole("navigation", { name: "Projektverwaltung" })
+    const activeNavigation = screen.getByRole("navigation", { name: "Aktives Projekt" })
+    expect(within(projectNavigation).getByRole("button", { name: "Projektübersicht" })).toBeInTheDocument()
+    expect(within(activeNavigation).getByRole("button", { name: "Uebergabe" })).toBeInTheDocument()
+    expect(within(activeNavigation).getByRole("button", { name: "Projektablauf" })).toHaveAttribute("aria-current", "page")
+    const projectHeader = screen.getByRole("heading", { name: "Pflegedienst Alpha" }).closest("header")
+    if (projectHeader === null) throw new Error("project header missing")
+    expect(within(projectHeader).getByText("Informationsarchitektur pruefen")).toBeInTheDocument()
+    expect(within(screen.getByRole("region", { name: "Aktives Projekt" })).getByText("Pflegedienst Alpha")).toBeInTheDocument()
     expect(screen.queryByText(/demo|presentation/i)).not.toBeInTheDocument()
   })
 
-  it("lists canonical projects, keeps the selected project marked, and reloads its canonical workspace", async () => {
+  it("returns to the project overview and opens another canonical workspace", async () => {
     const fixture = await renderConsole()
 
-    const betaProject = screen.getByRole("button", { name: "Pflegedienst Beta waehlen" })
-    expect(betaProject).not.toHaveAttribute("aria-current")
+    fireEvent.click(screen.getByRole("button", { name: "Projektübersicht" }))
+    await screen.findByRole("heading", { name: "Projektübersicht" })
+    const betaProject = screen.getByRole("button", { name: "Pflegedienst Beta öffnen" })
     fireEvent.click(betaProject)
 
     expect(await screen.findByRole("heading", { name: "Pflegedienst Beta" })).toBeInTheDocument()
-    expect(screen.getByRole("button", { name: "Pflegedienst Beta waehlen" })).toHaveAttribute("aria-current", "true")
-    expect(within(screen.getByRole("banner")).getByText("Beta Pflege GmbH")).toBeInTheDocument()
+    const betaHeader = screen.getByRole("heading", { name: "Pflegedienst Beta" }).closest("header")
+    if (betaHeader === null) throw new Error("beta header missing")
+    expect(within(betaHeader).getByText("Beta Pflege GmbH")).toBeInTheDocument()
     expect(fixture.state.calls.some((call) => call.endsWith("GET /v1/tenants/tenant-welle-zwei/projects/project-beta-welle-zwei/runs/current"))).toBe(true)
 
-    fireEvent.click(screen.getByRole("link", { name: "Workflow" }))
-    fireEvent.click(screen.getByRole("link", { name: "Projekte" }))
-    expect(screen.getByRole("button", { name: "Pflegedienst Beta waehlen" })).toHaveAttribute("aria-current", "true")
+    fireEvent.click(screen.getByRole("button", { name: "Projektablauf" }))
+    fireEvent.click(screen.getByRole("button", { name: "Projektübersicht" }))
+    await screen.findByRole("heading", { name: "Projektübersicht" })
+    expect(screen.getByRole("button", { name: "Pflegedienst Beta öffnen" })).toBeInTheDocument()
   })
 
-  it("operates the collapsible context by pointer, Enter, and Space without leaving collapsed controls in the keyboard flow", async () => {
+  it("exposes supporting context through the native details disclosure", async () => {
     await renderConsole()
 
-    const toggle = screen.getByRole("button", { name: "Kontext einklappen" })
-    const contentId = toggle.getAttribute("aria-controls")
-    expect(toggle).toHaveAttribute("aria-expanded", "true")
-    expect(document.getElementById(contentId ?? "")).toBeInTheDocument()
-    expect(screen.getByRole("heading", { name: "Nachweise" })).toBeInTheDocument()
-
-    toggle.focus()
-    fireEvent.click(toggle)
-    expect(toggle).toHaveAttribute("aria-expanded", "false")
-    expect(document.activeElement).toBe(toggle)
-    expect(document.getElementById(contentId ?? "")).not.toBeInTheDocument()
-    expect(screen.queryByText("Technische Details")).not.toBeInTheDocument()
-
-    activateDisclosure(toggle, "Enter")
-    expect(toggle).toHaveAttribute("aria-expanded", "true")
-    expect(screen.getByRole("heading", { name: "Feststellungen" })).toBeInTheDocument()
-
-    activateDisclosure(toggle, " ")
-    expect(toggle).toHaveAttribute("aria-expanded", "false")
+    const summary = screen.getByText("Nachweise und technische Ausführung")
+    const details = summary.closest("details")
+    if (details === null) throw new Error("supporting details missing")
+    expect(details).not.toHaveAttribute("open")
+    fireEvent.click(summary)
+    expect(details).toHaveAttribute("open")
+    expect(screen.getByRole("heading", { name: "Kontextpaket für Schritt 1b" })).toBeInTheDocument()
+    fireEvent.click(summary)
+    expect(details).not.toHaveAttribute("open")
   })
 
-  it("shows the workflow route, exact gate result, and the separate 3b not-due sideflow", async () => {
+  it("shows the eight-step initial route and exact machine-gate result without placing 3B in the route", async () => {
     await renderConsole()
-    fireEvent.click(screen.getByRole("link", { name: "Workflow" }))
+    fireEvent.click(screen.getByRole("button", { name: "Projektablauf" }))
 
-    expect(screen.getByLabelText("Initiale Workflow-Schritte")).toHaveTextContent("011b1c234a4b")
-    expect(screen.getByText("3b: noch nicht faellig")).toBeInTheDocument()
-    expect(screen.getByText("Maschinenpruefung bestanden")).toBeInTheDocument()
+    const route = screen.getByRole("list", { name: "Produktionsschritte" })
+    expect(within(route).getAllByRole("listitem")).toHaveLength(8)
+    expect(within(route).queryByText(/3B/i)).toBeNull()
+    expect(screen.getByRole("heading", { name: "Bestanden" })).toBeInTheDocument()
+    expect(screen.getByText("Maschinenprüfung für GATE-1B bestanden.")).toBeInTheDocument()
   })
 
-  it("previews pasted and selected Markdown intake, accepts reviewed corrections, and reads back canonical data", async () => {
+  it("previews Markdown intake, requires full Project V2 review, and reads back canonical Step 0", async () => {
     const fixture = await renderConsole()
-    fireEvent.click(screen.getByRole("button", { name: "Projekt anlegen" }))
+    fireEvent.click(screen.getByRole("button", { name: "Projektübersicht" }))
+    await screen.findByRole("heading", { name: "Projektübersicht" })
+    fireEvent.click(screen.getByRole("button", { name: "Neues Projekt anlegen" }))
     const briefing = screen.getByLabelText("Markdown-Briefing")
     fireEvent.change(briefing, { target: { value: "# Pflege Alpha" } })
     fireEvent.change(screen.getByLabelText("Markdown-Datei"), { target: { files: [new File(["# Datei"], "briefing.md", { type: "text/markdown" })] } })
-    fireEvent.click(screen.getByRole("button", { name: "Vorschau erstellen" }))
-    await screen.findByDisplayValue("Pflegedienst Alpha")
-    fireEvent.change(screen.getByLabelText("Projektname pruefen"), { target: { value: "Pflegedienst Alpha korrigiert" } })
-    fireEvent.click(screen.getByRole("button", { name: "Intake verbindlich annehmen" }))
+    fireEvent.click(screen.getByRole("button", { name: "Project V2 erstellen" }))
+    await screen.findByRole("heading", { name: "Project V2 prüfen" })
+    fireEvent.click(screen.getByRole("button", { name: "Vollständigen Project-V2-Entwurf öffnen" }))
+    await screen.findByRole("dialog", { name: "Project V2 prüfen" })
+    fireEvent.click(screen.getByRole("button", { name: "Schließen" }))
+    fireEvent.click(screen.getByRole("checkbox", { name: "Ich habe den vollständigen Project-V2-Entwurf geprüft." }))
+    fireEvent.click(screen.getByRole("button", { name: "Projekt anlegen und Schritt 0 öffnen" }))
 
     await waitFor(() => expect(fixture.state.calls.some((call) => call.includes("POST /v1/tenants/tenant-welle-zwei/intake/accept"))).toBe(true))
-    expect(screen.getByText("Schritt 0 bereit")).toBeInTheDocument()
+    expect(await screen.findByRole("heading", { name: "Schritt 0: Projekt-Kickoff" })).toBeInTheDocument()
+    expect(screen.getByText("Kickoff starten")).toBeInTheDocument()
   })
 
   it("loads a non-Step-4 artifact into the editor without offering the Step 4 preflight", async () => {
     await renderConsole()
-    fireEvent.click(screen.getByRole("link", { name: "Artefakte" }))
+    fireEvent.click(screen.getByRole("button", { name: /^Ergebnisse/ }))
     const loadArtifact = screen.getByRole("button", { name: "outputs/themenstruktur.md, Revision 17" })
     await waitFor(() => expect(loadArtifact).toBeEnabled())
     fireEvent.click(loadArtifact)
-    const editor = await screen.findByLabelText("Artefaktinhalt bearbeiten")
+    const editor = await screen.findByLabelText("Ergebnisinhalt bearbeiten")
     await waitFor(() => expect(editor).toHaveValue("# Themenstruktur"))
-    expect(screen.queryByRole("button", { name: "Schritt 4 Preflight ausfuehren" })).toBeNull()
+    expect(screen.queryByRole("button", { name: "Schritt 4 Preflight ausführen" })).toBeNull()
   })
 
   it("keeps task context while filtering and sorting the compact queue", async () => {
     await renderConsole()
-    fireEvent.click(screen.getByRole("link", { name: "Aufgaben" }))
+    fireEvent.click(screen.getByRole("button", { name: /^Aufgaben/ }))
     fireEvent.change(screen.getByLabelText("Status filtern"), { target: { value: "open" } })
     fireEvent.click(screen.getByRole("button", { name: "Nach Prioritaet sortieren" }))
     fireEvent.click(screen.getByRole("button", { name: "Themenstruktur pruefen" }))
@@ -126,30 +123,26 @@ describe("Heartweb Admin Operator Console", () => {
     expect(screen.getByRole("button", { name: "Themenstruktur pruefen" })).toHaveAttribute("aria-pressed", "true")
   })
 
-  it("previews illegal action remediation, confirms an allowed review, and renders canonical readback", async () => {
+  it("previews the current submit-for-gate lifecycle action and renders canonical readback", async () => {
     const fixture = await renderConsole()
-    fireEvent.click(screen.getByRole("link", { name: "Pruefungen und Freigaben" }))
-    fireEvent.change(screen.getByLabelText("Entscheidung waehlen"), { target: { value: "request-waiver" } })
-    fireEvent.change(screen.getByLabelText("Begruendung"), { target: { value: "Blockierte Ausnahme" } })
-    fireEvent.change(screen.getByLabelText("Pruefanweisung fuer Ausnahme"), { target: { value: "Ausnahme pruefen" } })
-    fireEvent.click(screen.getByRole("button", { name: "Vorschau fuer Ausnahme erstellen" }))
-    expect(await screen.findByText("Pruefung abschliessen und erneut versuchen.")).toBeInTheDocument()
-    fireEvent.change(screen.getByLabelText("Entscheidung waehlen"), { target: { value: "approve" } })
-    fireEvent.click(screen.getByRole("button", { name: "Freigabe vorbereiten" }))
-    expect(await screen.findByText("Freigabe wird als menschliche Entscheidung gespeichert.")).toBeInTheDocument()
-    await waitFor(() => expect(fixture.state.requestBodies.some((body) => body.includes("\"tenant_id\":\"tenant-welle-zwei\"") && body.includes("\"project_id\":\"project-welle-zwei\"") && body.includes("\"run_id\":\"lauf-20260821-a\"") && body.includes("\"step_id\":\"1b\"") && body.includes("\"expected_revision\":17"))).toBe(true))
-    fireEvent.click(screen.getByRole("button", { name: "Freigabe bestaetigen" }))
+    fireEvent.click(screen.getByRole("button", { name: "Einreichung prüfen" }))
+    expect(await screen.findByText("Das Ergebnis wird zur fachlichen Pruefung eingereicht.")).toBeInTheDocument()
+    await waitFor(() => expect(fixture.state.requestBodies.some((body) => body.includes("\"action\":\"submit-for-gate\"") && body.includes("\"tenant_id\":\"tenant-welle-zwei\"") && body.includes("\"project_id\":\"project-welle-zwei\"") && body.includes("\"run_id\":\"lauf-20260821-a\"") && body.includes("\"step_id\":\"1b\"") && body.includes("\"expected_revision\":17"))).toBe(true))
+    fireEvent.click(screen.getByRole("button", { name: "Zur Prüfung einreichen" }))
 
     await waitFor(() => expect(fixture.state.calls.some((call) => call.endsWith("GET /v1/tenants/tenant-welle-zwei/projects/project-welle-zwei"))).toBe(true))
-    expect(screen.getByText("Kanonischer Stand aktualisiert")).toBeInTheDocument()
+    expect(screen.getByText("Kanonischer Stand aktualisiert.")).toBeInTheDocument()
   })
 
   it("activates the delivery route with checkpoint creation, canonical readback, and only the whole ZIP action", async () => {
     const fixture = await renderConsole()
-    fireEvent.click(screen.getByRole("link", { name: "Workflow" }))
-    expect(screen.getByText("Notion: Simulation")).toBeInTheDocument()
-    expect(screen.getByText("n8n: Simulation")).toBeInTheDocument()
-    fireEvent.click(screen.getByRole("link", { name: "Uebergabe und Export" }))
+    fireEvent.click(screen.getByRole("button", { name: "Projektablauf" }))
+    const executionDetails = screen.getByText("Nachweise und technische Ausführung").closest("details")
+    if (executionDetails === null) throw new Error("execution details missing")
+    fireEvent.click(screen.getByText("Nachweise und technische Ausführung"))
+    expect(within(executionDetails).getByText("Notion")).toBeInTheDocument()
+    expect(within(executionDetails).getAllByText("Simulation")).toHaveLength(2)
+    fireEvent.click(screen.getByRole("button", { name: "Uebergabe" }))
 
     expect(screen.getByRole("heading", { name: "Uebergabe und Export" })).toBeInTheDocument()
     expect(await screen.findByRole("heading", { name: "Checkpoint-Vorschau" })).toBeInTheDocument()
@@ -158,9 +151,10 @@ describe("Heartweb Admin Operator Console", () => {
     expect(fixture.state.calls.filter((call) => call === `GET ${deliveryPath}/preview?scope=final`)).toHaveLength(1)
     expect(fixture.state.calls.filter((call) => call === `GET ${deliveryPath}/exports`)).toHaveLength(1)
     expect(screen.queryByText("Sprint 5E Liefervertraege sind noch nicht installiert.")).not.toBeInTheDocument()
-    expect(screen.getByRole("navigation", { name: "Hauptnavigation" })).toBeInTheDocument()
-    expect(screen.getByRole("banner")).toHaveTextContent("Pflegedienst Alpha")
-    expect(screen.getByRole("heading", { name: "Kontext und Nachweise" })).toBeInTheDocument()
+    expect(screen.getByRole("navigation", { name: "Aktives Projekt" })).toBeInTheDocument()
+    const projectHeader = screen.getByRole("heading", { name: "Pflegedienst Alpha" }).closest("header")
+    if (projectHeader === null) throw new Error("delivery project header missing")
+    expect(projectHeader).toHaveTextContent("Pflegedienst Alpha")
 
     fireEvent.change(screen.getByLabelText("Exportumfang"), { target: { value: "checkpoint" } })
     fireEvent.change(screen.getByLabelText("Exportfolge"), { target: { value: "7" } })

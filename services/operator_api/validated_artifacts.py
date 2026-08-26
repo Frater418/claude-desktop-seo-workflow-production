@@ -27,6 +27,9 @@ class ValidatedArtifactService:
         return self.revisions._persist_validated_transaction(
             output_set,
             package_input_hash,
+            validated.artifact_records,
+            validated.supporting_artifacts,
             validated.quality_gate_runs,
             validated.derived_views,
+            validated.next_run,
         )

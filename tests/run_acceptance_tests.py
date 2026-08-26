@@ -62,8 +62,12 @@ def test_design_system():
     assert "@import" not in css
 
 def test_fail_fast_prompts():
-    prompts = list(Path("prompts").glob("*.xml.md"))
+    registry = json.loads(
+        Path("standards/runtime/official-prompt-registry.json").read_text(encoding="utf-8")
+    )
+    prompts = [Path(entry["prompt_path"]) for entry in registry["entries"] if entry["active"] is True]
     assert len(prompts) == 9
+    assert len(prompts) == len(set(prompts))
     for p in prompts:
         content = p.read_text(encoding="utf-8")
         assert "<prompt_metadata>" in content

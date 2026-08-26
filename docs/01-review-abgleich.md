@@ -4,7 +4,7 @@
 
 **Projekt:** Modernisierung des Claude Desktop SEO-Workflows  
 **Datum:** 16. August 2026, Nachtrag 17. August 2026  
-**Status:** Baseline-Abgleich ueberarbeitet (Strikte Fail-Fast- und Qualitaets-Doktrin)  
+**Status at capture:** Baseline-Abgleich ueberarbeitet (Strikte Fail-Fast- und Qualitaets-Doktrin)
 **Autor:** Raphael Rechberger  
 **Referenzierte Quelldokumente:**
 - Original-Workflow Prompts: `0-Kickoff-Prompt.md` bis `4-Landingpage-Blog-Struktur.md`

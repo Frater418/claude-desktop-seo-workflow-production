@@ -21,6 +21,8 @@ SOURCE_RANKS = {
     "project_intake": 3,
     "project_v2": 3,
     "released_predecessor": 4,
+    "released_supporting_artifact": 4,
+
     "rejected_artifact": 5,
     "revision_request": 6,
     "operator_instruction": 6,

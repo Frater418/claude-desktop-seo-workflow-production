@@ -3,7 +3,7 @@
 **Author and architecture:** Raphael Rechberger
 **Organization:** Heartweb
 **Status:** Production-first V2 development
-**Updated:** 2026-08-22
+**Updated:** 2026-08-26
 
 Heartweb turns a verified customer briefing into a structured, reviewable and deliverable SEO and GEO implementation project.
 
@@ -66,25 +66,28 @@ Read the full architecture at [`docs/00-current-production-architecture.md`](doc
 
 ## Current state
 
-Implemented on the active Feature line:
+Implemented in the current repository baseline:
 
 - V2 domain, workflow and Transition Service
-- Provider Gateway and Evidence boundaries
+- multi-location Project V2, Search Deployment and verified Provider Target bindings
+- Provider Gateway, typed Heartweb tools and persisted Evidence boundaries
 - immutable artifacts and revisions
 - Quality Gates, approvals, releases and recovery
 - Context Packages and reproducible LLM run records
+- specialized Hermes Step agents, Worker Profiles and Tool Policies for Steps 0 through 4B
+- persistent production executions, bounded continuation, retry and re-steering
 - Local Operator API and append-only events
 - German Single-Admin Console
 - real browser-tested core actions
-- Sprint-5E Delivery contracts and services under active completion
+- shared local diagnostic traces
+- deterministic Delivery API, Delivery Center, role packages, manual Notion import and secure ZIPs
 
-Still required before the first controlled local Production output:
+Current real acceptance boundary:
 
-- complete Delivery API, Delivery Center and Delivery E2E
-- minimal shared diagnostic trace
-- release-critical output restoration for Steps 1B/1C, 2/3 and 4A/4B
-- targeted Production Release audit
-- one real customer Golden Path
+- the current real pilot has a reviewed, approved and released Step-0 Manifest V2
+- Step 1 is `in_progress` without Production Execution, Agent Evidence or LLM output
+- the real Step-1-through-Step-4B route, Human Gates, final Delivery package and professional operator review remain open
+- M10, PT-03 and PT-11 are not complete
 
 Post-release:
 
@@ -101,11 +104,14 @@ Current mutable status is always in [`00_admin/PROJECT_STATE.md`](00_admin/PROJE
 
 Start every new human or LLM session with:
 
-1. [`00_admin/SESSION_BOOTSTRAP.md`](00_admin/SESSION_BOOTSTRAP.md)
-2. [`00_admin/PROJECT_STATE.md`](00_admin/PROJECT_STATE.md)
-3. [`00_admin/DECISIONS.md`](00_admin/DECISIONS.md)
-4. [`00_admin/REPOSITORY_INDEX.md`](00_admin/REPOSITORY_INDEX.md)
-5. [`.hermes/plans/INDEX.md`](.hermes/plans/INDEX.md)
+1. [`00_admin/ONBOARDING_REFERENCE.md`](00_admin/ONBOARDING_REFERENCE.md), the deterministic single-entry snapshot
+2. [`00_admin/SESSION_BOOTSTRAP.md`](00_admin/SESSION_BOOTSTRAP.md)
+3. [`00_admin/PROJECT_STATE.md`](00_admin/PROJECT_STATE.md)
+4. active and superseding entries in [`00_admin/DECISIONS.md`](00_admin/DECISIONS.md)
+5. [`00_admin/REPOSITORY_INDEX.md`](00_admin/REPOSITORY_INDEX.md)
+6. the active task plan from [`.hermes/plans/INDEX.md`](.hermes/plans/INDEX.md)
+
+The generated Onboarding Reference bundles navigation and identified source blocks. It does not override Project State, active Decisions or the linked contract source.
 
 Machine-readable retrieval sources:
 
@@ -157,7 +163,7 @@ Contracts do not guarantee semantic truth or excellent writing by themselves. He
 
 This repository contains the client-neutral Core. Customer-specific facts, claims, services, regions, design and Evidence belong in isolated customer workspaces and must never be committed to the framework repository.
 
-AHD is the Golden-Path pilot and must not become hardcoded shared behavior.
+The active pilot identity is recorded in Project State. AHD and CL are validation projects, not shared product logic.
 
 ## Integrations
 
@@ -170,7 +176,7 @@ AHD is the Golden-Path pilot and must not become hardcoded shared behavior.
 
 - No silent fallback or estimated provider data
 - No commit, push, merge or deployment without Raphael approval
-- `master` remains protected until the Production Release gate
+- `master` is the consolidated repository baseline under DEC-0031, not a Production Acceptance claim
 - Historical audits and checkpoints remain immutable
 - Parallel work uses isolated Git worktrees
 - Raphael Rechberger is the sole author

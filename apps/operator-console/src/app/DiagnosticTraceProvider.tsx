@@ -221,6 +221,12 @@ export function DiagnosticTraceProvider({ client, start, createCloseRequest, chi
     return () => window.removeEventListener("pagehide", closeOnPageHide)
   }, [closeActive, enqueue])
 
+  useEffect(() => () => {
+    void enqueue(async () => {
+      await closeActive(true)
+    })
+  }, [closeActive, enqueue])
+
   const reporter = useMemo<DiagnosticTraceReporter>(() => ({ canClose: canClose(status), close, record, statusKind: status.kind, statusText: statusText(status) }), [close, record, status])
   return <DiagnosticTraceContext.Provider value={reporter}>{children}</DiagnosticTraceContext.Provider>
 }
@@ -233,5 +239,5 @@ export function useDiagnosticTrace(): DiagnosticTraceReporter {
 
 export function DiagnosticTraceStatus(): JSX.Element {
   const reporter = useDiagnosticTrace()
-  return <section aria-label="Diagnoseprotokoll" className="diagnostic-trace-status" data-state={reporter.statusKind}><p role="status">{reporter.statusText}</p><button disabled={!reporter.canClose} onClick={() => { void reporter.close().then(() => undefined, () => undefined) }} type="button">Diagnoseprotokoll schliessen</button></section>
+  return <section aria-label="Automatische Diagnose" className="diagnostic-trace-status" data-state={reporter.statusKind}><p role="status">{reporter.statusText}</p><p>Die technische Aktionshistorie wird automatisch geführt. Es ist keine Bedienung erforderlich.</p></section>
 }

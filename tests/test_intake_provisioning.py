@@ -15,6 +15,33 @@ TENANT = "tenant-invalid-intake"
 
 
 class IntakeProvisioningTests(unittest.TestCase):
+    def test_unmanaged_customer_directories_do_not_block_operator_startup(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            provisioning_root = Path(temporary) / "Kunden"
+            unmanaged_customer = provisioning_root / "simcura-test"
+            unmanaged_project = provisioning_root / TENANT / "notizen"
+            unmanaged_customer.mkdir(parents=True)
+            unmanaged_project.mkdir(parents=True)
+
+            app = create_app(
+                WorkspaceRegistry(()),
+                ROOT,
+                AppConfig(
+                    repository_root=ROOT,
+                    provisioning_root=provisioning_root,
+                    provisioning_enabled=True,
+                ),
+            )
+            client = TestClient(app)
+
+            ready = client.get("/readyz")
+            projects = client.get(f"/v1/tenants/{TENANT}/projects")
+
+            self.assertEqual(200, ready.status_code)
+            self.assertEqual([], projects.json()["data"])
+            self.assertTrue(unmanaged_customer.is_dir())
+            self.assertTrue(unmanaged_project.is_dir())
+
     def test_invalid_intake_acceptance_fails_before_provisioning_writes(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             provisioning_root = Path(temporary) / "provisioned"

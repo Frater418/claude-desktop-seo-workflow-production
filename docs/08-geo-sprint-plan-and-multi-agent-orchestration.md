@@ -6,7 +6,7 @@
 **Dokument-ID:** PLAN-GEO-SPRINTS-v1.4  
 **Autor & Architektur:** Raphael Rechberger  
 **Datum:** 17. August 2026  
-**Status:** Genehmigter Durchfuehrungsplan fuer den GEO-Upgrade-Zyklus v1.4.0  
+**Status at capture:** Genehmigter Durchfuehrungsplan fuer den GEO-Upgrade-Zyklus v1.4.0
 **Architektur-Basis:** OpenCode OMO (Oh-My-OpenCode) Multi-Agent Ensemble & Hermes Task Delegation  
 
 ---

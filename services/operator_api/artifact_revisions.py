@@ -33,8 +33,8 @@ class ArtifactRevisionService:
     def __post_init__(self) -> None:
         object.__setattr__(self, "_repository", ArtifactRevisionRepository(self.repository))
 
-    def _persist_validated_transaction(self, output_set: ProviderOutputSet, package_input_hash: str, quality_gate_runs: tuple[dict[str, JsonValue], ...], derived_views: Mapping[str, str]) -> ArtifactRevisionResult:
-        transaction = self._transaction(output_set, package_input_hash, quality_gate_runs, derived_views)
+    def _persist_validated_transaction(self, output_set: ProviderOutputSet, package_input_hash: str, artifact_records: tuple[ArtifactRecord, ...], supporting_artifacts: tuple[tuple[ArtifactRecord, bytes], ...], quality_gate_runs: tuple[dict[str, JsonValue], ...], derived_views: Mapping[str, str], next_run: dict[str, JsonValue]) -> ArtifactRevisionResult:
+        transaction = self._transaction(output_set, package_input_hash, artifact_records, supporting_artifacts, quality_gate_runs, derived_views, next_run)
         try:
             self._authorize_replay(transaction)
             with self._repository.lock(transaction.tenant_id, transaction.project_id, transaction.run_id, transaction.step_id):
@@ -109,19 +109,47 @@ class ArtifactRevisionService:
             raise ArtifactRevisionError("ERROR_ARTIFACT_CONTENT_UNSUPPORTED", "Artifact diff supports UTF-8 text only.") from exc
         return "".join(unified_diff(left_text.splitlines(keepends=True), right_text.splitlines(keepends=True), fromfile=left_artifact_id, tofile=right_artifact_id))
 
-    def _transaction(self, output_set: ProviderOutputSet, package_input_hash: str, quality_gate_runs: tuple[dict[str, JsonValue], ...], derived_views: Mapping[str, str]) -> ArtifactTransaction:
+    def _transaction(self, output_set: ProviderOutputSet, package_input_hash: str, artifact_records: tuple[ArtifactRecord, ...], supporting_artifacts: tuple[tuple[ArtifactRecord, bytes], ...], quality_gate_runs: tuple[dict[str, JsonValue], ...], derived_views: Mapping[str, str], next_run: dict[str, JsonValue]) -> ArtifactTransaction:
         reference = output_set.primary
-        digest = hashlib.sha256(json.dumps({"output_set_sha256": output_set_payload_sha256(output_set, package_input_hash), "quality_gate_runs": quality_gate_runs, "derived_views": dict(derived_views)}, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
-        parents = self._parents(output_set)
-        records = tuple(build_artifact_record(output, package_input_hash, parents) for output, parents in zip(output_set.outputs, parents, strict=True))
+        output_records = artifact_records
+        if len(output_records) != len(output_set.outputs):
+            raise ArtifactRevisionError("ERROR_CONTEXT_SOURCE_INVALID", "Validated artifact records do not cover the complete output set.")
+        records = (*output_records, *(record for record, _ in supporting_artifacts))
+        digest = hashlib.sha256(json.dumps({"output_set_sha256": output_set_payload_sha256(output_set, package_input_hash), "artifact_records": [record.model_dump(mode="json") for record in records], "quality_gate_runs": quality_gate_runs, "derived_views": dict(derived_views), "next_run": next_run}, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+        for output, record in zip(output_set.outputs, output_records, strict=True):
+            expected = build_artifact_record(output, package_input_hash, record.parent_artifact_ids)
+            if record != expected:
+                raise ArtifactRevisionError("ERROR_CONTEXT_SOURCE_INVALID", "Validated artifact record does not bind the exact provider output.")
         for record in records:
             errors = tuple(Draft202012Validator(self.artifact_schema, format_checker=FormatChecker()).iter_errors(record.model_dump(mode="json")))
             if errors:
                 raise ArtifactRevisionError("ERROR_CONTEXT_SCHEMA_INVALID", "Artifact revision does not satisfy its contract.")
-        if quality_gate_runs and any(qgr.get("artifact_id") != records[0].artifact_id or qgr.get("artifact_sha256") != records[0].content_sha256 or qgr.get("artifact_revision") != records[0].revision for qgr in quality_gate_runs):
-            raise ArtifactRevisionError("ERROR_QUALITY_GATE_BINDING_INVALID", "Machine quality-gate runs must bind the primary artifact revision.")
+        allowed_gate_artifacts = {
+            (record.artifact_id, record.content_sha256, record.revision)
+            for record in records
+        }
+        if quality_gate_runs and any(
+            (
+                qgr.get("artifact_id"),
+                qgr.get("artifact_sha256"),
+                qgr.get("artifact_revision"),
+            ) not in allowed_gate_artifacts
+            for qgr in quality_gate_runs
+        ):
+            raise ArtifactRevisionError("ERROR_QUALITY_GATE_BINDING_INVALID", "Machine quality-gate runs must bind a validated output or supporting artifact revision.")
         views = tuple(DerivedView(artifact_id=records[0].artifact_id, name=name, content=content) for name, content in sorted(derived_views.items()))
-        return ArtifactTransaction(tenant_id=reference.tenant_id, project_id=reference.project_id, run_id=reference.run_id, step_id=reference.step_id, idempotency_key=reference.idempotency_key, payload_sha256=digest, target_revision=reference.target_revision, records=records, contents=tuple(output.content_bytes for output in output_set.outputs), quality_gate_runs=quality_gate_runs, derived_views=views)
+        contents = (*tuple(output.content_bytes for output in output_set.outputs), *(content for _, content in supporting_artifacts))
+        if (
+            next_run.get("tenant_id") != reference.tenant_id
+            or next_run.get("project_id") != reference.project_id
+            or next_run.get("run_id") != reference.run_id
+            or next_run.get("step_id") != reference.step_id
+            or next_run.get("revision") != reference.target_revision
+            or next_run.get("status") != "awaiting_gate"
+            or next_run.get("output_hash") != records[0].content_sha256
+        ):
+            raise ArtifactRevisionError("ERROR_PRODUCTION_STATE_INVALID", "Validated next run does not bind the artifact transaction.")
+        return ArtifactTransaction(tenant_id=reference.tenant_id, project_id=reference.project_id, run_id=reference.run_id, step_id=reference.step_id, idempotency_key=reference.idempotency_key, payload_sha256=digest, target_revision=reference.target_revision, next_run=next_run, records=records, contents=contents, quality_gate_runs=quality_gate_runs, derived_views=views)
 
     def _parents(self, output_set: ProviderOutputSet) -> tuple[tuple[str, ...], ...]:
         reference = output_set.primary
@@ -145,16 +173,16 @@ class ArtifactRevisionService:
         parent_ids = {artifact_id for record in transaction.records for artifact_id in record.parent_artifact_ids}
         for release_path in root.glob("*.json"):
             release = self.repository._required(transaction.tenant_id, transaction.project_id, f"releases/{release_path.name}")
-            if release.get("status") == "released" and release.get("artifact_id") in parent_ids:
+            if release.get("status") == "released" and release.get("step_id") == transaction.step_id and release.get("artifact_id") in parent_ids:
                 raise ArtifactRevisionError("ERR_RELEASED_ARTIFACT_IMMUTABLE", "Released artifacts cannot be revised.")
 
     def _recovery_transaction(self, tenant_id: str, project_id: str, run_id: str, step_id: str, idempotency_key: str) -> ArtifactTransaction:
-        placeholder = ArtifactTransaction(tenant_id=tenant_id, project_id=project_id, run_id=run_id, step_id=step_id, idempotency_key=idempotency_key, payload_sha256="0" * 64, target_revision=1, records=(), contents=())
+        placeholder = ArtifactTransaction(tenant_id=tenant_id, project_id=project_id, run_id=run_id, step_id=step_id, idempotency_key=idempotency_key, payload_sha256="0" * 64, target_revision=1, next_run={}, records=(), contents=())
         path = self._repository._recovery_path(placeholder)
         payload = self.repository._optional(tenant_id, project_id, path, None)
         if not isinstance(payload, dict):
             existing = self.repository._optional(tenant_id, project_id, self._repository._idempotency_path(placeholder), None)
             if not isinstance(existing, dict) or not isinstance(existing.get("payload_sha256"), str) or not isinstance(existing.get("records"), list):
                 raise ArtifactRevisionError("ERROR_ARTIFACT_PERSISTENCE", "Artifact recovery record is unavailable.")
-            return ArtifactTransaction(tenant_id=tenant_id, project_id=project_id, run_id=run_id, step_id=step_id, idempotency_key=idempotency_key, payload_sha256=existing["payload_sha256"], target_revision=1, records=tuple(ArtifactRecord.model_validate(record) for record in existing["records"]), contents=())
+            return ArtifactTransaction(tenant_id=tenant_id, project_id=project_id, run_id=run_id, step_id=step_id, idempotency_key=idempotency_key, payload_sha256=existing["payload_sha256"], target_revision=1, next_run=existing.get("next_run", self.repository.run(tenant_id, project_id, run_id)), records=tuple(ArtifactRecord.model_validate(record) for record in existing["records"]), contents=())
         return self._repository._transaction_from_sidecar(payload)

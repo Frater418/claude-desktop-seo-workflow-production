@@ -6,6 +6,13 @@ import hashlib
 from pathlib import Path
 from unittest.mock import patch
 
+import mcp as mcp_sdk
+
+ROOT = Path(__file__).resolve().parents[1]
+local_mcp_path = str(ROOT / "mcp")
+if local_mcp_path not in mcp_sdk.__path__:
+    mcp_sdk.__path__.append(local_mcp_path)
+
 from mcp.tools.capacity_matrix_solver import CapacityValidationError, solve_capacity_plan
 from jsonschema import Draft202012Validator
 from services.step3_preflight import validator as step3_validator
@@ -14,8 +21,6 @@ from services.step3_preflight.validator import validate_step3_candidate, validat
 from tests.test_preflight_common import _predecessor
 from tests.test_step3_renderer import _operational_bundle
 
-
-ROOT = Path(__file__).resolve().parents[1]
 MACHINE_PLAN_FIELDS = (
     "weeks",
     "mandatory_item_ids",

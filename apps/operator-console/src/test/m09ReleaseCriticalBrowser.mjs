@@ -3,8 +3,8 @@
 import { createReadStream, existsSync, statSync } from "node:fs"
 import { mkdir, stat, writeFile } from "node:fs/promises"
 import { createServer } from "node:http"
-import { createRequire } from "node:module"
 import { extname, join, normalize, resolve } from "node:path"
+import { chromium } from "playwright-core"
 
 const tenantId = "tenant-browser-qa"
 const alpha = { tenant_id: tenantId, project_id: "project-synthetic-alpha", run_id: "run-synthetic-alpha", step_id: "1b", expected_revision: 17 }
@@ -33,13 +33,11 @@ function option(name, fallback) {
 }
 
 const dist = resolve(option("dist", "dist"))
-const chrome = resolve(option("chrome", process.env.CHROME_BIN ?? "/opt/google/chrome/chrome"))
+const chrome = option("chrome", process.env.CHROME_BIN ?? "channel:chrome")
 const output = resolve(option("output"))
 const screenshotName = "m09-release-critical-desktop-1280x900.png"
 const screenshotPath = join(output, screenshotName)
 const resultPath = join(output, "m09-release-critical-browser-results.json")
-const require = createRequire(process.env.PLAYWRIGHT_REQUIRE_FROM ?? import.meta.url)
-const { chromium } = require("playwright")
 const state = { artifactSaved: false, deliveryExports: new Map(), deliveryCreates: 0, deliveryDownloads: 0, diagnosticSequences: new Map(), released: false, requestLog: [] }
 const result = {
   harness: "M09 release-critical desktop browser smoke",
@@ -385,7 +383,7 @@ let server
 let browser
 try {
   server = await startServer()
-  browser = await chromium.launch({ executablePath: chrome, headless: true })
+  browser = await chromium.launch(chrome === "channel:chrome" ? { channel: "chrome", headless: true } : { executablePath: resolve(chrome), headless: true })
   await runScenario(browser, server.base)
 } catch (error) {
   result.error = error instanceof Error ? error.message : String(error)

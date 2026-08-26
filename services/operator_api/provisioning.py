@@ -18,6 +18,9 @@ from .repository import RepositoryError, WorkspaceRegistration, WorkspaceRegistr
 
 
 _INITIAL_STEPS: Final = ("0", "1", "1b", "1c", "2", "3", "4a", "4b")
+_INITIAL_RUN_ID: Final = "run-neutral-0001"
+_OPERATOR_OWNER: Final = "Heartweb Admin Operator"
+_INITIAL_NEXT_ACTION: Final = "Schritt 0 prüfen und starten"
 _COLLECTIONS: Final = (
     "artifacts", "gates", "tasks", "tickets", "assignments", "context-packages", "llm-runs",
     "performance-checkpoints", "metrics", "adjustment-proposals", "integrations-status", "approvals",
@@ -49,7 +52,11 @@ class ProvisionedWorkspaceResolver(WorkspaceRegistry):
         provisioned = tuple(
             WorkspaceRegistration(tenant_id, project_dir.name, self._provisioned_workspace(tenant_id, project_dir.name))
             for project_dir in tenant_root.iterdir()
-            if project_dir.is_dir() and not project_dir.is_symlink()
+            if (
+                project_dir.is_dir()
+                and not project_dir.is_symlink()
+                and self._is_discoverable_id(project_dir.name, "project")
+            )
         )
         duplicates = {item.project_id for item in explicit}.intersection(item.project_id for item in provisioned)
         if duplicates:
@@ -59,14 +66,49 @@ class ProvisionedWorkspaceResolver(WorkspaceRegistry):
     def all_projects(self) -> tuple[WorkspaceRegistration, ...]:
         tenants = {registration.tenant_id for registration in self.registrations}
         if self._provisioning_enabled and self._provisioning_root is not None and self._provisioning_root.exists():
-            tenants.update(path.name for path in self._provisioning_root.iterdir() if path.is_dir() and not path.is_symlink())
+            tenants.update(
+                path.name
+                for path in self._provisioning_root.iterdir()
+                if path.is_dir() and not path.is_symlink() and self._is_discoverable_id(path.name, "tenant")
+            )
         return tuple(registration for tenant_id in sorted(tenants) for registration in self.projects(tenant_id))
+
+    def _is_discoverable_id(self, value: str, prefix: str) -> bool:
+        try:
+            self._validate_id(value, prefix)
+        except RepositoryError:
+            return False
+        return True
 
     def provisioned_target(self, tenant_id: str, project_id: str) -> Path:
         self._validate_id(tenant_id, "tenant")
         self._validate_id(project_id, "project")
         root = self._root_for_provisioning()
         return root / tenant_id / project_id
+
+    def managed_workspace_for_deletion(self, tenant_id: str, project_id: str) -> Path:
+        """Return only a provisioned workspace owned by this Operator instance."""
+        self._validate_id(tenant_id, "tenant")
+        self._validate_id(project_id, "project")
+        if any(
+            registration.tenant_id == tenant_id and registration.project_id == project_id
+            for registration in self.registrations
+        ):
+            raise RepositoryError(
+                "ERROR_PROJECT_DELETE_NOT_MANAGED",
+                "Explicitly registered workspaces cannot be deleted by the Operator Console.",
+            )
+        workspace = self._checked_directory(self.provisioned_target(tenant_id, project_id))
+        if workspace is None:
+            raise RepositoryError("ERR_TENANT_ISOLATION", "Tenant and project are not configured.")
+        project = _read_canonical_project(workspace)
+        if project.get("tenant_id") != tenant_id or project.get("project_id") != project_id:
+            raise RepositoryError("ERR_TENANT_ISOLATION", "Provisioned workspace identity is mismatched.")
+        return workspace
+
+    def project_deletion_audit_root(self) -> Path:
+        """Return the server-owned path for minimal deletion tombstones."""
+        return self._root_for_provisioning() / ".heartweb-project-deletions" / "v1"
 
     def _provisioned_workspace(self, tenant_id: str, project_id: str) -> Path:
         if not self._provisioning_enabled or self._provisioning_root is None:
@@ -146,17 +188,74 @@ class WorkspaceProvisioner:
 
     def _write_workspace(self, workspace: Path, tenant_id: str, project_id: str, project_name: str, accepted: ReviewedAcceptance, project_v2: dict[str, JsonValue], created_at: str) -> None:
         operator = workspace / "v2/operator"
-        project = {"tenant_id": tenant_id, "project_id": project_id, "name": project_name}
+        customer = project_v2.get("customer")
+        customer_name = customer.get("name") if isinstance(customer, dict) else None
+        if not isinstance(customer_name, str) or customer_name == "":
+            raise Package4Error("ERROR_CONTEXT_SCHEMA_INVALID", "Reviewed Project V2 customer is unavailable.")
+        deployment_id = _primary_active_deployment_id(project_v2)
+        project = {
+            "tenant_id": tenant_id,
+            "project_id": project_id,
+            "name": project_name,
+            "customer": customer_name,
+            "current_step": "0",
+            "progress": "0 von 8 Schritten",
+            "blocker_count": 0,
+            "owner": _OPERATOR_OWNER,
+            "next_action": _INITIAL_NEXT_ACTION,
+        }
+        initial_run = {
+            "tenant_id": tenant_id,
+            "project_id": project_id,
+            "deployment_id": deployment_id,
+            "run_id": _INITIAL_RUN_ID,
+            "step_id": "0",
+            "gate_id": "GATE-0",
+            "revision": 1,
+            "input_hash": accepted.source_sha256,
+            "status": "pending",
+            "attempt": 1,
+            "created_at": created_at,
+            "gate_context": {"local_workflow": True},
+        }
+        initial_step = {
+            "tenant_id": tenant_id,
+            "project_id": project_id,
+            "run_id": _INITIAL_RUN_ID,
+            "step_id": "0",
+            "status": "pending",
+            "blocker": "Keine offenen Blocker",
+            "next_action": _INITIAL_NEXT_ACTION,
+        }
         _write(operator / "project.json", project)
         _write(operator / "project-v2.json", project_v2)
         intake = {"tenant_id": tenant_id, "project_id": project_id, "markdown": accepted.markdown, "source_sha256": accepted.source_sha256, "reviewed": accepted.reviewed.model_dump(mode="json"), "accepted_by": accepted.actor_id, "accepted_at": accepted.accepted_at}
+        if accepted.generation is not None:
+            intake["generation"] = accepted.generation.model_dump(mode="json")
         _write(operator / "intake.json", intake)
         _write(operator / "logical-session.json", _logical_session(tenant_id, project_id, accepted.actor_id, intake))
         _write(operator / "workflow.json", _workflow(tenant_id, project_id))
-        _write(operator / "steps.json", [{"tenant_id": tenant_id, "project_id": project_id, "step_id": step_id, "status": "pending"} for step_id in _INITIAL_STEPS] + [{"tenant_id": tenant_id, "project_id": project_id, "step_id": "3b", "status": "not_due"}])
-        _write(operator / "runs/run-neutral-0001.json", {"tenant_id": tenant_id, "project_id": project_id, "run_id": "run-neutral-0001", "step_id": "0", "gate_id": "GATE-0", "revision": 1, "input_hash": accepted.source_sha256, "status": "pending", "attempt": 1, "created_at": created_at, "gate_context": {"local_workflow": True}})
+        _write(operator / "steps.json", [initial_step])
+        _write(operator / f"runs/{_INITIAL_RUN_ID}.json", initial_run)
         for collection in _COLLECTIONS:
             _write(operator / f"{collection}.json", [])
+
+
+def _primary_active_deployment_id(project_v2: dict[str, JsonValue]) -> str:
+    deployments = project_v2.get("market_deployments")
+    matches = [
+        deployment
+        for deployment in deployments
+        if isinstance(deployment, dict)
+        and deployment.get("market_phase") == "active"
+        and deployment.get("deployment_role") == "primary"
+    ] if isinstance(deployments, list) else []
+    if len(matches) != 1 or not isinstance(matches[0].get("deployment_id"), str):
+        raise Package4Error(
+            "ERROR_CONTEXT_SCHEMA_INVALID",
+            "Project provisioning requires exactly one active primary deployment.",
+        )
+    return matches[0]["deployment_id"]  # type: ignore[return-value]
 
 
 def _read_canonical_project(workspace: Path) -> dict[str, JsonValue]:

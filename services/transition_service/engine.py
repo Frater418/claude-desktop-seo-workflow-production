@@ -35,7 +35,7 @@ def process_transition(command: dict, run: dict, current_artifact: dict | None, 
             errors.append(("ERR_TRANSITION_NOT_ALLOWED", f"Operation {operation} is not allowed from status {run.get('status')}."))
     if command.get("to_step_id") != run.get("step_id"):
         errors.append(("ERR_TRANSITION_NOT_ALLOWED", "Command target step does not match the current run step."))
-    if operation in {"approve", "complete", "publish", "retry", "supersede"} and command.get("from_step_id") != run.get("step_id"):
+    if operation in {"approve", "complete", "publish", "retry", "revise", "supersede"} and command.get("from_step_id") != run.get("step_id"):
         errors.append(("ERR_TRANSITION_NOT_ALLOWED", "Same-step operation must use the current step as source and target."))
     if operation in {"start", "submit_for_gate", "post_publication"} and not predecessor_ok(command, graph, run, predecessor_release):
         errors.append(("ERR_TRANSITION_NOT_ALLOWED", "A matching released predecessor and workflow edge are required."))
@@ -47,6 +47,8 @@ def process_transition(command: dict, run: dict, current_artifact: dict | None, 
             errors.append(("ERR_ARTIFACT_REQUIRED", "Current artifact identity does not match the run."))
         if command.get("output_hash") and command.get("output_hash") != current_artifact.get("content_sha256"):
             errors.append(("ERR_ARTIFACT_REQUIRED", "Command output hash does not match the current artifact."))
+        if operation in {"submit_for_gate", "post_publication"} and current_artifact.get("revision") != int(run.get("revision", 0)) + 1:
+            errors.append(("ERR_STALE_REVISION", "Submitted artifact must target exactly the next Core revision."))
     if operation == "retry" and int(run.get("attempt", 1)) >= max_attempts:
         errors.append(("ERR_RETRY_EXHAUSTED", "Retry attempt limit is exhausted."))
     gate_result = None
@@ -76,6 +78,10 @@ def process_transition(command: dict, run: dict, current_artifact: dict | None, 
     next_run["status"] = target_status
     if operation in {"submit_for_gate", "post_publication", "approve", "complete", "publish"}:
         next_run["output_hash"] = current_artifact["content_sha256"]
+    if operation in {"submit_for_gate", "post_publication"}:
+        next_run["revision"] = current_artifact["revision"]
     if operation == "retry":
         next_run["attempt"] = int(run["attempt"]) + 1
+    if operation == "revise":
+        next_run["output_hash"] = None
     return {"ok": True, "replay": False, "command_fingerprint": command_fingerprint, "run": next_run, "human_quality_gate_run": human_quality_gate_run(command, run, current_artifact, approval, human_gate_defs[0], registry["schema_version"]) if operation == "approve" else None, "release_record": release_record(command, run, current_artifact, approval) if operation in {"complete", "publish"} else None, "errors": []}

@@ -2,7 +2,7 @@
 
 **Author:** Raphael Rechberger
 **Status:** Current architecture authority
-**Updated:** 2026-08-22
+**Updated:** 2026-08-26
 
 ## 1. Purpose
 
@@ -45,7 +45,15 @@ Post-handoff Notion tasks do not resume the Core or mutate artifacts.
 
 ### 3.1 Domain contracts
 
-Project V2 and related contracts separate Customer, Brand, Market, Search Deployment, Entity, Risk and Service Area. The framework remains client-neutral.
+Project V2 and related contracts separate Customer, Brand, Market, Search Deployment, Entity, Risk, physical location and Service Area. The framework remains client-neutral.
+
+The accepted briefing creates one or more `market_deployments[]` before Step 0. Every active deployment binds its own market, country, language, locale, SEO operating model, target regions, physical-location and service-area references and one exact Provider Location Registry target. The registry target carries provider identity, target type, canonical location name, provider location code and verification Evidence. A market registry entry is not a substitute for this deployment-specific provider target.
+
+Project V2 also binds the confirmed weekly planning capacity with minimum, maximum, source, operator identity and timestamp. If the input portfolio contains no explicit hours, intake returns a typed missing-input question instead of a default. For an already accepted project, the same value can be previewed and explicitly confirmed in the Operator Console. This creates a new Project V2 and Logical Project Session revision before Step 0 continues. Step 0 and Step 3 consume the same confirmed capacity record.
+
+Multiple physical locations or service areas may belong to one deployment when they share the same provider research target. Distinct provider research targets require distinct deployments. The initial production sequence is bound to the one active primary deployment. Missing, ambiguous, unverified or operating-model-incompatible targets stop before Step 0. There is no country, language or provider-code default.
+
+Step 0 produces Manifest V2 as an exact read-only projection of the run-bound deployment. A Project V2 or accepted-intake revision also creates a new hash-bound Logical Project Session and archives its predecessor so a rerun cannot consume stale intake bytes.
 
 ### 3.2 Workflow graph
 
@@ -77,15 +85,21 @@ Each run receives a versioned Context Package containing exact source paths, rev
 
 Provider sessions may be reused as a cache but are never Source of Truth.
 
+The isolated Hermes profile `heartweb-runtime` is the agentic production runtime for Steps 0, 1, 1B, 1C, 2, 3, 4A and 4B. Every Step starts a specialized, versioned agent run with its own prompt, Worker Profile, model and reasoning policy, allowed tools, output contract and bounded agent and tool rounds. A Step agent may delegate focused research, processing, synthesis or review work to Hermes subagents when the Step contract permits it.
+
+AI performs the generative and interpretive work. Deterministic code remains responsible for hashes, identity, schema validation, Evidence normalization, state transitions, approval authority, replay and Delivery packaging.
+
 ### 3.5 Prompt Registry
 
 Every step uses a registered prompt version and expected output contracts. Old accepted runs remain reproducible because the exact prompt bytes and related versions remain identifiable.
 
 ### 3.6 Provider Gateway
 
-The Provider Gateway normalizes external research and metric providers. Every request binds market, location code and language. Raw provider responses and hashes become Evidence.
+The Provider Gateway normalizes external research and metric providers. Every request binds the run deployment, provider target ID, market, country, canonical provider location name, provider location code and language. The tool boundary verifies these values against `standards/domain/provider-location-registry.json` and the persisted Project V2 deployment before any provider call. Raw provider responses and hashes become Evidence.
 
-Prompts do not call external providers directly.
+Step agents may receive already validated provider Evidence or request an allowed provider operation through a typed Heartweb tool. The tool executes server-side through the Provider Gateway. Prompts and agents never receive provider credentials and never bypass this boundary with direct external provider calls.
+
+Paid, externally acting or cost-unknown provider operations require the registered preview and explicit operator confirmation before execution. Missing capabilities, credentials, quota, exact deployment bindings, verified provider targets or confirmation stop the run without a fallback. Country-only lookup through the legacy `standards/location-codes.json` is not part of the production path.
 
 ### 3.7 Artifacts and revisions
 
@@ -146,12 +160,17 @@ The minimal diagnostic trace records automated and manual runs in one shared loc
 ```text
 Operator Console
 -> Local Operator API
--> Core workflow
+-> explicit production preview and confirmation
+-> isolated Hermes heartweb-runtime
+-> specialized Step agent and bounded subagents
+-> typed Heartweb tools
+-> Provider Gateway and Evidence
+-> Core validation, Human Gate and workflow transition
 -> Delivery Service
 -> files, ZIP and manual Notion import
 ```
 
-No server, live Notion or n8n is required for the first controlled output.
+The local Hermes Gateway is a required production dependency but is never started automatically by the Console. Live Notion, n8n and a public server are not required for the first controlled output.
 
 ### 4.2 Future n8n orchestration
 
@@ -213,33 +232,48 @@ The repository index is deterministic and contains lifecycle and authority metad
 
 Read order:
 
-1. `00_admin/SESSION_BOOTSTRAP.md`
-2. `00_admin/PROJECT_STATE.md`
-3. `00_admin/DECISIONS.md`
-4. `00_admin/REPOSITORY_INDEX.md`
-5. active plan and exact linked contracts
+1. `00_admin/ONBOARDING_REFERENCE.md` for the deterministic single-entry snapshot
+2. `00_admin/SESSION_BOOTSTRAP.md`
+3. `00_admin/PROJECT_STATE.md`
+4. active and superseding entries in `00_admin/DECISIONS.md`
+5. `00_admin/REPOSITORY_INDEX.md`
+6. active plan and exact linked contracts
+
+The generated Onboarding Reference is a navigational snapshot. Project State, active Decisions and the exact source contract remain authoritative when any embedded block is older than its source.
 
 Historical and superseded files remain available but are excluded from default retrieval.
 
 ## 8. Current and planned capability
 
-### Implemented on the active Feature line
+### Implemented in the current repository baseline
 
 - V2 Core, workflow and transitions
 - Context Packages and LLM records
-- provider and Evidence boundaries
+- specialized Hermes Step agents, Worker Profiles and Tool Policies for Steps 0 through 4B
+- persistent Production Executions with bounded continuation, retry and re-steering
+- multi-location Search Deployment, Provider Target and planning-capacity bindings
+- typed Heartweb tools, Provider Gateway operations and persisted Evidence
 - artifacts, revisions, gates, approvals and releases
 - Operator API and German Console
 - browser-tested release-critical actions
-- Delivery foundation under active Sprint-5E completion
+- deterministic Delivery API, Delivery Center, role packages, manual Notion import and secure ZIPs
+- shared local diagnostic trace
+- locally restored PQ-0, PQ-1, PQ-2 and PQ-4 output quality
+
+### Current acceptance evidence and limits
+
+- The real CL pilot has a reviewed, approved, completed and released Step-0 Manifest V2 Revision 3.
+- Step 1 Run `run-next-7f7e2b778f4521b9` is `in_progress` without Production Execution, Agent Evidence or LLM output.
+- The complete real route through Step 4B, all Human Gates, final Delivery package and professional operator review are not yet proven.
+- Repository consolidation under DEC-0031 does not change PT-03, PT-11, M10 or Production Acceptance status.
 
 ### Pre-release remaining
 
-- finish Delivery API, Delivery Center and Delivery E2E
-- minimal diagnostic trace
-- release-critical output quality restoration
-- targeted Production Release audit
-- first real customer Golden Path
+- produce Step 1 through the canonical Hermes and Provider Gateway route
+- continue 1B, 1C, 2, 3, 4A and 4B with real required Evidence and fail-fast behavior
+- perform every required Human Gate and revision decision
+- generate, extract and inspect the final Delivery package
+- complete the real-project Golden Path and explicit M10 acceptance
 
 ### Post-release
 

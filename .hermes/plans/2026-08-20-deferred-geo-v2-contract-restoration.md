@@ -1,8 +1,10 @@
 # Deferred GEO V2 Contract Restoration
 
+> **Lifecycle: historical.** Die lokale PQ-4-Vertragsrestaurierung ist abgeschlossen; reale semantische Output-Verifikation bleibt Teil von M10.
+
 **Author:** Raphael Rechberger
 **Date:** 2026-08-20
-**Status:** Mandatory deferred remediation
+**Status at capture:** Mandatory deferred remediation
 **Activation gate:** Start only after the current Sprint 5 and Sprint 5E implementation is stable, independently verified, and the existing local workflow passes its completion gate.
 
 ## Purpose

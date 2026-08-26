@@ -59,7 +59,7 @@ describe("TaskWorkspace queue", () => {
 
     fireEvent.change(screen.getByLabelText("Faellig bis"), { target: { value: "2026-02-30" } })
 
-    expect(screen.getByText("Bitte ein gueltiges Datum im Format JJJJ-MM-TT eingeben.")).toBeInTheDocument()
+    expect(screen.getByText("Bitte ein gültiges Datum im Format JJJJ-MM-TT eingeben.")).toBeInTheDocument()
     expect(screen.getByLabelText("Faellig bis")).toHaveAttribute("aria-invalid", "true")
     expect(screen.getByRole("button", { name: "Niedrige Nacharbeit" })).toBeInTheDocument()
   })
@@ -72,7 +72,7 @@ describe("TaskWorkspace queue", () => {
     fireEvent.change(screen.getByLabelText("Faellig bis"), { target: { value: "" } })
 
     expect(screen.getByRole("button", { name: "Niedrige Nacharbeit" })).toBeInTheDocument()
-    expect(screen.queryByText("Bitte ein gueltiges Datum im Format JJJJ-MM-TT eingeben.")).toBeNull()
+    expect(screen.queryByText("Bitte ein gültiges Datum im Format JJJJ-MM-TT eingeben.")).toBeNull()
   })
   it.each([
     ["Status filtern", "waiting_for_input", "Hohe Rueckfrage"],
@@ -154,10 +154,10 @@ describe("TaskWorkspace queue", () => {
     fireEvent.change(screen.getByLabelText("Faellig bis"), { target: { value: "2026-08-01" } })
 
     // Then: filtered-empty and canonical-empty have different operational guidance.
-    expect(screen.getByText("Keine Aufgaben entsprechen den aktuellen Filtern.")).toBeInTheDocument()
+    expect(screen.getByText("Keine Aufgabe entspricht den aktuellen Filtern.")).toBeInTheDocument()
     view.unmount()
     render(<TaskWorkspace data={workspace([])} />)
-    expect(screen.getByText("Keine Aufgaben vorhanden.")).toBeInTheDocument()
+    expect(screen.getByText("Aktuell ist keine Aufgabe offen")).toBeInTheDocument()
   })
 
   it("keeps a flexible title and intact deadline inside semantic task metadata", () => {

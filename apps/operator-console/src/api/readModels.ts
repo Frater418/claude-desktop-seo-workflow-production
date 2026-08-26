@@ -17,8 +17,11 @@ export type TaskRead = { readonly tenantId: string; readonly projectId: string; 
 export type GateRead = { readonly tenantId: string; readonly projectId: string; readonly runId: string; readonly stepId: CurrentStepId; readonly qualityGateId: string; readonly qualityGateRunId: string; readonly artifactId: string; readonly artifactHash: string; readonly artifactRevision: number; readonly result: GateStatus; readonly summary: string; readonly evidence: GateEvidence; readonly findings: readonly string[]; readonly checkerVersion: string; readonly checkedAt: string }
 export type ContextRead = { readonly tenantId: string; readonly projectId: string; readonly runId: string; readonly stepId: CurrentStepId; readonly title: string; readonly finding: string }
 export type IntegrationRead = { readonly tenantId: string; readonly projectId: string; readonly name: string; readonly mode: IntegrationMode }
-export type IntakePreviewRead = { readonly previewHash: string; readonly sourceHash: string; readonly reviewed: ReviewedIntake; readonly title: string | null; readonly tenantId: string | null; readonly projectId: string | null; readonly projectName: string | null; readonly projectV2Present: boolean; readonly missingFields: readonly string[]; readonly eligible: boolean }
+export type IntakeGenerationSummaryRead = { readonly providerRunId: string; readonly modelId: string; readonly outputCharacters: number; readonly validationStages: readonly string[]; readonly normalizations: readonly string[] }
+export type IntakePreviewRead = { readonly previewHash: string; readonly sourceHash: string; readonly reviewed: ReviewedIntake; readonly title: string | null; readonly tenantId: string | null; readonly projectId: string | null; readonly projectName: string | null; readonly projectV2Present: boolean; readonly missingFields: readonly string[]; readonly eligible: boolean; readonly generationSummary: IntakeGenerationSummaryRead | null }
 export type IntakeAcceptanceRead = { readonly tenantId: string; readonly projectId: string }
+export type AcceptedIntakeGenerationRead = { readonly providerRunId: string; readonly modelId: string; readonly promptId: string; readonly promptVersion: string; readonly finishedAt: string }
+export type AcceptedIntakeRead = { readonly tenantId: string; readonly projectId: string; readonly title: string; readonly acceptedAt: string; readonly acceptedBy: string; readonly markdown: string; readonly sourceHash: string; readonly projectV2: Readonly<Record<string, unknown>>; readonly generation: AcceptedIntakeGenerationRead | null }
 export type ReleaseRead = { readonly releaseId: string; readonly tenantId: string; readonly projectId: string; readonly runId: string; readonly stepId: CurrentStepId; readonly gateId: string; readonly artifactId: string; readonly artifactHash: string; readonly artifactRevision: number; readonly approvalId: string; readonly policyVersion: string; readonly releasedAt: string }
 
 export class OperatorReadModelError extends Error {
@@ -146,6 +149,14 @@ function boundRun(value: JsonObject, subject: string, tenantId: string, projectI
   return { ...bound, runId: stringAt(value, "run_id", subject), stepId: stepId(stringAt(value, "step_id", subject), subject) }
 }
 
+function projectScopedRun(value: JsonObject, subject: string, tenantId: string, projectId: string): { readonly tenantId: string; readonly projectId: string; readonly runId: string; readonly stepId: CurrentStepId } {
+  const recordTenantId = stringAt(value, "tenant_id", subject)
+  if (recordTenantId !== tenantId) return fail(`eine ungueltige Mandantenbindung in ${subject}`)
+  const storedProjectId = value["project_id"]
+  if (storedProjectId !== undefined && (typeof storedProjectId !== "string" || storedProjectId !== projectId)) return fail(`eine ungueltige Projektbindung in ${subject}`)
+  return { tenantId: recordTenantId, projectId, runId: stringAt(value, "run_id", subject), stepId: stepId(stringAt(value, "step_id", subject), subject) }
+}
+
 export function parseProjectList(value: unknown, tenantId: string): readonly ProjectSummary[] {
   return list(data(value, "der Projektliste"), "der Projektliste").map((entry) => parseProjectData(entry, tenantId))
 }
@@ -203,27 +214,81 @@ export function parseReleases(value: unknown, tenantId: string, projectId: strin
 }
 
 export function parseGates(value: unknown, tenantId: string, projectId: string): readonly GateRead[] {
-  return parseBoundList(value, "der Pruefliste", tenantId, projectId, (record, bound) => ({ ...bound, qualityGateId: stringAt(record, "quality_gate_id", "Pruefung"), qualityGateRunId: optionalString(record, "quality_gate_run_id"), artifactId: optionalString(record, "artifact_id"), artifactHash: optionalString(record, "artifact_sha256"), artifactRevision: optionalPositiveInteger(record, "artifact_revision"), result: parseGateStatus(stringAt(record, "result", "Pruefung")) ?? fail("einen ungueltigen Pruefstatus in Pruefung"), summary: stringAt(record, "summary", "Pruefung"), evidence: optionalEvidence(record), findings: optionalStrings(record, "findings"), checkerVersion: optionalString(record, "checker_version"), checkedAt: optionalString(record, "checked_at") }))
+  return list(data(value, "der Pruefliste"), "der Pruefliste").map((entry) => {
+    const record = object(entry, "Pruefung")
+    const bound = projectScopedRun(record, "der Pruefliste", tenantId, projectId)
+    const result = parseGateStatus(stringAt(record, "result", "Pruefung")) ?? fail("einen ungueltigen Pruefstatus in Pruefung")
+    const humanGateId = humanGateIdAt(record)
+    stringAt(record, "registry_version", "Pruefung")
+    stringAt(record, "policy_version", "Pruefung")
+    return {
+      ...bound,
+      qualityGateId: stringAt(record, "quality_gate_id", "Pruefung"),
+      qualityGateRunId: stringAt(record, "quality_gate_run_id", "Pruefung"),
+      artifactId: stringAt(record, "artifact_id", "Pruefung"),
+      artifactHash: sha256At(record, "artifact_sha256", "Pruefung"),
+      artifactRevision: positiveIntegerAt(record, "artifact_revision", "Pruefung"),
+      result,
+      summary: gateSummary(humanGateId, result),
+      evidence: gateEvidenceAt(record),
+      findings: gateFindingsAt(record),
+      checkerVersion: stringAt(record, "checker_version", "Pruefung"),
+      checkedAt: stringAt(record, "checked_at", "Pruefung"),
+    }
+  })
+}
+
+function humanGateIdAt(value: JsonObject): string {
+  const gateId = stringAt(value, "human_gate_id", "Pruefung")
+  if (/^GATE-(0|1|1B|1C|2|3|3B|4A|4B)$/.test(gateId)) return gateId
+  return fail("eine ungueltige Human-Gate-Kennung in Pruefung")
+}
+
+function gateSummary(humanGateId: string, result: GateStatus): string {
+  if (result === "passed") return `Maschinenprüfung für ${humanGateId} bestanden.`
+  if (result === "failed") return `Maschinenprüfung für ${humanGateId} fehlgeschlagen.`
+  return `Maschinenprüfung für ${humanGateId} blockiert.`
+}
+
+function gateEvidenceAt(value: JsonObject): GateEvidence {
+  const evidence = object(value["evidence"], "Nachweisen in Pruefung")
+  if (Object.keys(evidence).length === 0 || !isGateEvidence(evidence)) return fail("keine lesbaren Nachweise in Pruefung")
+  return evidence
+}
+
+function gateFindingsAt(value: JsonObject): readonly string[] {
+  if (value["findings"] === undefined) return []
+  return list(value["findings"], "Feststellungen in Pruefung").map((entry) => {
+    const finding = object(entry, "Feststellung in Pruefung")
+    const code = stringAt(finding, "code", "Feststellung in Pruefung")
+    const severity = stringAt(finding, "severity", "Feststellung in Pruefung")
+    if (!/^QG_[A-Z0-9_]+$/.test(code) || !["info", "warning", "error"].includes(severity)) return fail("eine ungueltige Feststellung in Pruefung")
+    return stringAt(finding, "message", "Feststellung in Pruefung")
+  })
 }
 
 function optionalString(value: JsonObject, key: string): string {
   return typeof value[key] === "string" ? value[key] : ""
 }
 
-function optionalPositiveInteger(value: JsonObject, key: string): number {
-  return typeof value[key] === "number" && Number.isInteger(value[key]) && value[key] > 0 ? value[key] : 0
+function contextTitle(record: JsonObject, step: CurrentStepId): string {
+  const stored = optionalString(record, "title")
+  if (stored !== "") return stored
+  stringAt(record, "context_package_id", "Kontext")
+  return `Kontextpaket für Schritt ${step}`
 }
 
-function optionalEvidence(value: JsonObject): GateEvidence {
-  return isObject(value["evidence"]) && isGateEvidence(value["evidence"]) ? value["evidence"] : {}
-}
-
-function optionalStrings(value: JsonObject, key: string): readonly string[] {
-  return Array.isArray(value[key]) && value[key].every((entry) => typeof entry === "string") ? value[key] : []
+function contextFinding(record: JsonObject): string {
+  const stored = optionalString(record, "finding")
+  if (stored !== "") return stored
+  const sources = list(record["sources"], "den Quellen im Kontext")
+  const targetRevision = positiveIntegerAt(record, "target_revision", "Kontext")
+  const sourceLabel = sources.length === 1 ? "1 gebundene Quelle" : `${sources.length} gebundene Quellen`
+  return `${sourceLabel} für Zielrevision ${targetRevision}.`
 }
 
 export function parseContext(value: unknown, tenantId: string, projectId: string): readonly ContextRead[] {
-  return parseBoundList(value, "der Kontextliste", tenantId, projectId, (record, bound) => ({ ...bound, title: stringAt(record, "title", "Kontext"), finding: stringAt(record, "finding", "Kontext") }))
+  return parseBoundList(value, "der Kontextliste", tenantId, projectId, (record, bound) => ({ ...bound, title: contextTitle(record, bound.stepId), finding: contextFinding(record) }))
 }
 
 export function parseIntegrations(value: unknown, tenantId: string, projectId: string): readonly IntegrationRead[] {
@@ -234,7 +299,12 @@ export function parseIntakePreview(value: unknown): IntakePreviewRead {
   const record = object(data(value, "der Intake-Vorschau"), "Intake-Vorschau")
   const reviewed = object(record["reviewed"], "gepruefte Intake-Vorschau")
   const canonicalReview: ReviewedIntake = { title: nullableStringAt(reviewed, "title", "gepruefte Intake-Vorschau"), tenant_id: nullableStringAt(reviewed, "tenant_id", "gepruefte Intake-Vorschau"), project_id: nullableStringAt(reviewed, "project_id", "gepruefte Intake-Vorschau"), project_name: nullableStringAt(reviewed, "project_name", "gepruefte Intake-Vorschau"), project_v2: nullableObjectAt(reviewed, "project_v2", "gepruefte Intake-Vorschau") }
-  return { previewHash: sha256At(record, "preview_hash", "Intake-Vorschau"), sourceHash: sha256At(record, "source_sha256", "Intake-Vorschau"), reviewed: canonicalReview, title: canonicalReview.title ?? null, tenantId: canonicalReview.tenant_id ?? null, projectId: canonicalReview.project_id ?? null, projectName: canonicalReview.project_name ?? null, projectV2Present: canonicalReview.project_v2 !== null, missingFields: stringsAt(record, "missing_fields", "Intake-Vorschau"), eligible: booleanAt(record, "eligible", "Intake-Vorschau") }
+  const summaryValue = record["generation_summary"]
+  const generationSummary = summaryValue === null || summaryValue === undefined ? null : (() => {
+    const summary = object(summaryValue, "AI-Laufzusammenfassung")
+    return { providerRunId: stringAt(summary, "provider_run_id", "AI-Laufzusammenfassung"), modelId: stringAt(summary, "model_id", "AI-Laufzusammenfassung"), outputCharacters: numberAt(summary, "output_characters", "AI-Laufzusammenfassung"), validationStages: stringsAt(summary, "validation_stages", "AI-Laufzusammenfassung"), normalizations: stringsAt(summary, "normalizations", "AI-Laufzusammenfassung") }
+  })()
+  return { previewHash: sha256At(record, "preview_hash", "Intake-Vorschau"), sourceHash: sha256At(record, "source_sha256", "Intake-Vorschau"), reviewed: canonicalReview, title: canonicalReview.title ?? null, tenantId: canonicalReview.tenant_id ?? null, projectId: canonicalReview.project_id ?? null, projectName: canonicalReview.project_name ?? null, projectV2Present: canonicalReview.project_v2 !== null, missingFields: stringsAt(record, "missing_fields", "Intake-Vorschau"), eligible: booleanAt(record, "eligible", "Intake-Vorschau"), generationSummary }
 }
 
 export function parseIntakeAcceptance(value: unknown, tenantId: string): IntakeAcceptanceRead {
@@ -244,9 +314,40 @@ export function parseIntakeAcceptance(value: unknown, tenantId: string): IntakeA
   return { tenantId: acceptedTenantId, projectId: stringAt(record, "project_id", "Intake-Annahme") }
 }
 
+export function parseAcceptedIntake(value: unknown, tenantId: string, projectId: string): AcceptedIntakeRead {
+  const record = object(data(value, "dem angenommenen Briefing"), "Angenommenes Briefing")
+  const bound = identity(record, "dem angenommenen Briefing", tenantId, projectId)
+  const reviewed = object(record["reviewed"], "geprueftem Briefing")
+  const reviewedTenantId = stringAt(reviewed, "tenant_id", "geprueftem Briefing")
+  const reviewedProjectId = stringAt(reviewed, "project_id", "geprueftem Briefing")
+  if (reviewedTenantId !== tenantId || reviewedProjectId !== projectId) return fail("eine ungueltige Projektbindung im geprueften Briefing")
+  const projectV2 = object(reviewed["project_v2"], "Project V2 im angenommenen Briefing")
+  const generationValue = record["generation"]
+  const generation = generationValue === null || generationValue === undefined ? null : (() => {
+    const generated = object(generationValue, "AI-Laufnachweis")
+    return {
+      providerRunId: stringAt(generated, "provider_run_id", "AI-Laufnachweis"),
+      modelId: stringAt(generated, "model_id", "AI-Laufnachweis"),
+      promptId: stringAt(generated, "prompt_id", "AI-Laufnachweis"),
+      promptVersion: stringAt(generated, "prompt_version", "AI-Laufnachweis"),
+      finishedAt: stringAt(generated, "finished_at", "AI-Laufnachweis"),
+    }
+  })()
+  return {
+    ...bound,
+    title: stringAt(reviewed, "title", "geprueftem Briefing"),
+    acceptedAt: stringAt(record, "accepted_at", "angenommenem Briefing"),
+    acceptedBy: stringAt(record, "accepted_by", "angenommenem Briefing"),
+    markdown: stringAt(record, "markdown", "angenommenem Briefing"),
+    sourceHash: sha256At(record, "source_sha256", "angenommenem Briefing"),
+    projectV2,
+    generation,
+  }
+}
+
 export function validateCurrentEvidence(currentRun: CurrentRun, artifacts: readonly ArtifactRecord[], gates: readonly GateRead[]): void {
-  for (const artifact of artifacts) if (artifact.run_id !== currentRun.run_id || artifact.step_id !== currentRun.step_id) fail("eine ungueltige Laufbindung im aktuellen Artefakt")
-  for (const gate of gates) if (gate.runId !== currentRun.run_id || gate.stepId !== currentRun.step_id) fail("eine ungueltige Laufbindung in der aktuellen Pruefung")
+  for (const artifact of artifacts) if (artifact.run_id === currentRun.run_id && artifact.step_id !== currentRun.step_id) fail("eine ungueltige Schrittbindung im aktuellen Artefakt")
+  for (const gate of gates) if (gate.runId === currentRun.run_id && gate.stepId !== currentRun.step_id) fail("eine ungueltige Schrittbindung in der aktuellen Pruefung")
 }
 
 export function selectCanonicalCurrentArtifact(currentRun: CurrentRun, artifacts: readonly ArtifactRecord[], gates: readonly GateRead[]): ArtifactRecord | null {

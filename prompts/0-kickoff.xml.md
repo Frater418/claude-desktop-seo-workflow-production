@@ -5,7 +5,7 @@
   <step>0</step>
   <name>Projekt-Kickoff & Manifest-Initialisierung</name>
   <author>Raphael Rechberger</author>
-  <version>1.5.0</version>
+  <version>1.8.0</version>
   <next_step>prompts/1-pillar-identifikation.xml.md</next_step>
 </prompt_metadata>
 
@@ -16,10 +16,7 @@ Deine Aufgabe ist es, fuer das uebergebene Kundenprojekt die zentrale Steuerungs
 
 <context_files>
   <required_file path="standards/manifest.schema.json" purpose="JSON Schema zur Validierung des Projekt-Manifests" />
-  <required_file path="standards/location-codes.json" purpose="Verbindliche Zuordnung von Land zu location_code fuer AgentSEO" />
-  <required_file path="standards/dateinamen-und-output-vertrag.md" purpose="Verbindliche Projektordner und Artefaktpfade" />
   <optional_file path="inputs/gate-0-confirmations.json" purpose="Vom Operator bestaetigte Run-Metadaten mit Vorrang vor abgeleiteten Werten" />
-  <optional_file path="inputs/competitor-preflight.json" purpose="Bereits verifizierte HTTPS- und HTTP-Befunde fuer genannte Wettbewerber" />
 </context_files>
 
 <input_briefing>
@@ -57,19 +54,22 @@ Fehlende Zugaenge: [z.B. GSC, Analytics, Hosting]
     Content-Schwerpunkt und Land.
     Fehlt eine Pflichtangabe, stoppe sofort mit `ERROR_BRIEFING_INCOMPLETE` und sammle alle
     fehlenden Felder fuer genau eine konsolidierte Operator-Nachricht.
-    Loese das Land ueber `standards/location-codes.json` auf. Fehlt es dort, stoppe mit
-    `ERROR_LOCATION_UNKNOWN`.
+    Waehle genau ein aktives `deployment_id` aus dem gebundenen Project V2. Fehlt ein eindeutiges
+    aktives Deployment, stoppe ueber den strukturierten Failure-Kanal mit `ERROR_DEPLOYMENT_MISSING`.
   </step>
   <step number="2" name="Domain- und Wettbewerber-Preflight">
-    Normalisiere Bare Domains zuerst auf HTTPS und pruefe die Abrufbarkeit. Schlaegt HTTPS wegen
-    TLS, Zertifikat oder Verbindungsaufbau fehl, pruefe zusaetzlich HTTP.
-    - Ist Inhalt ueber HTTPS abrufbar: Status `reachable_https`.
-    - Ist Inhalt nur ueber HTTP abrufbar: Status `reachable_http_only` und Warnung
-      `WARN_COMPETITOR_HTTPS_UNAVAILABLE`. Dies ist kein Blocker.
-    - Ist verwertbarer Inhalt weder ueber HTTPS noch ueber HTTP abrufbar: Status `unavailable`
-      und Warnung `WARN_COMPETITOR_UNAVAILABLE`. Auch dies ist kein automatischer Blocker, weil
-      Schritt 1 weitere organische Suchwettbewerber entdeckt.
-    Sammle alle Warnungen und Fehler und sende genau eine konsolidierte Operator-Nachricht.
+    Rufe genau einmal die verpflichtende Gateway-Operation `prepare_kickoff_preflight` mit der
+    ausgewaehlten `deployment_id` auf. Die Operation bindet die Wettbewerber ausschliesslich an den
+    akzeptierten Intake, loest `country`, `location_code` und `language` aus dem kanonischen
+    Standortstandard auf, liest die Artefaktpfade aus dem registrierten Manifest-Schema und prueft
+    HTTPS sowie bei Bedarf HTTP. Verwende `result.competitors`, `result.competitor_preflight`,
+    `result.artifact_paths` und die Standortwerte exakt. Pruefe keine zusaetzlichen URLs und
+    erfinde keine Preflight-Befunde.
+    `reachable_http_only` erzeugt `WARN_COMPETITOR_HTTPS_UNAVAILABLE` und ist kein Blocker.
+    Ist ein Wettbewerber weder ueber HTTPS noch ueber HTTP erreichbar, dokumentiere
+    `WARN_COMPETITOR_UNAVAILABLE`; auch dies ist kein automatischer Blocker.
+    Schlaegt die Operation fehl, stoppe ueber den strukturierten Failure-Kanal mit ihrem exakten
+    Fehlercode, ihrer Meldung und einer konkreten Remediation.
     Die im Briefing genannten Wettbewerber sind Startpunkte und nicht als vollstaendige
     Wettbewerberliste zu behandeln. Schritt 1 entdeckt zusaetzliche organische Suchwettbewerber.
   </step>
@@ -86,19 +86,24 @@ Fehlende Zugaenge: [z.B. GSC, Analytics, Hosting]
   <step number="4" name="Manifest-Generierung">
     Erstelle eine vollstaendige, syntaktisch valide `manifest.json` im Wurzelverzeichnis des Projekts.
     Pflichtfelder, die nicht aus dem Briefing kommen, aber vom Schema verlangt werden:
-    `author` (immer "Raphael Rechberger"), `created_at` (ISO 8601, UTC), `artifacts` (Standardpfade
-    aus `standards/dateinamen-und-output-vertrag.md`) und alle acht Phasen-Objekte mit Status `pending`.
-    Setze `country` auf das ISO-Kuerzel und `location_code` auf den Wert aus `standards/location-codes.json`.
+    `author` (immer "Raphael Rechberger"), `created_at` (ISO 8601, UTC), `artifacts` aus der
+    Preflight-Evidence und alle acht Phasen-Objekte mit Status `pending`.
+    Setze `country` und `location_code` exakt auf die Werte aus der Preflight-Evidence.
     Befuelle `geo_targets`, `entities`, `competitor_preflight`, Regionen, `workstreams`,
     `missing_accesses` und `gate_0` gemaess dem Schema.
-    Setze den initialen Projektstatus auf `initialization` und `step_0_kickoff` auf `in_progress`.
+    Setze `source_binding.project_v2_sha256` und `source_binding.intake_source_sha256`
+    ausschliesslich durch exaktes Kopieren aus
+    `authoritative_output_bindings.source_binding` des Heartweb Step-Agent Execution Contract.
+    Berechne, normalisiere oder ersetze diese beiden Hashwerte niemals selbst.
+    Setze den initialen Projektstatus auf `initialization`, `gate_0.status` auf `pending` und alle
+    Phasen einschliesslich `step_0_kickoff` auf `pending`. Der separate Core-Run traegt den
+    Produktions- und Gatezustand; der Manifest-Candidate bildet keine bereits erfolgte Freigabe ab.
     Ein schema-valides Manifest allein darf Schritt 0 nicht abschliessen.
   </step>
   <step number="5" name="Validierung und Verzeichnisstruktur">
     Validiere `manifest.json` zu 100 Prozent gegen `standards/manifest.schema.json`.
-    Bestaetige die Anlage der Standard-Ordner: `standards/`, `inputs/`, `outputs/`,
-    `outputs/briefings/`, `outputs/html/`, `logs/`.
-    Bei Schema- oder Preflight-Fehlern bleibt `step_0_kickoff` auf `error` und Schritt 1 ist gesperrt.
+    Bei Schema- oder Preflight-Fehlern liefere keinen Manifest-Candidate. Heartweb Core behaelt den
+    letzten gueltigen Zustand bei und sperrt Schritt 1 mit dem strukturierten Failure-Record.
   </step>
 </instructions>
 
@@ -111,20 +116,14 @@ Fehlende Zugaenge: [z.B. GSC, Analytics, Hosting]
   - Regel 6: Eine HTTPS-Warnung blockiert nicht, wenn derselbe Wettbewerber ueber HTTP verwertbaren Inhalt liefert.
   - Regel 7: Ein genannter Wettbewerber ohne abrufbaren Inhalt wird mit `WARN_COMPETITOR_UNAVAILABLE` dokumentiert, blockiert Schritt 0 aber nicht automatisch.
   - Regel 8: Regionen, Standortvarianten und Workstreams duerfen nicht als `core_services` gespeichert werden.
-  - Regel 9: `step_0_kickoff` darf erst nach erfolgreichem GATE-0 auf `completed` gesetzt werden.
+  - Regel 9: Der Step-Agent setzt weder `gate_0` auf `approved` noch `step_0_kickoff` auf `completed`. Approval, Release und Folgeschrittfreigabe sind separate hashgebundene Core-Records.
 </validation_rules>
 
 <output_format>
-Speichere die Datei direkt im Projektordner:
-- Dateipfad: `manifest.json`
-- Format: JSON (2 Spaces Indentation)
-
-Antworte im Chat mit:
-1. Bei Fehlern oder entscheidungsbeduerftigen Warnungen: genau eine konsolidierte Operator-Nachricht
-   mit allen Befunden und der erforderlichen Aktion. Keine Nachricht pro Einzelfehler.
-2. Bei fehlerfreier Maschinenpruefung: Zusammenfassung der Kern-Metadaten, Warnungen und
-   Hinweis `GATE-0 wartet auf Operator-Freigabe`.
-3. Die Freigabe fuer Schritt 1 darf erst nach bestandenem GATE-0 ausgegeben werden.
+Liefere bei Erfolg `manifest.json` ausschliesslich als `content` des registrierten Output-Contracts
+im Heartweb Step-Agent-Envelope. Heartweb Core validiert und persistiert den Kandidaten.
+Bei einem Blocker liefere `outputs: []` und das strukturierte `failure`-Objekt des Envelope-Contracts.
+Lege niemals eine Fehlermeldung als Manifest-`content` ab. Gib keine Prosa und keinen Codeblock aus.
 </output_format>
 
 <human_review_gate>
@@ -135,8 +134,9 @@ Antworte im Chat mit:
     Regionen, Workstreams, Zielmarkt, Kapazitaetsquelle und fehlende Zugaenge.
   </checkpoint>
   <approval_action>
-    Nur nach expliziter Operator-Freigabe: Setze `gate_0.status` auf `approved`,
-    `step_0_kickoff.status` auf `completed`, `completed_at` auf den Freigabezeitpunkt und erlaube Schritt 1.
+    Nur Heartweb Core verarbeitet die explizite Operator-Freigabe. Der Transition Service bindet sie
+    an Artefakt-ID, Revision und SHA-256, released das unveraenderte Manifest und aktiviert danach
+    Schritt 1. Der Step-Agent und der bereits persistierte Manifest-Candidate werden nicht mutiert.
   </approval_action>
 </human_review_gate>
 ```

@@ -11,6 +11,8 @@ apps/operator-console/node_modules/
 apps/operator-console/.node_modules-stale-winbinding/
 apps/operator-console/dist/
 apps/operator-console/coverage/
+apps/operator-console/.env.production
+/00_admin/session-recovery/
 *.pid
 /var/operator-diagnostics/
 /build/

@@ -1,77 +1,44 @@
-# Section 11: M07/DIB-005 Baseline-Plus-Delta Evidence Report
+Change ID: M07-DIAGNOSTIC-TRACE-001
 
-Author: Raphael Rechberger
+Observed failure:
+The M06 browser cell started a diagnostic trace but did not configure the automated M06 scenario, append normalized browser evidence, or close and reconstruct the trace.
 
-Change ID: M07-DIB-005
+Changed files and symbols:
+tests/test_delivery_e2e.py
+apps/operator-console/src/test/deliveryE2EBrowser.mjs
+tests/support/diagnostic_trace_e2e.py
 
-## Purpose and Observed Pre-M07 Failure
+Affected route, flow and gate:
+Uebergabe und Export
+POST diagnostic-traces
+POST diagnostic-traces/{trace_id}/entries
+POST diagnostic-traces/{trace_id}/close
+PT-09 and the existing 1280x900 M06 Delivery Center cell
 
-Before M07, automated and manual evidence had no shared, stable, timestamped current/history trace capable of reconstructing the preceding success and first failure. The legacy M06 trace remained active, non-automated, and without browser observation.
+Focused red test:
+python -m unittest tests.test_delivery_e2e.DeliveryE2ETests.test_neutral_delivery_route_from_checkpoint_to_final
 
-M07 adds the bounded diagnostic-trace closure for the existing Delivery flow. A closed run rejects further appends. An exact close replay preserves the run bytes and SHA-256 hash.
+Direct closure tests selected:
+One isolated red execution with M07_DIAGNOSTIC_ROOT
+One approved-root green execution of the exact M06 E2E cell
 
-## M07 Implementation Scope
+Why each test is in scope:
+The browser driver proves the real Console creates, records, observes, and closes the automated Delivery trace.
+The Python reconstruction proves immutable JSONL, current pointer, index, closed-only semantics, and close replay without mutation.
 
-M07 changed these file groups only:
+Unrelated tests deliberately retained from baseline:
+All other browser cells, M05 viewport matrix, full suite, live integrations, deployment, and unrelated routes.
 
-- Backend diagnostic models, storage, reconstruction, recovery, limits, policy, routes, application wiring, and error wiring.
-- Backend OpenAPI contract and generated operator API types.
-- Operator Console diagnostic client, provider, decorator, App integration, shell, styles, and focused tests.
-- Focused Python diagnostic tests.
-- M06 Delivery driver integration for the exact browser cell.
-- Diagnostic reconstruction helper and gitignore entries.
-- M07 audit files, including this report and the persisted result metadata.
+Result:
+Focused M07 trace trace-4859cf1f6a9548deaf0a59af0a9174e9 closed at 2026-08-22T10:15:30Z. Immutable run SHA-256 ca2a54365b5771947e11916ed83c1763cde29d865f8db219feafe833d2e144bc. Checkpoint ZIP SHA-256 81ddd22a1486153d348bc4a42300953f6fc9ae29e9bdf0425c55863679fd6897. Final ZIP SHA-256 b41544273f480de57e57457153d006ccd6e56ef06d8637197ad007651afdf2e5.
 
-No unrelated pre-existing worktree files are claimed as M07 work. No source, test, generated, runtime, or M06 evidence files were changed for this report.
+Remaining blocker:
+None.
 
-## Affected Flow
+Next product task:
+None.
 
-The affected flow is `POST /diagnostic-traces` create, `POST /diagnostic-traces/{trace_id}/entries` entry append, and `POST /diagnostic-traces/{trace_id}/close` close. The Console exposes explicit action seams for this flow.
-
-The focused browser coverage is the exact M06 Delivery cell: `DeliveryE2ETests.test_neutral_delivery_route_from_checkpoint_to_final`, including PT-09. This is not a claim for other browser cells.
-
-## Red Evidence and Closure
-
-The red evidence stages were:
-
-1. Missing diagnostic modules.
-2. Missing `AppConfig` and routes.
-3. Missing Console client and provider.
-4. Legacy M06 trace active, non-automated, and without browser observation.
-
-Selected closure:
-
-1. Python diagnostic models, store, limits, API, plus operator API codegen: 23 tests passed.
-2. Frontend diagnostic client, provider, decorator, App, and API: 55 tests passed.
-3. `npm run build`: passed.
-4. Exact single `DeliveryE2ETests.test_neutral_delivery_route_from_checkpoint_to_final`: passed once green after isolated red proof.
-5. `node --check apps/operator-console/src/test/deliveryE2EBrowser.mjs`: passed.
-
-The Python closure verifies the diagnostic persistence and API boundary, including closed-run append rejection and byte-preserving close replay. The frontend closure verifies the Console action seams and their API integration. The build confirms the production Console bundle. The exact M06 cell proves the bounded Delivery path from checkpoint to final through the browser observation. The Node syntax check verifies the integrated browser driver can be parsed.
-
-## Persisted M07 Result
-
-- Trace ID: `trace-ddc25904b8354cf18c043cf975ec9b00`
-- Relative run path: `runs/20260822T101530Z_trace-ddc25904b8354cf18c043cf975ec9b00.jsonl`
-- Run SHA-256: `6649e74f1322ab431dfa0a044b3040b7809acf0551ea7ab14601e299a65bf5c8`
-- Status: `closed`
-- Last success: `operation-0004-browser-observation`
-- First failure: `null`
-- Checkpoint ZIP SHA-256: `81ddd22a1486153d348bc4a42300953f6fc9ae29e9bdf0425c55863679fd6897`
-- Final ZIP SHA-256: `b41544273f480de57e57457153d006ccd6e56ef06d8637197ad007651afdf2e5`
-
-The M06 audit files remained byte-identical. Runtime JSONL was not copied into audit evidence.
-
-## Scope Exclusions and Evidence Classification
-
-No full suite, M05 viewport matrix, other browser cells, broad reviews, or live integrations ran. Those activities are outside the demonstrated dependency closure for M07.
-
-- M01 through M06: retained baseline evidence.
-- M07: new focused evidence for the diagnostic trace and exact M06 Delivery browser cell.
-- Unrelated prototype cells, live integrations, deployment, and customer output: not assessed.
-
-## Status and Next Task
-
-Remaining blocker: none.
-
-Next product task: M08 release-critical bounded prompt quality restoration.
+Evidence classification:
+Previous baseline evidence: M06 frozen Delivery audit
+New focused evidence: M07 closed automated diagnostic trace for the existing M06 cell
+Not assessed: other browser cells, live integrations, deployment, and other routes

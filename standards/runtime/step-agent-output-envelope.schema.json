@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/runtime/step-agent-output-envelope.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "agent_contract_id",
+    "agent_contract_version",
+    "llm_run_request_id",
+    "tenant_id",
+    "project_id",
+    "run_id",
+    "step_id",
+    "target_revision",
+    "context_package_id",
+    "context_package_sha256",
+    "outputs",
+    "evidence_refs"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.1.0"},
+    "agent_contract_id": {"type": "string", "pattern": "^heartweb-step-(?:0|1|1b|1c|2|3|4a|4b)-agent$"},
+    "agent_contract_version": {"$ref": "#/$defs/semver"},
+    "llm_run_request_id": {"type": "string", "pattern": "^llm-request-[a-z0-9][a-z0-9-]{7,63}$"},
+    "tenant_id": {"type": "string", "pattern": "^tenant-[a-z0-9][a-z0-9-]{2,63}$"},
+    "project_id": {"type": "string", "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$"},
+    "run_id": {"type": "string", "pattern": "^run-[a-z0-9][a-z0-9-]{7,63}$"},
+    "step_id": {"enum": ["0", "1", "1b", "1c", "2", "3", "4a", "4b"]},
+    "target_revision": {"type": "integer", "minimum": 1},
+    "context_package_id": {"type": "string", "pattern": "^context-[a-z0-9][a-z0-9-]{7,63}$"},
+    "context_package_sha256": {"$ref": "#/$defs/sha256"},
+    "outputs": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 8,
+      "items": {"$ref": "#/$defs/output"}
+    },
+    "evidence_refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 32,
+      "items": {"$ref": "#/$defs/evidenceRef"}
+    },
+    "operator_steering_refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/logicalRef"}
+    },
+    "failure": {
+      "$ref": "#/$defs/failure"
+    }
+  },
+  "allOf": [
+    {
+      "if": {"required": ["failure"]},
+      "then": {"properties": {"outputs": {"maxItems": 0}}},
+      "else": {"properties": {"outputs": {"minItems": 1}}}
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "semver": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "logicalRef": {"type": "string", "pattern": "^(?:runtime|operator|prompt|output-contract):[a-z0-9][a-z0-9_-]*(?:/[a-z0-9][a-z0-9_-]*)*$"},
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract_id", "content"],
+      "properties": {
+        "contract_id": {"type": "string", "pattern": "^https://heartweb\\.example/schema/(?:outputs/)?[a-z0-9][a-z0-9./-]*\\.schema\\.json$"},
+        "content": {"type": "object"}
+      }
+    },
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message", "remediation"],
+      "properties": {
+        "code": {"type": "string", "pattern": "^ERROR_[A-Z0-9_]{3,127}$"},
+        "message": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "remediation": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "details": {"type": "object"}
+      }
+    },
+    "evidenceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_id", "operation_id", "logical_ref", "content_sha256"],
+      "properties": {
+        "evidence_id": {"type": "string", "pattern": "^evidence-[a-z0-9][a-z0-9-]{7,63}$"},
+        "operation_id": {"type": "string", "pattern": "^[a-z][a-z0-9_]{2,63}$"},
+        "logical_ref": {"$ref": "#/$defs/logicalRef"},
+        "content_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

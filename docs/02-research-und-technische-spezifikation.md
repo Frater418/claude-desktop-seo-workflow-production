@@ -4,7 +4,7 @@
 
 **Projekt:** Modernisierung des Claude Desktop SEO-Workflows  
 **Datum:** 16. August 2026, Stand aktualisiert 17. August 2026  
-**Status:** Spezifikation fertiggestellt und im Live-Test verifiziert (Strikte Error-Handling & Quality-Gate-Architektur)  
+**Status at capture:** Spezifikation fertiggestellt und im Live-Test verifiziert (Strikte Error-Handling & Quality-Gate-Architektur)
 **Autor:** Raphael Rechberger  
 
 ---

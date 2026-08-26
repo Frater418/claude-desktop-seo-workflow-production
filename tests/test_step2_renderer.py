@@ -20,6 +20,7 @@ def _operational_bundle() -> dict[str, object]:
     artifact, release = _predecessor("1c", "GATE-1C")
     return {
         "candidate": candidate,
+        "approved_pillar_ids": [pillar["pillar_id"] for pillar in candidate["pillars"]],
         "project": _project(),
         "predecessor_artifact": artifact,
         "predecessor_release": release,

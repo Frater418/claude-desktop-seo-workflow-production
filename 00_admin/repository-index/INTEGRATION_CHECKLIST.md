@@ -1,56 +1,51 @@
-# Documentation branch integration checklist
+# Repository master integration checklist
 
 **Author:** Raphael Rechberger
 **Status:** Binding integration gate
-**Updated:** 2026-08-22
-**Branch:** `docs/repository-authority-index-2026-08-22`
+**Updated:** 2026-08-26
+**Authority:** DEC-0031 and DEC-0032
 
 ## Purpose
 
-The parallel branch starts from WIP commit `7c844ba1`. It must not be merged directly into the later Feature line without refreshing volatile facts and resolving documentation changes made during Sprint 5E, diagnostics and prompt restoration.
+This checklist governs the explicitly authorized consolidation of the complete verified repository state into `master`. It protects source history, current Product State, prompt versions, generated authority views and the later fresh-clone continuation. The Git baseline is not Production Acceptance.
 
 ## Preconditions
 
-- active Sisyphus writing wave is complete
-- stable Feature commit exists
-- Git index is clean
-- Production-first scope is unchanged or a new Decision supersedes it
-- no unresolved P0/P1 documentation contradiction exists
-- Raphael authorizes the integration attempt
+- mutable Console and Gateway processes are frozen during repository finalization
+- a verified external recovery snapshot contains all refs and relevant Working Tree files
+- every tracked and untracked path has an explicit repository or external-only disposition
+- unique branch content has a path-by-path reconciliation report
+- no unresolved P0/P1 repository-integrity or authority contradiction remains
+- DEC-0031 provides Raphael's explicit commit, merge, push, branch cleanup and fresh-clone authorization
 
 ## Integration sequence
 
-1. Record stable Feature commit SHA.
-2. Fetch current remote refs.
-3. Update this branch from the stable Feature commit using the approved Git strategy.
-4. Resolve only genuine content conflicts. Preserve active Product State and Decisions from the stable Feature line.
-5. Re-read:
-   - `00_admin/PROJECT_STATE.md`
-   - `00_admin/DECISIONS.md`
-   - `00_admin/DEFERRED_INTEGRATION_BACKLOG.md`
-   - `00_admin/POST_RELEASE_BACKLOG.md`
-   - current Sprint-5E and prompt-restoration evidence
-6. Refresh volatile status in README, Project State, CHANGELOG and current architecture.
-7. Reclassify every new plan, doc, audit package and research source.
-8. Confirm AGENTS and CLAUDE still match active global rules.
-9. Preserve and refresh `standards/testing/PROTOTYPE_TEST_POLICY.md`, `00_admin/MASTER_TASK_MATRIX.md` and `00_admin/MASTER_TASK_MATRIX.json` from the stable Feature line.
-10. Run `python scripts/build_repository_index.py`.
-11. Run `python scripts/build_repository_index.py --check`.
-12. Run the focused documentation-registry tests required by the binding prototype test policy.
-13. Run scoped Python compile checks and `git diff --check`.
-14. Scan current Default-Retrieval Markdown links.
-15. Verify no Em Dash or En Dash was introduced.
-16. Verify historical and superseded docs remain opt-in.
-17. Inspect `00_admin/REPOSITORY_INDEX.md`, `docs/INDEX.md` and `.hermes/plans/INDEX.md` manually.
-18. Compare active Sisyphus and documentation worktrees for unintended cross-writes.
-19. Request Raphael review and approval.
-20. Commit, push or merge only after explicit authorization.
+1. Record current branch, local refs, remote refs, HEAD, status and worktrees.
+2. Verify the external recovery snapshot and Git bundle before any history change.
+3. Exclude only confirmed local-only or regenerable paths from staging.
+4. Complete the M08 path reconciliation and preserve its tip in the final graph without replacing the current tree.
+5. Reconcile Project State, Decisions, task matrices, backlogs and current architecture.
+6. Classify all docs, prompts, Step agents, worker profiles, tool policies, plans, audits and research sources.
+7. Commit explicitly staged authored implementation, tests and documentation.
+8. Integrate the reconciled M08 tip with a no-tree-change merge commit.
+9. Generate `ONBOARDING_REFERENCE.md`, registries, bootstrap and lifecycle indexes from the authored-source parent commit.
+10. Run repository-index write and check modes and focused registry tests.
+11. Run the affected backend, contract and Console test closure plus the Production build.
+12. Run secret scanning, forbidden-dash scanning and `git diff --check`.
+13. Run `hermes verify --json` and preserve the exact result.
+14. Inspect the generated onboarding, repository, docs, plans, audits and research indexes.
+15. Fast-forward local `master` to the verified consolidation commit.
+16. Push `master` without force and read back the exact remote SHA and tree.
+17. Delete a non-master branch only after its tip is proven reachable from final `master`; then verify local and remote branch lists.
+18. Move the old repository directory to the external archive without deleting it.
+19. Clone remote `master` freshly at the canonical path and verify HEAD, tree, status and generated-index check.
+20. Create and push `feature/production-workflow-continuation` from that exact verified `master` commit.
 
 ## Required refresh fields
 
-- current branch and release state
-- current Sprint-5E completion
-- current diagnostic and prompt-restoration state
+- current local and remote branch SHAs and reachability proof
+- current M10, released Step-0 and open Step-1 state
+- current diagnostics, prompt versions, Step agents and tool-policy bindings
 - final test evidence references
 - first real customer output status
 - active decisions and supersession
@@ -66,10 +61,12 @@ Stop integration when:
 - an unclassified document remains
 - a historical document appears in Default Retrieval
 - AGENTS, CLAUDE, README or Project State contradict active Decisions
-- active Feature state would be overwritten by the older WIP snapshot
+- current source state would be overwritten by the older M08 snapshot
 - customer data, secrets or absolute private paths enter the registry
-- active Sisyphus index or worktree changes unexpectedly
+- source files change unexpectedly after the verified snapshot or during final staging
+- any retired branch tip is not reachable from final `master`
+- local, remote or fresh-clone `master` SHAs disagree
 
 ## Acceptance
 
-Integration is acceptable only when the refreshed branch provides one correct read path for new sessions, retains historical evidence without authority conflict and passes all deterministic index and documentation gates.
+Integration is acceptable only when final remote `master` provides one correct generated read path for new sessions, retains historical Evidence without authority conflict, includes every reconciled branch tip, passes the affected verification closure and is reproduced by a clean clone. This acceptance applies to repository consolidation only, not Production Acceptance.

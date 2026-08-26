@@ -1,7 +1,7 @@
 {
-  "trace_id": "trace-ddc25904b8354cf18c043cf975ec9b00",
-  "relative_run_path": "runs/20260822T101530Z_trace-ddc25904b8354cf18c043cf975ec9b00.jsonl",
-  "run_sha256": "6649e74f1322ab431dfa0a044b3040b7809acf0551ea7ab14601e299a65bf5c8",
+  "trace_id": "trace-4859cf1f6a9548deaf0a59af0a9174e9",
+  "relative_run_path": "runs/20260822T101530Z_trace-4859cf1f6a9548deaf0a59af0a9174e9.jsonl",
+  "run_sha256": "ca2a54365b5771947e11916ed83c1763cde29d865f8db219feafe833d2e144bc",
   "last_successful_operation_id": "operation-0004-browser-observation",
   "first_failing_operation_id": null,
   "delivery_hashes": {
@@ -9,8 +9,8 @@
     "final_zip_sha256": "b41544273f480de57e57457153d006ccd6e56ef06d8637197ad007651afdf2e5"
   },
   "browser": {
-    "diagnostic_trace_id": "trace-ddc25904b8354cf18c043cf975ec9b00",
-    "diagnostic_close_id": "close-ddc25904b8354cf18c043cf975ec9b00-20260822101530",
+    "diagnostic_trace_id": "trace-4859cf1f6a9548deaf0a59af0a9174e9",
+    "diagnostic_close_id": "close-4859cf1f6a9548deaf0a59af0a9174e9-20260822101530",
     "diagnostic_closed_at": "2026-08-22T10:15:30Z",
     "diagnostic_status": "closed",
     "screenshot": "delivery-center-1280x900.png"

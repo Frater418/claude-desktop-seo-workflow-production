@@ -25,6 +25,11 @@ function stringAt(object: JsonObject, field: string): string {
   throw new Error(`Expected ${field}`)
 }
 
+async function openProject(name: "Pflegedienst Alpha" | "Pflegedienst Beta"): Promise<void> {
+  fireEvent.click(await screen.findByRole("button", { name: `${name} öffnen` }))
+  await screen.findByRole("heading", { name })
+}
+
 afterEach(() => {
   cleanup()
   vi.unstubAllEnvs()
@@ -58,7 +63,7 @@ describe("Operator Console diagnostic session", () => {
 
     // When: the canonical workspace becomes ready without an App search override.
     render(<App tenantId="tenant-welle-zwei" />)
-    await screen.findByRole("heading", { name: "Pflegedienst Alpha" })
+    await openProject("Pflegedienst Alpha")
     await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Diagnoseprotokoll aktiv."))
 
     // Then: its one start request uses canonical identity and second-normalized browser time.
@@ -90,15 +95,17 @@ describe("Operator Console diagnostic session", () => {
     const fixture = createOperatorApiFixture()
     vi.stubGlobal("fetch", fixture.fetch)
     render(<App search="?diagnostic_source=manual&diagnostic_scenario=manual-walkthrough" tenantId="tenant-welle-zwei" />)
-    await screen.findByRole("heading", { name: "Pflegedienst Alpha" })
+    await openProject("Pflegedienst Alpha")
     await waitFor(() => expect(traceStarts(fixture.state.requestBodies)).toHaveLength(1))
 
     // When: the operator moves to the second project and back to the first.
-    fireEvent.click(screen.getByRole("button", { name: "Pflegedienst Beta waehlen" }))
-    await screen.findByRole("heading", { name: "Pflegedienst Beta" })
+    fireEvent.click(screen.getByRole("button", { name: "Projektübersicht" }))
+    await screen.findByRole("heading", { name: "Projektübersicht" })
+    await openProject("Pflegedienst Beta")
     await waitFor(() => expect(traceStarts(fixture.state.requestBodies)).toHaveLength(2))
-    fireEvent.click(screen.getByRole("button", { name: "Pflegedienst Alpha waehlen" }))
-    await screen.findByRole("heading", { name: "Pflegedienst Alpha" })
+    fireEvent.click(screen.getByRole("button", { name: "Projektübersicht" }))
+    await screen.findByRole("heading", { name: "Projektübersicht" })
+    await openProject("Pflegedienst Alpha")
     await waitFor(() => expect(traceStarts(fixture.state.requestBodies)).toHaveLength(3))
 
     // Then: every new identity starts after its predecessor closes and the first identity retains its timestamp.

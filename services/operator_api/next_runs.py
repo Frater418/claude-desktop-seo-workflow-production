@@ -17,6 +17,36 @@ class NextRunError(RuntimeError):
         super().__init__(f"{code}: {message}")
 
 
+def _step_projection(run: dict[str, JsonValue]) -> dict[str, JsonValue]:
+    step_id = run.get("step_id")
+    if not isinstance(step_id, str):
+        raise NextRunError("ERROR_CONTEXT_SOURCE_INVALID", "Successor step identity is invalid.")
+    return {
+        "tenant_id": run["tenant_id"],
+        "project_id": run["project_id"],
+        "run_id": run["run_id"],
+        "step_id": step_id,
+        "status": "pending",
+        "blocker": "Keine offenen Blocker",
+        "next_action": f"Schritt {step_id} prüfen und starten",
+    }
+
+
+def _materialize_step(steps: list[dict[str, JsonValue]], run: dict[str, JsonValue]) -> list[dict[str, JsonValue]]:
+    step = _step_projection(run)
+    matching = [record for record in steps if record.get("step_id") == step["step_id"]]
+    if len(matching) > 1:
+        raise NextRunError("ERROR_CONTEXT_SOURCE_INVALID", "Successor step projection is ambiguous.")
+    if not matching:
+        return [*steps, step]
+    existing = matching[0]
+    if existing == step:
+        return steps
+    if existing.get("run_id") is None:
+        return [step if record is existing else record for record in steps]
+    raise NextRunError("ERR_IDEMPOTENCY_CONFLICT", "Successor step projection conflicts with existing state.")
+
+
 @dataclass(frozen=True, slots=True)
 class NextRunService:
     repository: ProjectRepository
@@ -45,10 +75,12 @@ class NextRunService:
         artifact_hash = hashlib.sha256(content).hexdigest()
         if artifact_hash != release.get("artifact_sha256"):
             raise NextRunError("ERR_STALE_REVISION", "Released predecessor bytes do not match its canonical hash.")
+        deployment_id = self._deployment_id(tenant_id, project_id, completed)
         run_id = self._run_id(project_id, next_step, release)
         return {
             "tenant_id": tenant_id,
             "project_id": project_id,
+            "deployment_id": deployment_id,
             "run_id": run_id,
             "step_id": next_step,
             "gate_id": f"GATE-{next_step.upper()}",
@@ -58,6 +90,26 @@ class NextRunService:
             "attempt": 1,
             "gate_context": {"local_workflow": True},
         }
+
+    def _deployment_id(self, tenant_id: str, project_id: str, run: dict[str, JsonValue]) -> str:
+        deployment_id = run.get("deployment_id")
+        if isinstance(deployment_id, str) and deployment_id:
+            return deployment_id
+        project = self.repository.project_v2(tenant_id, project_id)
+        deployments = project.get("market_deployments")
+        primary = [
+            deployment
+            for deployment in deployments
+            if isinstance(deployment, dict)
+            and deployment.get("market_phase") == "active"
+            and deployment.get("deployment_role") == "primary"
+        ] if isinstance(deployments, list) else []
+        if len(primary) != 1 or not isinstance(primary[0].get("deployment_id"), str):
+            raise NextRunError(
+                "ERROR_RUN_DEPLOYMENT_UNBOUND",
+                "Successor creation requires one canonical deployment binding.",
+            )
+        return primary[0]["deployment_id"]  # type: ignore[return-value]
 
     def create(self, tenant_id: str, project_id: str, completed_run_id: str) -> dict[str, JsonValue]:
         run = self.derive(tenant_id, project_id, completed_run_id)
@@ -71,8 +123,7 @@ class NextRunService:
                 return existing
             raise NextRunError("ERR_IDEMPOTENCY_CONFLICT", "Canonical successor run identity conflicts with existing state.")
         steps = self.repository.collection(tenant_id, project_id, "steps")
-        next_step = run["step_id"]
-        updated = [dict(record, status="pending") if record.get("step_id") == next_step else record for record in steps]
+        updated = _materialize_step(steps, run)
         path = f"next-run-recovery/{run['run_id']}.json"
         self.repository._write(tenant_id, project_id, path, {"run": run, "steps": updated})
         try:
@@ -91,7 +142,7 @@ class NextRunService:
         if recovery is None:
             return None
         steps = self.repository.collection(tenant_id, project_id, "steps")
-        updated = [dict(record, status="pending") if record.get("step_id") == run["step_id"] else record for record in steps]
+        updated = _materialize_step(steps, run)
         if not isinstance(recovery, dict) or recovery.get("run") != run or recovery.get("steps") != updated:
             raise NextRunError("ERR_IDEMPOTENCY_CONFLICT", "Successor run recovery conflicts with canonical state.")
         return RecoveryReplayIdentity(tenant_id, project_id, "next-run-recovery", path)

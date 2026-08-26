@@ -5,7 +5,7 @@
 **An:** Jesse Jensen (Heartweb)  
 **Von:** Raphael Rechberger  
 **Datum:** 16. August 2026, aktualisiert 17. August 2026  
-**Status:** Implementiert und veroeffentlicht. Nach dem ersten Live-Test folgen Nachbesserungen, siehe Abschnitt 7.  
+**Status at capture:** Implementiert und veroeffentlicht. Nach dem ersten Live-Test folgen Nachbesserungen, siehe Abschnitt 7.
 **Repository:** [https://github.com/Frater418/claude-desktop-seo-workflow-production](https://github.com/Frater418/claude-desktop-seo-workflow-production)  
 
 ---

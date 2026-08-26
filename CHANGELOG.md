@@ -5,30 +5,35 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) 
 
 ---
 
-## [Unreleased] - Sprint 5 and Sprint 5E in progress
+## [Unreleased] - V2 repository consolidation and M10
 
-### Verified or implemented on the feature/WIP line
+### Implemented in the current repository baseline
 
-- V2 domain, workflow, transition, artifact, evidence, approval, release and runtime contracts.
-- Local Operator API, append-only event store, Notion/n8n simulators, OpenAPI and generated TypeScript contracts.
-- Package 4 intake, provisioning, Context/LLM runtime, immutable artifact revisions, diff, recovery, typed Admin actions and neutral Step-0-through-Step-4b lifecycle.
-- German single-admin Operator Console with project, workflow, task, intake, artifact, revision and review workspaces.
-- Automated frontend matrix reported at 74 tests with a clean production build before the real browser gate.
-- WIP GitHub checkpoint `7c844ba1aa2bf938b34d854578e6bfc0cda6a9a0` on `wip/sprint5-operator-console-2026-08-21-0809`.
+- Client-neutral V2 Domain, workflow, Transition Service, artifacts, revisions, Evidence, Quality Gates, approvals, releases and recovery.
+- Multi-location Project V2, Search Deployments, verified Provider Targets and operator-confirmed weekly planning capacity with fail-closed cross-binding.
+- Specialized Hermes production agents, Worker Profiles, Tool Policies, bounded production executions, controlled retries and re-steering for Steps 0 through 4B.
+- Typed Heartweb tools and Provider Gateway routing without credential exposure or direct prompt-to-provider bypass.
+- German Single-Admin Console with intake, project deletion preview/confirm, workflow production, artifact editing, revision comparison, reviews, gates and Delivery.
+- Deterministic Delivery API, Delivery Center, role packages, manual Notion import, secure ZIPs, replay, recovery and shared local diagnostic traces.
+- Release-critical PQ-0, PQ-1, PQ-2 and PQ-4 output restoration in the locally verified scope.
 
-### Still open
+### Real production checkpoint
 
-- Fresh real-browser QA evidence after Chrome installation in the OMO container.
-- Sprint 5E Delivery contracts, deterministic ZIPs, Delivery API and Delivery Center.
-- Real AHD Golden Path with live providers and human quality review.
-- Live Notion/n8n integration and real task/person mapping.
-- Deferred GEO V2 restoration, documentation reconciliation, repository hygiene and final branch consolidation.
-- Independent final audit and `master` release gate.
+- The current CL pilot has a reviewed, approved, completed and released Step-0 Manifest V2 Revision 3.
+- Step 1 Run `run-next-7f7e2b778f4521b9` is `in_progress` without Production Execution, Agent Evidence or LLM output.
+- M10, PT-03 and PT-11 remain open until the real Step-1-through-Step-4B route, Human Gates, final package and professional operator review are complete.
 
-### Documentation and hygiene
+### Repository authority and consolidation
 
-- Canonical repository audit: `00_admin/audits/2026-08-21-repository-hygiene/REPOSITORY_HYGIENE_AND_AUTHORITY_AUDIT.md`.
-- Deferred integration backlog: `00_admin/DEFERRED_INTEGRATION_BACKLOG.md`.
+- DEC-0031 authorizes the complete current tree as the consolidated `master` baseline without claiming Production Acceptance.
+- DEC-0032 defines a deterministic `00_admin/ONBOARDING_REFERENCE.md` and complete registry inventory.
+- M08 commit `568bb497e57af4f7ec6dc8a13438681bbf423a55` was reconciled across 635 paths with zero missing paths.
+- Environment files, raw session recovery and customer workspaces remain outside Git.
+- Historical and superseded sources remain preserved with explicit lifecycle metadata.
+- Canonical reconciliation evidence: `00_admin/audits/2026-08-26-repository-consolidation/`.
+- Repository Registry v1.1.0 contains 333 current records with zero `needs_reconciliation`; generated onboarding embeds 12 critical authorities and inventories every record.
+- All 18 registered `docs/` sources, 15 prompt files, 9 active prompt registry entries and 8 initial-route Step agents have explicit lifecycle or runtime bindings.
+- Step 1 prompt v2.2.0 corrects released Step-0 lineage; the exact v2.1.0 predecessor remains immutable at `prompts/1-pillar-identifikation-v2.1.0.xml.md`.
 
 ---
 

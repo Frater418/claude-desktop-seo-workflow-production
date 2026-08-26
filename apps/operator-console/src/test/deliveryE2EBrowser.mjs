@@ -1,15 +1,13 @@
 #!/usr/bin/env node
 import { mkdir, writeFile } from "node:fs/promises"
-import { createRequire } from "node:module"
 import { resolve } from "node:path"
+import { chromium } from "playwright-core"
 
 const base = process.env.M06_BASE_URL
 const evidenceDir = process.env.M07_EVIDENCE_DIR
 const checkpointDownload = process.env.M06_CHECKPOINT_DOWNLOAD
 const screenshotReference = process.env.M07_SCREENSHOT_REFERENCE
-const chromeBin = process.env.CHROME_BIN ?? "/opt/google/chrome/chrome"
-const require = createRequire(process.env.PLAYWRIGHT_REQUIRE_FROM ?? import.meta.url)
-const { chromium } = require("playwright")
+const chromeBin = process.env.CHROME_BIN
 const routeName = "Uebergabe und Export"
 const expectedIds = {
   delivery_export_request_id: "delivery-export-request-66ff1f053918e8c41f3a5f57bea8863c",
@@ -76,7 +74,7 @@ const output = required(evidenceDir, "M07_EVIDENCE_DIR")
 const downloadPath = required(checkpointDownload, "M06_CHECKPOINT_DOWNLOAD")
 const relativeScreenshot = required(screenshotReference, "M07_SCREENSHOT_REFERENCE")
 await mkdir(output, { recursive: true })
-const browser = await chromium.launch({ executablePath: chromeBin, headless: true })
+const browser = await chromium.launch(chromeBin === undefined ? { channel: "chrome", headless: true } : { executablePath: chromeBin, headless: true })
 const context = await browser.newContext({ acceptDownloads: true, deviceScaleFactor: 1, viewport: result.viewport })
 const page = await context.newPage()
 const postBodies = []
@@ -98,28 +96,35 @@ page.on("response", (response) => {
 
 try {
   await page.clock.setFixedTime(new Date(result.fixed_time))
+  const diagnosticUrl = new URL(root)
+  diagnosticUrl.searchParams.set("diagnostic_source", "automated")
+  diagnosticUrl.searchParams.set("diagnostic_scenario", "m06-delivery")
+  await page.goto(diagnosticUrl.toString(), { waitUntil: "networkidle" })
+  await page.getByRole("heading", { name: "Projektübersicht", exact: true }).waitFor()
   const stepsResponse = page.waitForResponse((response) => new URL(response.url()).pathname.endsWith("/steps"))
   const diagnosticCreateResponse = page.waitForResponse((response) => {
     const request = response.request()
     return request.method() === "POST" && new URL(response.url()).pathname.endsWith("/diagnostic-traces")
   })
-  const diagnosticUrl = new URL(root)
-  diagnosticUrl.searchParams.set("diagnostic_source", "automated")
-  diagnosticUrl.searchParams.set("diagnostic_scenario", "m06-delivery")
-  await page.goto(diagnosticUrl.toString(), { waitUntil: "networkidle" })
-  result.steps_projection = await (await stepsResponse).json()
-  const diagnosticCreated = await diagnosticCreateResponse
+  const [, stepsCreated, diagnosticCreated] = await Promise.all([
+    page.getByRole("button", { name: / öffnen$/ }).click(),
+    stepsResponse,
+    diagnosticCreateResponse,
+  ])
+  result.steps_projection = await stepsCreated.json()
   check(diagnosticCreated.status() === 201, "Automated diagnostic trace must be created.")
   const diagnosticTrace = await diagnosticCreated.json()
   check(typeof diagnosticTrace.trace_id === "string" && /^trace-[a-f0-9]{32}$/.test(diagnosticTrace.trace_id), "Diagnostic create response must contain a trace ID.")
   result.diagnostic_trace_id = diagnosticTrace.trace_id
   check(result.steps_projection.data.every((step) => typeof step.blocker === "string" && typeof step.next_action === "string"), "Step projection must include readable blocker and next action fields.")
-  await page.getByRole("link", { name: routeName, exact: true }).click()
+  await page.getByRole("button", { name: "Uebergabe", exact: true }).click()
   await page.getByRole("heading", { name: routeName, exact: true }).waitFor()
   await page.getByRole("heading", { name: "Checkpoint-Vorschau", exact: true }).waitFor()
   await page.getByRole("heading", { name: "Finale Uebergabe", exact: true }).waitFor()
   await page.getByRole("heading", { name: "Exporthistorie", exact: true }).waitFor()
-  check((await page.getByText(/developer-handoff/, { exact: false }).allTextContents()).some((value) => value.includes("developer-handoff")), "Final preview must name developer-handoff as missing.")
+  const missingDeveloperHandoff = page.getByText(/developer-handoff/i, { exact: false }).first()
+  await missingDeveloperHandoff.waitFor()
+  check((await missingDeveloperHandoff.innerText()).toLowerCase().includes("developer-handoff"), "Final preview must name developer-handoff as missing.")
   const scope = page.getByLabel("Exportumfang", { exact: true })
   await scope.selectOption("checkpoint")
   await page.getByLabel("Exportfolge", { exact: true }).fill("1")
@@ -198,15 +203,18 @@ try {
     const request = response.request()
     return request.method() === "POST" && new URL(response.url()).pathname.endsWith(`/diagnostic-traces/${result.diagnostic_trace_id}/close`)
   })
-  await page.getByRole("button", { name: "Diagnoseprotokoll schliessen", exact: true }).click()
+  await page.evaluate(() => window.dispatchEvent(new Event("pagehide")))
   const diagnosticClosed = await diagnosticCloseResponse
-  check(diagnosticClosed.status() === 200, "Diagnostic trace close must return HTTP 200.")
+  check(diagnosticClosed.status() === 200, "Pagehide diagnostic trace close must return HTTP 200.")
   const closedTrace = await diagnosticClosed.json()
   check(closedTrace.trace_id === result.diagnostic_trace_id && closedTrace.status === "closed" && typeof closedTrace.close_id === "string" && typeof closedTrace.closed_at === "string", "Diagnostic close response must be canonical.")
   result.diagnostic_close_id = closedTrace.close_id
   result.diagnostic_closed_at = closedTrace.closed_at
   result.diagnostic_status = closedTrace.status
-  await page.getByText("Diagnoseprotokoll geschlossen.", { exact: true }).waitFor()
+  const diagnosticStatus = page.locator('[aria-label="Automatische Diagnose"]')
+  await diagnosticStatus.waitFor({ state: "attached" })
+  check(await diagnosticStatus.getAttribute("data-state") === "closed", "Diagnostic trace status must be closed after pagehide.")
+  check((await diagnosticStatus.textContent())?.includes("Diagnoseprotokoll geschlossen.") === true, "Closed diagnostic trace text must remain in the technical details.")
 } catch (error) {
   if (result.diagnostic_trace_id !== "" && !browserObservationRecorded) {
     try {
@@ -235,8 +243,11 @@ try {
       result.diagnostic_status = "failure-observation-unavailable"
     }
   }
-  result.error = error instanceof Error ? error.message : String(error)
-  throw error
+  const visibleText = await page.locator("body").innerText().catch(() => "Visible UI unavailable.")
+  const observedRequests = result.requests.slice(-50).map((request) => `${request.method} ${request.path}`).join("\n")
+  const originalMessage = error instanceof Error ? error.message : String(error)
+  result.error = `${originalMessage}\nVisible UI:\n${visibleText.slice(0, 4000)}\nObserved requests:\n${observedRequests}`
+  throw new Error(result.error, { cause: error })
 } finally {
   await context.close()
   await browser.close()

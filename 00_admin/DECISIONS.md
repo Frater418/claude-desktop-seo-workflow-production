@@ -136,14 +136,14 @@
 
 ## DEC-0022: Branchkonsolidierung erfolgt erst nach dem Final-Gate
 
-- Status: active
+- Status: superseded
 - Date: 2026-08-21
 - Owner/source: Raphael Rechberger
 - Context: `master`, `feature/e2e-operator-workflow-system` und der WIP-Checkpoint bilden eine lineare Historie ohne Divergenz. Browser-QA, Sprint 5E und Final-Audit sind noch offen.
 - Decision: Vor dem vollstaendigen Final-Gate wird nichts nach `master` gemergt. Nach bestandenem Final-Gate wird der finale Arbeitsstand als Nachfolger des WIP-Checkpoints committed, der Feature-Branch auf diesen finalen Commit gebracht und verifiziert. Anschliessend wird `master` per Fast-Forward auf den finalen Feature-Stand gesetzt. WIP- und Feature-Hilfsbranches werden erst nach verifiziertem Remote-SHA und ausdruecklicher Abschlusskontrolle geloescht.
 - Rationale: Die lineare Historie erlaubt eine konfliktfreie Konsolidierung, ohne einen unfertigen Zwischenstand als offiziellen Hauptbranch zu veroeffentlichen oder Sisyphus waehrend der aktiven Arbeit zu stoeren.
 - Supersedes: none
-- Superseded by: none
+- Superseded by: DEC-0031
 - Evidence: Nutzerentscheidung vom 21. August 2026; verifizierter Branchgraph mit `master -> feature -> WIP`
 - Impacted files/areas: GitHub Branchstrategie, Final-Audit, Release Gate, WIP-Checkpoint, Feature-Branch, master
 
@@ -201,7 +201,7 @@
 
 ## DEC-0028: Testweise reale LLM-Ausfuehrung nutzt Option A ueber ein isoliertes Hermes-Gateway-Profil
 
-- Status: active
+- Status: partially superseded by DEC-0029; Credential-, Core-Authority-, Modellpolicy- und Fail-Fast-Grenzen bleiben active
 - Date: 2026-08-23
 - Owner/source: Raphael Rechberger
 - Context: Die bestehende Heartweb Runtime bindet Context Package, Prompt, Worker Profile, Provider, Modell, Toolpolicy, Outputvertrag und Resultat, fuehrt aber vor M10 noch keinen echten Modellcall aus. Raphael moechte den vorhandenen OpenAI-Codex-OAuth-Zugang ueber Hermes nutzen, ohne OAuth-Tokens in Heartweb einzubauen oder Heartweb von Hermes als einziger Produktionsroute abhaengig zu machen.
@@ -210,7 +210,72 @@
 - Model policy: `gpt-5.6-sol` mit `high` ist fuer 1B, 4A und kritische Schlussreviews vorgesehen, nicht fuer jeden Step. Strukturierte oder deterministisch gestuetzte Steps verwenden ein validiertes schnelleres oder ausgeglichenes Profil mit `low` oder `medium`. Fehlende Modelle oder OAuth-Verfuegbarkeit stoppen fail-fast; kein stiller Provider-, Modell- oder Reasoning-Fallback.
 - Rationale: Der erste reale lokale Output kann den vorhandenen OAuth-Zugang sicher und reproduzierbar nutzen, ohne vorab eine allgemeine LLM-Plattform zu bauen. Die Heartweb-Authority-Grenze bleibt erhalten; spaetere direkte offizielle API-Adapter und allgemeine Routinginfrastruktur werden erst aus realer Nutzung begruendet.
 - Supersedes: none
-- Superseded by: none
+- Superseded by: DEC-0029 fuer die Aussage, Heartweb solle Hermes nicht als regulaere Produktionsroute verwenden, sowie fuer die Post-M10-Verschiebung von Delegation und Subagent-Orchestrierung
 - Evidence: Raphael-Entscheidung vom 23. August 2026; `.hermes/plans/2026-08-23_141332-hermes-gateway-llm-execution-adapter.md`; verifizierter M08-WIP-Snapshot `568bb497e57af4f7ec6dc8a13438681bbf423a55`
 - Acceptance: Realer neutraler Step-0-Lauf PASS mit schema-validem Manifest, persistiertem Context Package und LLM Result, Provider Run ID, Modell- und Tokenmetadaten sowie null Toolcalls. `00_admin/audits/2026-08-23-m08l-hermes-llm-adapter/SECTION_11_REPORT.md`.
 - Impacted files/areas: Runtime Contracts, Worker Profiles, LLM Gateway, Operator API, Runtime Persistence, Recovery, Hermes Profile, OAuth-Grenze, Modellrouting, M09, M10
+
+## DEC-0029: Hermes Gateway ist die agentische Produktionsschicht fuer jeden Workflow-Schritt
+
+- Status: active
+- Date: 2026-08-24
+- Owner/source: Raphael Rechberger
+- Context: Der duenne M08L-Nachweis bewies nur den Transport eines realen Step-0-Modellcalls mit null Toolcalls. Die manuelle CL-Performance-Abnahme zeigte, dass ein Modellcall ohne vollstaendige agentische Tool-, Provider-, Artefakt- und Fortsetzungsbedienung nicht dem beabsichtigten Produktionssystem entspricht. Raphael bestaetigt, dass Hermes Gateway gewaehlt wurde, damit spezialisierte AI-Worker die fachliche Arbeit jedes Schritts ausfuehren, Providerdaten verarbeiten und kontrollierte Provideroperationen selbst anfordern koennen.
+- Decision: Die regulaere Produktion der Schritte `0`, `1`, `1b`, `1c`, `2`, `3`, `4a` und `4b` laeuft ueber das isolierte Hermes-Profil `heartweb-runtime`. Jeder Schritt besitzt einen versionierten spezialisierten Agentenvertrag aus Context Package, registriertem Prompt, Worker Profile, Modell- und Reasoning-Policy, erlaubten Toolsets, Kosten- und Bestaetigungspolitik, erwartetem Outputvertrag und maximalen Agent- beziehungsweise Toolrunden. Ein Step-Run darf innerhalb dieser Grenzen spezialisierte Hermes-Subagents fuer Recherche, Verarbeitung, Synthese oder fachliche Gegenpruefung delegieren. Dies sind logische Workerrollen in einer Runtime und keine acht separaten Gateway-Dienste.
+- Provider rule: Ein Step-Agent darf Providerdaten als validierten Context erhalten oder eine erlaubte Provideroperation ueber ein typisiertes Heartweb-Tool anfordern. Das Tool routet serverseitig durch den Provider Gateway, bindet Markt, Location Code, Sprache, Kostenfreigabe und Request-Identitaet und persistiert rohe Antwort, Hash und Provenienz als Evidence. Der Agent erhaelt keine Provider-Credentials und ruft keine externe Provider-API an der Heartweb-Grenze vorbei auf.
+- Provider usage amendment: Fuer den DEC-0029-Produktionspfad ist AgentSEO der explizit gebundene Provider-Gateway-Adapter fuer die kontrollierten Operationen in Step 1B, Step 2 und Step 4A. Dies ersetzt fuer diesen Pfad die aeltere DataForSEO-Primaerannahme; DataForSEO bleibt eine spaetere alternative Capability und ist kein stiller Fallback. AgentSEO rechnet ueber Provider-Credits und meldet im realen Jobstatus weder per-Call-Credits noch USD-Istkosten. Heartweb erfindet deshalb keinen USD-Wert. Die Operatorfreigabe bindet exakte Operation, Parameter, Requesthash, Calllimit und Itemlimit. Die Tool Policy kennzeichnet dies als `provider_credits_unreported`. Request und Response speichern `billing_unit=credits` und `provider_reported=false`; rohe Providerjobs und normalisierte Exchanges bleiben gehasht erhalten.
+- Retry and revision amendment: Ein technischer Retry ist nur vor jeder Toolinteraction, Evidence- oder Artefaktpersistenz erlaubt. Er erzeugt eine neue Production Execution mit byte-identischem Context Package und unveraendertem Agentvertrag. Ein fachlicher Rerun ist davon getrennt: Er bindet das abgelehnte Artefakt, Findings, unveraenderliche Grenzen und Operator-Steering in versionierten Records, laesst die Transition Service Authority `awaiting_gate -> in_progress` ausfuehren und erzeugt danach eine neue Artefaktrevision. Alte Approvals bleiben hashgebunden und koennen fuer die neue Revision nicht gelten.
+- AI boundary: AI ist in jedem fachlich generativen oder interpretativen Produktionsschritt aktiv. Deterministische Funktionen wie Hashing, Schema- und Identity-Validierung, Evidence-Normalisierung, Zustandsuebergang, Freigabe, Replay und ZIP-Erzeugung bleiben bewusst nicht-agentisch. Deterministische Provideradapter oder Assembler sind Werkzeuge des Step-Agenten und kein Ersatz fuer ihn.
+- Authority: Heartweb Core bleibt alleinige Authority fuer kanonischen Workflowstatus, Artefakte, Revisionen, Evidence, Gates, Freigaben und Releases. Hermes erzeugt und prueft Kandidaten, fuehrt erlaubte Toolschleifen aus und liefert strukturierte Run-Evidence. Hermes darf keinen kanonischen Zustand, kein Human Gate und keine Releasefreigabe selbst setzen.
+- Runtime ownership: Die Console startet das Gateway nicht automatisch. Eine vom Operator bestaetigte Produktionsaktion setzt eine erreichbare, bewusst betriebene `heartweb-runtime` voraus. Eine nicht erreichbare Runtime, fehlende Capability, Authentifizierungsfehler, Providerfehler, nicht gebundene Providernutzung oder Interaktionsbedarf stoppen fail-fast mit strukturiertem Fehler und konkreter Behebung. Providerseitig nicht berichtete Einzelcredits werden explizit als nicht berichtet gespeichert. Es gibt keinen stillen Modell-, Provider-, Tool- oder Fixture-Fallback.
+- Consequence: Ein einfacher Step-0-Modellcall mit null Toolcalls ist nur Transport-Evidence und kein Nachweis der Zielarchitektur. Der Produktionspfad gilt erst dann als vollstaendig, wenn die spezialisierte Hermes-Ausfuehrung, benoetigten Provider- beziehungsweise Tooloperationen, Outputpersistenz, Validierung, Human Review und Folgeschrittaktivierung fuer alle acht Schritte bedienbar sind.
+- Supersedes: DEC-0028 Production-first amendment zur Post-M10-Verschiebung von Delegation und Subagent-Orchestrierung sowie die Aussage, Heartweb solle Hermes nicht als regulaere Produktionsroute verwenden. Die isolierte Profil-, OAuth-, Core-Authority-, Modellpolicy- und Fail-Fast-Grenze aus DEC-0028 bleibt bestehen.
+- Superseded by: none
+- Evidence: Raphael-Instruktion vom 24. August 2026; Hermes API Server und Subagent Delegation laut `https://hermes-agent.nousresearch.com/docs/user-guide/features/api-server` und `https://hermes-agent.nousresearch.com/docs/user-guide/features/delegation`
+- Impacted files/areas: Current Production Architecture, Operator API, Hermes Runs Adapter, Worker Profiles, Prompt Registry, Provider Gateway, Tool Contracts, Context Packages, Runtime Persistence, Diagnostic Trace, Operator Console, M09 und M10
+
+## DEC-0030: Provider-Standorte werden vor Step 0 pro Search Deployment gebunden
+
+- Status: active
+- Date: 2026-08-25
+- Owner/source: Raphael Rechberger
+- Context: Der reale CL-Performance-Test zeigte einen unzulaessigen Widerspruch: Project V2 enthielt fuer das aktive Deployment keinen verifizierten Provider-Location-Code, waehrend Step 0 den Wert `DE / 2276 / de` spaeter aus einer Laendertabelle einsetzte. Eine CL-spezifische Korrektur oder ein globaler Deutschland-Default waere nicht mandantenneutral und nicht multi-location-faehig.
+- Decision: Das angenommene Briefing erzeugt vor Step 0 alle Search Deployments mit Markt, Land, Sprache, Locale, SEO Operating Model, Zielregionen, physischen Standort- und Leistungsgebietsreferenzen sowie einer exakten Provider-Target-ID. Die Provider Location Registry ist eine eigene versionierte Authority und nicht Teil der Market Registry. Jedes aktive Deployment muss einen verifizierten und zum Land, zur Sprache und zum Operating Model passenden Provider Target Record besitzen. Mehrere physische Orte oder Service Areas duerfen ein Deployment teilen, wenn sie denselben Provider Research Target verwenden. Unterschiedliche Provider Targets erfordern getrennte Deployments. Der initiale Produktionslauf bindet genau das aktive Primary Deployment. Fehlende, mehrdeutige oder unverifizierte Targets stoppen vor Step 0.
+- Manifest rule: Step 0 verwendet keinen Country Lookup. Manifest V2 kopiert das vollstaendige rungebundene Deployment, Source Binding, Provider Target und alle Zielregionen exakt aus Project V2 und dem Preflight. Cross-Binding prueft Deployment-Hash, Target-ID, Provider-Code, Land, Sprache, Locale und Regionen. GATE-0 bleibt eine separate menschliche, artefakt- und hashgebundene Entscheidung.
+- Runtime rule: Jeder Run traegt `deployment_id`. Alle Heartweb Provider Tools lehnen ein anderes Deployment ab. Eine Aenderung an akzeptiertem Intake oder Project V2 erzeugt eine neue gehashte Logical Project Session, archiviert den Vorgaenger und verhindert stale Context Packages. Beim fachlichen Rerun ist das Gate des abgelehnten aktuellen Artefakts eine aktive Finding-Quelle, nicht eine historische Quelle.
+- Capacity rule: Project V2 bindet vor Step 0 eine ausdruecklich bestaetigte Wochenkapazitaet mit Minimum, Maximum, Quelle, Operator und Zeitpunkt. Fehlt sie im Eingabeportfolio, erzeugt Intake einen typisierten Missing Input. Bei bereits angenommenen Projekten kann der Operator denselben Wert ueber Preview und Confirm in der Console nachtragen. Die Aenderung erzeugt eine neue Project-V2- und Logical-Session-Revision. Step 0 und Step 3 verwenden denselben Record. Defaults und provisional Schaetzwerte sind verboten.
+- Legacy rule: `standards/location-codes.json` und `standards/manifest.schema.json` bleiben fuer reproduzierbare Legacy Records erhalten, sind aber nicht der aktive Produktionsvertrag. Der aktive Pfad verwendet `standards/domain/provider-location-registry.json` und `standards/manifest-v2.schema.json`.
+- Rationale: Providergeografie ist deploymentbezogen. Markt, physischer Standort, Service Area und Provider Research Target haben unterschiedliche Bedeutungen und duerfen weder aus einem Land noch aus einem Kundenbeispiel geraten werden.
+- Supersedes: ADR-008 und alle aktiven Laufzeitannahmen, die einen Provider-Code erst in Step 0 aus `country` ableiten. Historische Records bleiben unveraendert.
+- Superseded by: none
+- Evidence: Raphael-Korrektur vom 25. August 2026; realer CL-Performance-Workflowtest; `standards/domain/provider-location-registry.json`; `standards/manifest-v2.schema.json`; `services/domain_contract/provider_locations.py`; `services/agent_gateway/kickoff_preflight.py`
+- Impacted files/areas: Intake Project Generator, Project V2, Search Deployment Contract, Provider Location Registry, Logical Project Session, Run Envelope, Step-0-Prompt und Manifest, Provider Gateway Tools, Runtime Revision Sources, Operator Console, CL-Performance-Testprojekt
+
+## DEC-0031: Der vollstaendige aktuelle Repository-Stand wird jetzt in master konsolidiert
+
+- Status: active
+- Date: 2026-08-26
+- Owner/source: Raphael Rechberger
+- Context: Der aktuelle produktive Entwicklungsstand liegt als umfangreicher verifizierter Working-Tree-Delta auf `feature/e2e-operator-workflow-system`. Mehrere alte Hilfs- und WIP-Branches erschweren die Orientierung. Raphael verlangt einen eigenstaendigen, vollstaendigen und referenzierten `master` als einzigen konsolidierten Repository-Basisstand und danach genau einen neuen Fortsetzungsbranch.
+- Decision: Der aktuelle Code-, Contract-, Prompt-, Test-, Evidence- und Dokumentationsstand wird vollstaendig klassifiziert, authority-konform reconciliiert, fokussiert verifiziert und in nachvollziehbaren Commits auf dem Feature-Branch gesichert. Der einzigartige M08-Snapshot wird nach pfadweisem Nullverlustnachweis als no-tree-change Graph-Merge erreichbar gemacht. Danach wird `master` ausschliesslich per Fast-Forward auf den finalen verifizierten Feature-Stand gesetzt und remote readback-verifiziert. Alte Nebenbranches und Worktrees werden nur nach einzeln bestandenem Ancestor-Nachweis normal geloescht. Anschliessend ersetzt ein verifizierter Fresh Clone das Repository am unveraenderten kanonischen Pfad und `feature/production-workflow-continuation` wird vom exakten konsolidierten `master` erstellt.
+- Truth boundary: Die Repository-Konsolidierung ist kein Production-Acceptance-Gate. Step 0 des realen CL-Projekts ist freigegeben, abgeschlossen und released. Step 1 bleibt bis zur echten Hermes-Produktion, Evidence, Human Review und Freigabe `in_progress`. PT-03, PT-11 und M10 bleiben offen, solange ihre reale Evidence fehlt.
+- Preservation rule: Historische, superseded und Evidence-Quellen bleiben erhalten und lifecycle-gekennzeichnet. Environment-Dateien, rohe Session-Recovery-Dateien und Kundenworkspaces bleiben ausserhalb von Git. Kein Force Push, kein History Rewrite und keine Branchloeschung ohne Reachability-Nachweis.
+- Rationale: Ein einziger konsolidierter Hauptbranch reduziert Drift und Onboardingfehler, ohne unfertige Produktionsarbeit als abgeschlossen darzustellen oder historische Nachweise zu verlieren.
+- Supersedes: DEC-0022 ausschliesslich hinsichtlich des Zeitpunkts der Master-Konsolidierung
+- Superseded by: none
+- Evidence: Raphael-Freigaben vom 26. August 2026; `.hermes/plans/2026-08-25_225654-repository-master-consolidation-and-onboarding.md`; `00_admin/audits/2026-08-26-repository-consolidation/BRANCH_RECONCILIATION_REPORT.md`
+- Impacted files/areas: gesamtes Repository, Dokumentautoritaet, Prompt- und Agentregistries, GitHub-Branches, Worktrees, Fresh Clone, Session-Onboarding
+
+## DEC-0032: Eine deterministische Onboarding-Referenz buendelt den Repository-Einstieg
+
+- Status: active
+- Date: 2026-08-26
+- Owner/source: Raphael Rechberger
+- Context: Project State, Decisions, Standards, Plaene, Prompts, Agentvertraege, Indizes und Evidence besitzen bewusst getrennte Autoritaeten. Neue Sessions benoetigen trotzdem einen vollstaendigen Single-Entry-Point, ohne dass eine manuell gepflegte Kopie erneut driftet.
+- Decision: `00_admin/ONBOARDING_REFERENCE.md` wird deterministisch aus der kanonischen Dokumentregistry und den aktuellen Default-Retrieval-Quellen erzeugt. Die Datei enthaelt Authority- und Konfliktregeln, Produkt- und Architekturgrenzen, den wahrheitsgemaessen Status, Workflow und Step-3B-Grenze, Prompt- und Agentkataloge, lokale Betriebs- und Verifikationspfade sowie eine vollstaendige Inventarzeile fuer jeden Registry-Eintrag. Onboarding-kritische Current-Authority-Quellen werden mit Pfad, Lifecycle, Authority Level und SHA-256 als identifizierte Source Blocks eingebettet. Audit- und Evidence-Rohtexte bleiben an ihren kanonischen Pfaden und werden vollstaendig inventarisiert statt dupliziert.
+- Source-of-Truth rule: Die generierte Referenz ist eine Navigation und Momentaufnahme. Sie ueberschreibt niemals `PROJECT_STATE.md`, aktive Decisions oder den jeweiligen Quellvertrag. Generator-Drift muss den Repository-Index-Check fehlschlagen lassen.
+- Rationale: Eine deterministische Gesamtansicht ermoeglicht vollstaendiges Onboarding und RAG-Routing, ohne Redundanz oder eine konkurrierende manuelle Autoritaet zu erzeugen.
+- Supersedes: none
+- Superseded by: none
+- Evidence: Raphael-Freigabe vom 26. August 2026; `.hermes/plans/2026-08-25_225654-repository-master-consolidation-and-onboarding.md`
+- Impacted files/areas: Repository-Index-Generator, Document Registry, Session Bootstrap, README, AGENTS, CLAUDE, docs- und plan-Indizes, neue Sessions und Agenten

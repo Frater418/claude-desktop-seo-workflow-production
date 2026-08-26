@@ -10,8 +10,8 @@
   "retry_status": 200,
   "screenshot": "delivery-center-1280x900.png",
   "diagnostic": {
-    "trace_id": "trace-ddc25904b8354cf18c043cf975ec9b00",
-    "close_id": "close-ddc25904b8354cf18c043cf975ec9b00-20260822101530",
+    "trace_id": "trace-4859cf1f6a9548deaf0a59af0a9174e9",
+    "close_id": "close-4859cf1f6a9548deaf0a59af0a9174e9-20260822101530",
     "closed_at": "2026-08-22T10:15:30Z",
     "status": "closed"
   }

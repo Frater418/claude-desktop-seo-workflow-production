@@ -1,0 +1,41 @@
+{
+  "tool_policy_id": "tool-policy-step-3-agent",
+  "schema_version": "1.0.0",
+  "policy_version": "1.1.0",
+  "policy_sha256": "8304b3f7cba413b2ee0fd79a80cd10c1a422a752c8ac475bf44a4cee970f35b0",
+  "step_id": "3",
+  "allowed_gateway_operations": [
+    {
+      "operation_id": "solve_capacity_matrix",
+      "tool_name": "mcp__heartweb__solve_capacity_matrix",
+      "phase": "production",
+      "side_effect": "local_evidence_write",
+      "confirmation_scope": "none",
+      "cost_mode": "none",
+      "max_calls": 2,
+      "timeout_seconds": 120,
+      "evidence_required": true,
+      "input_contract_id": "heartweb.capacity-matrix-request.v1",
+      "output_contract_id": "heartweb.capacity-matrix-evidence.v1"
+    }
+  ],
+  "required_gateway_operations": [
+    "solve_capacity_matrix"
+  ],
+  "delegation_policy": {
+    "delegation_policy_id": "delegation-policy-step-3-v1",
+    "allowed": true,
+    "max_workers": 1,
+    "max_depth": 1,
+    "max_rounds": 1,
+    "allowed_purposes": [
+      "synthesis",
+      "domain_review"
+    ],
+    "external_side_effects_allowed": false
+  },
+  "direct_provider_calls_allowed": false,
+  "failure_mode": "fail_closed",
+  "enabled": true,
+  "created_at": "2026-08-24T23:39:00Z"
+}

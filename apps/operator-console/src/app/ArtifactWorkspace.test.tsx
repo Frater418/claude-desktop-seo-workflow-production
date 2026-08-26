@@ -38,12 +38,12 @@ async function renderEditor(api: ArtifactRevisionApi): Promise<void> { render(<A
 async function loadAndFill(): Promise<void> {
   fireEvent.click(screen.getByRole("button", { name: "outputs/briefing.json, Revision 17" }))
   await screen.findByDisplayValue(JSON.stringify(primaryDocument))
-  fireEvent.change(screen.getByLabelText("Artefaktinhalt bearbeiten"), { target: { value: JSON.stringify(primaryDocument) } })
+  fireEvent.change(screen.getByLabelText("Ergebnisinhalt bearbeiten"), { target: { value: JSON.stringify(primaryDocument) } })
   fireEvent.change(screen.getByLabelText("Unterstuetzendes registriertes Dokument"), { target: { value: JSON.stringify(supportingDocument) } })
   fireEvent.change(screen.getByLabelText("Operatives Preflight-Bundle"), { target: { value: JSON.stringify(bundle) } })
   fireEvent.change(screen.getByLabelText("Lokaler GateContext und Nachweise"), { target: { value: JSON.stringify(gateContext) } })
 }
-async function save(): Promise<void> { fireEvent.click(within(screen.getByLabelText("Artefaktaktionen")).getByRole("button", { name: "Als neue Revision speichern" })); await screen.findByText("Revision 18 wurde unveraenderlich gespeichert.") }
+async function save(): Promise<void> { fireEvent.click(within(screen.getByLabelText("Ergebnisaktionen")).getByRole("button", { name: "Als neue Revision speichern" })); await screen.findByText("Revision 18 wurde unveraenderlich gespeichert.") }
 
 describe("ArtifactWorkspace Step 4 output set", () => {
   it("Given a Step 4 primary revision, when content loads, then it fetches and displays exactly one supporting sibling", async () => {
@@ -61,7 +61,7 @@ describe("ArtifactWorkspace Step 4 output set", () => {
     expect(within(screen.getByLabelText("Ausgangsrevision")).getAllByRole("option")).toHaveLength(3)
   })
 
-  it.each(["Artefaktinhalt bearbeiten", "Unterstuetzendes registriertes Dokument", "Operatives Preflight-Bundle", "Lokaler GateContext und Nachweise"])("Given invalid %s JSON, when save is requested, then it shows an alert without an API call", async (label) => {
+  it.each(["Ergebnisinhalt bearbeiten", "Unterstuetzendes registriertes Dokument", "Operatives Preflight-Bundle", "Lokaler GateContext und Nachweise"])("Given invalid %s JSON, when save is requested, then it shows an alert without an API call", async (label) => {
     const fixture = createApi()
     await renderEditor(fixture.api)
     await loadAndFill()
@@ -94,7 +94,7 @@ describe("ArtifactWorkspace Step 4 output set", () => {
     await renderEditor(fixture.api)
     await loadAndFill()
     await save()
-    fireEvent.click(screen.getByRole("button", { name: "Schritt 4 Preflight ausfuehren" }))
+    fireEvent.click(screen.getByRole("button", { name: "Schritt 4 Preflight ausführen" }))
     await waitFor(() => expect(fixture.validate).toHaveBeenCalledWith(primary.project_id, savedPrimary.artifact_id, { bundle, content_sha256: savedPrimary.content_sha256, gate_context: gateContext, revision: savedPrimary.revision, supporting_documents: [supportingDocument] }, expect.any(AbortSignal)))
     expect(await screen.findByText(/Lokale Schritt-Vorpruefung erfolgreich/)).toBeInTheDocument()
     expect(screen.getByText(/copywriter-briefing/)).toBeInTheDocument()
@@ -107,7 +107,7 @@ describe("ArtifactWorkspace Step 4 output set", () => {
     await loadAndFill()
     await save()
     fireEvent.change(screen.getByLabelText("Lokaler GateContext und Nachweise"), { target: { value: "[]" } })
-    fireEvent.click(screen.getByRole("button", { name: "Schritt 4 Preflight ausfuehren" }))
+    fireEvent.click(screen.getByRole("button", { name: "Schritt 4 Preflight ausführen" }))
     expect(await screen.findByRole("alert")).toHaveTextContent("JSON-Objekt")
     expect(fixture.validate).not.toHaveBeenCalled()
   })
@@ -130,6 +130,6 @@ describe("ArtifactWorkspace Step 4 output set", () => {
     const release: ReleaseRead = { releaseId: "release-step4a", tenantId: primary.tenant_id, projectId: primary.project_id, runId: primary.run_id, stepId: "4a", gateId: "GATE-4A-SEO", artifactId: primary.artifact_id, artifactHash: primary.content_sha256, artifactRevision: primary.revision, approvalId: "approval-step4a", policyVersion: "1.0.0", releasedAt: "2026-08-23T10:00:00Z" }
     await renderEditor(createApi([initialRevisions], [release]).api)
     expect(await screen.findByText(releasedArtifactRemediation)).toBeInTheDocument()
-    expect(screen.getByLabelText("Artefaktinhalt bearbeiten")).toBeDisabled()
+    expect(screen.getByLabelText("Ergebnisinhalt bearbeiten")).toBeDisabled()
   })
 })

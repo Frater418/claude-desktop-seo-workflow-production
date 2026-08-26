@@ -4,16 +4,16 @@
       "active": true,
       "output_contracts": [
         {
-          "contract_id": "https://heartweb.example/schema/manifest.schema.json",
-          "contract_path": "standards/manifest.schema.json",
-          "contract_sha256": "5b47fdb13300c059d9701568171936e4903e2cdb591e803da0c1d5fd2f0871c1",
-          "contract_version": "1.0.0"
+          "contract_id": "https://heartweb.example/schema/manifest-v2.schema.json",
+          "contract_path": "standards/manifest-v2.schema.json",
+          "contract_sha256": "a8ea8b91513c00dec56a65293f33231732a6178f40e7aae9df7c83de73333c82",
+          "contract_version": "2.0.0"
         }
       ],
       "prompt_id": "heartweb.step.0",
-      "prompt_path": "prompts/0-kickoff.xml.md",
-      "prompt_sha256": "e8b85ebdc3cf95864cd2351d3a5c20516c298ea87935acb1b180b55185197248",
-      "prompt_version": "1.5.0",
+      "prompt_path": "prompts/0-kickoff-v1.10.0.xml.md",
+      "prompt_sha256": "eac03e7bc82437bb6a5a567ad8765c6cad4066a6816200ae91a29d7a5edf9e30",
+      "prompt_version": "1.10.0",
       "step_id": "0"
     },
     {
@@ -28,8 +28,8 @@
       ],
       "prompt_id": "heartweb.step.1",
       "prompt_path": "prompts/1-pillar-identifikation.xml.md",
-      "prompt_sha256": "cae20da200aa9c8b86c8ce8289b542037b9f6d45b3a3a56f61bd6b4f97fe2ca0",
-      "prompt_version": "2.0.0",
+      "prompt_sha256": "3658bed19f033ad8a135f633dcaeb97c9b6094a5b5d448b879c83ff25edd723c",
+      "prompt_version": "2.2.0",
       "step_id": "1"
     },
     {
@@ -44,8 +44,8 @@
       ],
       "prompt_id": "heartweb.step.1b",
       "prompt_path": "prompts/1b-seitenarchitektur.xml.md",
-      "prompt_sha256": "941848c056f0a8f8e98dfdacbbcf038e195d490f6011560f9d711737d2ffcb19",
-      "prompt_version": "2.0.0",
+      "prompt_sha256": "71d5bbbea3839aa447b60866de75cb3b31a764659572b704c33f9eb801667fac",
+      "prompt_version": "2.1.0",
       "step_id": "1b"
     },
     {
@@ -66,8 +66,8 @@
       ],
       "prompt_id": "heartweb.step.1c",
       "prompt_path": "prompts/1c-pillar-template.xml.md",
-      "prompt_sha256": "6e52211f4a41b9c254e1e4500188539266e216071a6900a5099a8a9a25dc8fe1",
-      "prompt_version": "2.0.0",
+      "prompt_sha256": "7b12fac9cec125aa1932242a9a0d0b1fdf580cccd7faefa855a5c4c3bc1eefdb",
+      "prompt_version": "2.1.0",
       "step_id": "1c"
     },
     {
@@ -82,8 +82,8 @@
       ],
       "prompt_id": "heartweb.step.2",
       "prompt_path": "prompts/2-cluster-recherche.xml.md",
-      "prompt_sha256": "775ff2e00ab14bbe333f5b398f1ac7b94a5b301d3c2b71c4ded7b0e7c29ef095",
-      "prompt_version": "2.0.0",
+      "prompt_sha256": "a3c498d84b4d7187a2a0335a5fc6607226870ad415c8e6ebcf7c664ca75aec23",
+      "prompt_version": "2.2.0",
       "step_id": "2"
     },
     {
@@ -98,8 +98,8 @@
       ],
       "prompt_id": "heartweb.step.3",
       "prompt_path": "prompts/3-120-tage-plan.xml.md",
-      "prompt_sha256": "cee9427f57f96f6daafe16330c2753d87a4fca237057edafe915feb38cb21ed5",
-      "prompt_version": "2.0.0",
+      "prompt_sha256": "adc175eb01d0cb92b4d9165a7e1ab8def889a5a9c3ea649789095e623a5e49e5",
+      "prompt_version": "2.1.0",
       "step_id": "3"
     },
     {
@@ -136,8 +136,8 @@
       ],
       "prompt_id": "heartweb.step.4a",
       "prompt_path": "prompts/4a-content-briefing-und-schema.xml.md",
-      "prompt_sha256": "92aac37df6ff5ee54fbbc2d140b4dc579c51b2ff3e22d10ac66ca680ea3e8a3b",
-      "prompt_version": "2.0.0",
+      "prompt_sha256": "f97bcd37990e8207916ff88c6ce4b0980aeefeecbfb77eeae1200a4bd5dec3f9",
+      "prompt_version": "2.2.0",
       "step_id": "4a"
     },
     {
@@ -158,8 +158,8 @@
       ],
       "prompt_id": "heartweb.step.4b",
       "prompt_path": "prompts/4b-landingpage-html.xml.md",
-      "prompt_sha256": "b20ee130ec6dacc02e05d26c0e06cf2fa642a9c5ec0b42591fb6f6352a3173d5",
-      "prompt_version": "2.0.0",
+      "prompt_sha256": "35520d1069c45b6346c3ed971489dfa21e46749b838418acfe941961201352bc",
+      "prompt_version": "2.1.0",
       "step_id": "4b"
     }
   ],

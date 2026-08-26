@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.0.0",
+  "registry_version": "1.1.0",
   "authority_order": [
     "00_admin/PROJECT_STATE.md",
     "00_admin/DECISIONS.md",
@@ -37,6 +37,7 @@
   "exclude_globs": [
     "00_admin/REPOSITORY_INDEX.md",
     "00_admin/SESSION_BOOTSTRAP.md",
+    "00_admin/ONBOARDING_REFERENCE.md",
     "00_admin/repository-index/DOCUMENT_REGISTRY.json",
     "00_admin/repository-index/DOCUMENT_REGISTRY.jsonl",
     "docs/INDEX.md",
@@ -63,7 +64,8 @@
     "00_admin/MASTER_TASK_MATRIX.md",
     "00_admin/repository-index/*.md",
     ".hermes/plans/*.md",
-    "docs/**/*.md"
+    "docs/**/*.md",
+    "prompts/*.md"
   ],
   "auto_rules": [
     {

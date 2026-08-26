@@ -1,0 +1,43 @@
+{
+  "tool_policy_id": "tool-policy-step-2-agent",
+  "schema_version": "1.0.0",
+  "policy_version": "1.4.0",
+  "policy_sha256": "e3ed624b217ebe78d8bedc7923bbc873b6962a32c11a3b5ec373fe876f911c17",
+  "step_id": "2",
+  "allowed_gateway_operations": [
+    {
+      "operation_id": "request_keyword_metrics",
+      "tool_name": "mcp__heartweb__request_keyword_metrics",
+      "phase": "production",
+      "side_effect": "external_read",
+      "provider_id": "provider-agentseo",
+      "confirmation_scope": "exact_request",
+      "cost_mode": "provider_credits_unreported",
+      "max_calls": 2,
+      "max_items": 100,
+      "timeout_seconds": 900,
+      "evidence_required": true,
+      "input_contract_id": "heartweb.keyword-metrics-request.v1",
+      "output_contract_id": "heartweb.keyword-metrics-evidence.v1"
+    }
+  ],
+  "required_gateway_operations": [
+    "request_keyword_metrics"
+  ],
+  "delegation_policy": {
+    "delegation_policy_id": "delegation-policy-step-2-v1",
+    "allowed": true,
+    "max_workers": 1,
+    "max_depth": 1,
+    "max_rounds": 1,
+    "allowed_purposes": [
+      "processing",
+      "domain_review"
+    ],
+    "external_side_effects_allowed": false
+  },
+  "direct_provider_calls_allowed": false,
+  "failure_mode": "fail_closed",
+  "enabled": true,
+  "created_at": "2026-08-25T14:29:06Z"
+}

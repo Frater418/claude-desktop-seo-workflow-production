@@ -109,10 +109,17 @@ def validate_llm_result(
     if result["result_sha256"] != result_record_sha256(result):
         errors.append(_error("ERROR_LLM_RESULT_INVALID", "/result_sha256", "result hash does not match the complete result record"))
     if result["status"] == "succeeded":
-        output = result["output"]
-        content = output_bytes.get(output["logical_ref"])
-        if content is None or hashlib.sha256(content).hexdigest() != output["content_sha256"]:
-            errors.append(_error("ERROR_LLM_RESULT_INVALID", "/output/content_sha256", "candidate output bytes do not match result hash"))
+        multi_output = result["schema_version"] in {"1.1.0", "1.2.0"}
+        outputs = result.get("outputs") if multi_output else (result["output"],)
+        expected_contract_ids = tuple(contract["contract_id"] for contract in request["output_contracts"])
+        observed_contract_ids = tuple(output.get("contract_id") for output in outputs)
+        if multi_output and observed_contract_ids != expected_contract_ids:
+            errors.append(_error("ERROR_LLM_RESULT_INVALID", "/outputs", "multi-output result contracts must match request order exactly"))
+        for index, output in enumerate(outputs):
+            content = output_bytes.get(output["logical_ref"])
+            path = f"/outputs/{index}/content_sha256" if multi_output else "/output/content_sha256"
+            if content is None or hashlib.sha256(content).hexdigest() != output["content_sha256"]:
+                errors.append(_error("ERROR_LLM_RESULT_INVALID", path, "candidate output bytes do not match result hash"))
     return ContextValidationResult(tuple(sorted(errors, key=lambda item: (item.code, item.path))))
 
 
@@ -130,6 +137,23 @@ def _hash_errors(package: Mapping[str, JsonValue]) -> list[ContextValidationErro
     return errors
 
 
+def _ancestor_steps(graph: Mapping[str, JsonValue], target_step: object) -> set[object]:
+    ancestors: set[object] = set()
+    frontier = [target_step]
+    edges = tuple(edge for edge in graph.get("initial_edges", ()) if isinstance(edge, Mapping))
+    while frontier:
+        child = frontier.pop()
+        for edge in edges:
+            if edge.get("to_step_id") != child:
+                continue
+            parent = edge.get("from_step_id")
+            if parent in ancestors:
+                continue
+            ancestors.add(parent)
+            frontier.append(parent)
+    return ancestors
+
+
 def _source_errors(package: Mapping[str, JsonValue], source_bytes: Mapping[str, bytes], records: RecordMap, graph: Mapping[str, JsonValue], evaluation_at: str) -> list[ContextValidationError]:
     errors: list[ContextValidationError] = []
     try:
@@ -137,6 +161,12 @@ def _source_errors(package: Mapping[str, JsonValue], source_bytes: Mapping[str, 
     except ContextBuildError as error:
         return [_error(error.code, error.path, error.message)]
     seen: set[str] = set()
+    direct_predecessor_steps = {
+        edge.get("from_step_id")
+        for edge in graph.get("initial_edges", ())
+        if isinstance(edge, Mapping) and edge.get("to_step_id") == package["step_id"]
+    }
+    ancestor_steps = _ancestor_steps(graph, package["step_id"])
     for index, source in enumerate(package["sources"]):
         ref = source["logical_ref"]
         if ref in seen:
@@ -152,12 +182,17 @@ def _source_errors(package: Mapping[str, JsonValue], source_bytes: Mapping[str, 
         for field in ("source_id", "tenant_id", "project_id", "revision", "content_sha256", "source_status"):
             if record.get(field) != source[field]:
                 errors.append(_error("ERROR_CONTEXT_IDENTITY_MISMATCH", f"/sources/{index}/{field}", "source record identity differs from package"))
-        source_steps = {edge.get("from_step_id") for edge in graph.get("initial_edges", ()) if edge.get("to_step_id") == package["step_id"]}
         if source["source_kind"] == "released_predecessor":
-            if record.get("step_id") not in source_steps:
+            if record.get("step_id") not in direct_predecessor_steps:
                 errors.append(_error("ERROR_CONTEXT_IDENTITY_MISMATCH", f"/sources/{index}/step_id", "predecessor record step does not match the graph edge"))
             if record.get("run_id") != package["run_id"]:
                 errors.append(_error("ERROR_CONTEXT_IDENTITY_MISMATCH", f"/sources/{index}/run_id", "predecessor record run does not match package lineage"))
+        elif source["source_kind"] == "released_supporting_artifact":
+            if record.get("step_id") not in ancestor_steps:
+                errors.append(_error("ERROR_CONTEXT_IDENTITY_MISMATCH", f"/sources/{index}/step_id", "supporting artifact is not part of the released ancestor closure"))
+            if not isinstance(record.get("run_id"), str):
+                errors.append(_error("ERROR_CONTEXT_IDENTITY_MISMATCH", f"/sources/{index}/run_id", "supporting artifact lacks its released run binding"))
+
         historical_comparison = source["source_kind"] == "evidence" and source["source_status"] == "historical" and source.get("permitted_use") == "comparison_only"
         valid_until = record.get("valid_until")
         try:
@@ -202,11 +237,26 @@ def _lineage_errors(package: Mapping[str, JsonValue], records: RecordMap, graph:
     )
     if required.get("requires_released_predecessor") is True and not release_matches:
         errors.append(_error("ERROR_CONTEXT_PREDECESSOR_INVALID", "/sources", "required released predecessor lacks matching release record"))
+    for index, source in enumerate(sources):
+        if source["source_kind"] != "released_supporting_artifact":
+            continue
+        record = records.get(source["logical_ref"], {})
+        supporting_release_matches = any(
+            release.get("tenant_id") == package["tenant_id"]
+            and release.get("project_id") == package["project_id"]
+            and release.get("status") == "released"
+            and release.get("step_id") == record.get("step_id")
+            and release.get("run_id") == record.get("run_id")
+            and release.get("artifact_revision") == source["revision"]
+            for release in releases
+        )
+        if not supporting_release_matches:
+            errors.append(_error("ERROR_CONTEXT_PREDECESSOR_INVALID", f"/sources/{index}", "supporting artifact lacks a released primary from the same run, step and revision"))
     if package["trigger"] == "revision":
         rejected = next((source for source in sources if source["source_kind"] == "rejected_artifact"), None)
         request = next((source for source in sources if source["source_kind"] == "revision_request"), None)
         matched = next((item for item in requests if request is not None and item.get("revision_request_id") == request["source_id"]), None)
-        if rejected is None or request is None or "operator_instruction" not in kind_set or matched is None or matched.get("current_artifact_id") != rejected["source_id"] or matched.get("current_artifact_sha256") != rejected["content_sha256"] or package["target_revision"] <= rejected["revision"]:
+        if rejected is None or request is None or "operator_instruction" not in kind_set or matched is None or matched.get("current_artifact_id") != rejected["source_id"] or matched.get("current_content_sha256") != rejected["content_sha256"] or package["target_revision"] <= rejected["revision"]:
             errors.append(_error("ERROR_CONTEXT_REVISION_BINDING_INVALID", "/revision_context", "revision sources must bind a new revision request and rejected artifact"))
     return errors
 

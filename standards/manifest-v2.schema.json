@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/manifest-v2.schema.json",
+  "title": "Heartweb Step 0 Deployment Manifest V2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "project_id", "project_name", "author", "domain", "competitors",
+    "competitor_preflight", "target_audience", "target_regions", "primary_region",
+    "secondary_regions", "language", "business_goal", "content_focus", "brand_tone",
+    "capacity_hours_per_week", "workstreams", "missing_accesses", "gate_0", "created_at",
+    "status", "phases", "artifacts", "country", "location_code", "geo_targets", "entities",
+    "deployment_binding", "source_binding"
+  ],
+  "properties": {
+    "schema_version": {"const": "2.0.0"},
+    "project_id": {"type": "string", "pattern": "^project-[a-z0-9][a-z0-9-]{2,63}$"},
+    "project_name": {"type": "string", "minLength": 1},
+    "author": {"const": "Raphael Rechberger"},
+    "domain": {"$ref": "#/$defs/httpUrl"},
+    "new_domain_or_staging": {"oneOf": [{"$ref": "#/$defs/httpUrl"}, {"type": "null"}]},
+    "competitors": {"type": "array", "minItems": 1, "maxItems": 10, "uniqueItems": true, "items": {"$ref": "#/$defs/httpUrl"}},
+    "competitor_preflight": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/competitorPreflight"}},
+    "target_audience": {"type": "string", "minLength": 1},
+    "target_regions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "primary_region": {"type": "string", "minLength": 1},
+    "secondary_regions": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "language": {"type": "string", "pattern": "^[a-z]{2,3}$"},
+    "business_goal": {"type": "string", "minLength": 1},
+    "content_focus": {"type": "string", "minLength": 1},
+    "brand_tone": {"type": "string", "enum": ["vertrauensbildend_ymyl", "professionell_warm", "diskret_selbstbewusst", "verkaufsstark_direkt"]},
+    "capacity_hours_per_week": {"$ref": "#/$defs/capacity"},
+    "workstreams": {"type": "array", "items": {"$ref": "#/$defs/workstream"}},
+    "missing_accesses": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "gate_0": {"$ref": "#/$defs/gate"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "status": {"const": "initialization"},
+    "phases": {"$ref": "#/$defs/phases"},
+    "artifacts": {"$ref": "#/$defs/artifacts"},
+    "country": {"type": "string", "pattern": "^[A-Z]{2}$"},
+    "location_code": {"type": "integer", "minimum": 1},
+    "geo_targets": {"$ref": "#/$defs/geoTargets"},
+    "entities": {"$ref": "#/$defs/entities"},
+    "deployment_binding": {"$ref": "#/$defs/deploymentBinding"},
+    "source_binding": {"$ref": "#/$defs/sourceBinding"}
+  },
+  "$defs": {
+    "httpUrl": {"type": "string", "format": "uri", "pattern": "^https?://"},
+    "hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "competitorPreflight": {
+      "type": "object", "additionalProperties": false,
+      "required": ["url", "status", "http_status", "final_url", "warning_code", "error_code"],
+      "properties": {
+        "url": {"$ref": "#/$defs/httpUrl"},
+        "status": {"enum": ["reachable_https", "reachable_http_only", "unavailable"]},
+        "http_status": {"type": ["integer", "null"]},
+        "final_url": {"oneOf": [{"$ref": "#/$defs/httpUrl"}, {"type": "null"}]},
+        "warning_code": {"type": ["string", "null"]},
+        "error_code": {"type": ["string", "null"]}
+      }
+    },
+    "capacity": {
+      "type": "object", "additionalProperties": false, "required": ["min", "max", "source", "provisional"],
+      "properties": {
+        "min": {"type": "number", "minimum": 0},
+        "max": {"type": "number", "minimum": 0},
+        "source": {"enum": ["operator_confirmed", "briefing_confirmed"]},
+        "provisional": {"type": "boolean"}
+      }
+    },
+    "workstream": {
+      "type": "object", "additionalProperties": false, "required": ["name", "category", "priority", "regions"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "category": {"enum": ["customer_acquisition", "recruiting", "content", "tracking", "operations", "other"]},
+        "priority": {"enum": ["primary", "secondary", "tertiary"]},
+        "regions": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "gate": {
+      "type": "object", "additionalProperties": false, "required": ["status", "reviewer", "approved_at", "warnings", "operator_message"],
+      "properties": {
+        "status": {"const": "pending"},
+        "reviewer": {"const": "Raphael Rechberger"},
+        "approved_at": {"type": "null"},
+        "warnings": {"type": "array", "items": {"type": "string"}},
+        "operator_message": {"type": ["string", "null"]}
+      }
+    },
+    "phase": {
+      "type": "object", "additionalProperties": false, "required": ["status"],
+      "properties": {"status": {"const": "pending"}}
+    },
+    "phases": {
+      "type": "object", "additionalProperties": false,
+      "required": ["step_0_kickoff", "step_1_pillar_identification", "step_1b_site_architecture", "step_1c_pillar_templates", "step_2_cluster_research", "step_3_120_day_plan", "step_3b_performance_check", "step_4_execution"],
+      "properties": {
+        "step_0_kickoff": {"$ref": "#/$defs/phase"},
+        "step_1_pillar_identification": {"$ref": "#/$defs/phase"},
+        "step_1b_site_architecture": {"$ref": "#/$defs/phase"},
+        "step_1c_pillar_templates": {"$ref": "#/$defs/phase"},
+        "step_2_cluster_research": {"$ref": "#/$defs/phase"},
+        "step_3_120_day_plan": {"$ref": "#/$defs/phase"},
+        "step_3b_performance_check": {"$ref": "#/$defs/phase"},
+        "step_4_execution": {"$ref": "#/$defs/phase"}
+      }
+    },
+    "artifacts": {
+      "type": "object", "additionalProperties": false,
+      "required": ["pillar_inventory", "site_architecture_md", "site_architecture_html", "design_system_css", "cluster_keywords_data", "roadmap_plan", "performance_check_log"],
+      "properties": {
+        "pillar_inventory": {"type": "string", "default": "outputs/1-pillar-themen.md"},
+        "site_architecture_md": {"type": "string", "default": "outputs/1b-seitenarchitektur.md"},
+        "site_architecture_html": {"type": "string", "default": "outputs/1b-menuestruktur.html"},
+        "design_system_css": {"type": "string", "default": "standards/design-system.css"},
+        "cluster_keywords_data": {"type": "string", "default": "outputs/2-cluster-themen-agentseo.csv"},
+        "roadmap_plan": {"type": "string", "default": "outputs/3-plan.md"},
+        "performance_check_log": {"type": "string", "default": "outputs/3b-performance-check.md"}
+      }
+    },
+    "geoTargets": {
+      "type": "object", "additionalProperties": false, "required": ["primary_engines", "geo_focus"],
+      "properties": {
+        "primary_engines": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["google_ai_overviews", "google_classic", "perplexity", "chatgpt_search", "claude_search", "local_maps", "bing"]}},
+        "geo_focus": {"enum": ["citation_visibility", "answer_passage_extraction", "entity_graph_authority"]}
+      }
+    },
+    "entityService": {
+      "type": "object", "additionalProperties": false, "required": ["name", "wikidata_id"],
+      "properties": {"name": {"type": "string", "minLength": 1}, "wikidata_id": {"type": ["string", "null"]}}
+    },
+    "entities": {
+      "type": "object", "additionalProperties": false, "required": ["brand_entity", "brand_wikidata_id", "brand_sameas_urls", "core_services"],
+      "properties": {
+        "brand_entity": {"type": "string", "minLength": 1},
+        "brand_wikidata_id": {"type": ["string", "null"]},
+        "brand_sameas_urls": {"type": "array", "items": {"type": "string", "format": "uri"}},
+        "core_services": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/entityService"}}
+      }
+    },
+    "providerVerification": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "provider_id", "target_id", "target_type", "location_name", "provider_location_code", "verified_at", "verification_source"],
+      "properties": {
+        "status": {"const": "verified"},
+        "provider_id": {"type": "string", "minLength": 1},
+        "target_id": {"type": "string", "minLength": 1},
+        "target_type": {"enum": ["country", "region", "city", "postal_code"]},
+        "location_name": {"type": "string", "minLength": 1},
+        "provider_location_code": {"type": "integer", "minimum": 1},
+        "verified_at": {"type": "string", "format": "date-time"},
+        "verification_source": {"enum": ["provider_response", "provider_documentation"]}
+      }
+    },
+    "deploymentBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["deployment_id", "brand_id", "domain_ids", "physical_location_ids", "service_area_ids", "market_id", "country_code", "target_regions", "legal_jurisdiction", "language", "locale", "market_phase", "deployment_role", "seo_operating_model", "provider_location_verification", "search_engines"],
+      "properties": {
+        "deployment_id": {"type": "string", "pattern": "^dep-[a-z0-9][a-z0-9-]{2,63}$"},
+        "brand_id": {"type": "string", "pattern": "^brand-[a-z0-9][a-z0-9-]{2,63}$"},
+        "domain_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "physical_location_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "service_area_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "market_id": {"type": "string", "minLength": 1},
+        "country_code": {"type": "string", "pattern": "^[A-Z]{2}$"},
+        "target_regions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "legal_jurisdiction": {"type": "string", "minLength": 2},
+        "language": {"type": "string", "pattern": "^[a-z]{2,3}$"},
+        "locale": {"type": "string", "pattern": "^[a-z]{2,3}-[A-Z]{2}$"},
+        "market_phase": {"const": "active"},
+        "deployment_role": {"enum": ["primary", "satellite", "expansion", "campaign"]},
+        "seo_operating_model": {"enum": ["local", "regional", "national", "international", "programmatic_local", "digital"]},
+        "provider_location_verification": {"$ref": "#/$defs/providerVerification"},
+        "search_engines": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "sourceBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["tenant_id", "project_id", "customer_id", "market_id", "deployment_id", "language", "locale", "country", "provider_target_id", "provider_location_code", "deployment_sha256", "project_v2_sha256", "intake_source_sha256"],
+      "properties": {
+        "tenant_id": {"type": "string", "minLength": 1},
+        "project_id": {"type": "string", "minLength": 1},
+        "customer_id": {"type": "string", "minLength": 1},
+        "market_id": {"type": "string", "minLength": 1},
+        "deployment_id": {"type": "string", "minLength": 1},
+        "language": {"type": "string", "pattern": "^[a-z]{2,3}$"},
+        "locale": {"type": "string", "pattern": "^[a-z]{2,3}-[A-Z]{2}$"},
+        "country": {"type": "string", "pattern": "^[A-Z]{2}$"},
+        "provider_target_id": {"type": "string", "minLength": 1},
+        "provider_location_code": {"type": "integer", "minimum": 1},
+        "deployment_sha256": {"$ref": "#/$defs/hash"},
+        "project_v2_sha256": {"$ref": "#/$defs/hash"},
+        "intake_source_sha256": {"$ref": "#/$defs/hash"}
+      }
+    }
+  }
+}

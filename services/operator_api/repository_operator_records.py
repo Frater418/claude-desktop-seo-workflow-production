@@ -13,6 +13,7 @@ _IDENTITIES: Final = {
     "operator-task": ("task_id", re.compile(r"^task-[a-z0-9][a-z0-9-]{7,63}$"), "run_id"),
     "blocker-record": ("blocker_id", re.compile(r"^blocker-[a-z0-9][a-z0-9-]{7,63}$"), "run_id"),
     "revision-request": ("revision_request_id", re.compile(r"^revision-[a-z0-9][a-z0-9-]{7,63}$"), "run_id"),
+    "production-steering": ("steering_id", re.compile(r"^steering-[a-z0-9][a-z0-9-]{7,63}$"), "run_id"),
     "workflow-defect": ("defect_id", re.compile(r"^defect-[a-z0-9][a-z0-9-]{7,63}$"), "affected_run_id"),
     "escalation-record": ("escalation_id", re.compile(r"^escalation-[a-z0-9][a-z0-9-]{7,63}$"), "run_id"),
     "resolution-record": ("resolution_id", re.compile(r"^resolution-[a-z0-9][a-z0-9-]{7,63}$"), "run_id"),
@@ -23,10 +24,27 @@ class OperatorRecordPersistence:
     """Persist typed operator records and repair their event sidecars."""
 
     def write_operator_record(self, tenant_id: str, project_id: str, record_type: str, record: dict[str, JsonValue]) -> None:
-        self._write(tenant_id, project_id, f"operator-records/{record_type}/{self.operator_record_id(record_type, record)}.json", record)
+        record_id = self.operator_record_id(record_type, record)
+        relative = f"operator-records/{record_type}/{record_id}.json"
+        existing = self._optional(tenant_id, project_id, relative, None)
+        if existing is not None and existing != record:
+            raise RepositoryError(
+                "ERR_IDEMPOTENCY_CONFLICT",
+                "Operator record identity conflicts with stored immutable content.",
+            )
+        if existing is None:
+            self._write(tenant_id, project_id, relative, record)
 
     def operator_record(self, tenant_id: str, project_id: str, record_type: str, record_id: str) -> dict[str, JsonValue]:
         return self._required(tenant_id, project_id, f"operator-records/{record_type}/{record_id}.json")
+
+    def optional_operator_record(self, tenant_id: str, project_id: str, record_type: str, record_id: str) -> dict[str, JsonValue] | None:
+        value = self._optional(tenant_id, project_id, f"operator-records/{record_type}/{record_id}.json", None)
+        if value is None:
+            return None
+        if not isinstance(value, dict) or self.operator_record_id(record_type, value) != record_id:
+            raise RepositoryError("ERROR_CONTEXT_SOURCE_INVALID", "Stored operator record is invalid.")
+        return value
 
     @staticmethod
     def operator_record_id(record_type: str, record: dict[str, JsonValue]) -> str:

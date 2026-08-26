@@ -33,7 +33,7 @@
     },
     "CHANGELOG.md": {
       "title": "Project changelog",
-      "summary": "Current version history with V2 Production-first and documentation branch status.",
+      "summary": "Current version history with V2 Production-first implementation, repository consolidation and honest M10 boundaries.",
       "lifecycle": "current_strategy",
       "authority_level": 62,
       "retrieval_priority": 45,
@@ -107,8 +107,8 @@
       "tags": ["source-of-truth", "release-matrix", "read-first"]
     },
     "00_admin/repository-index/INTEGRATION_CHECKLIST.md": {
-      "title": "Documentation branch integration checklist",
-      "summary": "Binding refresh and verification gate before the isolated documentation branch can enter the stable Feature line.",
+      "title": "Repository master integration checklist",
+      "summary": "Binding DEC-0031 loss-protection, verification, master, branch-cleanup and fresh-clone integration gate.",
       "document_type": "integration_checklist",
       "area": "governance",
       "lifecycle": "current_strategy",
@@ -177,14 +177,14 @@
     },
     ".hermes/plans/2026-08-20-deferred-geo-v2-contract-restoration.md": {
       "title": "Deferred GEO V2 contract restoration",
-      "summary": "Active pre-release PQ-4 source for restoring approved Step 4A and Step 4B GEO quality contracts.",
-      "lifecycle": "active_plan",
-      "authority_level": 86,
-      "retrieval_priority": 82,
-      "default_retrieval": true,
+      "summary": "Completed PQ-4 restoration plan retained as historical implementation evidence; real-output semantic verification remains open in M10.",
+      "lifecycle": "historical",
+      "authority_level": 30,
+      "retrieval_priority": 12,
+      "default_retrieval": false,
       "audiences": ["developer", "strategy"],
       "workflow_steps": ["4a", "4b"],
-      "tags": ["deferred-plan", "geo", "quality"]
+      "tags": ["historical-plan", "geo", "quality"]
     },
     ".hermes/plans/2026-08-21-prompt-quality-preservation-v2-restoration.md": {
       "title": "Prompt quality preservation V2 restoration",
@@ -240,14 +240,27 @@
     },
     ".hermes/plans/2026-08-22-repository-authority-rag-index.md": {
       "title": "Repository authority and RAG index plan",
-      "summary": "Active isolated plan for deterministic repository authority and retrieval indexing.",
-      "lifecycle": "active_plan",
-      "authority_level": 90,
-      "retrieval_priority": 90,
-      "default_retrieval": true,
+      "summary": "Completed isolated authority-index plan retained as the origin of the generator and superseded by the master-consolidation plan.",
+      "lifecycle": "superseded",
+      "authority_level": 25,
+      "retrieval_priority": 10,
+      "default_retrieval": false,
       "audiences": ["operator", "llm-worker", "developer"],
       "workflow_steps": ["operations"],
-      "tags": ["active-plan", "documentation", "rag", "index"]
+      "superseded_by": ".hermes/plans/2026-08-25_225654-repository-master-consolidation-and-onboarding.md",
+      "tags": ["historical-plan", "documentation", "rag", "index"]
+    },
+    ".hermes/plans/2026-08-25_225654-repository-master-consolidation-and-onboarding.md": {
+      "title": "Repository master consolidation and onboarding plan",
+      "summary": "Current authorized execution plan for complete master consolidation, deterministic onboarding, branch cleanup and fresh-clone continuation.",
+      "lifecycle": "active_plan",
+      "authority_level": 95,
+      "retrieval_priority": 95,
+      "default_retrieval": true,
+      "audiences": ["operator", "llm-worker", "developer", "auditor"],
+      "workflow_steps": ["operations"],
+      "supersedes": [".hermes/plans/2026-08-22-repository-authority-rag-index.md"],
+      "tags": ["active-plan", "master-consolidation", "onboarding", "branch-lifecycle"]
     },
     ".hermes/plans/heartweb-notion-n8n-ui-migration.png": {
       "title": "Historical Notion and n8n migration diagram",
@@ -268,6 +281,149 @@
       "default_retrieval": false,
       "audiences": ["auditor"],
       "tags": ["historical-image", "evidence"]
+    },
+    "prompts/0-kickoff.xml.md": {
+      "title": "Step 0 kickoff compatibility alias v1.8.0",
+      "summary": "Superseded unversioned Step-0 compatibility source retained for exact historical replay.",
+      "lifecycle": "superseded",
+      "authority_level": 20,
+      "retrieval_priority": 8,
+      "default_retrieval": false,
+      "superseded_by": "prompts/0-kickoff-v1.9.0.xml.md",
+      "tags": ["prompt", "compatibility-alias", "historical-version"]
+    },
+    "prompts/0-kickoff-v1.9.0.xml.md": {
+      "title": "Step 0 kickoff prompt v1.9.0",
+      "summary": "Superseded deployment-bound Step-0 prompt retained for exact historical replay.",
+      "lifecycle": "superseded",
+      "authority_level": 22,
+      "retrieval_priority": 8,
+      "default_retrieval": false,
+      "superseded_by": "prompts/0-kickoff-v1.10.0.xml.md",
+      "tags": ["prompt", "historical-version", "step-0"]
+    },
+    "prompts/0-kickoff-v1.10.0.xml.md": {
+      "title": "Active Step 0 kickoff prompt v1.10.0",
+      "summary": "Active registry-bound Step-0 prompt with deployment, provider-location and confirmed-capacity binding.",
+      "lifecycle": "current_authority",
+      "authority_level": 82,
+      "retrieval_priority": 80,
+      "default_retrieval": false,
+      "supersedes": ["prompts/0-kickoff-v1.9.0.xml.md"],
+      "tags": ["prompt", "active-prompt", "step-0"]
+    },
+    "prompts/1-pillar-identifikation-v2.1.0.xml.md": {
+      "title": "Step 1 pillar identification prompt v2.1.0",
+      "summary": "Immutable Step-1 predecessor retained before the logical Step-0 lineage correction.",
+      "lifecycle": "superseded",
+      "authority_level": 22,
+      "retrieval_priority": 8,
+      "default_retrieval": false,
+      "superseded_by": "prompts/1-pillar-identifikation.xml.md",
+      "tags": ["prompt", "historical-version", "step-1"]
+    },
+    "prompts/1-pillar-identifikation.xml.md": {
+      "title": "Active Step 1 pillar identification prompt v2.2.0",
+      "summary": "Active registry-bound Step-1 prompt with released Step-0 lineage, crawl and SERP Evidence operations.",
+      "lifecycle": "current_authority",
+      "authority_level": 82,
+      "retrieval_priority": 80,
+      "default_retrieval": false,
+      "supersedes": ["prompts/1-pillar-identifikation-v2.1.0.xml.md"],
+      "tags": ["prompt", "active-prompt", "step-1"]
+    },
+    "prompts/1b-seitenarchitektur.xml.md": {
+      "title": "Active Step 1B site architecture prompt v2.1.0",
+      "summary": "Active registry-bound Step-1B architecture and intent Evidence prompt.",
+      "lifecycle": "current_authority",
+      "authority_level": 82,
+      "retrieval_priority": 80,
+      "default_retrieval": false,
+      "tags": ["prompt", "active-prompt", "step-1b"]
+    },
+    "prompts/1c-pillar-template.xml.md": {
+      "title": "Active Step 1C design-system prompt v2.1.0",
+      "summary": "Active registry-bound Step-1C design Evidence and reusable template prompt.",
+      "lifecycle": "current_authority",
+      "authority_level": 82,
+      "retrieval_priority": 80,
+      "default_retrieval": false,
+      "tags": ["prompt", "active-prompt", "step-1c"]
+    },
+    "prompts/2-cluster-recherche.xml.md": {
+      "title": "Active Step 2 keyword research prompt v2.1.0",
+      "summary": "Active registry-bound Step-2 prompt for provider keyword metrics without estimation.",
+      "lifecycle": "current_authority",
+      "authority_level": 82,
+      "retrieval_priority": 80,
+      "default_retrieval": false,
+      "tags": ["prompt", "active-prompt", "step-2"]
+    },
+    "prompts/3-120-tage-plan.xml.md": {
+      "title": "Active Step 3 roadmap prompt v2.1.0",
+      "summary": "Active registry-bound Step-3 strategy and deterministic capacity-solver prompt.",
+      "lifecycle": "current_authority",
+      "authority_level": 82,
+      "retrieval_priority": 80,
+      "default_retrieval": false,
+      "tags": ["prompt", "active-prompt", "step-3"]
+    },
+    "prompts/3b-performance-check.xml.md": {
+      "title": "Active post-publication Step 3B prompt v2.0.0",
+      "summary": "Active registry-bound day-30, day-60 and day-90 adjustment-proposal prompt outside the initial route.",
+      "lifecycle": "current_authority",
+      "authority_level": 82,
+      "retrieval_priority": 76,
+      "default_retrieval": false,
+      "tags": ["prompt", "active-prompt", "step-3b", "post-publication"]
+    },
+    "prompts/4a-content-briefing-und-schema.xml.md": {
+      "title": "Active Step 4A briefing prompt v2.2.0",
+      "summary": "Active registry-bound Copywriter briefing, claim-ledger and JSON-LD validation prompt.",
+      "lifecycle": "current_authority",
+      "authority_level": 82,
+      "retrieval_priority": 80,
+      "default_retrieval": false,
+      "tags": ["prompt", "active-prompt", "step-4a"]
+    },
+    "prompts/4b-landingpage-html.xml.md": {
+      "title": "Active Step 4B developer prompt v2.2.0",
+      "summary": "Active registry-bound typed Page Spec and staging-validation prompt.",
+      "lifecycle": "current_authority",
+      "authority_level": 82,
+      "retrieval_priority": 80,
+      "default_retrieval": false,
+      "tags": ["prompt", "active-prompt", "step-4b"]
+    },
+    "prompts/intake-project-v2.xml.md": {
+      "title": "Intake Project V2 compatibility alias v1.1.3",
+      "summary": "Superseded unversioned intake compatibility source retained for exact historical replay.",
+      "lifecycle": "superseded",
+      "authority_level": 20,
+      "retrieval_priority": 8,
+      "default_retrieval": false,
+      "superseded_by": "prompts/intake-project-v2-v1.2.0.xml.md",
+      "tags": ["prompt", "compatibility-alias", "historical-version", "intake"]
+    },
+    "prompts/intake-project-v2-v1.2.0.xml.md": {
+      "title": "Intake Project V2 prompt v1.2.0",
+      "summary": "Superseded multi-location intake prompt retained for exact historical replay.",
+      "lifecycle": "superseded",
+      "authority_level": 22,
+      "retrieval_priority": 8,
+      "default_retrieval": false,
+      "superseded_by": "prompts/intake-project-v2-v1.3.0.xml.md",
+      "tags": ["prompt", "historical-version", "intake"]
+    },
+    "prompts/intake-project-v2-v1.3.0.xml.md": {
+      "title": "Active Intake Project V2 prompt v1.3.0",
+      "summary": "Active intake-generation prompt with deployment and confirmed weekly-capacity binding.",
+      "lifecycle": "current_authority",
+      "authority_level": 82,
+      "retrieval_priority": 78,
+      "default_retrieval": false,
+      "supersedes": ["prompts/intake-project-v2-v1.2.0.xml.md"],
+      "tags": ["prompt", "active-prompt", "intake"]
     },
     "docs/integrations/notion-operating-model.md": {
       "title": "Notion operating model",
@@ -293,7 +449,7 @@
     },
     "docs/07-geo-architecture-specification.md": {
       "title": "GEO architecture specification",
-      "summary": "Current GEO strategy source with known deferred V2 contract restoration requirements.",
+      "summary": "Current GEO strategy source after local V2 contract restoration; real-output semantic verification remains open in M10.",
       "lifecycle": "current_strategy",
       "authority_level": 76,
       "retrieval_priority": 70,

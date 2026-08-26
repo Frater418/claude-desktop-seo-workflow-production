@@ -28,6 +28,9 @@ class ProjectRepository(RuntimeProjectionPersistence, OperatorRecordPersistence,
     def __init__(self, registry: WorkspaceRegistry) -> None:
         self._registry = registry
 
+    def workspace(self, tenant_id: str, project_id: str) -> Path:
+        return self._registry.resolve(tenant_id, project_id)
+
     def list_projects(self, tenant_id: str) -> list[dict[str, JsonValue]]:
         return [self.project(item.tenant_id, item.project_id) for item in self._registry.projects(tenant_id)]
 
@@ -76,6 +79,22 @@ class ProjectRepository(RuntimeProjectionPersistence, OperatorRecordPersistence,
             raise RepositoryError("ERROR_CONTEXT_SOURCE_INVALID", "Released artifact content is unavailable.") from exc
         if hashlib.sha256(content).hexdigest() != release.get("artifact_sha256"):
             raise RepositoryError("ERROR_CONTEXT_SOURCE_INVALID", "Released artifact content hash is invalid.")
+        return content
+
+    def artifact_bytes(self, tenant_id: str, project_id: str, artifact: dict[str, JsonValue]) -> bytes:
+        artifact_id = artifact.get("artifact_id")
+        if (
+            not isinstance(artifact_id, str)
+            or artifact.get("tenant_id") != tenant_id
+            or artifact.get("project_id") != project_id
+        ):
+            raise RepositoryError("ERR_TENANT_ISOLATION", "Artifact identity is malformed or cross-project.")
+        try:
+            content = self._path(tenant_id, project_id, f"artifact-content/{artifact_id}.md").read_bytes()
+        except OSError as exc:
+            raise RepositoryError("ERROR_CONTEXT_SOURCE_INVALID", "Artifact content is unavailable.") from exc
+        if hashlib.sha256(content).hexdigest() != artifact.get("content_sha256"):
+            raise RepositoryError("ERROR_CONTEXT_SOURCE_INVALID", "Artifact content hash is invalid.")
         return content
 
     def run(self, tenant_id: str, project_id: str, run_id: str) -> dict[str, JsonValue]:
@@ -187,6 +206,85 @@ class ProjectRepository(RuntimeProjectionPersistence, OperatorRecordPersistence,
     def write_intake(self, tenant_id: str, project_id: str, intake: dict[str, JsonValue]) -> None:
         self._write(tenant_id, project_id, "intake.json", intake)
 
+    def replace_project_v2_and_intake(
+        self,
+        tenant_id: str,
+        project_id: str,
+        *,
+        expected_project_sha256: str,
+        project_v2: dict[str, JsonValue],
+        intake: dict[str, JsonValue],
+        logical_session: dict[str, JsonValue],
+        run_id: str,
+        deployment_id: str,
+        audit_record: dict[str, JsonValue],
+    ) -> None:
+        current_project = self.project_v2(tenant_id, project_id)
+        current_intake = self.intake(tenant_id, project_id)
+        current_logical_session = self.logical_session(tenant_id, project_id)
+        current_run = self.run(tenant_id, project_id, run_id)
+        if _canonical_sha256(current_project) != expected_project_sha256:
+            raise RepositoryError("ERR_STALE_REVISION", "Project V2 changed after the location-binding preview.")
+        tenant = project_v2.get("tenant")
+        reviewed = intake.get("reviewed")
+        if (
+            project_v2.get("project_id") != project_id
+            or not isinstance(tenant, dict)
+            or tenant.get("tenant_id") != tenant_id
+            or not isinstance(reviewed, dict)
+            or reviewed.get("project_v2") != project_v2
+            or logical_session.get("tenant_id") != tenant_id
+            or logical_session.get("project_id") != project_id
+        ):
+            raise RepositoryError("ERROR_DOMAIN_CONTRACT_INVALID", "Project V2 upgrade identity or accepted intake binding is invalid.")
+        upgraded_run = copy.deepcopy(current_run)
+        upgraded_run["deployment_id"] = deployment_id
+        upgrade_id = audit_record.get("upgrade_id")
+        if not isinstance(upgrade_id, str):
+            raise RepositoryError("ERROR_DOMAIN_CONTRACT_INVALID", "Project V2 upgrade audit identity is invalid.")
+        audit_path = f"project-v2-upgrades/{upgrade_id}.json"
+        existing_audit = self._optional(tenant_id, project_id, audit_path, None)
+        if existing_audit is not None:
+            if (
+                existing_audit == audit_record
+                and current_project == project_v2
+                and current_intake == intake
+                and current_logical_session == logical_session
+                and current_run == upgraded_run
+            ):
+                return
+            raise RepositoryError("ERR_IDEMPOTENCY_CONFLICT", "Project V2 upgrade identity conflicts with stored state.")
+        history_path: str | None = None
+        history_created = False
+        if current_logical_session != logical_session:
+            logical_session_id = current_logical_session.get("logical_session_id")
+            session_revision = current_logical_session.get("session_revision")
+            if not isinstance(logical_session_id, str) or not isinstance(session_revision, int):
+                raise RepositoryError("ERROR_CONTEXT_SOURCE_INVALID", "Logical project session identity is invalid.")
+            history_path = f"logical-session-history/{logical_session_id}-r{session_revision}.json"
+            existing_history = self._optional(tenant_id, project_id, history_path, None)
+            if existing_history is not None and existing_history != current_logical_session:
+                raise RepositoryError("ERR_IDEMPOTENCY_CONFLICT", "Logical project session history conflicts with stored state.")
+            history_created = existing_history is None
+        try:
+            if history_path is not None and history_created:
+                self._write(tenant_id, project_id, history_path, current_logical_session)
+            self._write(tenant_id, project_id, "project-v2.json", project_v2)
+            self._write(tenant_id, project_id, "intake.json", intake)
+            self._write(tenant_id, project_id, "logical-session.json", logical_session)
+            self._write(tenant_id, project_id, f"runs/{run_id}.json", upgraded_run)
+            self._write(tenant_id, project_id, audit_path, audit_record)
+        except Exception:
+            self._write(tenant_id, project_id, "project-v2.json", current_project)
+            self._write(tenant_id, project_id, "intake.json", current_intake)
+            self._write(tenant_id, project_id, "logical-session.json", current_logical_session)
+            self._write(tenant_id, project_id, f"runs/{run_id}.json", current_run)
+            if self._optional(tenant_id, project_id, audit_path, None) is not None:
+                self._remove(tenant_id, project_id, audit_path)
+            if history_path is not None and history_created and self._optional(tenant_id, project_id, history_path, None) is not None:
+                self._remove(tenant_id, project_id, history_path)
+            raise
+
     def artifact_content_bytes(self, tenant_id: str, project_id: str, artifact_id: str) -> bytes:
         try:
             return self._path(tenant_id, project_id, f"artifact-content/{artifact_id}.md").read_bytes()
@@ -217,3 +315,9 @@ class ProjectRepository(RuntimeProjectionPersistence, OperatorRecordPersistence,
         if len(matching) > 1:
             raise RepositoryError("ERROR_CONTEXT_SOURCE_INVALID", "Multiple canonical predecessor releases are unavailable.")
         return matching[0] if matching else None
+
+
+def _canonical_sha256(value: dict[str, JsonValue]) -> str:
+    return hashlib.sha256(
+        json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()

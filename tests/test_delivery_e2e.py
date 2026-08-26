@@ -29,7 +29,7 @@ from tests.support.diagnostic_trace_e2e import ClosedTraceEvidence, current_trac
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DIST = ROOT / "apps" / "operator-console" / "dist"
+OPERATOR_CONSOLE = ROOT / "apps" / "operator-console"
 DRIVER = ROOT / "apps" / "operator-console" / "src" / "test" / "deliveryE2EBrowser.mjs"
 M06_EVIDENCE = ROOT / "00_admin" / "audits" / "2026-08-22-m06-delivery-e2e"
 M07_EVIDENCE = ROOT / "00_admin" / "audits" / "2026-08-22-m07-diagnostic-trace"
@@ -64,11 +64,11 @@ class HttpResponse:
 
 
 class LiveOperatorServer:
-    def __init__(self, workspace: Path, diagnostic_root: Path) -> None:
+    def __init__(self, workspace: Path, diagnostic_root: Path, frontend_dist: Path) -> None:
         registry = WorkspaceRegistry((WorkspaceRegistration(TENANT, PROJECT, workspace),))
         app = create_app(registry=registry, repository_root=ROOT, config=AppConfig(ROOT, clock=RaisingClock(), diagnostic_root=diagnostic_root))
         app.middleware("http")(frontend_projection)
-        app.mount("/", StaticFiles(directory=DIST, html=True), name="operator-console")
+        app.mount("/", StaticFiles(directory=frontend_dist, html=True), name="operator-console")
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._socket.bind(("127.0.0.1", 0))
@@ -121,6 +121,24 @@ def diagnostic_root() -> Path:
     return Path(override) if override else APPROVED_DIAGNOSTIC_ROOT
 
 
+def build_frontend_fixture(frontend_dist: Path) -> None:
+    environment = dict(os.environ)
+    environment.update({"VITE_OPERATOR_API_BASE_URL": "", "VITE_OPERATOR_TENANT_ID": TENANT})
+    process = subprocess.run(
+        ["node", "./node_modules/vite/bin/vite.js", "build", "--outDir", frontend_dist.as_posix(), "--emptyOutDir"],
+        cwd=OPERATOR_CONSOLE,
+        env=environment,
+        capture_output=True,
+        text=True,
+        timeout=120,
+        check=False,
+    )
+    if process.returncode != 0:
+        raise AssertionError(process.stderr or process.stdout or "Neutral Operator Console build failed.")
+    if not (frontend_dist / "index.html").is_file():
+        raise AssertionError("Neutral Operator Console build did not produce index.html.")
+
+
 def audit_snapshot(root: Path) -> dict[str, bytes]:
     return {path.name: path.read_bytes() for path in root.iterdir() if path.is_file()}
 
@@ -131,6 +149,28 @@ def baseline_delivery_hashes(snapshot: dict[str, bytes]) -> dict[str, str]:
 
 
 def overlay_frontend_projection(workspace: Path) -> None:
+    markdown = "# Neutral Delivery Project\n\nAccepted deterministic Delivery E2E briefing.\n"
+    project_v2 = json.loads((workspace / "v2" / "operator" / "project-v2.json").read_text(encoding="utf-8"))
+    write_projection(
+        workspace,
+        "intake.json",
+        {
+            "tenant_id": TENANT,
+            "project_id": PROJECT,
+            "reviewed": {
+                "title": "Neutral Delivery Project accepted briefing",
+                "tenant_id": TENANT,
+                "project_id": PROJECT,
+                "project_name": "Neutral Delivery Project",
+                "project_v2": project_v2,
+            },
+            "accepted_at": "2026-08-22T10:15:30Z",
+            "accepted_by": "Heartweb Admin Operator",
+            "markdown": markdown,
+            "source_sha256": hashlib.sha256(markdown.encode("utf-8")).hexdigest(),
+            "generation": None,
+        },
+    )
     write_projection(workspace, "context-packages.json", [])
     write_projection(workspace, "integrations-status.json", [])
 
@@ -156,10 +196,6 @@ async def frontend_projection(request_message: Request, call_next: object) -> Re
         payload["expected_revision"] = payload.get("revision", 1)
     elif path == f"{base}/tasks" and isinstance(data, list):
         payload["data"] = [{**row, "run_id": "run-step-4b-0001", "step_id": "4b", "owner": "Heartweb Admin Operator", "deadline": "2026-09-01", "resolution": "Manuelle Uebergabe", "dependency": "Freigabe"} for row in data if isinstance(row, dict)]
-    elif path == f"{base}/artifacts" and isinstance(data, list):
-        payload["data"] = [row for row in data if isinstance(row, dict) and row.get("run_id") == "run-step-4b-0001"]
-    elif path == f"{base}/gates" and isinstance(data, list):
-        payload["data"] = [{**row, "project_id": PROJECT, "summary": "Maschinenpruefung bestanden"} for row in data if isinstance(row, dict) and row.get("run_id") == "run-step-4b-0001"]
     return Response(content=json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8"), status_code=response.status_code, media_type="application/json")
 
 
@@ -272,7 +308,6 @@ def assert_package_boundaries(test: unittest.TestCase, archive_bytes: bytes) -> 
 
 class DeliveryE2ETests(unittest.TestCase):
     def test_neutral_delivery_route_from_checkpoint_to_final(self) -> None:
-        self.assertTrue(DIST.is_dir(), "Production Operator Console dist is missing. Run the permitted production build first.")
         self.assertTrue(DRIVER.is_file(), "Focused real Delivery browser driver/evidence is absent.")
         self.assertTrue(M06_EVIDENCE.is_dir(), "Frozen M06 audit evidence is missing.")
         m06_before = audit_snapshot(M06_EVIDENCE)
@@ -281,13 +316,15 @@ class DeliveryE2ETests(unittest.TestCase):
         reject_active_trace(selected_diagnostic_root)
         with tempfile.TemporaryDirectory() as temporary:
             workspace = Path(temporary) / "workspace"
+            frontend_dist = Path(temporary) / "frontend-dist"
             proof_root = Path(temporary) / "m07-proof"
             browser_evidence = proof_root if M07_DIAGNOSTIC_ROOT_ENV in os.environ else M07_EVIDENCE
             checkpoint_proof = proof_root / "checkpoint.zip"
             seed_workspace(workspace, incomplete_final=True)
             overlay_frontend_projection(workspace)
+            build_frontend_fixture(frontend_dist)
             before_preview = workspace_snapshot(workspace, include_delivery=True)
-            server = LiveOperatorServer(workspace, selected_diagnostic_root)
+            server = LiveOperatorServer(workspace, selected_diagnostic_root, frontend_dist)
             server.start()
             try:
                 base = delivery_base()

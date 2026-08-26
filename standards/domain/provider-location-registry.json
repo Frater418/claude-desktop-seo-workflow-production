@@ -1,0 +1,46 @@
+{
+  "$schema": "https://heartweb.example/schema/provider-location-registry.schema.json",
+  "registry_version": "v1.0.0",
+  "provider_id": "agentseo",
+  "targets": [
+    {
+      "target_id": "agentseo-de-country",
+      "provider_id": "agentseo",
+      "target_type": "country",
+      "country_code": "DE",
+      "location_name": "Germany",
+      "location_code": 2276,
+      "languages": ["de"],
+      "aliases": ["DE", "Deutschland", "Germany", "bundesweit"],
+      "status": "verified",
+      "verified_at": "2026-08-17T00:00:00Z",
+      "verification_source": "provider_response"
+    },
+    {
+      "target_id": "agentseo-at-country",
+      "provider_id": "agentseo",
+      "target_type": "country",
+      "country_code": "AT",
+      "location_name": "Austria",
+      "location_code": null,
+      "languages": ["de"],
+      "aliases": ["AT", "Austria", "Oesterreich"],
+      "status": "unknown",
+      "verified_at": null,
+      "verification_source": null
+    },
+    {
+      "target_id": "agentseo-ch-country",
+      "provider_id": "agentseo",
+      "target_type": "country",
+      "country_code": "CH",
+      "location_name": "Switzerland",
+      "location_code": null,
+      "languages": ["de", "fr", "it"],
+      "aliases": ["CH", "Schweiz", "Switzerland", "Suisse", "Svizzera"],
+      "status": "unknown",
+      "verified_at": null,
+      "verification_source": null
+    }
+  ]
+}

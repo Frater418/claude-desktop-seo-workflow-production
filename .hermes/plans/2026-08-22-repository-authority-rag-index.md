@@ -1,12 +1,12 @@
 # Repository Authority and RAG Index Implementation Plan
 
-> **Lifecycle: active isolated documentation plan.** Vor Integration aus dem finalen stabilen Feature-Commit aktualisieren, neu generieren und vollstaendig verifizieren.
+> **Lifecycle: superseded.** Der Generator-Entwurf bleibt als Ursprung erhalten; DEC-0031 und `.hermes/plans/2026-08-25_225654-repository-master-consolidation-and-onboarding.md` fuehren die aktuelle Konsolidierung aus.
 
 > **For implementation:** This plan executes only in the isolated worktree and branch `docs/repository-authority-index-2026-08-22`. It must not write to the active Sisyphus worktree. No commit, push, merge or branch consolidation is authorized by this plan.
 
 **Author:** Raphael Rechberger
 **Date:** 2026-08-22
-**Status:** Parallel build complete and in verification. Final volatile-state refresh remains mandatory at the stable Production integration gate.
+**Status at supersession:** Parallel build completed; current integration authority moved to the DEC-0031 consolidation plan.
 
 **Goal:** Give humans and new LLM sessions current, complete and correctly classified project documentation plus one deterministic, machine-readable and task-oriented map of authorities, supporting sources, historical evidence and superseded material without introducing a second Source of Truth or a semantic-search service.
 

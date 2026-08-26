@@ -20,7 +20,13 @@ def register_read_routes(app: FastAPI, repository: ProjectRepository) -> None:
     def readyz() -> DataEnvelope:
         if not app.state.ready or app.state.recovery_inventory.blocked():
             raise ApiError("ERROR_DOMAIN_CONTRACT_FILE_MISSING", 503, "Operator API is not ready.")
-        return DataEnvelope(data={"status": "ready"})
+        data: dict[str, JsonValue] = {"status": "ready"}
+        service = getattr(app.state, "operator_service", None)
+        fingerprint = getattr(app.state, "operator_runtime_fingerprint", None)
+        process_id = getattr(app.state, "operator_process_id", None)
+        if isinstance(service, str) and isinstance(fingerprint, str) and isinstance(process_id, int) and not isinstance(process_id, bool):
+            data.update({"service": service, "runtime_fingerprint": fingerprint, "process_id": process_id})
+        return DataEnvelope(data=data)
 
     @app.get("/v1/tenants/{tenant_id}/projects", response_model=DataEnvelope, operation_id="listProjects")
     def list_projects(tenant_id: str) -> DataEnvelope:

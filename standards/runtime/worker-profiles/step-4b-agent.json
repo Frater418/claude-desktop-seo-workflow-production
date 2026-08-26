@@ -1,0 +1,46 @@
+{
+  "worker_profile_id": "worker-profile-step-4b-agent",
+  "schema_version": "1.1.0",
+  "profile_version": "1.3.0",
+  "profile_sha256": "43900968fbed5d25b58742b1db2c8b36726d7bc8c04aacbeb0dfd706b92ab9cd",
+  "display_name": "Step 4B Developer Specification and Final QA Agent",
+  "execution_kind": "llm",
+  "provider_capability_ref": {
+    "provider_id": "provider-hermes-runtime",
+    "provider_kind": "gateway",
+    "capability_id": "capability-hermes-step-agent-runtime"
+  },
+  "model_policy": {
+    "allowed_model_ids": [
+      "gpt-5.6-sol"
+    ],
+    "default_model_id": "gpt-5.6-sol"
+  },
+  "inference_policy": {
+    "upstream_provider_id": "openai-codex",
+    "reasoning_effort": "high",
+    "max_output_tokens": 80000,
+    "timeout_seconds": 1800,
+    "fallback_mode": "fail_closed",
+    "max_agent_turns": 45,
+    "max_tool_rounds": 3,
+    "delegation_policy_ref": "delegation-policy-step-4b-v1"
+  },
+  "allowed_steps": [
+    "4b"
+  ],
+  "tool_policy": {
+    "tool_policy_id": "tool-policy-step-4b-agent",
+    "policy_version": "1.2.0",
+    "policy_sha256": "351b305c9e62a9f7f225b6731e5cc4e289ccc55aee0e967d0bd1294f5df9fd00",
+    "allowed_operations": [
+      "read_context",
+      "write_candidate_output",
+      "request_gateway_operation",
+      "delegate_bounded_review"
+    ],
+    "direct_provider_calls_allowed": false
+  },
+  "enabled": true,
+  "created_at": "2026-08-25T21:14:06Z"
+}

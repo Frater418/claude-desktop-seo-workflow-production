@@ -18,6 +18,7 @@ import type {
 } from "../generated/api-types"
 import {
   parseArtifacts,
+  parseAcceptedIntake,
   parseContext,
   parseCurrentRun,
   parseGates,
@@ -40,6 +41,7 @@ import {
   parseDeliveryPreview,
 } from "./deliveryReadModels"
 import type {
+  AcceptedIntakeRead,
   ContextRead,
   CurrentRun,
   GateRead,
@@ -67,6 +69,125 @@ import { OperatorApiError } from "./operatorApiError"
 export { OperatorApiError } from "./operatorApiError"
 export type { DeliveryDownload } from "./deliveryDownload"
 
+export type ProductionIntent = {
+  readonly tenant_id: string
+  readonly project_id: string
+  readonly run_id: string
+  readonly step_id: "0" | "1" | "1b" | "1c" | "2" | "3" | "4a" | "4b"
+  readonly expected_revision: number
+}
+
+export type ProductionPreview = {
+  readonly intent: ProductionIntent
+  readonly allowed: boolean
+  readonly blockers: readonly ActionBlocker[]
+  readonly consequence: Readonly<Record<string, unknown>>
+  readonly preview_hash: string
+}
+
+export type ProductionConfirmRequest = {
+  readonly intent: ProductionIntent
+  readonly preview_hash: string
+  readonly idempotency_key: string
+  readonly confirmed: true
+}
+
+export type ProductionConfirmResult = {
+  readonly replay: boolean
+  readonly execution_id: string
+  readonly status: "prepared" | "running" | "interaction_required" | "approval_required" | "denied" | "completed" | "failed"
+  readonly preview_hash: string
+  readonly readback_urls: readonly string[]
+  readonly canonical: Readonly<Record<string, unknown>>
+}
+
+export type ToolInteractionDecisionRequest = {
+  readonly approved: boolean
+  readonly expected_request_sha256: string
+  readonly reason: string
+}
+
+export type ProductionTechnicalRetryRequest = {
+  readonly idempotency_key: string
+  readonly expected_execution_sha256: string
+  readonly reason: string
+}
+
+export type ProductionSteeredRerunRequest = {
+  readonly idempotency_key: string
+  readonly expected_execution_sha256: string
+  readonly expected_artifact_sha256: string
+  readonly expected_artifact_revision: number
+  readonly findings: readonly string[]
+  readonly affected_sections: readonly string[]
+  readonly immutable_constraints: readonly string[]
+  readonly instruction: string
+  readonly confirmed: true
+}
+
+export type PlanningCapacityPreviewRequest = {
+  readonly min_hours_per_week: number
+  readonly max_hours_per_week: number
+}
+
+export type PlanningCapacityPreview = {
+  readonly tenant_id: string
+  readonly project_id: string
+  readonly preview_hash: string
+  readonly current_project_sha256: string
+  readonly proposed_project_sha256: string
+  readonly capacity: Readonly<{ min: number; max: number; source: "operator_confirmed"; provisional: false; confirmed_by: string; confirmed_at: string }>
+  readonly run_id: string
+  readonly deployment_id: string
+  readonly changed: boolean
+}
+
+export type PlanningCapacityConfirmRequest = {
+  readonly preview_hash: string
+  readonly idempotency_key: string
+  readonly confirmed: true
+}
+
+export type ProjectDeletionPreview = {
+  readonly tenant_id: string
+  readonly project_id: string
+  readonly project_name: string
+  readonly customer_name: string
+  readonly current_step: string
+  readonly file_count: number
+  readonly total_bytes: number
+  readonly run_count: number
+  readonly artifact_count: number
+  readonly release_count: number
+  readonly active_run_ids: readonly string[]
+  readonly active_execution_ids: readonly string[]
+  readonly allowed: boolean
+  readonly blockers: readonly ActionBlocker[]
+  readonly preview_hash: string
+  readonly workspace_sha256: string
+  readonly previewed_at: string
+}
+
+export type ProjectDeletionConfirmRequest = {
+  readonly preview_hash: string
+  readonly idempotency_key: string
+  readonly confirmed: true
+  readonly confirmation_text: "LOESCHEN"
+}
+
+export type ProjectDeletionResult = {
+  readonly tenant_id: string
+  readonly project_id: string
+  readonly project_name: string
+  readonly deletion_id: string
+  readonly deleted_at: string
+  readonly deleted: true
+  readonly replay: boolean
+  readonly deleted_file_count: number
+  readonly deleted_total_bytes: number
+  readonly readback_urls: readonly string[]
+}
+
 type ReadyResponse = ApiOperationMap["readyz"]["responses"]["200"]
 
 type OperatorApiClientConfig = { readonly baseUrl: string; readonly tenantId: string }
@@ -85,8 +206,13 @@ export type OperatorApiClient = {
   readonly listGates: (projectId: string, signal: AbortSignal) => Promise<readonly GateRead[]>
   readonly listContextPackages: (projectId: string, signal: AbortSignal) => Promise<readonly ContextRead[]>
   readonly getIntegrationStatus: (projectId: string, signal: AbortSignal) => Promise<readonly IntegrationRead[]>
+  readonly getMarkdownIntake: (projectId: string, signal: AbortSignal) => Promise<AcceptedIntakeRead>
   readonly previewMarkdownIntake: (request: IntakePreviewRequest, signal: AbortSignal) => Promise<IntakePreviewRead>
   readonly acceptMarkdownIntake: (request: IntakeAcceptanceRequest, signal: AbortSignal) => Promise<IntakeAcceptanceRead>
+  readonly previewPlanningCapacity: (projectId: string, request: PlanningCapacityPreviewRequest, signal: AbortSignal) => Promise<PlanningCapacityPreview>
+  readonly confirmPlanningCapacity: (projectId: string, request: PlanningCapacityConfirmRequest, signal: AbortSignal) => Promise<PlanningCapacityPreview>
+  readonly previewProjectDeletion: (projectId: string, signal: AbortSignal) => Promise<ProjectDeletionPreview>
+  readonly confirmProjectDeletion: (projectId: string, request: ProjectDeletionConfirmRequest, signal: AbortSignal) => Promise<ProjectDeletionResult>
   readonly getArtifactContent: (projectId: string, artifactId: string, signal: AbortSignal) => Promise<ArtifactContentResponse>
   readonly saveArtifactRevision: (projectId: string, request: ArtifactCandidateSaveRequest, signal: AbortSignal) => Promise<DataEnvelope>
   readonly listArtifactRevisions: (projectId: string, runId: string, stepId: string, signal: AbortSignal) => Promise<ArtifactRevisionListResponse>
@@ -94,6 +220,15 @@ export type OperatorApiClient = {
   readonly validateArtifactRevision: (projectId: string, artifactId: string, request: ArtifactValidationRequest, signal: AbortSignal) => Promise<ArtifactPreflightRead>
   readonly previewAdminAction: (projectId: string, verb: string, request: ActionIntent, signal: AbortSignal) => Promise<ActionPreview>
   readonly confirmAdminAction: (projectId: string, verb: string, request: ActionConfirmRequest, signal: AbortSignal) => Promise<ActionConfirmResult>
+  readonly previewProductionRun: (projectId: string, request: ProductionIntent, signal: AbortSignal) => Promise<ProductionPreview>
+  readonly confirmProductionRun: (projectId: string, request: ProductionConfirmRequest, signal: AbortSignal) => Promise<ProductionConfirmResult>
+  readonly getProductionExecution: (projectId: string, executionId: string, signal: AbortSignal) => Promise<ProductionConfirmResult>
+  readonly getActiveProductionExecution: (projectId: string, runId: string, signal: AbortSignal) => Promise<ProductionConfirmResult | null>
+  readonly getLatestProductionExecution: (projectId: string, runId: string, signal: AbortSignal) => Promise<ProductionConfirmResult | null>
+  readonly refreshProductionExecution: (projectId: string, executionId: string, signal: AbortSignal) => Promise<ProductionConfirmResult>
+  readonly retryProductionExecutionTechnically: (projectId: string, executionId: string, request: ProductionTechnicalRetryRequest, signal: AbortSignal) => Promise<ProductionConfirmResult>
+  readonly rerunProductionExecutionWithSteering: (projectId: string, executionId: string, request: ProductionSteeredRerunRequest, signal: AbortSignal) => Promise<ProductionConfirmResult>
+  readonly decideProductionInteraction: (projectId: string, executionId: string, interactionId: string, request: ToolInteractionDecisionRequest, signal: AbortSignal) => Promise<ProductionConfirmResult>
   readonly previewDelivery: (projectId: string, scope: DeliveryScope, signal: AbortSignal) => Promise<DeliveryPreviewRead>
   readonly createDeliveryExport: (projectId: string, request: DeliveryCreateRequest, signal: AbortSignal) => Promise<DeliveryExportResultRead>
   readonly listDeliveryExports: (projectId: string, signal: AbortSignal) => Promise<readonly DeliveryExportResultRead[]>
@@ -140,6 +275,74 @@ function isActionConfirmResult(value: unknown): value is ActionConfirmResult {
   return isRecord(value) && isRecord(value["canonical"]) && hasString(value, "preview_hash") && Array.isArray(value["readback_urls"]) && value["readback_urls"].every((url) => typeof url === "string") && typeof value["replay"] === "boolean"
 }
 
+function isProductionIntent(value: unknown): value is ProductionIntent {
+  return isRecord(value) && ["tenant_id", "project_id", "run_id", "step_id"].every((key) => hasString(value, key)) && typeof value["expected_revision"] === "number"
+}
+
+function isProductionPreview(value: unknown): value is ProductionPreview {
+  return isRecord(value) && isProductionIntent(value["intent"]) && typeof value["allowed"] === "boolean" && Array.isArray(value["blockers"]) && value["blockers"].every(isActionBlocker) && isRecord(value["consequence"]) && hasString(value, "preview_hash")
+}
+
+function isProductionConfirmResult(value: unknown): value is ProductionConfirmResult {
+  return isRecord(value) && isRecord(value["canonical"]) && hasString(value, "execution_id") && ["prepared", "running", "interaction_required", "approval_required", "denied", "completed", "failed"].includes(String(value["status"])) && hasString(value, "preview_hash") && Array.isArray(value["readback_urls"]) && value["readback_urls"].every((url) => typeof url === "string") && typeof value["replay"] === "boolean"
+}
+
+function isPlanningCapacityPreview(value: unknown): value is PlanningCapacityPreview {
+  if (!isRecord(value) || !isRecord(value["capacity"])) return false
+  const capacity = value["capacity"]
+  return ["tenant_id", "project_id", "preview_hash", "current_project_sha256", "proposed_project_sha256", "run_id", "deployment_id"].every((key) => hasString(value, key))
+    && typeof value["changed"] === "boolean"
+    && typeof capacity["min"] === "number"
+    && typeof capacity["max"] === "number"
+    && capacity["source"] === "operator_confirmed"
+    && capacity["provisional"] === false
+    && hasString(capacity, "confirmed_by")
+    && hasString(capacity, "confirmed_at")
+}
+
+function parsePlanningCapacityEnvelope(value: unknown): PlanningCapacityPreview {
+  if (isDataEnvelope(value) && isPlanningCapacityPreview(value.data)) return value.data
+  throw new OperatorApiError({ kind: "unparseable", status: 200, message: "Die Kapazitätsbestätigung ist nicht lesbar." })
+}
+
+function isProjectDeletionPreview(value: unknown): value is ProjectDeletionPreview {
+  if (!isRecord(value)) return false
+  const numericKeys = ["file_count", "total_bytes", "run_count", "artifact_count", "release_count"]
+  const stringKeys = ["tenant_id", "project_id", "project_name", "customer_name", "current_step", "preview_hash", "workspace_sha256", "previewed_at"]
+  return stringKeys.every((key) => hasString(value, key))
+    && numericKeys.every((key) => typeof value[key] === "number" && Number(value[key]) >= 0)
+    && Array.isArray(value["active_run_ids"])
+    && value["active_run_ids"].every((item) => typeof item === "string")
+    && Array.isArray(value["active_execution_ids"])
+    && value["active_execution_ids"].every((item) => typeof item === "string")
+    && Array.isArray(value["blockers"])
+    && value["blockers"].every(isActionBlocker)
+    && typeof value["allowed"] === "boolean"
+}
+
+function isProjectDeletionResult(value: unknown): value is ProjectDeletionResult {
+  if (!isRecord(value)) return false
+  return ["tenant_id", "project_id", "project_name", "deletion_id", "deleted_at"].every((key) => hasString(value, key))
+    && value["deleted"] === true
+    && typeof value["replay"] === "boolean"
+    && typeof value["deleted_file_count"] === "number"
+    && Number(value["deleted_file_count"]) >= 0
+    && typeof value["deleted_total_bytes"] === "number"
+    && Number(value["deleted_total_bytes"]) >= 0
+    && Array.isArray(value["readback_urls"])
+    && value["readback_urls"].every((url) => typeof url === "string")
+}
+
+function parseProjectDeletionPreviewEnvelope(value: unknown): ProjectDeletionPreview {
+  if (isDataEnvelope(value) && isProjectDeletionPreview(value.data)) return value.data
+  throw new OperatorApiError({ kind: "unparseable", status: 200, message: "Die Projektlöschvorschau ist nicht lesbar." })
+}
+
+function parseProjectDeletionResultEnvelope(value: unknown): ProjectDeletionResult {
+  if (isDataEnvelope(value) && isProjectDeletionResult(value.data)) return value.data
+  throw new OperatorApiError({ kind: "unparseable", status: 200, message: "Die Projektlöschbestätigung ist nicht lesbar." })
+}
+
 function isArtifactContentResponse(value: unknown): value is ArtifactContentResponse {
   return isRecord(value) && isArtifactRecord(value["artifact"]) && hasString(value, "content_base64")
 }
@@ -168,7 +371,10 @@ async function request(baseUrl: string, path: string, init: RequestInit, signal:
   try {
     payload = await response.json()
   } catch (error) {
-    if (error instanceof SyntaxError) throw new OperatorApiError({ kind: "unparseable", status: response.status, message: "Die lokale Operator-API hat ungueltiges JSON geliefert." })
+    if (error instanceof SyntaxError) {
+      if (!response.ok) throw new OperatorApiError({ kind: "http", status: response.status, message: `Die lokale Operator-API ist mit HTTP ${response.status} fehlgeschlagen und hat keine lesbare Fehlerantwort geliefert.` })
+      throw new OperatorApiError({ kind: "unparseable", status: response.status, message: "Die lokale Operator-API hat ungueltiges JSON geliefert." })
+    }
     throw error
   }
   if (!response.ok) {
@@ -218,8 +424,21 @@ export function createOperatorApiClient(config: OperatorApiClientConfig): Operat
     listGates: (projectId, signal) => getRead(config.baseUrl, `${projectPath(config.tenantId, projectId)}/gates`, signal, (payload) => parseGates(payload, config.tenantId, projectId)),
     listContextPackages: (projectId, signal) => getRead(config.baseUrl, `${projectPath(config.tenantId, projectId)}/context-packages`, signal, (payload) => parseContext(payload, config.tenantId, projectId)),
     getIntegrationStatus: (projectId, signal) => getRead(config.baseUrl, `${projectPath(config.tenantId, projectId)}/integrations/status`, signal, (payload) => parseIntegrations(payload, config.tenantId, projectId)),
+    getMarkdownIntake: (projectId, signal) => getRead(config.baseUrl, `${projectPath(config.tenantId, projectId)}/intake`, signal, (payload) => parseAcceptedIntake(payload, config.tenantId, projectId)),
     previewMarkdownIntake: async (body, signal) => parseIntakePreview(await postJson(config.baseUrl, `/v1/tenants/${encodeURIComponent(config.tenantId)}/intake/preview`, body, signal)),
     acceptMarkdownIntake: async (body, signal) => parseIntakeAcceptance(await envelopePost(`/v1/tenants/${encodeURIComponent(config.tenantId)}/intake/accept`, body, signal), config.tenantId),
+    previewPlanningCapacity: async (projectId, body, signal) => parsePlanningCapacityEnvelope(
+      await postJson(config.baseUrl, `${projectPath(config.tenantId, projectId)}/inputs/planning-capacity/preview`, body, signal),
+    ),
+    confirmPlanningCapacity: async (projectId, body, signal) => parsePlanningCapacityEnvelope(
+      await postJson(config.baseUrl, `${projectPath(config.tenantId, projectId)}/inputs/planning-capacity/confirm`, body, signal),
+    ),
+    previewProjectDeletion: async (projectId, signal) => parseProjectDeletionPreviewEnvelope(
+      await postJson(config.baseUrl, `${projectPath(config.tenantId, projectId)}/deletion/preview`, {}, signal),
+    ),
+    confirmProjectDeletion: async (projectId, body, signal) => parseProjectDeletionResultEnvelope(
+      await postJson(config.baseUrl, `${projectPath(config.tenantId, projectId)}/deletion/confirm`, body, signal),
+    ),
     getArtifactContent: async (projectId, artifactId, signal) => {
       const payload = await request(config.baseUrl, `${projectPath(config.tenantId, projectId)}/artifacts/${encodeURIComponent(artifactId)}/content`, { method: "GET" }, signal)
       if (isArtifactContentResponse(payload)) return payload
@@ -246,6 +465,63 @@ export function createOperatorApiClient(config: OperatorApiClientConfig): Operat
       const payload = await postJson(config.baseUrl, `${projectPath(config.tenantId, projectId)}/actions/${encodeURIComponent(verb)}/confirm`, body, signal)
       if (isActionConfirmResult(payload)) return payload
       throw new OperatorApiError({ kind: "unparseable", status: 200, message: "Die Aktionsbestaetigung ist nicht lesbar." })
+    },
+    previewProductionRun: async (projectId, body, signal) => {
+      const payload = await postJson(config.baseUrl, `${projectPath(config.tenantId, projectId)}/production/preview`, body, signal)
+      if (isProductionPreview(payload)) return payload
+      throw new OperatorApiError({ kind: "unparseable", status: 200, message: "Die Produktionsvorschau ist nicht lesbar." })
+    },
+    confirmProductionRun: async (projectId, body, signal) => {
+      const payload = await postJson(config.baseUrl, `${projectPath(config.tenantId, projectId)}/production/confirm`, body, signal)
+      if (isProductionConfirmResult(payload)) return payload
+      throw new OperatorApiError({ kind: "unparseable", status: 200, message: "Die Produktionsbestaetigung ist nicht lesbar." })
+    },
+    getProductionExecution: async (projectId, executionId, signal) => {
+      const payload = await request(config.baseUrl, `${projectPath(config.tenantId, projectId)}/production/executions/${encodeURIComponent(executionId)}`, { method: "GET" }, signal)
+      if (isProductionConfirmResult(payload)) return payload
+      throw new OperatorApiError({ kind: "unparseable", status: 200, message: "Der Produktionsstatus ist nicht lesbar." })
+    },
+    getActiveProductionExecution: async (projectId, runId, signal) => {
+      let payload: unknown
+      try {
+        payload = await request(config.baseUrl, `${projectPath(config.tenantId, projectId)}/runs/${encodeURIComponent(runId)}/production/execution`, { method: "GET" }, signal)
+      } catch (error) {
+        if (error instanceof OperatorApiError && error.status === 404) return null
+        throw error
+      }
+      if (isProductionConfirmResult(payload)) return payload
+      throw new OperatorApiError({ kind: "unparseable", status: 200, message: "Der aktive Produktionsstatus ist nicht lesbar." })
+    },
+    getLatestProductionExecution: async (projectId, runId, signal) => {
+      let payload: unknown
+      try {
+        payload = await request(config.baseUrl, `${projectPath(config.tenantId, projectId)}/runs/${encodeURIComponent(runId)}/production/latest-execution`, { method: "GET" }, signal)
+      } catch (error) {
+        if (error instanceof OperatorApiError && error.status === 404) return null
+        throw error
+      }
+      if (isProductionConfirmResult(payload)) return payload
+      throw new OperatorApiError({ kind: "unparseable", status: 200, message: "Der letzte Produktionsstatus ist nicht lesbar." })
+    },
+    refreshProductionExecution: async (projectId, executionId, signal) => {
+      const payload = await postJson(config.baseUrl, `${projectPath(config.tenantId, projectId)}/production/executions/${encodeURIComponent(executionId)}/refresh`, {}, signal)
+      if (isProductionConfirmResult(payload)) return payload
+      throw new OperatorApiError({ kind: "unparseable", status: 200, message: "Der Produktionsstatus ist nicht lesbar." })
+    },
+    retryProductionExecutionTechnically: async (projectId, executionId, body, signal) => {
+      const payload = await postJson(config.baseUrl, `${projectPath(config.tenantId, projectId)}/production/executions/${encodeURIComponent(executionId)}/technical-retry`, body, signal)
+      if (isProductionConfirmResult(payload)) return payload
+      throw new OperatorApiError({ kind: "unparseable", status: 200, message: "Der technische Retry ist nicht lesbar." })
+    },
+    rerunProductionExecutionWithSteering: async (projectId, executionId, body, signal) => {
+      const payload = await postJson(config.baseUrl, `${projectPath(config.tenantId, projectId)}/production/executions/${encodeURIComponent(executionId)}/steered-rerun`, body, signal)
+      if (isProductionConfirmResult(payload)) return payload
+      throw new OperatorApiError({ kind: "unparseable", status: 200, message: "Der fachliche Rerun ist nicht lesbar." })
+    },
+    decideProductionInteraction: async (projectId, executionId, interactionId, body, signal) => {
+      const payload = await postJson(config.baseUrl, `${projectPath(config.tenantId, projectId)}/production/executions/${encodeURIComponent(executionId)}/interactions/${encodeURIComponent(interactionId)}/decision`, body, signal)
+      if (isProductionConfirmResult(payload)) return payload
+      throw new OperatorApiError({ kind: "unparseable", status: 200, message: "Die Toolentscheidung ist nicht lesbar." })
     },
     previewDelivery: (projectId, scope, signal) => getRead(config.baseUrl, `${deliveryPath(projectId)}/preview?${new URLSearchParams({ scope }).toString()}`, signal, (payload) => parseDeliveryPreview(payload, scope)),
     createDeliveryExport: async (projectId, body, signal) => parseDeliveryExportResult(await postJson(config.baseUrl, `${deliveryPath(projectId)}/exports`, body, signal), config.tenantId, projectId),

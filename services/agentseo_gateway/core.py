@@ -43,6 +43,39 @@ class AgentSEOAdapterError(RuntimeError):
         }
 
 
+def _provider_failure_code(status: int | None, payload: Any) -> str:
+    try:
+        text = json.dumps(payload, ensure_ascii=True, sort_keys=True).casefold()
+    except (TypeError, ValueError):
+        text = str(payload).casefold()
+    compact = " ".join(text.replace("_", " ").replace("-", " ").split())
+    if status == 402 or any(
+        marker in compact
+        for marker in (
+            "insufficient funds",
+            "insufficient credit",
+            "not enough credit",
+            "payment required",
+            "credit balance",
+        )
+    ):
+        return "ERROR_PROVIDER_INSUFFICIENT_FUNDS"
+    if "quota exceeded" in compact or "quota exhausted" in compact:
+        return "ERROR_PROVIDER_QUOTA_EXCEEDED"
+    if status == 429:
+        return "ERROR_PROVIDER_RATE_LIMITED"
+    return "ERROR_AGENTSEO_HTTP" if status is not None else "ERROR_AGENTSEO_FETCH_FAILED"
+
+
+def _provider_failure_message(code: str, fallback: str) -> str:
+    messages = {
+        "ERROR_PROVIDER_INSUFFICIENT_FUNDS": "The provider rejected the tool call because the account has insufficient funds or credits.",
+        "ERROR_PROVIDER_QUOTA_EXCEEDED": "The provider rejected the tool call because the account quota is exhausted.",
+        "ERROR_PROVIDER_RATE_LIMITED": "The provider temporarily rate-limited the tool call.",
+    }
+    return messages.get(code, fallback)
+
+
 def load_location_target(country: str, path: Path) -> Dict[str, Any]:
     """Lade ein verbindliches Heartweb-Zielmarktprofil."""
 
@@ -93,6 +126,71 @@ def load_location_target(country: str, path: Path) -> Dict[str, Any]:
         "location_name": location_name,
         "location_code": location_code,
         "language": language,
+    }
+
+
+def load_provider_target(target_id: str, path: Path) -> Dict[str, Any]:
+    """Load one exact verified provider target by its canonical identity."""
+
+    normalized_target_id = str(target_id or "").strip()
+    if not normalized_target_id:
+        raise AgentSEOAdapterError(
+            "ERROR_LOCATION_UNKNOWN",
+            "A provider target_id is required.",
+        )
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        raise AgentSEOAdapterError(
+            "ERROR_LOCATION_TABLE_MISSING",
+            f"Provider location registry not found: {path}",
+        ) from exc
+    except json.JSONDecodeError as exc:
+        raise AgentSEOAdapterError(
+            "ERROR_LOCATION_TABLE_INVALID",
+            f"Provider location registry is invalid JSON: {path}",
+            {"line": exc.lineno, "column": exc.colno},
+        ) from exc
+
+    targets = data.get("targets")
+    if not isinstance(targets, list):
+        raise AgentSEOAdapterError(
+            "ERROR_LOCATION_TABLE_INVALID",
+            "Provider location registry must contain a targets array.",
+        )
+    matches = [target for target in targets if isinstance(target, dict) and target.get("target_id") == normalized_target_id]
+    if len(matches) != 1:
+        raise AgentSEOAdapterError(
+            "ERROR_LOCATION_UNKNOWN" if not matches else "ERROR_LOCATION_TABLE_INVALID",
+            f"Provider target is not configured uniquely: {normalized_target_id}",
+        )
+    record = matches[0]
+    if record.get("provider_id") != data.get("provider_id"):
+        raise AgentSEOAdapterError(
+            "ERROR_LOCATION_TABLE_INVALID",
+            f"Provider target has a conflicting provider_id: {normalized_target_id}",
+        )
+    if record.get("status") != "verified":
+        raise AgentSEOAdapterError(
+            "ERROR_LOCATION_UNVERIFIED",
+            f"Provider target is not verified: {normalized_target_id}",
+            {"status": record.get("status")},
+        )
+    location_code = record.get("location_code")
+    if not isinstance(location_code, int) or location_code <= 0:
+        raise AgentSEOAdapterError(
+            "ERROR_LOCATION_TABLE_INVALID",
+            f"Verified provider target has no valid location_code: {normalized_target_id}",
+        )
+    languages = record.get("languages")
+    if not isinstance(languages, list) or not languages or any(not isinstance(language, str) or not language for language in languages):
+        raise AgentSEOAdapterError(
+            "ERROR_LOCATION_TABLE_INVALID",
+            f"Provider target has no valid languages: {normalized_target_id}",
+        )
+    return {
+        **copy.deepcopy(record),
+        "country": record["country_code"],
     }
 
 
@@ -327,9 +425,10 @@ class AgentSEOClient:
                 error_body: Any = json.loads(raw)
             except json.JSONDecodeError:
                 error_body = raw[:1000]
+            code = _provider_failure_code(exc.code, error_body)
             raise AgentSEOAdapterError(
-                "ERROR_AGENTSEO_HTTP",
-                f"AgentSEO returned HTTP {exc.code}.",
+                code,
+                _provider_failure_message(code, f"AgentSEO returned HTTP {exc.code}."),
                 {"status": exc.code, "response": error_body},
             ) from exc
         except urllib.error.URLError as exc:
@@ -384,10 +483,12 @@ class AgentSEOClient:
                     )
                 return job
             if status in {"failed", "error", "cancelled"}:
+                error_payload = job.get("error")
+                code = _provider_failure_code(None, error_payload)
                 raise AgentSEOAdapterError(
-                    "ERROR_AGENTSEO_FETCH_FAILED",
-                    "AgentSEO job failed.",
-                    {"job_id": job_id, "status": status, "error": job.get("error")},
+                    code,
+                    _provider_failure_message(code, "AgentSEO job failed."),
+                    {"job_id": job_id, "status": status, "error": error_payload},
                 )
             if time.monotonic() - started >= self.max_wait:
                 raise AgentSEOAdapterError(

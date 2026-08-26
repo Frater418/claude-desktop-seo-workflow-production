@@ -47,4 +47,4 @@ def pq0_2_operational_bundle() -> dict[str, object]:
     candidate = load_pq0_2_fixture()["candidate"]
     candidate.update({"project_id": "project-national-b2b", "deployment_id": "dep-national-b2b-de", "source_artifact_ids": ["artifact-predecessor-0001"], "language": "de", "geo": {"country_code": "DE", "provider_location_code": 276}})
     artifact, release = _predecessor("1c", "GATE-1C")
-    return {"candidate": candidate, "project": _project(), "predecessor_artifact": artifact, "predecessor_release": release, "provider_evidence_records": pq0_2_provider_records(candidate)}
+    return {"candidate": candidate, "approved_pillar_ids": [pillar["pillar_id"] for pillar in candidate["pillars"]], "project": _project(), "predecessor_artifact": artifact, "predecessor_release": release, "provider_evidence_records": pq0_2_provider_records(candidate)}

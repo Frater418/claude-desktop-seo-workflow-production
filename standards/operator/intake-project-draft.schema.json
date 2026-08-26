@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/operator/intake-project-draft.schema.json",
+  "title": "Heartweb Intake Project Draft",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["project_name", "project_v2", "missing_fields"],
+  "properties": {
+    "project_name": {
+      "type": ["string", "null"],
+      "minLength": 1
+    },
+    "project_v2": {
+      "type": ["object", "null"]
+    },
+    "missing_fields": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "project_v2": {"type": "object"}
+        },
+        "required": ["project_v2"]
+      },
+      "then": {
+        "properties": {
+          "project_name": {"type": "string", "minLength": 1},
+          "missing_fields": {"maxItems": 0}
+        }
+      },
+      "else": {
+        "properties": {
+          "missing_fields": {"minItems": 1}
+        }
+      }
+    }
+  ]
+}

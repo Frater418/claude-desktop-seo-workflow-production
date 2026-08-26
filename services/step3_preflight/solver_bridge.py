@@ -5,9 +5,16 @@ from __future__ import annotations
 import hashlib
 import json
 from collections import defaultdict
+from pathlib import Path
 from typing import Mapping, TypeAlias
 
-from mcp.tools.capacity_matrix_solver import CapacityValidationError, solve_capacity_plan
+import mcp as mcp_sdk
+
+_LOCAL_MCP_PATH = str(Path(__file__).resolve().parents[2] / "mcp")
+if _LOCAL_MCP_PATH not in mcp_sdk.__path__:
+    mcp_sdk.__path__.append(_LOCAL_MCP_PATH)
+
+from mcp.tools.capacity_matrix_solver import CapacityValidationError, solve_capacity_plan  # noqa: E402
 from services.step2_preflight.validator import validate_step2_candidate
 
 

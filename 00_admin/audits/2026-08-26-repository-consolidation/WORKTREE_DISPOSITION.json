@@ -1,0 +1,1415 @@
+{
+  "report_version": "1.0.0",
+  "source_head": "3f980520f049725e8c5a531c6925512ca79c023d",
+  "source_branch": "feature/e2e-operator-workflow-system",
+  "scope": "Post-plan pre-consolidation dirty-tree baseline. The approved plan itself raises the original untracked count from 84 to 85.",
+  "rules": [
+    "No git add -A.",
+    "Environment files and raw session recovery remain external-only.",
+    "Generated repository views are regenerated after authored sources are committed.",
+    "Historical and evidence records are preserved and lifecycle-classified."
+  ],
+  "summary": {
+    "tracked_change_entries": 112,
+    "untracked_files": 85,
+    "total_entries": 197,
+    "accepted_for_repository": 193,
+    "external_snapshot_only": 4,
+    "categories": {
+      "accepted_implementation": 87,
+      "authored_documentation": 4,
+      "authored_plan": 1,
+      "deterministic_generated_contract": 3,
+      "deterministic_repository_view": 4,
+      "immutable_evidence": 1,
+      "local_session_recovery": 3,
+      "operator_or_build_script": 2,
+      "sensitive_environment_specific": 1,
+      "test_fixture": 6,
+      "verification_source": 34,
+      "versioned_prompt": 13,
+      "versioned_standard_or_contract": 38
+    }
+  },
+  "entries": [
+    {
+      "path": ".hermes/plans/2026-08-25_225654-repository-master-consolidation-and-onboarding.md",
+      "git_status": "??",
+      "category": "authored_plan",
+      "accepted_for_repository": true,
+      "disposition": "Stage as approved execution and historical planning authority."
+    },
+    {
+      "path": "00_admin/PROJECT_STATE.md",
+      "git_status": " M",
+      "category": "authored_documentation",
+      "accepted_for_repository": true,
+      "disposition": "Reconcile against Project State, Decisions and lifecycle metadata."
+    },
+    {
+      "path": "00_admin/REPOSITORY_INDEX.md",
+      "git_status": " M",
+      "category": "deterministic_repository_view",
+      "accepted_for_repository": true,
+      "disposition": "Regenerate only after authored-source commit."
+    },
+    {
+      "path": "00_admin/SESSION_BOOTSTRAP.md",
+      "git_status": " M",
+      "category": "deterministic_repository_view",
+      "accepted_for_repository": true,
+      "disposition": "Regenerate only after authored-source commit."
+    },
+    {
+      "path": "00_admin/audits/2026-08-22-m07-diagnostic-trace/browser-results.json",
+      "git_status": " M",
+      "category": "immutable_evidence",
+      "accepted_for_repository": true,
+      "disposition": "Preserve and stage as evidence; do not reinterpret as current authority."
+    },
+    {
+      "path": "00_admin/repository-index/DOCUMENT_REGISTRY.json",
+      "git_status": " M",
+      "category": "deterministic_repository_view",
+      "accepted_for_repository": true,
+      "disposition": "Regenerate only after authored-source commit."
+    },
+    {
+      "path": "00_admin/repository-index/DOCUMENT_REGISTRY.jsonl",
+      "git_status": " M",
+      "category": "deterministic_repository_view",
+      "accepted_for_repository": true,
+      "disposition": "Regenerate only after authored-source commit."
+    },
+    {
+      "path": "00_admin/session-recovery/2026-08-25_20260825_102508_1fe91f/20260825_102508_1fe91f-sessionnamen-im-projekt-sauber-benennen.md",
+      "git_status": "??",
+      "category": "local_session_recovery",
+      "accepted_for_repository": false,
+      "disposition": "Preserve only in external snapshot; never stage."
+    },
+    {
+      "path": "00_admin/session-recovery/2026-08-25_20260825_102508_1fe91f/CONTINUATION_HANDOFF.md",
+      "git_status": "??",
+      "category": "local_session_recovery",
+      "accepted_for_repository": false,
+      "disposition": "Preserve only in external snapshot; never stage."
+    },
+    {
+      "path": "00_admin/session-recovery/2026-08-25_20260825_102508_1fe91f/manifest.jsonl",
+      "git_status": "??",
+      "category": "local_session_recovery",
+      "accepted_for_repository": false,
+      "disposition": "Preserve only in external snapshot; never stage."
+    },
+    {
+      "path": "0_admin/DECISIONS.md",
+      "git_status": "M ",
+      "category": "authored_documentation",
+      "accepted_for_repository": true,
+      "disposition": "Reconcile against Project State, Decisions and lifecycle metadata."
+    },
+    {
+      "path": "AGENTS.md",
+      "git_status": " M",
+      "category": "authored_documentation",
+      "accepted_for_repository": true,
+      "disposition": "Reconcile against Project State, Decisions and lifecycle metadata."
+    },
+    {
+      "path": "apps/operator-console/.env.production",
+      "git_status": "??",
+      "category": "sensitive_environment_specific",
+      "accepted_for_repository": false,
+      "disposition": "Preserve only in external snapshot; never stage."
+    },
+    {
+      "path": "apps/operator-console/package-lock.json",
+      "git_status": " M",
+      "category": "deterministic_generated_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with its owning public-contract change after drift verification."
+    },
+    {
+      "path": "apps/operator-console/package.json",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/App.test.tsx",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/App.tsx",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/api/client.test.ts",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/api/client.ts",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/api/diagnosticOperatorApi.ts",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/api/diagnosticTraceClient.ts",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/api/readModels.live.test.ts",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/api/readModels.test.ts",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/api/readModels.ts",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/AcceptedIntakePanel.test.tsx",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/AcceptedIntakePanel.tsx",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/ArtifactWorkspace.tsx",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/DiagnosticTraceProvider.tsx",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/IntakeWorkspace.tsx",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/LifecycleActionArea.tsx",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/OperatorShell.tsx",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/PersistentActionArea.tsx",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/ProductionActionArea.tsx",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/ProjectStart.tsx",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/ProjectsWorkspace.test.tsx",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/ProjectsWorkspace.tsx",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/TaskWorkspace.tsx",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/WorkflowWorkspace.tsx",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/useOperatorWorkspace.test.tsx",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/useOperatorWorkspace.ts",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/useProductionRun.ts",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/app/workflowPresentation.ts",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/generated/api-types.ts",
+      "git_status": " M",
+      "category": "deterministic_generated_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with its owning public-contract change after drift verification."
+    },
+    {
+      "path": "apps/operator-console/src/styles.css",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/test/deliveryE2EBrowser.mjs",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/test/deliveryRouteBrowser.mjs",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/test/m09ReleaseCriticalBrowser.mjs",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/src/test/operatorApiFixture.ts",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "apps/operator-console/tsconfig.build.json",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "docs/00-current-production-architecture.md",
+      "git_status": " M",
+      "category": "authored_documentation",
+      "accepted_for_repository": true,
+      "disposition": "Reconcile against Project State, Decisions and lifecycle metadata."
+    },
+    {
+      "path": "prompts/0-kickoff-v1.10.0.xml.md",
+      "git_status": "??",
+      "category": "versioned_prompt",
+      "accepted_for_repository": true,
+      "disposition": "Stage only with registry/hash closure; preserve historical versions."
+    },
+    {
+      "path": "prompts/0-kickoff-v1.9.0.xml.md",
+      "git_status": "??",
+      "category": "versioned_prompt",
+      "accepted_for_repository": true,
+      "disposition": "Stage only with registry/hash closure; preserve historical versions."
+    },
+    {
+      "path": "prompts/0-kickoff.xml.md",
+      "git_status": " M",
+      "category": "versioned_prompt",
+      "accepted_for_repository": true,
+      "disposition": "Stage only with registry/hash closure; preserve historical versions."
+    },
+    {
+      "path": "prompts/1-pillar-identifikation.xml.md",
+      "git_status": " M",
+      "category": "versioned_prompt",
+      "accepted_for_repository": true,
+      "disposition": "Stage only with registry/hash closure; preserve historical versions."
+    },
+    {
+      "path": "prompts/1b-seitenarchitektur.xml.md",
+      "git_status": " M",
+      "category": "versioned_prompt",
+      "accepted_for_repository": true,
+      "disposition": "Stage only with registry/hash closure; preserve historical versions."
+    },
+    {
+      "path": "prompts/1c-pillar-template.xml.md",
+      "git_status": " M",
+      "category": "versioned_prompt",
+      "accepted_for_repository": true,
+      "disposition": "Stage only with registry/hash closure; preserve historical versions."
+    },
+    {
+      "path": "prompts/2-cluster-recherche.xml.md",
+      "git_status": " M",
+      "category": "versioned_prompt",
+      "accepted_for_repository": true,
+      "disposition": "Stage only with registry/hash closure; preserve historical versions."
+    },
+    {
+      "path": "prompts/3-120-tage-plan.xml.md",
+      "git_status": " M",
+      "category": "versioned_prompt",
+      "accepted_for_repository": true,
+      "disposition": "Stage only with registry/hash closure; preserve historical versions."
+    },
+    {
+      "path": "prompts/4a-content-briefing-und-schema.xml.md",
+      "git_status": " M",
+      "category": "versioned_prompt",
+      "accepted_for_repository": true,
+      "disposition": "Stage only with registry/hash closure; preserve historical versions."
+    },
+    {
+      "path": "prompts/4b-landingpage-html.xml.md",
+      "git_status": " M",
+      "category": "versioned_prompt",
+      "accepted_for_repository": true,
+      "disposition": "Stage only with registry/hash closure; preserve historical versions."
+    },
+    {
+      "path": "prompts/intake-project-v2-v1.2.0.xml.md",
+      "git_status": "??",
+      "category": "versioned_prompt",
+      "accepted_for_repository": true,
+      "disposition": "Stage only with registry/hash closure; preserve historical versions."
+    },
+    {
+      "path": "prompts/intake-project-v2-v1.3.0.xml.md",
+      "git_status": "??",
+      "category": "versioned_prompt",
+      "accepted_for_repository": true,
+      "disposition": "Stage only with registry/hash closure; preserve historical versions."
+    },
+    {
+      "path": "prompts/intake-project-v2.xml.md",
+      "git_status": "??",
+      "category": "versioned_prompt",
+      "accepted_for_repository": true,
+      "disposition": "Stage only with registry/hash closure; preserve historical versions."
+    },
+    {
+      "path": "scripts/rebind_provider_locations.py",
+      "git_status": "??",
+      "category": "operator_or_build_script",
+      "accepted_for_repository": true,
+      "disposition": "Stage after direct script and caller verification."
+    },
+    {
+      "path": "scripts/start_operator_console.py",
+      "git_status": " M",
+      "category": "operator_or_build_script",
+      "accepted_for_repository": true,
+      "disposition": "Stage after direct script and caller verification."
+    },
+    {
+      "path": "services/agent_gateway/evidence_store.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/agent_gateway/kickoff_preflight.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/agent_gateway/mcp_server.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/agentseo_gateway/core.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/context_builder/builder.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/context_builder/validator.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/deterministic_output_fields.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/domain_contract/provider_locations.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/domain_contract/validator.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/app.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/app_errors.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/app_routes.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/artifact_revision_repository.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/artifact_revision_types.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/artifact_revisions.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/diagnostic_trace_store.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/hermes_runs_client.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/hermes_runtime_provider.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/intake.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/intake_project_generator.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/models.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/next_runs.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/package4_routes.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/planning_capacity.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/production_bundles.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/production_execution_store.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/production_orchestrator.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/production_routes.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/project_deletion.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/project_deletion_routes.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/project_source_revision.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/provider_location_upgrade.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/provisioning.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/repository.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/repository_operator_records.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/runtime.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/step0_binding.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/step_agent_results.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/step_agents.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/step_validation.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/transition_recovery.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_api/validated_artifacts.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/operator_routing/router.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/provider_gateway/agentseo_dispatcher.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/provider_gateway/core.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/runtime_contracts/llm_records.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/staging_readiness.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/step2_preflight/validator.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/step3_preflight/capacity_matrix_solver.py",
+      "git_status": "??",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/step3_preflight/solver_bridge.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/step4b_preflight/validator.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/transition_service/contracts.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "services/transition_service/engine.py",
+      "git_status": " M",
+      "category": "accepted_implementation",
+      "accepted_for_repository": true,
+      "disposition": "Stage after focused verification."
+    },
+    {
+      "path": "standards/api/operator-api.openapi.json",
+      "git_status": " M",
+      "category": "deterministic_generated_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with its owning public-contract change after drift verification."
+    },
+    {
+      "path": "standards/domain/project.schema.json",
+      "git_status": " M",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/domain/provider-location-registry.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/domain/provider-location-registry.schema.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/domain/search-deployment.schema.json",
+      "git_status": " M",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/manifest-v2.schema.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/operator/error-routing-policy.json",
+      "git_status": " M",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/operator/intake-project-draft.schema.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/operator/production-steering.schema.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/providers/research-request.schema.json",
+      "git_status": " M",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/providers/research-response.schema.json",
+      "git_status": " M",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/agent-tool-policy.schema.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/context-package.schema.json",
+      "git_status": " M",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/llm-run-result.schema.json",
+      "git_status": " M",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/official-prompt-registry.json",
+      "git_status": " M",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/official-prompt-registry.schema.json",
+      "git_status": " M",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/operator-worker-profile.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/run-envelope.schema.json",
+      "git_status": " M",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/step-agent-output-envelope.schema.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/step-agent-registry.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/step-agent-registry.schema.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/tool-policies/step-0-agent.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/tool-policies/step-1-agent.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/tool-policies/step-1b-agent.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/tool-policies/step-1c-agent.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/tool-policies/step-2-agent.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/tool-policies/step-3-agent.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/tool-policies/step-4a-agent.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/tool-policies/step-4b-agent.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/transition-command.schema.json",
+      "git_status": " M",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/worker-profile.schema.json",
+      "git_status": " M",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/worker-profiles/step-0-agent.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/worker-profiles/step-1-agent.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/worker-profiles/step-1b-agent.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/worker-profiles/step-1c-agent.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/worker-profiles/step-2-agent.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/worker-profiles/step-3-agent.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/worker-profiles/step-4a-agent.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "standards/runtime/worker-profiles/step-4b-agent.json",
+      "git_status": "??",
+      "category": "versioned_standard_or_contract",
+      "accepted_for_repository": true,
+      "disposition": "Stage with validator, renderer and fixture closure."
+    },
+    {
+      "path": "tests/contracts/test_llm_runtime_contracts.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/fixtures/context_builder/positive-context-revision.json",
+      "git_status": " M",
+      "category": "test_fixture",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected contract or workflow behavior."
+    },
+    {
+      "path": "tests/fixtures/context_builder/positive-context-step0-initial.json",
+      "git_status": " M",
+      "category": "test_fixture",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected contract or workflow behavior."
+    },
+    {
+      "path": "tests/fixtures/context_builder/positive-context-step1-next.json",
+      "git_status": " M",
+      "category": "test_fixture",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected contract or workflow behavior."
+    },
+    {
+      "path": "tests/fixtures/context_builder/positive-context-step1c-multi-output.json",
+      "git_status": " M",
+      "category": "test_fixture",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected contract or workflow behavior."
+    },
+    {
+      "path": "tests/fixtures/operator/legacy-neutral-step0-manifest.json",
+      "git_status": "??",
+      "category": "test_fixture",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected contract or workflow behavior."
+    },
+    {
+      "path": "tests/fixtures/operator/neutral-step0-manifest.json",
+      "git_status": " M",
+      "category": "test_fixture",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected contract or workflow behavior."
+    },
+    {
+      "path": "tests/run_acceptance_tests.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/support/pq0_2_step2.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_action_facade.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_agent_tool_call_scope.py",
+      "git_status": "??",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_agentseo_location_guard.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_context_builder.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_context_source_closure.py",
+      "git_status": "??",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_delivery_e2e.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_domain_contract_validator.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_hermes_runs_client.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_hermes_runtime_provider.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_intake_project_generator.py",
+      "git_status": "??",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_intake_provisioning.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_local_runtime.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_mcp_tool_identity.py",
+      "git_status": "??",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_operator_instance_mutex.py",
+      "git_status": "??",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_planning_capacity.py",
+      "git_status": "??",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_production_bundle_contract_version.py",
+      "git_status": "??",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_production_retry_scope.py",
+      "git_status": "??",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_project_deletion.py",
+      "git_status": "??",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_prompt0_contract.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_provider_location_upgrade.py",
+      "git_status": "??",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_revision_runtime_sources.py",
+      "git_status": "??",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_staging_readiness.py",
+      "git_status": "??",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_step0_cross_binding.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_step0_kickoff_preflight.py",
+      "git_status": "??",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_step1_agent_evidence_bundle.py",
+      "git_status": "??",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_step2_contract.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_step2_renderer.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_step3_contract.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_step4b_contract.py",
+      "git_status": " M",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_step_agent_deterministic_hashes.py",
+      "git_status": "??",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    },
+    {
+      "path": "tests/test_step_agent_failure_envelope.py",
+      "git_status": "??",
+      "category": "verification_source",
+      "accepted_for_repository": true,
+      "disposition": "Stage with directly affected implementation closure."
+    }
+  ]
+}

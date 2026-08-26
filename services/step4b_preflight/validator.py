@@ -44,6 +44,17 @@ def _validate_staging_evidence(page: dict[str, object], staging: dict[str, objec
     tools = [check.get("tool") for check in checks]
     if len(checks) != 4 or any(tools.count(tool) != 1 for tool in required_tools):
         errors.append({"code": "ERROR_STEP4B_STAGING_TOOL_COVERAGE", "message": "Staging evidence requires each of crawl, lighthouse, axe and visual exactly once.", "path": ["staging_evidence", "checks"]})
+    else:
+        checks_by_tool = {check["tool"]: check for check in checks}
+        accessibility = page.get("accessibility")
+        responsive = page.get("responsive")
+        if (
+            not isinstance(accessibility, dict)
+            or not isinstance(responsive, dict)
+            or accessibility.get("axe_evidence_id") != checks_by_tool["axe"].get("evidence_id")
+            or responsive.get("visual_evidence_id") != checks_by_tool["visual"].get("evidence_id")
+        ):
+            errors.append({"code": "ERROR_STEP4B_STAGING_PAGE_EVIDENCE_MISMATCH", "message": "Page accessibility and visual evidence IDs must bind the corresponding staging checks.", "path": ["page_spec", "accessibility"]})
     check_evidence_ids = [check.get("evidence_id") for check in checks]
     evidence_ids = staging.get("evidence_ids")
     if not isinstance(evidence_ids, list) or len(evidence_ids) != 4 or any(evidence_ids.count(evidence_id) != 1 for evidence_id in evidence_ids) or any(check_evidence_ids.count(evidence_id) != 1 for evidence_id in check_evidence_ids) or any(evidence_id not in check_evidence_ids for evidence_id in evidence_ids) or any(evidence_id not in evidence_ids for evidence_id in check_evidence_ids):

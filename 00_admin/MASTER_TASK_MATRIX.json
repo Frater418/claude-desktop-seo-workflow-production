@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "author": "Raphael Rechberger",
-  "updated": "2026-08-23",
+  "updated": "2026-08-26",
   "release_target": "First controlled local Heartweb production output",
   "automation_stop_after": "M10",
   "post_release_requires_new_raphael_authorization": true,
@@ -26,7 +26,7 @@
   "interstage_phase": {
     "id": "PRE-S6",
     "title": "Production-first gates before Sprint 6",
-    "status": "in_progress",
+    "status": "completed",
     "tasks": ["M07", "M08", "M08L", "M09"]
   },
   "pre_sprint_6_gates": ["M07", "M08", "M08L", "M09"],
@@ -165,7 +165,7 @@
       "id": "M10",
       "title": "First controlled local production output PT-11",
       "owner": "Raphael, Hermes and Root Sisyphus",
-      "base_status": "pending",
+      "base_status": "in_progress",
       "root_patterns": [
         "M10 first controlled local production output",
         "First controlled local production output"
@@ -183,23 +183,23 @@
     },
     {
       "id": "X02",
-      "title": "Confirm real pilot inputs, provider access and AHD source blockers",
+      "title": "Confirm real pilot inputs, deployment, provider target and capacity",
       "owner": "Raphael and Hermes",
-      "activation": "Before M10 real provider-backed execution",
+      "activation": "Completed for the active CL pilot; repeat for each future pilot",
       "estimate_hours": [1, 3]
     },
     {
       "id": "X03",
-      "title": "Refresh and integrate documentation authority branch",
+      "title": "Complete DEC-0031 documentation authority and deterministic onboarding consolidation",
       "owner": "Hermes controller",
-      "activation": "After stable Feature checkpoint and Raphael approval",
+      "activation": "Completed and verified on 2026-08-26",
       "estimate_hours": [2, 5]
     },
     {
       "id": "X04",
-      "title": "Branch consolidation, commit, push and master fast-forward",
+      "title": "Commit, push, branch reconciliation, master fast-forward and Fresh Clone",
       "owner": "Hermes controller with Raphael approval",
-      "activation": "After M09 and explicit Git authorization",
+      "activation": "In progress under DEC-0031",
       "estimate_hours": [1, 3]
     },
     {

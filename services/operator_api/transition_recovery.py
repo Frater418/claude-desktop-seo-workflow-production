@@ -15,6 +15,41 @@ def _append_once(records: list[dict[str, JsonValue]], record: dict[str, JsonValu
     return records
 
 
+def _step_next_action(step_id: str, status: str) -> str:
+    return {
+        "pending": f"Schritt {step_id} prüfen und starten",
+        "in_progress": f"Schritt {step_id} bearbeiten",
+        "awaiting_gate": f"Prüfung für Schritt {step_id} durchführen",
+        "approved": f"Schritt {step_id} abschließen",
+        "completed": "Nächsten Workflow-Schritt öffnen",
+        "failed": f"Fehler in Schritt {step_id} beheben",
+        "superseded": "Aktuellen Nachfolgelauf öffnen",
+    }.get(status, f"Schritt {step_id} prüfen")
+
+
+def _synchronize_step(records: list[dict[str, JsonValue]], run: dict[str, JsonValue]) -> list[dict[str, JsonValue]]:
+    run_id, step_id, status = run.get("run_id"), run.get("step_id"), run.get("status")
+    if not all(isinstance(value, str) for value in (run_id, step_id, status)):
+        raise RepositoryError("ERROR_CONTEXT_SOURCE_INVALID", "Transition step projection is invalid.")
+    matching = [record for record in records if record.get("run_id") == run_id]
+    if not matching:
+        matching = [record for record in records if record.get("run_id") is None and record.get("step_id") == step_id]
+    if len(matching) != 1:
+        raise RepositoryError("ERROR_CONTEXT_SOURCE_INVALID", "Transition step projection is unavailable or ambiguous.")
+    selected = matching[0]
+    updated = {
+        **selected,
+        "tenant_id": run["tenant_id"],
+        "project_id": run["project_id"],
+        "run_id": run_id,
+        "step_id": step_id,
+        "status": status,
+        "blocker": selected.get("blocker") if isinstance(selected.get("blocker"), str) else "Keine offenen Blocker",
+        "next_action": _step_next_action(step_id, status),
+    }
+    return [updated if record is selected else record for record in records]
+
+
 class TransitionRecovery:
     def __init__(self, repository: ProjectRepository) -> None:
         self._repository = repository
@@ -53,6 +88,8 @@ class TransitionRecovery:
         if not isinstance(result, dict) or not isinstance(result.get("run"), dict):
             raise RepositoryError("ERROR_CONTEXT_SOURCE_INVALID", "Transition recovery result is invalid.")
         self._repository.write_run(tenant_id, project_id, result["run"])
+        steps = self._repository.collection(tenant_id, project_id, "steps")
+        self._repository._write(tenant_id, project_id, "steps.json", _synchronize_step(steps, result["run"]))
         human_qgr = result.get("human_quality_gate_run")
         if human_qgr is not None:
             if not isinstance(human_qgr, dict):

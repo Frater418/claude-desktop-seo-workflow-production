@@ -19,6 +19,7 @@ from .diagnostic_trace_store import DiagnosticTraceStoreError
 from .event_store import EventStoreError
 from .models import ErrorEnvelope
 from .package4 import Package4Error
+from .project_deletion import ProjectDeletionError
 from .repository import RepositoryError
 
 
@@ -32,6 +33,7 @@ _DELIVERY_OPERATION_IDS: Final = frozenset(
     )
 )
 _DIAGNOSTIC_OPERATION_IDS: Final = frozenset(("createDiagnosticTrace", "appendDiagnosticTraceEntry", "closeDiagnosticTrace"))
+_PROJECT_DELETION_OPERATION_IDS: Final = frozenset(("previewProjectDeletion", "confirmProjectDeletion"))
 
 
 class ApiError(RuntimeError):
@@ -66,11 +68,40 @@ def register_error_handlers(app: FastAPI) -> None:
                     message="Diagnostic trace request validation failed.",
                 ).model_dump(),
             )
+        if request.scope["route"].operation_id in _PROJECT_DELETION_OPERATION_IDS:
+            return JSONResponse(
+                status_code=422,
+                content=ErrorEnvelope(
+                    code="ERROR_PROJECT_DELETE_CONFIRMATION_INVALID",
+                    message="Project deletion requires the exact confirmation text LOESCHEN.",
+                ).model_dump(),
+            )
         return await request_validation_exception_handler(request, error)
 
     @app.exception_handler(DiagnosticTraceStoreError)
     async def diagnostic_trace_error(_: Request, error: DiagnosticTraceStoreError) -> JSONResponse:
         status = 422 if error.code == "ERROR_DIAGNOSTIC_RECORD_SIZE_LIMIT" else 404 if error.code == "ERROR_DIAGNOSTIC_TRACE_UNAVAILABLE" else 507 if error.code in {"ERROR_DIAGNOSTIC_OPERATION_LIMIT", "ERROR_DIAGNOSTIC_RUN_SIZE_LIMIT", "ERROR_DIAGNOSTIC_INDEX_SIZE_LIMIT", "ERROR_DIAGNOSTIC_RETENTION_LIMIT"} else 409 if error.code in {"ERROR_DIAGNOSTIC_TRACE_CONFLICT", "ERROR_DIAGNOSTIC_TRACE_CLOSED", "ERROR_DIAGNOSTIC_TRACE_STATE_INVALID"} else 503
+        return JSONResponse(status_code=status, content=ErrorEnvelope(code=error.code, message=error.message).model_dump())
+
+    @app.exception_handler(ProjectDeletionError)
+    async def project_deletion_error(_: Request, error: ProjectDeletionError) -> JSONResponse:
+        if error.code == "ERROR_PROJECT_DELETE_NOT_MANAGED":
+            status = 403
+        elif error.code == "ERROR_PROJECT_DELETE_NOT_FOUND":
+            status = 404
+        elif error.code == "ERROR_PROJECT_DELETE_CONFIRMATION_INVALID":
+            status = 422
+        elif error.code == "ERROR_PROJECT_DELETE_AUDIT_FAILED":
+            status = 507
+        elif error.code in {
+            "ERR_IDEMPOTENCY_CONFLICT",
+            "ERROR_PROJECT_DELETE_ACTIVE_RUN",
+            "ERROR_PROJECT_DELETE_PREVIEW_STALE",
+            "ERROR_PROJECT_DELETE_RECOVERY_REQUIRED",
+        }:
+            status = 409
+        else:
+            status = 503
         return JSONResponse(status_code=status, content=ErrorEnvelope(code=error.code, message=error.message).model_dump())
 
     @app.exception_handler(ApiError)
@@ -91,12 +122,23 @@ def register_error_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(Package4Error)
     async def package4_error(_: Request, error: Package4Error) -> JSONResponse:
-        status = 404 if error.code == "ERROR_DOMAIN_REFERENCE_UNKNOWN" else 409 if error.code == "ERR_STALE_REVISION" else 422
+        if error.code in {"ERROR_DOMAIN_REFERENCE_UNKNOWN", "ERROR_PRODUCTION_EXECUTION_NOT_FOUND"}:
+            status = 404
+        elif error.code == "ERR_STALE_REVISION":
+            status = 409
+        elif error.code == "ERROR_LLM_BACKEND_TIMEOUT":
+            status = 504
+        elif error.code == "ERROR_LLM_BACKEND_RESPONSE_INVALID":
+            status = 502
+        elif error.code.startswith("ERROR_LLM_BACKEND_"):
+            status = 503
+        else:
+            status = 422
         return JSONResponse(status_code=status, content=ErrorEnvelope(code=error.code, message=error.message).model_dump())
 
     @app.exception_handler(ArtifactRevisionError)
     async def artifact_revision_error(_: Request, error: ArtifactRevisionError) -> JSONResponse:
-        status = 404 if error.code in {"ERROR_DOMAIN_REFERENCE_UNKNOWN", "ERROR_DOMAIN_CONTRACT_FILE_MISSING", "ERR_TENANT_ISOLATION"} else 409 if error.code == "ERR_STALE_REVISION" else 422
+        status = 404 if error.code in {"ERROR_DOMAIN_REFERENCE_UNKNOWN", "ERROR_DOMAIN_CONTRACT_FILE_MISSING", "ERR_TENANT_ISOLATION"} else 409 if error.code in {"ERR_STALE_REVISION", "ERR_IDEMPOTENCY_CONFLICT"} else 422
         return JSONResponse(status_code=status, content=ErrorEnvelope(code=error.code, message=error.message).model_dump())
 
     @app.exception_handler(DeliveryCompositionError)

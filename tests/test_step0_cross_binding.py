@@ -20,16 +20,31 @@ INTAKE_SHA256 = "68cf4c5938b8e44ba95650155ba8706b55627fe8017fbbb7d9ea1fb524b8252
 
 def project() -> dict[str, object]:
     value = json.loads((ROOT / "tests/fixtures/domain/real-customer-matrix/national-b2b.json").read_text(encoding="utf-8"))
+    value["schema_version"] = "1.2.0"
     value["project_id"] = PROJECT
     value["tenant"]["tenant_id"] = TENANT
+    value["market_deployments"][0]["provider_location_verification"] = {
+        "status": "verified",
+        "provider_id": "agentseo",
+        "target_id": "agentseo-de-country",
+        "target_type": "country",
+        "location_name": "Germany",
+        "provider_location_code": 2276,
+        "verified_at": "2026-08-17T00:00:00Z",
+        "verification_source": "provider_response",
+    }
     return value
 
 
 def neutral_manifest() -> dict[str, object]:
     value = json.loads((ROOT / "tests/fixtures/operator/neutral-step0-manifest.json").read_text(encoding="utf-8"))
+    canonical_project = project()
+    deployment = canonical_project["market_deployments"][0]
     value["project_name"] = "National B2B"
+    value["deployment_binding"] = deployment
     source_binding = value["source_binding"]
-    source_binding["project_v2_sha256"] = hashlib.sha256(json.dumps(project(), ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+    source_binding["deployment_sha256"] = hashlib.sha256(json.dumps(deployment, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+    source_binding["project_v2_sha256"] = hashlib.sha256(json.dumps(canonical_project, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
     source_binding["intake_source_sha256"] = INTAKE_SHA256
     return value
 
@@ -67,8 +82,24 @@ def accepted_intake() -> dict[str, object]:
 
 class Step0CrossBindingTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.context = GateContext.model_validate({"site_status": "non_existing_site", "configured_tools": [], "available_tools": [], "not_applicable_decisions": {}, "evidence_by_gate": {"qg-domain-contract": {"schema_id": "https://heartweb.example/schema/manifest.schema.json", "schema_version": "1.0.0", "artifact_sha256": output_for(neutral_manifest()).primary.content_sha256, "validator_result": "simulated"}}})
-        self.bundle = {"project": project(), "accepted_intake": accepted_intake()}
+        self.context = GateContext.model_validate({"site_status": "non_existing_site", "configured_tools": [], "available_tools": [], "not_applicable_decisions": {}, "evidence_by_gate": {"qg-domain-contract": {"schema_id": "https://heartweb.example/schema/manifest-v2.schema.json", "schema_version": "2.0.0", "artifact_sha256": output_for(neutral_manifest()).primary.content_sha256, "validator_result": "simulated"}}})
+        self.bundle = {
+            "project": project(),
+            "accepted_intake": accepted_intake(),
+            "current_run": {
+                "run_id": RUN,
+                "tenant_id": TENANT,
+                "project_id": PROJECT,
+                "step_id": "0",
+                "gate_id": "GATE-0",
+                "revision": 1,
+                "status": "in_progress",
+                "input_hash": "a" * 64,
+                "idempotency_key": "idem-run-neutral-0001",
+                "attempt": 1,
+                "created_at": "2026-08-20T12:00:00Z",
+            },
+        }
 
     def validate(self, manifest: dict[str, object]) -> None:
         StepValidationService.from_root(ROOT).validate(output_for(manifest), "a" * 64, self.bundle, self.context)
@@ -82,10 +113,23 @@ class Step0CrossBindingTests(unittest.TestCase):
 
         # Then: the consistently rebadged manifest is accepted
 
+    def test_accepts_schema_valid_strategic_audience_and_content_synthesis(self) -> None:
+        # Given: the agent synthesizes strategic prose from the bound Project V2 facts
+        manifest = neutral_manifest()
+        manifest["target_audience"] = "Decision makers across the canonical German B2B audiences"
+        manifest["content_focus"] = "Service pages, use cases, comparisons, and decision-support content"
+
+        # When: immutable identity, brand, services, domain, goal, and regions remain bound
+        self.validate(manifest)
+
+        # Then: legitimate schema-valid strategic synthesis remains inside the LLM boundary
+
     def test_rejects_rebadged_manifest_with_mismatched_business_scope(self) -> None:
         # Given: every existing binding is rebadged but the content scope remains simCura's
         manifest = neutral_manifest()
-        manifest["content_focus"] = "Ambulante Pflege und Verhinderungspflege"
+        manifest["entities"]["core_services"] = [
+            {"name": "Ambulante Pflege und Verhinderungspflege", "wikidata_id": None}
+        ]
 
         # When: Step 0 validates cross-customer business semantics
         with self.assertRaisesRegex(StepValidationError, "ERROR_STEP0_CROSS_BINDING_INVALID"):
@@ -114,6 +158,13 @@ class Step0CrossBindingTests(unittest.TestCase):
             self.validate(manifest)
 
         # Then: the foreign customer name is rejected
+
+    def test_rejects_manifest_with_provider_code_not_bound_in_project_v2(self) -> None:
+        manifest = neutral_manifest()
+        manifest["location_code"] = 9999
+
+        with self.assertRaisesRegex(StepValidationError, "ERROR_STEP0_CROSS_BINDING_INVALID"):
+            self.validate(manifest)
 
     def test_rejects_intake_with_mismatched_reviewed_project_name(self) -> None:
         # Given: the accepted intake claims a customer other than the canonical Project V2 customer

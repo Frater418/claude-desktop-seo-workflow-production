@@ -44,8 +44,15 @@ class PromptZeroContractTests(unittest.TestCase):
         self.assertIn("Schritt 1 entdeckt zusaetzliche organische Suchwettbewerber", self.prompt)
 
     def test_prompt_cannot_complete_before_human_gate(self):
-        self.assertIn("step_0_kickoff` auf `in_progress`", self.prompt)
-        self.assertIn("erst nach erfolgreichem GATE-0", self.prompt)
+        self.assertIn("step_0_kickoff` auf `pending`", self.prompt)
+        self.assertIn(
+            "Approval, Release und Folgeschrittfreigabe sind separate hashgebundene Core-Records",
+            self.prompt,
+        )
+        self.assertIn(
+            "Nur Heartweb Core verarbeitet die explizite Operator-Freigabe",
+            self.prompt,
+        )
         generation_section = self.prompt.split("<human_review_gate>", 1)[0]
         self.assertNotIn(
             "markiere Phase `step_0_kickoff` als `completed`",

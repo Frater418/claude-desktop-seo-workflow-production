@@ -36,7 +36,7 @@ def write_projection(workspace: Path, relative: str, value: JsonValue) -> None:
 def workspace_snapshot(workspace: Path, *, include_delivery: bool = False) -> dict[str, bytes]:
     root = workspace / "v2" / "operator"
     return {
-        str(path.relative_to(workspace)): path.read_bytes()
+        path.relative_to(workspace).as_posix(): path.read_bytes()
         for path in workspace.rglob("*")
         if path.is_file() and (include_delivery or not path.is_relative_to(root / "delivery"))
     }

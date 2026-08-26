@@ -15,6 +15,7 @@ from services.operator_api.runtime import (
     LocalFixtureProvider,
     LocalRuntimeService,
 )
+from services.operator_api.step_agents import load_step_agent_registry
 from services.runtime_contracts.llm_records import RuntimeContractValidator
 
 
@@ -39,6 +40,11 @@ def _validator() -> RuntimeContractValidator:
     return RuntimeContractValidator(schemas, registry)
 
 
+def _step_agent_registry():
+    registry = json.loads((ROOT / "standards/runtime/official-prompt-registry.json").read_text(encoding="utf-8"))
+    return load_step_agent_registry(ROOT, registry)
+
+
 def _profile() -> dict[str, object]:
     return json.loads((ROOT / "tests" / "fixtures" / "context_builder" / "positive-worker-profile.json").read_text(encoding="utf-8"))
 
@@ -59,6 +65,15 @@ def _seed(workspace: Path, step_id: str) -> ProjectRepository:
         path = workspace / "v2" / "operator" / "artifact-content" / f"{artifact_id}.md"
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(content)
+        _write(workspace, "artifacts.json", [{
+            "artifact_id": artifact_id,
+            "tenant_id": TENANT,
+            "project_id": PROJECT,
+            "run_id": RUN,
+            "step_id": "0",
+            "revision": 1,
+            "content_sha256": hashlib.sha256(content).hexdigest(),
+        }])
         _write(workspace, "releases/release-runtime-0001.json", {"release_id": "release-runtime-0001", "tenant_id": TENANT, "project_id": PROJECT, "run_id": RUN, "step_id": "0", "artifact_id": artifact_id, "artifact_sha256": hashlib.sha256(content).hexdigest(), "artifact_revision": 1, "status": "released"})
     return ProjectRepository(WorkspaceRegistry((WorkspaceRegistration(TENANT, PROJECT, workspace),)))
 
@@ -86,7 +101,7 @@ def _request(step_id: str, fixture_sha256: str | None = None) -> dict[str, str]:
 def _service(repository: ProjectRepository) -> LocalRuntimeService:
     step_id = repository.run(TENANT, PROJECT, RUN)["step_id"]
     contract_ids = {
-        "0": "https://heartweb.example/schema/manifest.schema.json",
+        "0": "https://heartweb.example/schema/manifest-v2.schema.json",
         "1": "https://heartweb.example/schema/outputs/step-1-topic-inventory.schema.json",
     }
     content = b"candidate output"
@@ -133,7 +148,13 @@ class LocalRuntimeServiceTests(unittest.TestCase):
     def test_missing_provider_leaves_projections_unchanged(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             repository = _seed(Path(temporary), "0")
-            service = LocalRuntimeService("real", None, RecoveryInventory(repository._registry))
+            service = LocalRuntimeService(
+                execution_mode="real",
+                fixture_provider=None,
+                recovery_inventory=RecoveryInventory(repository._registry),
+                hermes_provider=None,
+                step_agent_registry=_step_agent_registry(),
+            )
 
             with self.assertRaisesRegex(RuntimeError, "ERROR_RUNTIME_PROVIDER_BLOCKED"):
                 service.prepare_step(repository, ROOT, _validator(), _profile(), _request("0"))

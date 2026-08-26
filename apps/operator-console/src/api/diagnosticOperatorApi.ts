@@ -19,7 +19,7 @@ type Failure = { readonly apiStatus: number; readonly errorCode: string; readonl
 type TrackInput<T> = { readonly operation: OperationDefinition; readonly execute: () => Promise<T>; readonly successStatus: (result: T) => number }
 
 export type DiagnosticTraceRecorder = Pick<{ readonly record: (entry: DiagnosticTraceOperation) => Promise<void> }, "record">
-type DiagnosticOperatorApiConfig = { readonly api: OperatorApiClient; readonly now?: () => Date; readonly reporter: DiagnosticTraceRecorder; readonly tenantId: string }
+type DiagnosticOperatorApiConfig = { readonly api: OperatorApiClient; readonly now?: () => Date; readonly operationNamespace?: string; readonly reporter: DiagnosticTraceRecorder; readonly tenantId: string }
 
 function utcSeconds(date: Date): string {
   return date.toISOString().replace(/\.\d{3}Z$/, "Z")
@@ -29,8 +29,9 @@ function projectRoute(tenantId: string, projectId: string): string {
   return `/v1/tenants/${encodeURIComponent(tenantId)}/projects/${encodeURIComponent(projectId)}`
 }
 
-function operationId(sequence: number, action: DiagnosticAction): string {
-  return `operation-${String(sequence).padStart(4, "0")}-${action.replaceAll("_", "-")}`
+function operationId(sequence: number, action: DiagnosticAction, namespace?: string): string {
+  const prefix = namespace === undefined ? "operation" : `operation-${namespace}`
+  return `${prefix}-${String(sequence).padStart(4, "0")}-${action.replaceAll("_", "-")}`
 }
 
 function fallbackErrorCode(kind: OperatorApiError["kind"]): string {
@@ -71,7 +72,7 @@ export function createDiagnosticOperatorApiClient(config: DiagnosticOperatorApiC
   const baseRoute = (projectId: string): string => projectRoute(config.tenantId, projectId)
   const nextOperation = (definition: OperationDefinition): OperationBase => {
     sequence += 1
-    return { ...definition, occurredAt: utcSeconds(now()), operationId: operationId(sequence, definition.action) }
+    return { ...definition, occurredAt: utcSeconds(now()), operationId: operationId(sequence, definition.action, config.operationNamespace) }
   }
   const track = async <T>(input: TrackInput<T>): Promise<T> => {
     try {

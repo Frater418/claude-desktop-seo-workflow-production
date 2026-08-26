@@ -4,7 +4,7 @@
 
 **Projekt:** Modernisierung des Claude Desktop SEO-Workflows  
 **Datum:** 16. August 2026, Stand aktualisiert 17. August 2026  
-**Status:** Freigegeben am 16.08.2026 und in vier Sprints umgesetzt  
+**Status at capture:** Freigegeben am 16.08.2026 und in vier Sprints umgesetzt
 **Autor:** Raphael Rechberger  
 
 ---

@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heartweb.example/schema/provider-location-registry.schema.json",
+  "title": "Heartweb Provider Location Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["registry_version", "provider_id", "targets"],
+  "properties": {
+    "registry_version": {"type": "string", "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "provider_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{2,63}$"},
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/providerTarget"}
+    }
+  },
+  "$defs": {
+    "providerTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_id", "provider_id", "target_type", "country_code", "location_name", "location_code", "languages", "aliases", "status", "verified_at", "verification_source"],
+      "properties": {
+        "target_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{7,95}$"},
+        "provider_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{2,63}$"},
+        "target_type": {"type": "string", "enum": ["country", "region", "city", "postal_code"]},
+        "country_code": {"type": "string", "pattern": "^[A-Z]{2}$"},
+        "location_name": {"type": "string", "minLength": 1},
+        "location_code": {"type": ["integer", "null"], "minimum": 1},
+        "languages": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z]{2,3}$"}},
+        "aliases": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "status": {"type": "string", "enum": ["verified", "unknown", "retired"]},
+        "verified_at": {"type": ["string", "null"], "format": "date-time"},
+        "verification_source": {"type": ["string", "null"], "enum": ["provider_response", "provider_documentation", null]}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "verified"}}},
+          "then": {
+            "properties": {
+              "location_code": {"type": "integer", "minimum": 1},
+              "verified_at": {"type": "string", "format": "date-time"},
+              "verification_source": {"type": "string"}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"status": {"enum": ["unknown", "retired"]}}},
+          "then": {
+            "properties": {
+              "location_code": {"const": null},
+              "verified_at": {"const": null},
+              "verification_source": {"const": null}
+            }
+          }
+        }
+      ]
+    },
+    "providerLocationVerification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "provider_id", "target_id", "target_type", "location_name", "provider_location_code", "verified_at", "verification_source"],
+      "properties": {
+        "status": {"type": "string", "enum": ["verified", "unknown", "not_applicable"]},
+        "provider_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{2,63}$"},
+        "target_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{7,95}$"},
+        "target_type": {"type": "string", "enum": ["country", "region", "city", "postal_code"]},
+        "location_name": {"type": "string", "minLength": 1},
+        "provider_location_code": {"type": ["integer", "null"], "minimum": 1},
+        "verified_at": {"type": ["string", "null"], "format": "date-time"},
+        "verification_source": {"type": ["string", "null"], "enum": ["provider_response", "provider_documentation", null]}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "verified"}}},
+          "then": {
+            "properties": {
+              "provider_location_code": {"type": "integer", "minimum": 1},
+              "verified_at": {"type": "string", "format": "date-time"},
+              "verification_source": {"type": "string"}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"status": {"enum": ["unknown", "not_applicable"]}}},
+          "then": {
+            "properties": {
+              "provider_location_code": {"const": null},
+              "verified_at": {"const": null},
+              "verification_source": {"const": null}
+            }
+          }
+        }
+      ]
+    }
+  }
+}

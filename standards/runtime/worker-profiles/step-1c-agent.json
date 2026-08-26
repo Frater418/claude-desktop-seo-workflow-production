@@ -1,0 +1,46 @@
+{
+  "worker_profile_id": "worker-profile-step-1c-agent",
+  "schema_version": "1.1.0",
+  "profile_version": "1.2.0",
+  "profile_sha256": "951a616d27ed5cf1bd6b19ff72b989f08b54d7e8617c47bb29ec8e29d72d1180",
+  "display_name": "Step 1C Pillar Design System Agent",
+  "execution_kind": "llm",
+  "provider_capability_ref": {
+    "provider_id": "provider-hermes-runtime",
+    "provider_kind": "gateway",
+    "capability_id": "capability-hermes-step-agent-runtime"
+  },
+  "model_policy": {
+    "allowed_model_ids": [
+      "gpt-5.6-sol"
+    ],
+    "default_model_id": "gpt-5.6-sol"
+  },
+  "inference_policy": {
+    "upstream_provider_id": "openai-codex",
+    "reasoning_effort": "medium",
+    "max_output_tokens": 50000,
+    "timeout_seconds": 1500,
+    "fallback_mode": "fail_closed",
+    "max_agent_turns": 45,
+    "max_tool_rounds": 3,
+    "delegation_policy_ref": "delegation-policy-step-1c-v1"
+  },
+  "allowed_steps": [
+    "1c"
+  ],
+  "tool_policy": {
+    "tool_policy_id": "tool-policy-step-1c-agent",
+    "policy_version": "1.1.0",
+    "policy_sha256": "37099f2e19ea33ab911381d5dba2b8dc1d916b51283fde7ff5c38345d4eeaa8f",
+    "allowed_operations": [
+      "read_context",
+      "write_candidate_output",
+      "request_gateway_operation",
+      "delegate_bounded_review"
+    ],
+    "direct_provider_calls_allowed": false
+  },
+  "enabled": true,
+  "created_at": "2026-08-24T23:39:00Z"
+}

@@ -17,7 +17,7 @@ const supportingDocument = { content: "Unterstuetzender Nachweis", provenance: "
 afterEach(() => { cleanup(); vi.unstubAllGlobals() })
 
 function gate(artifact: ArtifactRecord = latestArtifact, hash = artifact.content_sha256): readonly GateRead[] {
-  return parseGates({ data: [{ tenant_id: currentRun.tenant_id, project_id: currentRun.project_id, run_id: currentRun.run_id, step_id: currentRun.step_id, quality_gate_id: "GATE-4A", quality_gate_run_id: "qgr-4a-evidence", artifact_id: artifact.artifact_id, artifact_sha256: hash, artifact_revision: artifact.revision, result: "passed", summary: "Pruefung bestanden", evidence: { source: "local simulated staging" }, findings: ["Keine Abweichung"], checker_version: "checker-1.0", checked_at: "2026-08-21T10:00:00Z" }] }, currentRun.tenant_id, currentRun.project_id)
+  return parseGates({ data: [{ tenant_id: currentRun.tenant_id, project_id: currentRun.project_id, run_id: currentRun.run_id, step_id: currentRun.step_id, quality_gate_id: "GATE-4A", quality_gate_run_id: "qgr-4a-evidence", human_gate_id: "GATE-4A", registry_version: "1.0.0", policy_version: "1.0.0", artifact_id: artifact.artifact_id, artifact_sha256: hash, artifact_revision: artifact.revision, result: "passed", summary: "Pruefung bestanden", evidence: { source: "local simulated staging" }, findings: [{ code: "QG_NO_DEVIATION", severity: "info", message: "Keine Abweichung" }], checker_version: "checker-1.0", checked_at: "2026-08-21T10:00:00Z" }] }, currentRun.tenant_id, currentRun.project_id)
 }
 
 function data(api: ReturnType<typeof createOperatorApiClient>, gates = gate(), artifacts: readonly ArtifactRecord[] = [firstArtifact, latestArtifact, supportingArtifact], artifact: ArtifactRecord | null = latestArtifact): OperatorWorkspaceData {

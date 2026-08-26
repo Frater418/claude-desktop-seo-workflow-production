@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import type { TaskRead } from "../api/readModels"
 import { taskStatusLabel } from "../api/statusLabels"
 import type { OperatorWorkspaceData } from "./useOperatorWorkspace"
+import { workflowStepTitle } from "./workflowPresentation"
 
 type SortKey = "priority" | "deadline"
 type SortDirection = "ascending" | "descending"
@@ -37,7 +38,7 @@ function sortedTasks(tasks: readonly TaskRead[], key: SortKey, direction: SortDi
   })
 }
 
-export function TaskWorkspace({ data }: { readonly data: OperatorWorkspaceData }): JSX.Element {
+export function TaskWorkspace({ data, onOpenWorkflow = () => undefined }: { readonly data: OperatorWorkspaceData; readonly onOpenWorkflow?: () => void }): JSX.Element {
   const [filters, setFilters] = useState<TaskFilters>({ status: "", owner: "", priority: "", deadline: "", step: "" })
   const [sortKey, setSortKey] = useState<SortKey>("priority")
   const [sortDirection, setSortDirection] = useState<SortDirection>("ascending")
@@ -64,12 +65,31 @@ export function TaskWorkspace({ data }: { readonly data: OperatorWorkspaceData }
   const deadlineDirection = sortKey === "deadline" && sortDirection === "descending" ? "spaeteste zuerst" : "frueheste zuerst"
   const filtersActive = Object.values(filters).some((value) => value !== "")
 
-  return <section className="task-layout">
-    <section className="work-panel task-queue">
-      <div className="work-heading"><div><p className="eyebrow">Aufgaben</p><h2>Aufgabenwarteschlange</h2></div><div className="action-row"><label>Status filtern<select aria-label="Status filtern" value={filters.status} onChange={(event) => updateFilter("status", event.currentTarget.value)}><option value="">Alle Status</option>{filterOptions.status.map((value) => <option key={value} value={value}>{taskStatusLabel(value)}</option>)}</select></label><label>Verantwortung filtern<select aria-label="Verantwortung filtern" value={filters.owner} onChange={(event) => updateFilter("owner", event.currentTarget.value)}><option value="">Alle Verantwortlichen</option>{filterOptions.owner.map((value) => <option key={value} value={value}>{value}</option>)}</select></label><label>Prioritaet filtern<select aria-label="Prioritaet filtern" value={filters.priority} onChange={(event) => updateFilter("priority", event.currentTarget.value)}><option value="">Alle Prioritaeten</option>{filterOptions.priority.map((value) => <option key={value} value={value}>{priorityLabel(value)}</option>)}</select></label><label>Faellig bis<input aria-describedby={deadlineIsInvalid ? "deadline-filter-error" : undefined} aria-invalid={deadlineIsInvalid || undefined} aria-label="Faellig bis" inputMode="numeric" placeholder="JJJJ-MM-TT" type="text" value={filters.deadline} onChange={(event) => updateFilter("deadline", event.currentTarget.value)} />{deadlineIsInvalid ? <span className="input-error" id="deadline-filter-error">Bitte ein gueltiges Datum im Format JJJJ-MM-TT eingeben.</span> : null}</label><label>Schritt filtern<select aria-label="Schritt filtern" value={filters.step} onChange={(event) => updateFilter("step", event.currentTarget.value)}><option value="">Alle Schritte</option>{filterOptions.step.map((value) => <option key={value} value={value}>{value}</option>)}</select></label></div></div>
-      <div className="action-row"><button type="button" aria-pressed={sortKey === "priority"} aria-label="Nach Prioritaet sortieren" aria-description={`Aktuell: ${priorityDirection}`} onClick={() => toggleSort("priority")}>Nach Prioritaet sortieren: {priorityDirection}</button><button type="button" aria-pressed={sortKey === "deadline"} aria-label="Nach Faelligkeit sortieren" aria-description={`Aktuell: ${deadlineDirection}`} onClick={() => toggleSort("deadline")}>Nach Faelligkeit sortieren: {deadlineDirection}</button></div>
-      {tasks.length === 0 ? <p>{filtersActive ? "Keine Aufgaben entsprechen den aktuellen Filtern." : "Keine Aufgaben vorhanden."}</p> : <div className="task-list" role="list" aria-label="Gefilterte Aufgaben">{tasks.map((task) => <div key={task.taskId} role="listitem"><button className="task-row" type="button" aria-label={task.title} aria-pressed={selected?.taskId === task.taskId} onClick={() => setSelectedId(task.taskId)}><strong className="task-row-title">{task.title}</strong><span className="task-row-metadata"><span>{priorityLabel(task.priority)}</span><span>Schritt {task.stepId}</span><time className="task-row-date" dateTime={task.deadline}>{task.deadline}</time></span></button></div>)}</div>}
-    </section>
-    <section className="work-panel task-detail"><h2>Aufgabedetail</h2>{selected === undefined ? <p>Keine Aufgabendetails verfuegbar.</p> : <><h3>{selected.title}</h3><dl className="facts"><div><dt>Status</dt><dd>{taskStatusLabel(selected.status)}</dd></div><div><dt>Prioritaet</dt><dd>{priorityLabel(selected.priority)}</dd></div><div><dt>Erforderliche Loesung</dt><dd>{selected.resolution}</dd></div><div><dt>Abhaengigkeit</dt><dd>{selected.dependency}</dd></div><div><dt>Verantwortung</dt><dd>{selected.owner}</dd></div><div><dt>Faelligkeit</dt><dd>{selected.deadline}</dd></div><div><dt>Schritt</dt><dd>{selected.stepId}</dd></div></dl></>}</section>
+  if (data.tasks.length === 0) return <section className="empty-workspace" aria-labelledby="empty-tasks-title">
+    <p className="eyebrow">Projektaufgaben</p>
+    <h2 id="empty-tasks-title">Aktuell ist keine Aufgabe offen</h2>
+    <p>Aufgaben entstehen nur dann, wenn ein Produktionsschritt eine Eingabe, Korrektur oder Entscheidung von dir benötigt. Für dieses Projekt musst du hier im Moment nichts bearbeiten.</p>
+    <button className="button-primary" type="button" onClick={onOpenWorkflow}>Zum aktuellen Projektschritt</button>
+  </section>
+
+  return <section className="task-page">
+    <header className="section-heading">
+      <div><p className="eyebrow">Projektaufgaben</p><h2>{data.tasks.length} {data.tasks.length === 1 ? "Aufgabe" : "Aufgaben"}</h2><p>Diese Warteschlange enthält ausschließlich konkrete Eingaben, Korrekturen und Entscheidungen für dieses Projekt.</p></div>
+    </header>
+    <details className="task-filters">
+      <summary>Filter und Sortierung</summary>
+      <div className="task-filter-grid">
+        <label>Status<select aria-label="Status filtern" value={filters.status} onChange={(event) => updateFilter("status", event.currentTarget.value)}><option value="">Alle Status</option>{filterOptions.status.map((value) => <option key={value} value={value}>{taskStatusLabel(value)}</option>)}</select></label>
+        <label>Verantwortung<select aria-label="Verantwortung filtern" value={filters.owner} onChange={(event) => updateFilter("owner", event.currentTarget.value)}><option value="">Alle Verantwortlichen</option>{filterOptions.owner.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
+        <label>Priorität<select aria-label="Prioritaet filtern" value={filters.priority} onChange={(event) => updateFilter("priority", event.currentTarget.value)}><option value="">Alle Prioritäten</option>{filterOptions.priority.map((value) => <option key={value} value={value}>{priorityLabel(value)}</option>)}</select></label>
+        <label>Fällig bis<input aria-describedby={deadlineIsInvalid ? "deadline-filter-error" : undefined} aria-invalid={deadlineIsInvalid || undefined} aria-label="Faellig bis" inputMode="numeric" placeholder="JJJJ-MM-TT" type="text" value={filters.deadline} onChange={(event) => updateFilter("deadline", event.currentTarget.value)} />{deadlineIsInvalid ? <span className="input-error" id="deadline-filter-error">Bitte ein gültiges Datum im Format JJJJ-MM-TT eingeben.</span> : null}</label>
+        <label>Produktionsschritt<select aria-label="Schritt filtern" value={filters.step} onChange={(event) => updateFilter("step", event.currentTarget.value)}><option value="">Alle Schritte</option>{filterOptions.step.map((value) => <option key={value} value={value}>{workflowStepTitle(value)}</option>)}</select></label>
+      </div>
+      <div className="action-row"><button type="button" aria-pressed={sortKey === "priority"} aria-label="Nach Prioritaet sortieren" aria-description={`Aktuell: ${priorityDirection}`} onClick={() => toggleSort("priority")}>Priorität: {priorityDirection}</button><button type="button" aria-pressed={sortKey === "deadline"} aria-label="Nach Faelligkeit sortieren" aria-description={`Aktuell: ${deadlineDirection}`} onClick={() => toggleSort("deadline")}>Fälligkeit: {deadlineDirection}</button></div>
+    </details>
+    {tasks.length === 0 && filtersActive ? <section className="filtered-empty"><p>Keine Aufgabe entspricht den aktuellen Filtern.</p></section> : <section className="task-layout">
+      <section className="task-queue"><div className="task-list" role="list" aria-label="Gefilterte Aufgaben">{tasks.map((task) => <div key={task.taskId} role="listitem"><button className="task-row" type="button" aria-label={task.title} aria-pressed={selected?.taskId === task.taskId} onClick={() => setSelectedId(task.taskId)}><strong className="task-row-title">{task.title}</strong><span className="task-row-metadata"><span>{priorityLabel(task.priority)}</span><span>{workflowStepTitle(task.stepId)}</span><time className="task-row-date" dateTime={task.deadline}>{task.deadline}</time></span></button></div>)}</div></section>
+      <section className="task-detail" aria-labelledby="task-detail-title"><p className="eyebrow">Ausgewählte Aufgabe</p><h2 id="task-detail-title">{selected?.title}</h2>{selected === undefined ? null : <><dl className="facts"><div><dt>Status</dt><dd>{taskStatusLabel(selected.status)}</dd></div><div><dt>Priorität</dt><dd>{priorityLabel(selected.priority)}</dd></div><div><dt>Erforderliche Lösung</dt><dd>{selected.resolution}</dd></div><div><dt>Abhängigkeit</dt><dd>{selected.dependency}</dd></div><div><dt>Verantwortung</dt><dd>{selected.owner}</dd></div><div><dt>Fälligkeit</dt><dd>{selected.deadline}</dd></div><div><dt>Produktionsschritt</dt><dd>{workflowStepTitle(selected.stepId)}</dd></div></dl><button className="button-secondary" type="button" onClick={onOpenWorkflow}>Im Projektablauf öffnen</button></>}</section>
+    </section>}
   </section>
 }

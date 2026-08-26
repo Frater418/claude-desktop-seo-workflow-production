@@ -6,7 +6,7 @@
 **Autor & Architektur:** Raphael Rechberger  
 **Zielgruppe:** Jesse Jensen, Raphael Rechberger & Heartweb Projekt-Teams  
 **Version:** 1.3.0  
-**Status:** Aktiv  
+**Status at capture:** Aktiv; current lifecycle historical
 
 ---
 

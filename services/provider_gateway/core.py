@@ -52,7 +52,21 @@ def _violations(request: Mapping[str, JsonValue], response: Mapping[str, JsonVal
     violations: list[str] = []
     if _string(request.get("request_sha256")) != canonical_request_sha256(request):
         violations.append("request_hash_mismatch")
-    for field in ("request_id", "run_id", "project_id", "deployment_id", "provider", "language", "device"):
+    for field in (
+        "schema_version",
+        "request_id",
+        "run_id",
+        "project_id",
+        "deployment_id",
+        "revision",
+        "source_artifact_ids",
+        "evidence_ids",
+        "decision_records",
+        "candidate_status",
+        "provider",
+        "language",
+        "device",
+    ):
         if response.get(field) != request.get(field):
             violations.append(f"metadata_mismatch:{field}")
     request_geo = _mapping(request.get("geo"))
@@ -73,12 +87,26 @@ def _violations(request: Mapping[str, JsonValue], response: Mapping[str, JsonVal
         violations.append("missing_raw_response_hash")
     elif declared_raw_response_sha256 != raw_response_sha256:
         violations.append("raw_response_hash_mismatch")
-    actual_cost = _mapping(response.get("cost")).get("actual")
-    maximum_cost = _mapping(request.get("cost")).get("maximum")
-    if not isinstance(actual_cost, int | float):
-        violations.append("unknown_cost")
-    elif isinstance(maximum_cost, int | float) and actual_cost > maximum_cost:
-        violations.append("quota_exceeded")
+    request_cost = _mapping(request.get("cost"))
+    response_cost = _mapping(response.get("cost"))
+    if request.get("schema_version") == "2.0.0":
+        actual_cost = response_cost.get("actual")
+        maximum_cost = request_cost.get("maximum")
+        if not isinstance(actual_cost, int | float):
+            violations.append("unknown_cost")
+        elif isinstance(maximum_cost, int | float) and actual_cost > maximum_cost:
+            violations.append("quota_exceeded")
+    elif request.get("schema_version") == "2.1.0":
+        if request_cost.get("billing_unit") != "credits" or request_cost.get("provider_reported") is not False:
+            violations.append("provider_usage_contract_mismatch")
+        if response_cost != {
+            "billing_unit": "credits",
+            "provider_reported": False,
+            "status": "not_reported",
+        }:
+            violations.append("provider_usage_contract_mismatch")
+    else:
+        violations.append("provider_schema_version_unsupported")
     return tuple(sorted(set(violations)))
 
 

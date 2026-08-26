@@ -103,6 +103,7 @@ class ArtifactTransaction(BaseModel):
     idempotency_key: str
     payload_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
     target_revision: int = Field(ge=1)
+    next_run: dict[str, JsonValue]
     records: tuple[ArtifactRecord, ...]
     contents: tuple[bytes, ...]
     quality_gate_runs: tuple[dict[str, JsonValue], ...] = ()

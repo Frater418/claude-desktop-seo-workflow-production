@@ -28,6 +28,10 @@ def validate_step0_cross_binding(
     if not isinstance(project, dict) or not isinstance(intake, dict) or not isinstance(binding, dict):
         raise Step0CrossBindingError("Step 0 requires Project V2, accepted intake, and immutable source binding.")
     deployment = _deployment(project, binding)
+    verification = deployment.get("provider_location_verification")
+    is_v2 = manifest.get("schema_version") == "2.0.0"
+    if not isinstance(verification, dict):
+        raise Step0CrossBindingError("Project V2 provider location binding is unavailable.")
     expected = {
         "tenant_id": _nested(project, "tenant", "tenant_id"),
         "project_id": project.get("project_id"),
@@ -39,12 +43,28 @@ def validate_step0_cross_binding(
         "project_v2_sha256": _canonical_sha256(project),
         "intake_source_sha256": intake.get("source_sha256"),
     }
+    if is_v2:
+        expected.update(
+            {
+                "locale": deployment.get("locale"),
+                "provider_target_id": verification.get("target_id"),
+                "provider_location_code": verification.get("provider_location_code"),
+                "deployment_sha256": _canonical_sha256(deployment),
+            }
+        )
     if output.tenant_id != expected["tenant_id"] or output.project_id != expected["project_id"]:
         raise Step0CrossBindingError("Provider output identity does not match canonical Project V2.")
     if any(binding.get(key) != value for key, value in expected.items()):
         raise Step0CrossBindingError("Step 0 manifest source binding does not match canonical Project V2 or intake.")
     if manifest.get("project_id") != expected["project_id"] or manifest.get("language") != expected["language"] or manifest.get("country") != expected["country"]:
         raise Step0CrossBindingError("Step 0 manifest identity does not match canonical Project V2.")
+    if verification.get("status") == "verified" and manifest.get("location_code") != verification.get("provider_location_code"):
+        raise Step0CrossBindingError("Step 0 manifest provider location code does not match canonical Project V2.")
+    if is_v2 and (
+        manifest.get("deployment_binding") != deployment
+        or manifest.get("target_regions") != deployment.get("target_regions")
+    ):
+        raise Step0CrossBindingError("Step 0 manifest deployment projection does not match canonical Project V2.")
     if _semantic_projection(manifest, project, intake, deployment) is False:
         raise Step0CrossBindingError("Step 0 manifest business semantics do not match canonical Project V2 or accepted intake.")
 
@@ -85,20 +105,30 @@ def _semantic_projection(
         for service in services
         if isinstance(service, (str, dict))
     )
+    entity_domain = project.get("entity_domain_gbp")
+    brand = entity_domain.get("brand") if isinstance(entity_domain, dict) else None
+    manifest_entities = manifest.get("entities")
+    manifest_services = manifest_entities.get("core_services") if isinstance(manifest_entities, dict) else None
+    manifest_service_names = tuple(
+        service.get("name")
+        for service in manifest_services
+        if isinstance(service, dict)
+    ) if isinstance(manifest_services, list) else ()
     domain_hosts = _deployment_domain_hosts(project, deployment)
     manifest_host = _domain_host(manifest.get("domain"))
     audience = manifest.get("target_audience")
+    content_focus = manifest.get("content_focus")
     secondary_regions = manifest.get("secondary_regions")
-    if not isinstance(customer_name, str) or not isinstance(intake_name, str) or not isinstance(intake_project, dict) or not isinstance(manifest_host, str) or not isinstance(audience, str) or not isinstance(secondary_regions, list):
+    if not isinstance(customer_name, str) or not isinstance(intake_name, str) or not isinstance(intake_project, dict) or not isinstance(manifest_host, str) or not isinstance(audience, str) or not audience.strip() or not isinstance(content_focus, str) or not content_focus.strip() or not isinstance(brand, dict) or not isinstance(manifest_entities, dict) or not isinstance(secondary_regions, list):
         raise Step0CrossBindingError("Step 0 manifest semantic fields are unavailable.")
     return (
         manifest.get("project_name") == customer_name
         and intake_name == customer_name
         and intake_project == project
         and manifest_host in domain_hosts
-        and audience in audiences
         and manifest.get("business_goal") == project.get("business_goal")
-        and manifest.get("content_focus") in service_names
+        and manifest_entities.get("brand_entity") == brand.get("name")
+        and manifest_service_names == service_names
         and manifest.get("primary_region") == (regions[0] if regions else None)
         and tuple(secondary_regions) == tuple(regions[1:])
     )

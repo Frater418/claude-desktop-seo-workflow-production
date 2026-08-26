@@ -2,7 +2,7 @@
 
 **Author:** Raphael Rechberger
 **Status:** Current integration authority
-**Updated:** 2026-08-22
+**Updated:** 2026-08-26
 **Decision:** DEC-0025
 
 ## Product purpose
@@ -69,7 +69,7 @@ They carry tenant, project, run, step, correlation, idempotency and expected rev
 
 `task.resolved` and `blocker.resolved` refer only to Core-internal production tasks before final handoff. They never refer to post-handoff staff tasks in Notion.
 
-`simulated` commands require a simulation ID and cannot declare a live connection. `live` commands require a live connection ID and cannot declare a simulation. The first local release remains simulated.
+`simulated` commands require a simulation ID and cannot declare a live connection. `live` commands require a live connection ID and cannot declare a simulation. n8n is not part of the first local release; existing simulator records prove command contracts only and are not live integration Evidence.
 
 ## Error and replay behavior
 

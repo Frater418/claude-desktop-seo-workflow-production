@@ -2,7 +2,7 @@
 
 **Author:** Raphael Rechberger
 **Status:** Current handoff guidance
-**Updated:** 2026-08-22
+**Updated:** 2026-08-26
 **Audience:** Heartweb Copywriters and project leads
 
 ## 1. Purpose

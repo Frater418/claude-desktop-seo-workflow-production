@@ -15,6 +15,7 @@ const actionResults = {
   "request-input": { result: "Eine Eingabe wird angefordert.", previewHash: "input-preview" },
   escalate: { result: "Die Entscheidung wird eskaliert.", previewHash: "escalate-preview" },
   "request-waiver": { result: "Die Ausnahmeanfrage wird geprueft.", previewHash: "waiver-preview" },
+  "submit-for-gate": { result: "Das Ergebnis wird zur fachlichen Pruefung eingereicht.", previewHash: "submit-preview" },
 } as const
 
 type ActionName = keyof typeof actionResults
@@ -56,6 +57,7 @@ function actionName(url: string, projectPath: string, suffix: "preview" | "confi
     case "request-input": return "request-input"
     case "escalate": return "escalate"
     case "request-waiver": return "request-waiver"
+    case "submit-for-gate": return "submit-for-gate"
     default: return null
   }
 }
@@ -190,9 +192,10 @@ export function createOperatorApiFixture(): { readonly fetch: typeof fetch; read
     if (url.endsWith("/artifacts")) return Promise.resolve(jsonResponse({ data: acceptedProjectRequested ? [] : [activePreviousArtifact, activeArtifact] }))
     if (url.endsWith("/releases")) return Promise.resolve(jsonResponse({ data: [] }))
     if (url.endsWith("/artifact-revisions")) return Promise.resolve(jsonResponse({ artifacts: artifactSaved ? [previousArtifact, artifact, createdArtifact] : [previousArtifact, artifact] }))
-    if (url.endsWith("/gates")) return Promise.resolve(jsonResponse({ data: acceptedProjectRequested ? [] : [{ ...activeRun, quality_gate_id: "GATE-1B", quality_gate_run_id: "qgr-1b-welle-zwei", artifact_id: activeArtifact.artifact_id, artifact_sha256: activeArtifact.content_sha256, artifact_revision: activeArtifact.revision, result: "passed", summary: "Maschinenpruefung bestanden", evidence: { struktur: "vollstaendig" }, findings: [], checker_version: "step-validation-service-1.0.0", checked_at: "2026-08-21T10:00:00Z" }] }))
-    if (url.endsWith("/context-packages")) return Promise.resolve(jsonResponse({ data: acceptedProjectRequested ? [] : [{ ...activeRun, title: "Quellenpaket", finding: secondProjectRequested ? "Clusterquellen vollstaendig" : "Lokale Quellen vollstaendig" }] }))
+    if (url.endsWith("/gates")) return Promise.resolve(jsonResponse({ data: acceptedProjectRequested ? [] : [{ tenant_id: tenantId, run_id: activeRun.run_id, step_id: activeRun.step_id, quality_gate_id: "qg-step1b-contract", quality_gate_run_id: "qgr-1b-welle-zwei", human_gate_id: "GATE-1B", artifact_id: activeArtifact.artifact_id, artifact_sha256: activeArtifact.content_sha256, artifact_revision: activeArtifact.revision, registry_version: "1.1.0", policy_version: "1.1.0", result: "passed", evidence: { validator_result: "passed" }, findings: [{ code: "QG_STEP1B_VALID", severity: "info", message: "Die Seitenarchitektur erfüllt den Vertrag." }], checker_version: "step-validation-service-1.0.0", checked_at: "2026-08-21T10:00:00Z" }] }))
+    if (url.endsWith("/context-packages")) return Promise.resolve(jsonResponse({ data: acceptedProjectRequested ? [] : [{ tenant_id: tenantId, project_id: activeProject.project_id, run_id: activeRun.run_id, step_id: activeRun.step_id, context_package_id: `context-${activeProject.project_id}`, target_revision: activeRun.expected_revision, sources: [{ source_id: "official-prompt" }, { source_id: "output-contract" }, { source_id: "project-v2" }] }] }))
     if (url.endsWith("/integrations/status")) return Promise.resolve(jsonResponse({ data: [{ tenant_id: tenantId, project_id: activeProject.project_id, name: "Notion", mode: "simulated" }, { tenant_id: tenantId, project_id: activeProject.project_id, name: "n8n", mode: "simulated" }] }))
+    if (method === "GET" && url.endsWith("/intake")) return Promise.resolve(jsonResponse({ data: { tenant_id: tenantId, project_id: activeProject.project_id, reviewed: { title: activeProject.name, tenant_id: tenantId, project_id: activeProject.project_id, project_name: activeProject.name, project_v2: {} }, accepted_at: "2026-08-21T10:00:00Z", accepted_by: "Heartweb Admin Operator", markdown: `# ${activeProject.name}`, source_sha256: "c".repeat(64), generation: null } }))
     if (url.endsWith("/intake/preview")) return Promise.resolve(jsonResponse({ data: { preview_hash: "a".repeat(64), source_sha256: "b".repeat(64), reviewed: { tenant_id: tenantId, project_id: acceptedProjectId, project_name: acceptedProject.name, title: "Pflegedienst Alpha", project_v2: { version: 2 } }, missing_fields: [], eligible: true, previewed_at: "2026-08-21T10:00:00Z" } }))
     if (url.endsWith("/intake/accept")) {
       intakeAccepted = true

@@ -12,7 +12,24 @@ from pathlib import Path
 from typing import Any
 
 SCHEMA_VERSION = "1.0.0"
+GENERATOR_VERSION = "1.1.0"
+ONBOARDING_SOURCE_PATHS = (
+    "00_admin/PROJECT_STATE.md",
+    "00_admin/DECISIONS.md",
+    "00_admin/MASTER_TASK_MATRIX.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "standards/testing/PROTOTYPE_TEST_POLICY.md",
+    "docs/00-current-production-architecture.md",
+    "docs/09-extension-and-evolution-guide.md",
+    "00_admin/DEFERRED_INTEGRATION_BACKLOG.md",
+    "00_admin/POST_RELEASE_BACKLOG.md",
+    ".hermes/plans/2026-08-25_225654-repository-master-consolidation-and-onboarding.md",
+)
+INITIAL_ROUTE_STEPS = ("0", "1", "1b", "1c", "2", "3", "4a", "4b")
 GENERATED_PATHS = {
+    "00_admin/ONBOARDING_REFERENCE.md",
     "00_admin/repository-index/DOCUMENT_REGISTRY.json",
     "00_admin/repository-index/DOCUMENT_REGISTRY.jsonl",
     "00_admin/REPOSITORY_INDEX.md",
@@ -282,6 +299,313 @@ def _markdown_table(entries: list[dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
+def _md_cell(value: object) -> str:
+    return _sanitize(str(value)).replace("|", "\\|")
+
+
+def _source_fence(text: str) -> str:
+    longest = max((len(match.group(0)) for match in re.finditer(r"`+", text)), default=0)
+    return "`" * max(4, longest + 1)
+
+
+def _current_status_excerpt(root: Path) -> str:
+    lines = (root / "00_admin/PROJECT_STATE.md").read_text(encoding="utf-8").splitlines()
+    selected = [line for line in lines[:20] if line.startswith("**Status:**")]
+    start = next((index for index, line in enumerate(lines) if line.startswith("### Aktueller Konsolidierungs- und Produktionscheckpoint")), None)
+    if start is None:
+        raise ValueError("ERROR_ONBOARDING_CURRENT_STATUS_MISSING")
+    selected.extend(lines[start:])
+    for index in range(2, len(selected)):
+        if selected[index].startswith("### "):
+            selected = selected[:index]
+            break
+    if not selected:
+        raise ValueError("ERROR_ONBOARDING_CURRENT_STATUS_MISSING")
+    return "\n".join(selected).strip()
+
+
+def _prompt_version(path: Path) -> str:
+    match = re.search(r"<version>([^<]+)</version>", path.read_text(encoding="utf-8"))
+    if match is None:
+        raise ValueError(f"ERROR_ONBOARDING_PROMPT_VERSION_MISSING: {path.as_posix()}")
+    return _sanitize(match.group(1))
+
+
+def _prompt_classification(entry: dict[str, Any], active_registry_paths: set[str]) -> str:
+    if entry["path"] in active_registry_paths:
+        return "active_registry"
+    if entry["path"] == "prompts/intake-project-v2-v1.3.0.xml.md":
+        return "active_intake"
+    if "compatibility-alias" in entry["tags"]:
+        return "superseded_alias"
+    if entry["lifecycle"] in {"historical", "superseded"}:
+        return "historical_version"
+    return "deferred_or_supporting"
+
+
+def _onboarding_reference(
+    root: Path,
+    entries: list[dict[str, Any]],
+    commit: str,
+    policy: dict[str, Any],
+) -> bytes:
+    by_path = {entry["path"]: entry for entry in entries}
+    sources: list[dict[str, Any]] = []
+    for relative in ONBOARDING_SOURCE_PATHS:
+        entry = by_path.get(relative)
+        if entry is None:
+            raise ValueError(f"ERROR_ONBOARDING_SOURCE_MISSING: {relative}")
+        if not entry["default_retrieval"] or entry["lifecycle"] not in {
+            "current_authority",
+            "current_strategy",
+            "active_plan",
+        }:
+            raise ValueError(f"ERROR_ONBOARDING_SOURCE_NOT_CURRENT: {relative}")
+        data = (root / relative).read_bytes()
+        if hashlib.sha256(data).hexdigest() != entry["content_sha256"]:
+            raise ValueError(f"ERROR_ONBOARDING_SOURCE_HASH: {relative}")
+        sources.append(entry)
+
+    prompt_registry = _read_json(root / "standards/runtime/official-prompt-registry.json")
+    official_prompts = [entry for entry in prompt_registry["entries"] if entry.get("active") is True]
+    if len(official_prompts) != 9:
+        raise ValueError("ERROR_ONBOARDING_PROMPT_REGISTRY_COUNT")
+    active_prompt_paths = {str(entry["prompt_path"]) for entry in official_prompts}
+
+    step_agent_registry = _read_json(root / "standards/runtime/step-agent-registry.json")
+    step_agents = step_agent_registry.get("entries")
+    if not isinstance(step_agents, list) or tuple(entry.get("step_id") for entry in step_agents) != INITIAL_ROUTE_STEPS:
+        raise ValueError("ERROR_ONBOARDING_STEP_AGENT_ROUTE")
+
+    status_excerpt = _current_status_excerpt(root)
+    status_fence = _source_fence(status_excerpt)
+    counts = Counter(entry["lifecycle"] for entry in entries)
+    lines = [
+        "# Heartweb onboarding reference",
+        "",
+        "**Author:** Raphael Rechberger",
+        "**Lifecycle:** generated onboarding view",
+        f"**Source commit:** `{commit}`",
+        f"**Generator version:** `{GENERATOR_VERSION}`",
+        f"**Registry version:** `{policy['registry_version']}`",
+        f"**Inventory records:** {len(entries)}",
+        "",
+        "> This file is a deterministic generated onboarding view. It never overrides `00_admin/PROJECT_STATE.md`, active records in `00_admin/DECISIONS.md`, registered standards, contracts or Evidence. Every embedded source block identifies its canonical path, lifecycle, authority and raw SHA-256. Any drift makes `python scripts/build_repository_index.py --check` fail.",
+        "",
+        "## 1. Snapshot identity and authority order",
+        "",
+        "Authority is resolved before semantic similarity. Latest explicit Raphael instruction wins, followed by Project State, active Decisions and the ordered repository authorities below.",
+        "",
+    ]
+    lines.extend(f"{index}. `{item}`" for index, item in enumerate(policy["authority_order"], start=1))
+    lines.extend(
+        [
+            "",
+            "Conflict rule: a lower authority never silently overwrites a higher authority. Historical, superseded and Evidence records are opt-in only.",
+            "",
+            "## 2. Product purpose and hard boundaries",
+            "",
+            "Heartweb is a client-neutral local SEO and GEO production system for one internal operator. It turns verified client inputs into strategy, architecture, keyword Evidence, roadmaps, professional Copywriter briefings, Developer specifications and deterministic handoff packages.",
+            "",
+            "- The system does not write final editorial copy. Human Heartweb Copywriters do.",
+            "- The German Single-Admin Console is for the operator only.",
+            "- Heartweb Core alone owns canonical workflow state, revisions, gates, approvals and releases.",
+            "- External providers are reached only through versioned Provider Gateway operations. Missing data stops fail-closed.",
+            "- Customer facts, claims, regions, Evidence and design stay in isolated customer workspaces, not shared framework logic.",
+            "- Delivery is derived, deterministic and read-only. It cannot mutate workflow authority.",
+            "- Repository consolidation into `master` is not Production Acceptance.",
+            "",
+            "## 3. Truthful current status and next gate",
+            "",
+            "The following excerpt is copied from the canonical Project State in this snapshot:",
+            "",
+            f"{status_fence}text",
+            status_excerpt,
+            status_fence,
+            "",
+            "The next Product gate remains M10: produce, review, approve and deliver the remaining real route without estimating missing provider data or implying unverified quality.",
+            "",
+            "## 4. Workflow and Step 3B boundary",
+            "",
+            "Initial production route:",
+            "",
+            "`0 -> 1 -> 1b -> 1c -> 2 -> 3 -> 4a -> 4b -> Delivery`",
+            "",
+            "Step 3B is not an initial-route Step agent. It runs only after publication at day 30, day 60 and day 90 when verified real performance data exists. It produces a versioned adjustment proposal and never mutates the released original plan.",
+            "",
+            "## 5. Architecture map",
+            "",
+            "| Component | Binding responsibility | Forbidden responsibility |",
+            "|---|---|---|",
+            "| Core | Canonical state, artifacts, revisions, Evidence, gates, approvals and releases | Provider calls and post-handoff staff management |",
+            "| Operator Console | Typed commands and canonical German read models | Duplicating workflow rules or bypassing gates |",
+            "| Provider Gateway | Versioned, geo-bound provider operations and persisted Evidence | Guessing missing values or exposing credentials |",
+            "| Hermes Gateway | Isolated specialized Step-agent execution and controlled Heartweb tools | Canonical state mutation or credential ownership in prompts |",
+            "| Delivery | Deterministic checkpoint and final packages, ZIP and manual Notion import | Approval, artifact mutation or workflow transition |",
+            "| Notion | Human implementation tasks after approved Delivery | Calling back into Core for ordinary staff task changes |",
+            "| n8n | Future orchestration, transport, Notion creation and scheduled Step 3B trigger | State authority or daily staff-task monitoring |",
+            "",
+            "## 6. Capability evidence levels",
+            "",
+            "| State | Capabilities |",
+            "|---|---|",
+            "| Implemented | V2 Core and Transition Service; revision, gate, approval and release services; Provider Gateway; specialized Hermes Step agents; German Console; deterministic Delivery and diagnostics |",
+            "| Verified locally | Registry and hash bindings; focused Runtime and tool-scope closure; Step 0 release for the active controlled project; local Delivery and diagnostic contract evidence |",
+            "| Unverified | Real Step 1 through Step 4B provider-backed output quality; complete active-project ZIP and Notion handoff; Production acceptance |",
+            "| Planned before M10 closes | Produce, review, gate and deliver the remaining controlled route with no open P0/P1 |",
+            "| Deferred after M10 | Live Notion adapter, n8n orchestration, Step 3B operations, public deployment, broad mobile polish and wider archetypes |",
+            "| Absent | Production deployment, live Step-3B performance dataset and an approved complete real Golden Path |",
+            "",
+            "Evidence labels remain separate: unit or contract test, local service integration, deterministic fixture E2E, live-provider smoke, real-project Golden Path, external Notion or n8n E2E and Production acceptance.",
+            "",
+            "## 7. Git, authorship, safety, separation and testing rules",
+            "",
+            "- Raphael Rechberger is the sole author of project documents, deliverables and commits.",
+            "- DEC-0031 authorizes this bounded repository consolidation, normal push, reachability-proven branch cleanup and fresh-clone continuation. No force-push is the default.",
+            "- Released artifacts and accepted prompt meanings remain immutable. Edits create new versions or revisions.",
+            "- Never commit customer workspaces, credentials, raw authorization headers, local `.env` files or sensitive recovery exports.",
+            "- Never estimate missing provider metrics or fabricate claims, locations, approvals, Evidence, identities or completion state.",
+            "- Run only the affected dependency closure required by `standards/testing/PROTOTYPE_TEST_POLICY.md`; do not restart broad matrices after a bounded failure.",
+            "- Never use Em Dash or En Dash characters.",
+            "",
+            "## 8. Verbatim onboarding-critical source blocks",
+            "",
+            "Each block below is a text projection of the canonical source bytes. The heading SHA-256 is calculated from the raw source file.",
+            "",
+        ]
+    )
+    for entry in sources:
+        relative = entry["path"]
+        text = (root / relative).read_bytes().decode("utf-8")
+        fence = _source_fence(text)
+        lines.extend(
+            [
+                f"### Source: [`{relative}`](../{relative})",
+                "",
+                f"- Lifecycle: `{entry['lifecycle']}`",
+                f"- Authority: {entry['authority_level']}",
+                f"- SHA-256: `{entry['content_sha256']}`",
+                "",
+                f"{fence}text",
+                text.rstrip("\r\n"),
+                fence,
+                "",
+            ]
+        )
+
+    prompt_entries = sorted((entry for entry in entries if entry["area"] == "prompts"), key=lambda entry: entry["path"])
+    lines.extend(
+        [
+            "## 9. Complete prompt catalog",
+            "",
+            "| Classification | Prompt | Version | Lifecycle | SHA-256 |",
+            "|---|---|---|---|---|",
+        ]
+    )
+    for entry in prompt_entries:
+        lines.append(
+            f"| `{_prompt_classification(entry, active_prompt_paths)}` | [`{entry['path']}`](../{entry['path']}) | `{_prompt_version(root / entry['path'])}` | `{entry['lifecycle']}` | `{entry['content_sha256']}` |"
+        )
+
+    lines.extend(
+        [
+            "",
+            "## 10. Active workflow prompt registry",
+            "",
+            "| Step | Prompt contract | Prompt path and hash | Output contracts |",
+            "|---|---|---|---|",
+        ]
+    )
+    for entry in official_prompts:
+        outputs = "<br>".join(
+            f"`{contract['contract_id']}@{contract['contract_version']}`: `{contract['contract_path']}` `{contract['contract_sha256']}`"
+            for contract in entry["output_contracts"]
+        )
+        lines.append(
+            f"| `{entry['step_id']}` | `{entry['prompt_id']}@{entry['prompt_version']}` | [`{entry['prompt_path']}`](../{entry['prompt_path']}) `{entry['prompt_sha256']}` | {outputs} |"
+        )
+
+    lines.extend(
+        [
+            "",
+            "## 11. Initial-route Step agents, Worker Profiles and Tool Policies",
+            "",
+            "| Step | Agent contract | Worker Profile | Tool Policy | Required operations |",
+            "|---|---|---|---|---|",
+        ]
+    )
+    for entry in step_agents:
+        policy_record = _read_json(root / entry["tool_policy_path"])
+        operations = ", ".join(f"`{operation}`" for operation in policy_record["required_gateway_operations"])
+        lines.append(
+            f"| `{entry['step_id']}` | `{entry['agent_contract_id']}@{entry['agent_contract_version']}` | [`{entry['worker_profile_path']}`](../{entry['worker_profile_path']}) `{entry['worker_profile_version']}` `{entry['worker_profile_sha256']}` | [`{entry['tool_policy_path']}`](../{entry['tool_policy_path']}) `{entry['tool_policy_version']}` `{entry['tool_policy_sha256']}` | {operations} |"
+        )
+
+    lines.extend(
+        [
+            "",
+            "## 12. Evolution rules",
+            "",
+            "A semantic prompt change requires coordinated review of prompt version, output schema version, validator, renderer, Quality Gate, positive and negative fixtures, Context Package, tool policy and migration or activation rule. Contracts stay strict on identity, lineage, Evidence and state while preserving strategic freedom inside accepted boundaries.",
+            "",
+            "New providers enter through the Provider Gateway. New agent tools require versioned operations and policies. New workflow Steps require Core graph, transitions, artifacts, gates, prompts, contracts, validators, renderers, tests and operator projection updates. The full authority is embedded above from `docs/09-extension-and-evolution-guide.md`.",
+            "",
+            "## 13. Local entry points",
+            "",
+            "```text",
+            "python scripts/start_operator_console.py",
+            "hermes -p heartweb-runtime gateway status",
+            "curl http://127.0.0.1:8650/health",
+            "curl http://127.0.0.1:8765/api/v2/readiness",
+            "python scripts/smoke_operator_console.py",
+            "python scripts/build_repository_index.py",
+            "python scripts/build_repository_index.py --check",
+            "python -m unittest tests.test_repository_index",
+            "npm run build --prefix apps/operator-console",
+            "hermes verify --json",
+            "```",
+            "",
+            "Do not place credentials on a command line or in this repository. Use the isolated runtime profile and environment configuration. Shared diagnostics are under the local `var/operator-diagnostics/` contract and are not repository authority.",
+            "",
+            "## 14. Lifecycle counts",
+            "",
+        ]
+    )
+    for lifecycle in sorted(counts):
+        lines.append(f"- `{lifecycle}`: {counts[lifecycle]}")
+
+    lines.extend(
+        [
+            "",
+            "## 15. Complete registry inventory",
+            "",
+            "Every registry source appears exactly once below. Evidence and audit bodies remain at their canonical paths and are not duplicated here.",
+            "",
+            "| # | Document | Lifecycle | Authority | Type | Summary | SHA-256 |",
+            "|---:|---|---|---:|---|---|---|",
+        ]
+    )
+    for index, entry in enumerate(entries, start=1):
+        lines.append(
+            f"| {index} | [`{entry['path']}`](../{entry['path']}) | `{entry['lifecycle']}` | {entry['authority_level']} | `{entry['document_type']}` | {_md_cell(entry['summary'])} | `{entry['content_sha256']}` |"
+        )
+
+    lines.extend(
+        [
+            "",
+            "## 16. Branch and fresh-clone continuation",
+            "",
+            "- Canonical integration target: `master`.",
+            "- Required continuation branch after remote and fresh-clone SHA verification: `feature/production-workflow-continuation`.",
+            "- Exact live commit identity must be read from `git rev-parse master`, `git rev-parse origin/master` and the fresh clone. Do not infer it from prose.",
+            "- Delete an old branch only after `git merge-base --is-ancestor <tip> master` succeeds or an explicit semantic-reconciliation record proves its content is represented and its tip is preserved in the final graph.",
+            "- The external customer workspace is not inside the repository replacement and must remain unchanged.",
+            "",
+        ]
+    )
+    return "\n".join(lines).translate(DASH_TRANSLATION).encode("utf-8")
+
+
 def _repository_index(entries: list[dict[str, Any]], commit: str) -> bytes:
     default = sorted((e for e in entries if e["default_retrieval"]), key=lambda e: (-e["authority_level"], e["path"]))
     warnings = sorted(
@@ -298,12 +622,13 @@ def _repository_index(entries: list[dict[str, Any]], commit: str) -> bytes:
         "",
         "## Start here",
         "",
-        "1. [`SESSION_BOOTSTRAP.md`](SESSION_BOOTSTRAP.md)",
-        "2. [`PROJECT_STATE.md`](PROJECT_STATE.md)",
-        "3. [`DECISIONS.md`](DECISIONS.md)",
-        "4. Select the active plan for the current task from [`.hermes/plans/INDEX.md`](../.hermes/plans/INDEX.md)",
-        "5. Before test or review decisions, read [`standards/testing/PROTOTYPE_TEST_POLICY.md`](../standards/testing/PROTOTYPE_TEST_POLICY.md)",
-        "6. Use `repository-index/DOCUMENT_REGISTRY.jsonl` for filtered RAG ingestion",
+        "1. [`ONBOARDING_REFERENCE.md`](ONBOARDING_REFERENCE.md)",
+        "2. [`SESSION_BOOTSTRAP.md`](SESSION_BOOTSTRAP.md)",
+        "3. [`PROJECT_STATE.md`](PROJECT_STATE.md)",
+        "4. [`DECISIONS.md`](DECISIONS.md)",
+        "5. Select the active plan for the current task from [`.hermes/plans/INDEX.md`](../.hermes/plans/INDEX.md)",
+        "6. Before test or review decisions, read [`standards/testing/PROTOTYPE_TEST_POLICY.md`](../standards/testing/PROTOTYPE_TEST_POLICY.md)",
+        "7. Use `repository-index/DOCUMENT_REGISTRY.jsonl` for filtered RAG ingestion",
         "",
         "## Default retrieval set",
         "",
@@ -340,13 +665,14 @@ def _session_bootstrap(commit: str) -> bytes:
 
 ## Mandatory read order
 
-1. Read `00_admin/PROJECT_STATE.md`.
-2. Read active and superseding records in `00_admin/DECISIONS.md`.
-3. Read `00_admin/REPOSITORY_INDEX.md`.
-4. Select the active plan for the requested task from `.hermes/plans/INDEX.md`.
-5. Before any test or review decision, read `standards/testing/PROTOTYPE_TEST_POLICY.md`.
-6. Resolve exact standards, prompts and supporting evidence through `00_admin/repository-index/DOCUMENT_REGISTRY.json`.
-7. Read historical or audit material only when the task requires origin, rollback, prior decisions or failure reconstruction.
+1. Read `00_admin/ONBOARDING_REFERENCE.md` for the generated complete snapshot.
+2. Read `00_admin/PROJECT_STATE.md`.
+3. Read active and superseding records in `00_admin/DECISIONS.md`.
+4. Read `00_admin/REPOSITORY_INDEX.md`.
+5. Select the active plan for the requested task from `.hermes/plans/INDEX.md`.
+6. Before any test or review decision, read `standards/testing/PROTOTYPE_TEST_POLICY.md`.
+7. Resolve exact standards, prompts and supporting Evidence through `00_admin/repository-index/DOCUMENT_REGISTRY.json`.
+8. Read historical or audit material only when the task requires origin, rollback, prior decisions or failure reconstruction.
 
 ## Authority rule
 
@@ -354,7 +680,7 @@ Project State and active Decisions override entry documents, old plans, audit pr
 
 ## Current snapshot warning
 
-This parallel index was generated from WIP commit `{commit}`. Any records listed as `needs_reconciliation` in `00_admin/REPOSITORY_INDEX.md` must not be treated as current authority. All volatile completion facts require one final refresh from the stable Feature commit before integration.
+This generated view was built from source commit `{commit}`. Exact live branch and remote identity must be read from Git. Any record listed as `needs_reconciliation` in `00_admin/REPOSITORY_INDEX.md` is not current authority and blocks a clean integration.
 
 ## RAG rule
 
@@ -424,6 +750,7 @@ def generate_outputs(root: Path) -> dict[str, bytes]:
     return {
         "00_admin/repository-index/DOCUMENT_REGISTRY.json": _json_bytes(registry),
         "00_admin/repository-index/DOCUMENT_REGISTRY.jsonl": _jsonl_bytes(entries),
+        "00_admin/ONBOARDING_REFERENCE.md": _onboarding_reference(root, entries, commit, policy),
         "00_admin/REPOSITORY_INDEX.md": _repository_index(entries, commit),
         "00_admin/SESSION_BOOTSTRAP.md": _session_bootstrap(commit),
         "docs/INDEX.md": _area_index("Documentation index", docs_entries, "../"),

@@ -261,6 +261,20 @@ class ContextBuilderTests(unittest.TestCase):
         result = {"llm_run_result_id": "llm-result-demo-0001", "schema_version": "1.0.0", "llm_run_request_id": request["llm_run_request_id"], **{field: request[field] for field in ("tenant_id", "project_id", "run_id", "step_id", "target_revision", "context_package_id", "context_package_sha256", "worker_profile_id", "worker_profile_version", "worker_profile_sha256", "provider_id", "model_id", "tool_policy_id", "tool_policy_version", "tool_policy_sha256", "input_sha256")}, "status": "succeeded", "started_at": "2026-08-20T00:00:00Z", "finished_at": "2026-08-20T00:00:01Z", "token_usage": {"input_tokens": 1, "output_tokens": 1, "total_tokens": 2}, "output": {"artifact_id": "artifact-demo-0001", "revision": 1, "content_sha256": digest(output), "logical_ref": "runtime:artifact/artifact-demo-0001"}}
         result["result_sha256"] = sha256({key: value for key, value in result.items() if key != "result_sha256"})
         self.assertTrue(validate_llm_result(result, request, {"runtime:artifact/artifact-demo-0001": output}, loaded_validator()).valid)
+        multi_output_ref = "runtime:artifact/artifact-demo-0012"
+        multi_result = {key: value for key, value in result.items() if key not in {"schema_version", "output", "result_sha256"}}
+        multi_result.update({
+            "schema_version": "1.2.0",
+            "provider_run_id": "provider-run-demo-0012",
+            "outputs": [{"artifact_id": "artifact-demo-0012", "revision": 1, "content_sha256": digest(output), "logical_ref": multi_output_ref, "contract_id": request["output_contracts"][0]["contract_id"]}],
+            "raw_output_sha256": digest(output),
+            "evidence_refs": [],
+            "observed_tool_calls": [],
+            "observed_delegations": [],
+            "lifecycle_events": [],
+        })
+        multi_result["result_sha256"] = sha256({key: value for key, value in multi_result.items() if key != "result_sha256"})
+        self.assertTrue(validate_llm_result(multi_result, request, {multi_output_ref: output}, loaded_validator()).valid)
         for status in ("failed", "cancelled"):
             failed = {key: value for key, value in result.items() if key != "output"}
             failed.update({"status": status, "error": {"error_class": "provider", "message": "failed", "retry_class": "retryable", "occurred_at": "2026-08-20T00:00:01Z"}})
@@ -290,7 +304,7 @@ class ContextBuilderTests(unittest.TestCase):
         source_bytes = {**step_one_inputs()[2], "runtime:artifact/artifact-rejected": b"rejected", "operator:revision/revision-request-demo": b"request", "operator:instruction/instruction-demo": b"instruction", "runtime:gate/finding-demo": b"finding"}
         revision = build_context_package(specification, (*step_one_inputs()[1], *extra), source_bytes, registry, loaded_validator())
         releases = ({"artifact_id": "artifact-step0", "artifact_sha256": digest(source_bytes["runtime:artifact/artifact-step0"]), "artifact_revision": 1, "tenant_id": "tenant-demo", "project_id": "project-demo", "run_id": "run-demo-revision", "step_id": "0", "status": "released"},)
-        requests = ({"revision_request_id": "revision-request-demo", "current_artifact_id": "artifact-rejected", "current_artifact_sha256": digest(b"rejected")},)
+        requests = ({"revision_request_id": "revision-request-demo", "current_artifact_id": "artifact-rejected", "current_content_sha256": digest(b"rejected")},)
         self.assertTrue(validate_context_package(revision, source_bytes, records_for(revision), {"steps": [{"step_id": "1", "requires_released_predecessor": True}], "initial_edges": [{"from_step_id": "0", "to_step_id": "1"}]}, releases, requests, loaded_validator(), registry, "2026-08-20T00:00:00Z").valid)
 
 

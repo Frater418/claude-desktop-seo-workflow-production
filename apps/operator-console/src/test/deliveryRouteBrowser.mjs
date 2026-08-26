@@ -2,8 +2,8 @@
 // allow: SIZE_OK - M05 Unit E requires one strict same-origin fixture and browser verifier.
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises"
 import { createServer } from "node:http"
-import { createRequire } from "node:module"
 import { extname, resolve } from "node:path"
+import { chromium } from "playwright-core"
 
 const tenantId = "tenant-browser-qa"
 const projectId = "project-browser-qa"
@@ -23,8 +23,7 @@ function option(name, fallback) {
 const dist = resolve(option("dist", "dist"))
 const output = resolve(option("output", "../../00_admin/audits/2026-08-22-m05-unit-e"))
 const screenshots = resolve(output, "screenshots")
-const require = createRequire(process.env.PLAYWRIGHT_REQUIRE_FROM ?? import.meta.url)
-const { chromium } = require("playwright")
+const chromeBin = process.env.CHROME_BIN
 
 function check(value, detail) {
   if (!value) throw new Error(detail)
@@ -273,13 +272,13 @@ async function close(server) {
   await new Promise((resolveClosed, rejectClosed) => server.close((error) => error === undefined ? resolveClosed() : rejectClosed(error)))
 }
 
-const result = { route: routeName, runAt: new Date().toISOString(), dist, output, viewports, browser: { executable: process.env.CHROME_BIN ?? "/opt/google/chrome/chrome" }, captures: [], cells: [], checks: [], consoleErrors: [], failedRequests: [], requestLog: [], error: null }
+const result = { route: routeName, runAt: new Date().toISOString(), dist, output, viewports, browser: { executable: chromeBin ?? "channel:chrome" }, captures: [], cells: [], checks: [], consoleErrors: [], failedRequests: [], requestLog: [], error: null }
 await rm(output, { force: true, recursive: true })
 await mkdir(screenshots, { recursive: true })
 const server = await startServer()
 let browser
 try {
-  browser = await chromium.launch({ executablePath: result.browser.executable, headless: true })
+  browser = await chromium.launch(chromeBin === undefined ? { channel: "chrome", headless: true } : { executablePath: chromeBin, headless: true })
   for (const viewport of viewports) {
     server.exports.clear()
     server.requests.creates = 0

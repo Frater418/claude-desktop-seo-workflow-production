@@ -2,7 +2,7 @@
 
 **Author:** Raphael Rechberger
 **Status:** Current project task router
-**Updated:** 2026-08-22
+**Updated:** 2026-08-26
 **Machine source:** `00_admin/MASTER_TASK_MATRIX.json`
 **Binding test policy:** `standards/testing/PROTOTYPE_TEST_POLICY.md`
 
@@ -44,19 +44,19 @@ New defects are added under the affected Main Task. They do not create a new ove
 | 12 | Sprint 10 | Presentation matrix and Jesse demo | pending |
 | 13 | Sprint 11 | Final integration and maturity gate | pending |
 
-Current canonical position: **7 of 13 execution stages completed**. Sprint 5E Tasks 1 through 8 are complete. The project is in the bounded Production-first interstage gates M07, M08, M08L and M09 before the real Sprint-6 AHD execution. They are not replacement Sprints.
+Current canonical position: **7 of 13 execution stages completed**. Sprint 5E Tasks 1 through 8 and the bounded interstage gates M07, M08, M08L and M09 are complete in their documented scopes. M10 is active on the real CL pilot. Step 0 is released and Step 1 is `in_progress`; the complete real Step-0-through-Step-4B route and first customer package are still open.
 
 ## 2. Current executive snapshot
 
-**Snapshot:** 2026-08-23 after M08 output-quality closure. The Telegram status job is the live progress view. This section records the latest material gate and is refreshed only at material gates.
+**Snapshot:** 2026-08-26 during M10 and the DEC-0031 repository consolidation. This section records the latest material gate. Exact Git refs are read directly from Git and are not cached here.
 
 ```text
 Release Main Tasks: 9/10 completed
 Current Main Task: M10 first controlled local production output
-M08 package gates: PQ-0, PQ-1, PQ-2 and PQ-4 completed locally; external production gates remain deferred
+Current real route: CL Step 0 released; Step 1 in_progress without Production Execution or Agent Evidence
+Repository: DEC-0031 consolidation authorized; it does not close M10 or Production Acceptance
 Next Main Task: no further pre-release Main Task after M10
-Raphael visual Console review: available now
-First functional Delivery hands-on gate: after M05, ideally after M06
+Runtime: intentionally stopped during repository freeze
 ```
 
 The prior 563-test green run is retained baseline evidence. Current Task-6 changes use only the affected dependency closure. No automatic full repository rerun or repeated five-lane review is authorized.
@@ -73,12 +73,14 @@ The prior 563-test green run is retained baseline evidence. Current Task-6 chang
 | M06 | Focused neutral Delivery E2E | completed | Root Sisyphus | 0h | live local UI/API/persistence route produced checkpoint and final ZIP evidence with exact replay |
 | M07 | Minimal shared diagnostic trace DIB-005 | completed | Root Sisyphus | 0h | timestamped trace under gitignored `var/operator-diagnostics/v1/`, current pointer, append-only history and real browser evidence |
 | M08 | Release-critical output quality restoration | completed | Root Sisyphus | 0h | PQ-0, PQ-1, PQ-2 and PQ-4 locally complete; professional Step 4A/4B output sets and Console review are restored without external execution claims |
-| M09 | Route-based Production Release audit | completed | Root Sisyphus and Hermes | 0h | PT-01 through PT-10 passed with no open P0/P1 and current Desktop Chrome evidence |
-| M10 | First controlled local production output | input and provider preflight active | Raphael, Hermes and Root Sisyphus | 3h to 8h plus external inputs | first approved downloadable customer package and real operator evidence |
+| M09 | Route-based Production Release audit | completed in its recorded scope | Root Sisyphus and Hermes | 0h | PT-01 through PT-10 and Desktop Chrome evidence are retained; later real-pilot route defects were corrected separately and require the final affected-closure verification |
+| M10 | First controlled local production output | in progress: Step 0 released, Step 1 awaiting production | Raphael, Hermes and Root Sisyphus | 3h to 8h plus external inputs | first approved downloadable customer package and real operator evidence |
 
 Estimates are focused engineering time ranges, not guarantees. They assume no new external blocker, no scope expansion and compliance with the affected-closure test policy.
 
-## 4. Current Main Task M04 in detail
+## 4. Completed M04 detail record
+
+Sections 4 through 9 preserve the completed M04 through M09 task definitions and evidence boundaries. They are historical execution records, not the current queue. M10 in section 10 is the active Main Task.
 
 | ID | Task-6 subtask | Status | Required verification |
 |---|---|---|---|
@@ -96,7 +98,7 @@ Task 6 is complete when the five Delivery API operations and their exact replay/
 
 ## 5. M05 activate the existing Uebergabe und Export workspace
 
-The German Console, navigation destination, route shell, responsive layout and visual design already exist and passed the 24-cell visual browser matrix. M05 is not a new Console or route build. The current route intentionally renders a contract-gate placeholder and issues no Delivery requests. M05 replaces only that placeholder with functional Delivery content wired to the Task-6 API.
+The German Console, navigation destination, route shell, responsive layout and visual design already existed and had passed the 24-cell visual browser matrix. M05 was not a new Console or route build. At the start of M05, the route intentionally rendered a contract-gate placeholder and issued no Delivery requests. M05 replaced only that placeholder with functional Delivery content wired to the Task-6 API.
 
 ### Subtasks
 
@@ -213,18 +215,20 @@ Each cell runs once. A failed cell and its named direct dependents are rerun aft
 
 ### Subtasks
 
-1. Confirm chosen pilot and exact Project V2 inputs.
-2. Confirm required provider access and market binding.
-3. Resolve or explicitly route the known AHD source/resource blocker.
-4. Run the required workflow route with real provider execution where required.
-5. Stop fail-fast on missing real data rather than substitute values.
-6. Perform human reviews and gates.
+1. Chosen pilot and exact CL Project V2 inputs confirmed.
+2. Search Deployment, Provider Target `agentseo-de-country`, `DE / 2276 / de`, region and 10 weekly hours confirmed.
+3. Step 0 Manifest V2 Revision 3 produced, reviewed, approved, completed and released.
+4. Step 1 Run `run-next-7f7e2b778f4521b9` created and held at `in_progress` without fabricated Evidence.
+5. Produce Step 1 through the canonical Hermes and Provider Gateway route after the repository freeze.
+6. Continue 1B, 1C, 2, 3, 4A and 4B with required provider execution, fail-fast behavior, revisions and Human Gates.
 7. Create final Copywriter, Developer, Project Management and Notion packages.
-8. Download and inspect the final ZIP.
-9. Review the professional output with Raphael.
+8. Download, extract and inspect the final ZIP and deterministic checksums.
+9. Review the professional output with Raphael and obtain the explicit M10 decision.
 10. Record concrete corrections from the first real use as new bounded deltas.
 
-## 11. Tomorrow cutline
+## 11. Historical 2026-08-21 hands-on cutline
+
+This section preserves the original short-term sequencing assumptions. M04 through M09 are now complete in their recorded scopes. Current M10 status is defined in sections 2, 3 and 10.
 
 ### Target 0: Raphael sees the current Console design
 
@@ -236,7 +240,7 @@ Available now:
 - visible `Uebergabe und Export` route shell
 - previously passed responsive visual evidence
 
-Current limitation: the `Uebergabe und Export` page still shows the intentional contract-gate placeholder and has no functional Delivery buttons until M05.
+Historical limitation at that checkpoint: the `Uebergabe und Export` page still showed the intentional contract-gate placeholder before M05 replaced it with functional Delivery actions.
 
 ### Target A: Raphael uses functional Delivery on the existing product
 
@@ -276,9 +280,9 @@ A first hands-on and controlled local output should not wait for Target C.
 | ID | Work | Owner | Activation | Estimate |
 |---|---|---|---|---|
 | X01 | Raphael hands-on Operator Console walkthrough | Raphael and Hermes | after M05, ideally after M06 | 1h to 2h |
-| X02 | Confirm real pilot inputs, provider access and AHD source blockers | Raphael and Hermes | before M10 | 1h to 3h |
-| X03 | Refresh and integrate `docs/repository-authority-index-2026-08-22` | Hermes | stable Feature checkpoint plus Raphael approval | 2h to 5h |
-| X04 | Commit, push, branch consolidation and master fast-forward | Hermes with Raphael approval | after release gate | 1h to 3h |
+| X02 | Confirm real pilot inputs, deployment, provider target and capacity | Raphael and Hermes | completed for the active CL pilot; repeat for each future pilot | 1h to 3h |
+| X03 | Complete DEC-0031 documentation authority and deterministic onboarding consolidation | Hermes | completed and verified on 2026-08-26 | 2h to 5h |
+| X04 | Commit, push, branch reconciliation, master fast-forward and Fresh Clone | Hermes with Raphael approval | in progress under DEC-0031 | 1h to 3h |
 | X05 | Jesse walkthrough and delivery presentation | Raphael | after M10 | 1h to 3h |
 | X06 | Live one-way Notion and n8n integration | future approved integration sprint | post-release | 16h to 40h |
 | X07 | Deployment, CMS adapters, mobile polish and broad expansion | future approved phases | post-release | 24h to 80h |
