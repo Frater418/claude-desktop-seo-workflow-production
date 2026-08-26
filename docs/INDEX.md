@@ -13,7 +13,7 @@ Generated from the canonical document registry.
 
 ## current_strategy
 
-- [`docs/07-geo-architecture-specification.md`](../docs/07-geo-architecture-specification.md): Current GEO strategy source with known deferred V2 contract restoration requirements.
+- [`docs/07-geo-architecture-specification.md`](../docs/07-geo-architecture-specification.md): Current GEO strategy source after local V2 contract restoration; real-output semantic verification remains open in M10.
 - [`docs/copywriter-handoff-guidelines.md`](../docs/copywriter-handoff-guidelines.md): Current boundary and quality guidance for human Copywriter work after the approved Heartweb handoff.
 
 ## evidence

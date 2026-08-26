@@ -16,4 +16,5 @@ Audit evidence is immutable and excluded from default retrieval. Select a packag
 | `2026-08-23-m08l-hermes-llm-adapter` | 1 | [`00_admin/audits/2026-08-23-m08l-hermes-llm-adapter/SECTION_11_REPORT.md`](../../00_admin/audits/2026-08-23-m08l-hermes-llm-adapter/SECTION_11_REPORT.md) |
 | `2026-08-24-m09-route-matrix` | 1 | [`00_admin/audits/2026-08-24-m09-route-matrix/SECTION_11_REPORT.md`](../../00_admin/audits/2026-08-24-m09-route-matrix/SECTION_11_REPORT.md) |
 | `2026-08-24-m10-readiness` | 1 | [`00_admin/audits/2026-08-24-m10-readiness/M10_READINESS_REPORT.md`](../../00_admin/audits/2026-08-24-m10-readiness/M10_READINESS_REPORT.md) |
+| `2026-08-26-repository-consolidation` | 4 | [`00_admin/audits/2026-08-26-repository-consolidation/BRANCH_RECONCILIATION_REPORT.md`](../../00_admin/audits/2026-08-26-repository-consolidation/BRANCH_RECONCILIATION_REPORT.md) |
 | `unclassified` | 1 | [`00_admin/AUDIT-2026-08-17-konsistenz.md`](../../00_admin/AUDIT-2026-08-17-konsistenz.md) |
