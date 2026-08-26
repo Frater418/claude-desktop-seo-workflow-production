@@ -118,6 +118,15 @@ class RepositoryIndexTests(unittest.TestCase):
         indexed = {entry["path"] for entry in _registry()["entries"]}
         self.assertFalse(indexed.intersection(GENERATED_PATHS))
 
+    def test_checkout_policy_keeps_canonical_text_and_windows_launchers_stable(self) -> None:
+        attributes = (ROOT / ".gitattributes").read_text(encoding="utf-8")
+        self.assertIn("* text=auto eol=lf", attributes)
+        self.assertIn("*.bat text eol=crlf", attributes)
+        self.assertIn("*.cmd text eol=crlf", attributes)
+        self.assertIn("*.ps1 text eol=crlf", attributes)
+        for binary in ("*.png binary", "*.pdf binary", "*.zip binary"):
+            self.assertIn(binary, attributes)
+
     def test_no_sensitive_or_customer_paths_are_indexed(self) -> None:
         for entry in _registry()["entries"]:
             lower = entry["path"].casefold()

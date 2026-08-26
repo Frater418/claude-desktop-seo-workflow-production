@@ -20,9 +20,9 @@
 |---|---:|---|---|---|
 | `prompts/0-kickoff-v1.10.0.xml.md` | 1.10.0 | active | Official registry Step 0 | `eac03e7bc82437bb6a5a567ad8765c6cad4066a6816200ae91a29d7a5edf9e30` |
 | `prompts/0-kickoff-v1.9.0.xml.md` | 1.9.0 | superseded, reproducibility only | none | `f90a0cb583f095b671ff06e215b238127d75b98c21469dc279edcf4d701958ed` |
-| `prompts/0-kickoff.xml.md` | 1.8.0 | superseded, reproducibility only | none | `e9d4619897808b05495c555d75f62819731582aa5bae9f2357f0d0573e7c375c` |
-| `prompts/1-pillar-identifikation.xml.md` | 2.2.0 | active | Official registry Step 1 | `3658bed19f033ad8a135f633dcaeb97c9b6094a5b5d448b879c83ff25edd723c` |
-| `prompts/1-pillar-identifikation-v2.1.0.xml.md` | 2.1.0 | superseded, exact predecessor | none | `a7312773dbdd80787f38b603ee9ed234cf3bb8d0d86b90e5822fa24680ce80bb` |
+| `prompts/0-kickoff.xml.md` | 1.8.0 | superseded, reproducibility only | none | `4fe594f3ec13ceccb6c7f930585762a38b0420e735bcb87754d5d53de1391d00` |
+| `prompts/1-pillar-identifikation.xml.md` | 2.2.0 | active | Official registry Step 1 | `4b0e3a25b150c4342ef6cc0a13bdee69246d10c6563da5ff42f75522bd5c1ef2` |
+| `prompts/1-pillar-identifikation-v2.1.0.xml.md` | 2.1.0 | superseded, exact predecessor | none | `f6ef3f57a45a2f78ce35413e87075ade44d65be61387333f318f0b32d3ded7a6` |
 | `prompts/1b-seitenarchitektur.xml.md` | 2.1.0 | active | Official registry Step 1B | `71d5bbbea3839aa447b60866de75cb3b31a764659572b704c33f9eb801667fac` |
 | `prompts/1c-pillar-template.xml.md` | 2.1.0 | active | Official registry Step 1C | `7b12fac9cec125aa1932242a9a0d0b1fdf580cccd7faefa855a5c4c3bc1eefdb` |
 | `prompts/2-cluster-recherche.xml.md` | 2.2.0 | active | Official registry Step 2 | `a3c498d84b4d7187a2a0335a5fc6607226870ad415c8e6ebcf7c664ca75aec23` |

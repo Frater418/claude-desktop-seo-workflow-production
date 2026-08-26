@@ -28,7 +28,7 @@
       ],
       "prompt_id": "heartweb.step.1",
       "prompt_path": "prompts/1-pillar-identifikation.xml.md",
-      "prompt_sha256": "3658bed19f033ad8a135f633dcaeb97c9b6094a5b5d448b879c83ff25edd723c",
+      "prompt_sha256": "4b0e3a25b150c4342ef6cc0a13bdee69246d10c6563da5ff42f75522bd5c1ef2",
       "prompt_version": "2.2.0",
       "step_id": "1"
     },
