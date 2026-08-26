@@ -165,7 +165,8 @@ class RepositoryIndexTests(unittest.TestCase):
             end = text.find("\n### Source:", start + len(heading))
             block = text[start:] if end < 0 else text[start:end]
             self.assertIn(entry["content_sha256"], block)
-            self.assertIn((ROOT / relative).read_text(encoding="utf-8").rstrip(), block)
+            source_text = "\n".join(line.rstrip(" \t") for line in (ROOT / relative).read_text(encoding="utf-8").splitlines())
+            self.assertIn(source_text, block)
 
         prompt_entries = [entry for entry in entries if entry["area"] == "prompts"]
         prompt_catalog = text.split("## 9. Complete prompt catalog", 1)[1].split("## 10. Active workflow prompt registry", 1)[0]

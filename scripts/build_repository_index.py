@@ -468,15 +468,16 @@ def _onboarding_reference(
             "- Run only the affected dependency closure required by `standards/testing/PROTOTYPE_TEST_POLICY.md`; do not restart broad matrices after a bounded failure.",
             "- Never use Em Dash or En Dash characters.",
             "",
-            "## 8. Verbatim onboarding-critical source blocks",
+            "## 8. Complete onboarding-critical source blocks",
             "",
-            "Each block below is a text projection of the canonical source bytes. The heading SHA-256 is calculated from the raw source file.",
+            "Each block below contains the complete canonical source text with trailing line whitespace normalized for Git safety. The heading SHA-256 is calculated from the unchanged raw source file.",
             "",
         ]
     )
     for entry in sources:
         relative = entry["path"]
-        text = (root / relative).read_bytes().decode("utf-8")
+        raw_text = (root / relative).read_bytes().decode("utf-8")
+        text = "\n".join(line.rstrip(" \t") for line in raw_text.splitlines())
         fence = _source_fence(text)
         lines.extend(
             [
