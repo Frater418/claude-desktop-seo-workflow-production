@@ -32,3 +32,14 @@ The accepted integration is:
 5. Delete the M08 branch only after `git merge-base --is-ancestor 568bb497e57af4f7ec6dc8a13438681bbf423a55 master` succeeds locally and against the pushed remote.
 
 This graph merge preserves history. It does not claim that M08 itself is the current tree or that Production acceptance is complete.
+
+## Completed graph integration
+
+- Source parent: `ca93f9a7244bfa19ef46cf1ebe729c899886924f`
+- M08 parent: `568bb497e57af4f7ec6dc8a13438681bbf423a55`
+- Merge commit: `17df3470eb30f816ecff9a4fb516255f7091814f`
+- Tree before merge: `de74993a94b36c7dbe79f9ae25b93f2b0eb3d9d9`
+- Tree after merge: `de74993a94b36c7dbe79f9ae25b93f2b0eb3d9d9`
+- Result: `tree_unchanged=true`
+
+The M08 tip is now reachable from the consolidation line without replacing any current source byte. Branch deletion remains gated on final local and remote `master` ancestor proof.
