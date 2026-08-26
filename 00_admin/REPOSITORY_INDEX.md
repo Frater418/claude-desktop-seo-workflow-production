@@ -1,7 +1,7 @@
 # Repository authority index
 
 **Author:** Raphael Rechberger
-**Indexed snapshot:** `da1d77c2dcda40707884e6412624577c953524e8`
+**Indexed snapshot:** `703392570aeb76d5fe6a81a8f00b8c72042ee6d1`
 **Generated:** deterministic from repository sources
 
 ## Start here

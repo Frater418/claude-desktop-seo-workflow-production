@@ -2,7 +2,7 @@
 
 **Author:** Raphael Rechberger
 **Lifecycle:** generated onboarding view
-**Source commit:** `da1d77c2dcda40707884e6412624577c953524e8`
+**Source commit:** `703392570aeb76d5fe6a81a8f00b8c72042ee6d1`
 **Generator version:** `1.1.0`
 **Registry version:** `1.1.0`
 **Inventory records:** 333
