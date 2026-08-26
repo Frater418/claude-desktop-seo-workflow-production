@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.build_repository_index import GENERATED_PATHS, ONBOARDING_SOURCE_PATHS, generate_outputs
+from scripts.build_repository_index import GENERATED_PATHS, ONBOARDING_SOURCE_PATHS, _git_commit, generate_outputs
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = ROOT / "00_admin/repository-index/DOCUMENT_REGISTRY.json"
@@ -52,6 +52,17 @@ class RepositoryIndexTests(unittest.TestCase):
         second = generate_outputs(ROOT)
         self.assertEqual(first, second)
         self.assertEqual(set(first), GENERATED_PATHS)
+
+    def test_source_commit_uses_parent_only_for_a_generated_view_commit(self) -> None:
+        head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True, encoding="utf-8").strip()
+        fields = subprocess.check_output(["git", "rev-list", "--parents", "-n", "1", "HEAD"], cwd=ROOT, text=True, encoding="utf-8").split()
+        changed = {
+            line.strip().replace("\\", "/")
+            for line in subprocess.check_output(["git", "diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD"], cwd=ROOT, text=True, encoding="utf-8").splitlines()
+            if line.strip()
+        }
+        expected = fields[1] if changed and changed.issubset(GENERATED_PATHS) and len(fields) > 1 else head
+        self.assertEqual(expected, _git_commit(ROOT))
 
     def test_registry_entries_have_valid_paths_hashes_and_ids(self) -> None:
         entries = _registry()["entries"]

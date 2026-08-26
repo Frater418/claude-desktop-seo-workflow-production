@@ -92,7 +92,7 @@ def _excluded(path: str, patterns: list[str]) -> bool:
 
 
 def _git_commit(root: Path) -> str:
-    result = subprocess.run(
+    head_result = subprocess.run(
         ["git", "rev-parse", "HEAD"],
         cwd=root,
         capture_output=True,
@@ -100,7 +100,26 @@ def _git_commit(root: Path) -> str:
         encoding="utf-8",
         check=True,
     )
-    commit = result.stdout.strip()
+    head = head_result.stdout.strip()
+    changed_result = subprocess.run(
+        ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=True,
+    )
+    parents_result = subprocess.run(
+        ["git", "rev-list", "--parents", "-n", "1", "HEAD"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=True,
+    )
+    changed = {line.strip().replace("\\", "/") for line in changed_result.stdout.splitlines() if line.strip()}
+    parent_fields = parents_result.stdout.split()
+    commit = parent_fields[1] if changed and changed.issubset(GENERATED_PATHS) and len(parent_fields) > 1 else head
     if not re.fullmatch(r"[a-f0-9]{40}", commit):
         raise ValueError("ERROR_INDEX_SOURCE_COMMIT_INVALID")
     return commit
