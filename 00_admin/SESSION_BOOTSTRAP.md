@@ -1,7 +1,7 @@
 # Session bootstrap
 
 **Author:** Raphael Rechberger
-**Indexed snapshot:** `703392570aeb76d5fe6a81a8f00b8c72042ee6d1`
+**Indexed snapshot:** `e52065d4ae1d226f50e1ad5ed23e35b1fd365f50`
 
 ## Mandatory read order
 
@@ -20,7 +20,7 @@ Project State and active Decisions override entry documents, old plans, audit pr
 
 ## Current snapshot warning
 
-This generated view was built from source commit `703392570aeb76d5fe6a81a8f00b8c72042ee6d1`. Exact live branch and remote identity must be read from Git. Any record listed as `needs_reconciliation` in `00_admin/REPOSITORY_INDEX.md` is not current authority and blocks a clean integration.
+This generated view was built from source commit `e52065d4ae1d226f50e1ad5ed23e35b1fd365f50`. Exact live branch and remote identity must be read from Git. Any record listed as `needs_reconciliation` in `00_admin/REPOSITORY_INDEX.md` is not current authority and blocks a clean integration.
 
 ## RAG rule
 

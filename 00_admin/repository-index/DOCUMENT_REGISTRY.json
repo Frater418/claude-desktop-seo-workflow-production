@@ -4585,7 +4585,7 @@
         "developer"
       ],
       "authority_level": 10,
-      "content_sha256": "f49d929305418830de9233022f653bb24947681ca58ed1b2aabc01b0e7f18824",
+      "content_sha256": "c48f58402455c22ad3928e580530d7785f5dcd7dbd7329c0e2779520a2d8eb24",
       "default_retrieval": false,
       "document_id": "doc-fd6b7698d4b7ade3",
       "document_type": "audit_evidence",
@@ -4595,7 +4595,7 @@
       "path": "00_admin/audits/2026-08-22-m07-diagnostic-trace/SECTION_11_REPORT.md",
       "related_paths": [],
       "retrieval_priority": 10,
-      "size_bytes": 2004,
+      "size_bytes": 1960,
       "summary": "Change ID: M07-DIAGNOSTIC-TRACE-001",
       "superseded_by": null,
       "supersedes": [],
@@ -5229,7 +5229,7 @@
         "developer"
       ],
       "authority_level": 10,
-      "content_sha256": "cb486c75a0be63d0f80193fae44206b83adfd46ad778e21567379a2350852ce6",
+      "content_sha256": "816ab7a48fc7b768a1bb1b1493b3f0e957d8aa15185862f186ea3dc61c9fca3b",
       "default_retrieval": false,
       "document_id": "doc-e73eece9183b151d",
       "document_type": "audit_evidence",
@@ -6208,7 +6208,7 @@
         "operator"
       ],
       "authority_level": 20,
-      "content_sha256": "e9d4619897808b05495c555d75f62819731582aa5bae9f2357f0d0573e7c375c",
+      "content_sha256": "4fe594f3ec13ceccb6c7f930585762a38b0420e735bcb87754d5d53de1391d00",
       "default_retrieval": false,
       "document_id": "doc-963cb1e4b60fa024",
       "document_type": "prompt_contract",
@@ -6218,7 +6218,7 @@
       "path": "prompts/0-kickoff.xml.md",
       "related_paths": [],
       "retrieval_priority": 8,
-      "size_bytes": 9220,
+      "size_bytes": 9078,
       "summary": "Superseded unversioned Step-0 compatibility source retained for exact historical replay.",
       "superseded_by": "prompts/0-kickoff-v1.9.0.xml.md",
       "supersedes": [],
@@ -6239,7 +6239,7 @@
         "operator"
       ],
       "authority_level": 22,
-      "content_sha256": "a7312773dbdd80787f38b603ee9ed234cf3bb8d0d86b90e5822fa24680ce80bb",
+      "content_sha256": "f6ef3f57a45a2f78ce35413e87075ade44d65be61387333f318f0b32d3ded7a6",
       "default_retrieval": false,
       "document_id": "doc-d7d4a4098c1bb9a4",
       "document_type": "prompt_contract",
@@ -6249,7 +6249,7 @@
       "path": "prompts/1-pillar-identifikation-v2.1.0.xml.md",
       "related_paths": [],
       "retrieval_priority": 8,
-      "size_bytes": 8813,
+      "size_bytes": 8736,
       "summary": "Immutable Step-1 predecessor retained before the logical Step-0 lineage correction.",
       "superseded_by": "prompts/1-pillar-identifikation.xml.md",
       "supersedes": [],
@@ -6270,7 +6270,7 @@
         "operator"
       ],
       "authority_level": 82,
-      "content_sha256": "3658bed19f033ad8a135f633dcaeb97c9b6094a5b5d448b879c83ff25edd723c",
+      "content_sha256": "4b0e3a25b150c4342ef6cc0a13bdee69246d10c6563da5ff42f75522bd5c1ef2",
       "default_retrieval": false,
       "document_id": "doc-54852bf3e7307754",
       "document_type": "prompt_contract",
@@ -6280,7 +6280,7 @@
       "path": "prompts/1-pillar-identifikation.xml.md",
       "related_paths": [],
       "retrieval_priority": 80,
-      "size_bytes": 8790,
+      "size_bytes": 8713,
       "summary": "Active registry-bound Step-1 prompt with released Step-0 lineage, crawl and SERP Evidence operations.",
       "superseded_by": null,
       "supersedes": [
@@ -8718,7 +8718,7 @@
         "validator"
       ],
       "authority_level": 85,
-      "content_sha256": "e3e22184f6a1a0ec32c194d43245f5dc6bc59567b3266159180042a8b15f5f8c",
+      "content_sha256": "7824aa57348fb36fe0a7a439d07233f1d228de69ea93aec23cfbd37dad178cc9",
       "default_retrieval": false,
       "document_id": "doc-4aa6fa88ef1f4108",
       "document_type": "standard_or_contract",
@@ -9681,5 +9681,5 @@
   ],
   "registry_version": "1.1.0",
   "schema_version": "1.0.0",
-  "source_commit": "703392570aeb76d5fe6a81a8f00b8c72042ee6d1"
+  "source_commit": "e52065d4ae1d226f50e1ad5ed23e35b1fd365f50"
 }
